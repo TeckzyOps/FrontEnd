@@ -1,0 +1,47 @@
+@import "~bootstrap/scss/functions";
+@import  "~bootstrap/scss/variables";
+@import  "~bootstrap/scss/mixins/_breakpoints";
+@import  "~bootstrap/scss/bootstrap";
+
+.indexcity {
+    z-index: 9999;
+  }
+  
+  .right {
+    right: 0 !important;
+    left: 15vw !important;
+  }
+
+  .test{
+    color:red;
+  }
+  
+  @media only screen and (max-width: 767px) {
+    .navbar-collapse {
+      background-color: #ffc107;
+      position: fixed;
+      top: 0;
+      transition: all 0.8s ease-out;
+      height: 100%;
+      width: 100%;
+      left: 100%;
+    }
+  .navbar-toggler {
+    display: inline-block !important;
+  }
+    .navbar-inverse .navbar-nav>li>a {
+      color: #000;
+    }
+
+
+  }
+
+  .hideIt{
+    display: none;
+  }
+  .wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+}
+  
