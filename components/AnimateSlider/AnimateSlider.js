@@ -68,11 +68,9 @@ export function TopSlider(props){
               data-src={item.image}
               style={{zIndex:999}}
             >
+             
               <div className="content">
-                {/* <video playsinline="playsinline" autoPlay="autoplay" muted="muted" loop="loop">
-                  <source src="https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4" type="video/mp4" />
-                  <track default kind="captions" srcLang="en" src="" />
-                </video> */}
+                
                 <Grid container spacing={2} justify="center">
                     <Grid item>
                     <Typography variant="h1">{t('common:' + item.title)}</Typography>
@@ -121,6 +119,10 @@ function AnimateSlider(props) {
             className="slider-content"
             style={{ background: `url('${item.image}') no-repeat center center` }}
           >
+             <video className="video" playsinline="playsinline" autoPlay="autoplay" muted="muted" loop="loop">
+                  <source src="https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4" type="video/mp4" />
+                  <track default kind="captions" srcLang="en" src="" />
+                </video>
             <div className="inner">
               {/* <video playsinline="playsinline" autoPlay="autoplay" muted="muted" loop="loop">
                 <source src="https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4" type="video/mp4" />

@@ -1,8 +1,8 @@
 const menu = [
   'Matrimony',
   'testimonials',
-  'pricing',
-  'Gallery',
+  'Portfolio',
+  'Get Offer',
   'Get Quotes',
   'Contact US!'
 ];
