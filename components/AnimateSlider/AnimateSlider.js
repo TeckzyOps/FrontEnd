@@ -119,28 +119,31 @@ function AnimateSlider(props) {
             className="slider-content"
             style={{ background: `url('${item.image}') no-repeat center center` }}
           >
-             <video className="video" playsinline="playsinline" autoPlay="autoplay" muted="muted" loop="loop">
-                  <source src="https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4" type="video/mp4" />
+             {/* <video className="video" playsinline="playsinline" autoPlay="autoplay" muted="muted" loop="loop">
+                  <source src="https://www.youtube.com/embed/4xMNeY2U7ck" type="video/mp4" />
                   <track default kind="captions" srcLang="en" src="" />
-                </video>
+              </video> */}
+              <iframe width="100%" height="100%" className="video"
+                src="https://www.youtube.com/embed/tgbNymZ7vqY?rel=0&modestbranding=0&autohide=1&controls=0">
+                </iframe>
             <div className="inner">
               {/* <video playsinline="playsinline" autoPlay="autoplay" muted="muted" loop="loop">
                 <source src="https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4" type="video/mp4" />
                 <track default kind="captions" srcLang="en" src="" />
               </video> */}
-              <Typography variant="h1">{t('common:' + item.title)}</Typography>
-              <Typography variant="body1">{t('starter-landing:description_text')}</Typography>
+              {/* <Typography variant="h1">{t('common:' + item.title)}</Typography>
+              <Typography variant="body1">{t('starter-landing:description_text')}</Typography> */}
               <div className={classes.heroButtons}>
                 <Grid container spacing={2} justify="center">
                   <Grid item>
-                    <Button variant="contained" color="primary">
+                    {/* <Button variant="contained" color="primary">
                       View Tutorial
-                    </Button>
+                    </Button> */}
                   </Grid>
                   <Grid item>
-                    <Button variant="outlined" color="primary">
+                    {/* <Button variant="outlined" color="primary">
                       Start Now!
-                    </Button>
+                    </Button> */}
                   </Grid>
                 </Grid>
               </div>

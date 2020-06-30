@@ -4,7 +4,8 @@ const menu = [
   'Portfolio',
   'Get Offer',
   'Get Quotes',
-  'Contact US!'
+  'Contact US!',
+  'Help/Support'
 ];
 
 export default menu;

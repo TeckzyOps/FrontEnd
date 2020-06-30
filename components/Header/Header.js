@@ -108,7 +108,8 @@ function Header(props) {
               )}
             </nav>
             <nav className={classes.userMenu}>
-              { isDesktop && <Button href="/login">Login</Button> }
+              {/* { isDesktop && <Button href="/login">Login</Button> } */}
+              <Button variant="contained" color="primary" href="/login">Login</Button>
               <Button variant="contained" color="primary" href="/register">Register</Button>
               { isDesktop && <span className={classes.vDivider} /> }
               <Settings toggleDark={onToggleDark} toggleDir={onToggleDir} />

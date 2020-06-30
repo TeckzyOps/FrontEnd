@@ -36,7 +36,7 @@ function MobileMenu(props) {
         </List>
         <Divider />
         <List>
-          {['login', 'register', 'contact'].map((text, index) => (
+          {['contact'].map((text, index) => (
             <ListItem
               component="a"
               href={`/${text}`}

@@ -1,11 +1,10 @@
+/* eslint-disable */ 
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import { withTranslation } from '~/i18n';
@@ -15,12 +14,11 @@ import Title from '../Title/TitleSecondary';
 import AuthFrame from './AuthFrame';
 import useStyles from './form-style';
 
-function Login(props) {
+function ForgotPassword(props) {
   const classes = useStyles();
   const { t } = props;
   const [values, setValues] = useState({
-    email: '',
-    password: '',
+    username: '',
   });
 
   useEffect(() => {
@@ -32,14 +30,8 @@ function Login(props) {
     });
   });
 
-  const [check, setCheck] = useState(false);
-
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
-  };
-
-  const handleCheck = event => {
-    setCheck(event.target.checked);
   };
 
   const handleSubmit = () => {
@@ -47,22 +39,16 @@ function Login(props) {
   };
 
   return (
-    <AuthFrame title={t('common:login_title')} subtitle={t('common:login_subtitle')}>
+    <AuthFrame title={t('common:forgot_title')} subtitle={t('common:forgot_subtitle')}>
       <div>
         <div className={classes.head}>
           <Title align="left">
-            {t('common:login')}
+            {t('common:retrieve_password')}
           </Title>
           <Button size="small" className={classes.buttonLink} href={routeLink.starter.register}>
             <Icon className={clsx(classes.icon, classes.signArrow)}>arrow_forward</Icon>
             {t('common:login_create')}
           </Button>
-        </div>
-        <SocialAuth />
-        <div className={classes.separator}>
-          <Typography>
-            {t('common:login_or')}
-          </Typography>
         </div>
         <ValidatorForm
           onError={errors => console.log(errors)}
@@ -75,18 +61,18 @@ function Login(props) {
                 className={classes.input}
                 label={t('common:login_username')}
                 onChange={handleChange('email')}
-                name="email"
+                name="username"
                 value={values.email}
-                validators={['required', 'isEmail']}
-                errorMessages={['This field is required', 'Email is not valid']}
+                validators={['required']}
+                errorMessages={['This field is required']}
               />
             </Grid>
             <Grid item xs={12}>
               <TextValidator
                 variant="filled"
-                type="password"
+                type="text"
                 className={classes.input}
-                label={t('common:login_password')}
+                label={t('common:otp')}
                 validators={['required']}
                 onChange={handleChange('password')}
                 errorMessages={['This field is required']}
@@ -95,28 +81,10 @@ function Login(props) {
               />
             </Grid>
           </Grid>
-          <div className={classes.formHelper}>
-            <FormControlLabel
-              control={(
-                <Checkbox
-                  checked={check}
-                  onChange={(e) => handleCheck(e)}
-                  color="secondary"
-                  value={check}
-                  className={classes.check}
-                />
-              )}
-              label={(
-                <span>
-                  {t('common:login_remember')}
-                </span>
-              )}
-            />
-            <Button size="small" className={classes.buttonLink} href="/forgot">
-              {t('common:login_forgot')}
-            </Button>
-          </div>
           <div className={classes.btnArea}>
+          <Button variant="contained" fullWidth type="submit" color="secondary" size="large">
+              {t('common:request_otp')}
+            </Button>
             <Button variant="contained" fullWidth type="submit" color="secondary" size="large">
               {t('common:continue')}
             </Button>
@@ -128,8 +96,8 @@ function Login(props) {
 }
 
 
-Login.propTypes = {
+ForgotPassword.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-export default withTranslation(['common'])(Login);
+export default withTranslation(['common'])(ForgotPassword);
