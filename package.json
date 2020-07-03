@@ -27,6 +27,7 @@
     "@zeit/next-sass": "^1.0.1",
     "animate.css": "^3.7.2",
     "axios": "^0.19.2",
+    "axios-debug-log": "^0.7.0",
     "babel-eslint": "^10.0.1",
     "babel-plugin-root-import": "^6.4.1",
     "clsx": "^1.0.4",
