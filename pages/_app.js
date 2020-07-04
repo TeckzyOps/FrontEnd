@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import React from "react";
 import App, { Container } from "next/app";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";

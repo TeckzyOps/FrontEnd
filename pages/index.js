@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import React from "react";
 import PropTypes from "prop-types";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -19,7 +20,7 @@ import Notification from "../components/Notification";
 import brand from "../static/text/brand";
 import service from "./../utils/ApiService";
 
-const sectionMargin = (margin) => margin * 15;
+const sectionMargin = (margin) => margin * 2;
 const useStyles = makeStyles((theme) => ({
 	mainWrap: {
 		position: "relative",
@@ -33,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 		paddingTop: sectionMargin(theme.spacing()),
 	},
 	containerWrap: {
-		marginTop: theme.spacing(15),
+		marginTop: theme.spacing(8),
 	},
 }));
 
@@ -61,8 +62,7 @@ function Landing(props) {
 					</section>
 					<section
 						className={clsx(classes.spaceTop, classes.spaceBottom)}
-						id="feature"
-					>
+						id="feature">
 						<Container fixed>
 							<Feature />
 						</Container>
@@ -73,24 +73,24 @@ function Landing(props) {
 					{/* <section className={classes.spaceTop} id="testimonials">
             <Testimonials />
           </section> */}
-					<section className={classes.spaceTop} id="pricing">
+					{/* <section className={classes.spaceTop} id="pricing">
 						<Pricing />
-					</section>
+					</section> */}
 					{/* <section className={clsx(classes.spaceTop, classes.spaceBottom)} id="blog">
             <Blog />
           </section> */}
 					<br />
-					<section id="subscribe">
+					{/* <section id="subscribe">
 						<Subscribe />
-					</section>
+					</section> */}
 				</main>
 				<Hidden mdDown>
 					<PageNav />
 				</Hidden>
 				<Footer toggleDir={onToggleDir} />
-				<Hidden mdDown>
+				{/* <Hidden mdDown>
 					<Notification />
-				</Hidden>
+				</Hidden> */}
 			</div>
 		</React.Fragment>
 	);

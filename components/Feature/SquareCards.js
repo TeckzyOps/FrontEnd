@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
+import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -9,18 +10,20 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
+import { useTextAlign } from '~/theme/common';
 
 const tiers = [
-  { title: 'Hindu' },
-  { title: 'Muslim' },
-  { title: 'Christian' },
-  { title: 'Sikh' },
-  { title: 'Parsi' }
+  { title: 'Freelancing',imgsrc: "static/images/freelance.png" },
+  { title: 'Groom/Bride', imgsrc: "static/images/bride.png" },
+  { title: 'Vendor',imgsrc: "static/images/vendor.png" },
+  { title: 'Seller',imgsrc: "static/images/seller.png" },
+  { title: 'Worker',imgsrc: "static/images/worker.png" }
 ];
 
 const useStyles = makeStyles(theme => ({
   pricingWrap: {
-    marginTop: theme.spacing(5)
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   cardHeader: {
     backgroundColor: theme.palette.type === 'dark' ? theme.palette.grey[900] : theme.palette.grey[200],
@@ -35,15 +38,16 @@ const useStyles = makeStyles(theme => ({
 
 export default function SquareCards() {
   const classes = useStyles();
+  const align = useTextAlign();
 
   return (
-    <Container maxWidth="md" component="main">
-      <div className={classes.pricingWrap}>
-        <Grid container spacing={5} alignItems="flex-end">
+    <Container>
+      <div>
+        <Grid justify="center" md={12} container spacing={5} item>
           {tiers.map(tier => (
             // Enterprise card is full width at sm breakpoint
-            <Grid item key={tier.title} xs={12} sm={6} md={6}>
-              <Card>
+            <Grid key={tier.title} xs={12} sm={3} md={2}>
+              <Card >
                 {/* <CardHeader
                   title={tier.title}
                   subheader={tier.subheader}
@@ -54,14 +58,12 @@ export default function SquareCards() {
                 /> */}
                 <CardContent>
                   <div className={classes.cardPricing}>
-                    <Typography component="h2" variant="h3" color="textPrimary">
-                      {tier.title}
-                    </Typography>
+                   <img src={tier.imgsrc} width="100%" height="150"/>
                   </div>
                 </CardContent>
                 <CardActions>
                   <Button fullWidth variant={tier.buttonVariant} color="primary">
-                    Shop Now!
+                  {tier.title}
                   </Button>
                 </CardActions>
               </Card>

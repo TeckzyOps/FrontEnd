@@ -17,11 +17,11 @@ function MainFeature() {
         <Grid md={12} item>
           <div className={classes.featureMore}>
             <div className={clsx(align.textCenter, classes.featureItem, classes.last)}>
-              <ReactWOW animation="fadeInUp" duration="0.6s">
+              {/* <ReactWOW animation="fadeInUp" duration="0.6s">
                 <Typography variant="h3" className={classes.title}>
                 Search By Religion
                 </Typography>
-              </ReactWOW>
+              </ReactWOW> */}
               <ReactWOW animation="fadeInUp" delay="0.3s" duration="0.6s">
                 {/* <Typography variant="body1" className={classes.text}>
                   Quos blanditiis tenetur unde suscipit, quam beatae rerum inventore consectetur, neque doloribus.
@@ -40,7 +40,7 @@ function MainFeature() {
           </div>
         </Grid>
       </Grid>
-      <Grid container spacing={6}>
+      {/* <Grid container spacing={6}>
         <Grid md={6} item>
           <div className={classes.featureItem}>
             <ReactWOW animation="fadeInLeft" duration="0.6s">
@@ -95,7 +95,7 @@ function MainFeature() {
             </ReactWOW>
           </div>
         </Grid>
-      </Grid>
+      </Grid> */}
     </div>
   );
 }

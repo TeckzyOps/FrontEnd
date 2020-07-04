@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import palette from "./palette";
 const appTheme = (color, mode) => ({
 	palette: {

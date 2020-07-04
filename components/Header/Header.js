@@ -36,14 +36,15 @@ function Header(props) {
   const handleScroll = () => {
     const doc = document.documentElement;
     const scroll = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
-    const newFlagFixed = (scroll > 80);
+    const newFlagFixed = (scroll > -1);
     if (flagFixed !== newFlagFixed) {
       setFixed(newFlagFixed);
       flagFixed = newFlagFixed;
     }
   };
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    // window.addEventListener('scroll', );
   }, []);
   const classes = useStyles();
   const theme = useTheme();

@@ -160,18 +160,21 @@ function Footer(props) {
         </Grid>
         <Grid item xs={12} md={3}>
           <div className={classes.socmed}>
-            <IconButton aria-label="Delete" className={classes.margin} size="small">
+            <div aria-label="Delete" className={classes.margin} size="small">
               <FacebookIcon fontSize="64" />
-            </IconButton>
-            <IconButton aria-label="Delete" className={classes.margin} size="small">
+            </div>
+            <div aria-label="Delete" className={classes.margin} size="small">
               <TwitterIcon fontSize="64px" />
-            </IconButton>
-            <IconButton aria-label="Delete" className={classes.margin} size="small">
+            </div>
+            <div aria-label="Delete" className={classes.margin} size="small">
               <InstagramIcon fontSize="64px" />
-            </IconButton>
-            <IconButton aria-label="Delete" className={classes.margin} size="small">
+            </div>
+            {/* <IconButton aria-label="Delete" className={classes.margin} size="small">
               <LinkedinIcon fontSize="64px" />
-            </IconButton>
+            </IconButton> */}
+            <div aria-label="Delete" className={classes.margin} size="small">
+              <LinkedinIcon fontSize="64px" />
+            </div>
           </div>
           {/* <Select
             value={values.lang}
