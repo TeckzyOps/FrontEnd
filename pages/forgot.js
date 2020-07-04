@@ -2,7 +2,6 @@ import React, { Fragment } from "react";
 import Head from "next/head";
 import brand from "../static/text/brand";
 import ForgotPassword from "../components/Forms/ForgotPassword";
-import { ApiService } from "./../utils/httpClient";
 
 function Login() {
 	axios = new ApiService();
