@@ -1,4 +1,5 @@
-/* eslint-disable */ 
+/* eslint-disable */
+
 import React from "react";
 import PropTypes from "prop-types";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -28,10 +29,10 @@ const useStyles = makeStyles((theme) => ({
 		overflow: "hidden",
 	},
 	spaceBottom: {
-		marginBottom: sectionMargin(theme.spacing()),
+		marginBottom: sectionMargin(theme.spacing(2)),
 	},
 	spaceTop: {
-		paddingTop: sectionMargin(theme.spacing()),
+		paddingTop: sectionMargin(theme.spacing(2)),
 	},
 	containerWrap: {
 		marginTop: theme.spacing(8),
@@ -62,7 +63,8 @@ function Landing(props) {
 					</section>
 					<section
 						className={clsx(classes.spaceTop, classes.spaceBottom)}
-						id="feature">
+						id="feature"
+					>
 						<Container fixed>
 							<Feature />
 						</Container>

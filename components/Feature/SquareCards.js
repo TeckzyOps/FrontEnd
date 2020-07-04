@@ -13,16 +13,16 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useTextAlign } from '~/theme/common';
 
 const tiers = [
-  { title: 'Freelancing',imgsrc: "static/images/freelance.png" },
-  { title: 'Groom/Bride', imgsrc: "static/images/bride.png" },
-  { title: 'Vendor',imgsrc: "static/images/vendor.png" },
-  { title: 'Seller',imgsrc: "static/images/seller.png" },
-  { title: 'Worker',imgsrc: "static/images/worker.png" }
+  { title: 'Freelancing', imgsrc: "static/images/freelance.png" },
+  { title: 'Groom/Bride', imgsrc: "static/images/bride.svg" },
+  { title: 'Vendor', imgsrc: "static/images/vendor.svg" },
+  { title: 'Seller', imgsrc: "https://img.icons8.com/cute-clipart/100/000000/shop.png" },
+  { title: 'Worker', imgsrc: "https://img.icons8.com/bubbles/100/000000/worker-male.png" }
 ];
 
 const useStyles = makeStyles(theme => ({
   pricingWrap: {
-    textAlign: 'center',
+    padding: '.5rem',
     justifyContent: 'center',
   },
   cardHeader: {
@@ -46,7 +46,7 @@ export default function SquareCards() {
         <Grid justify="center" md={12} container spacing={5} item>
           {tiers.map(tier => (
             // Enterprise card is full width at sm breakpoint
-            <Grid key={tier.title} xs={12} sm={3} md={2}>
+            <Grid className={classes.pricingWrap} justify="space-around" key={tier.title} xs={12} sm={3} md={2}>
               <Card >
                 {/* <CardHeader
                   title={tier.title}
@@ -58,12 +58,12 @@ export default function SquareCards() {
                 /> */}
                 <CardContent>
                   <div className={classes.cardPricing}>
-                   <img src={tier.imgsrc} width="100%" height="150"/>
+                    <img src={tier.imgsrc} width="100%" height="150" />
                   </div>
                 </CardContent>
                 <CardActions>
                   <Button fullWidth variant={tier.buttonVariant} color="primary">
-                  {tier.title}
+                    {tier.title}
                   </Button>
                 </CardActions>
               </Card>
