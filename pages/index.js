@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 		marginBottom: sectionMargin(theme.spacing(2)),
 	},
 	spaceTop: {
-		paddingTop: sectionMargin(theme.spacing(2)),
+		paddingTop: sectionMargin(theme.spacing(0)),
 	},
 	containerWrap: {
 		marginTop: theme.spacing(8),
