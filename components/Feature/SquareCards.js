@@ -59,7 +59,7 @@ export default function SquareCards() {
 
 	return (
 		<div className={classes.root}>
-			<Grid container spacing={3}>
+			<Grid justify="center" container spacing={3}>
 				{tiers.map((tier) => (
 					<Grid item sm={4} xs={4} md>
 						<IconButton

@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 		paddingTop: sectionMargin(theme.spacing(0)),
 	},
 	containerWrap: {
-		marginTop: theme.spacing(8),
+		marginTop: "11vh",
 	},
 }));
 
@@ -55,16 +55,13 @@ function Landing(props) {
 			<section id="home" />
 			<div className={classes.mainWrap}>
 				<Header onToggleDark={onToggleDark} onToggleDir={onToggleDir} />
-				<main className={classes.containerWrap}>
-					<section>
+				<main className={clsx(classes.spaceTop)}>
+					<section className={classes.containerWrap}>
 						<Container fixed>
 							<TopSlider />
 						</Container>
 					</section>
-					<section
-						className={clsx(classes.spaceTop, classes.spaceBottom)}
-						id="feature"
-					>
+					<section className={clsx(classes.spaceTop)} id="feature">
 						<Container fixed>
 							<Feature />
 						</Container>

@@ -1,9 +1,9 @@
-import request from "./API";
+import axios from "./httpClient";
 
 class Service {
 	vartoken = "";
 	constructor() {
-		this.service = request;
+		this.service = axios;
 	}
 
 	getHeaders() {
