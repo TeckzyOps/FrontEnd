@@ -59,7 +59,7 @@ function AnimateSlider(props) {
 					>
 						<video
 							className="video"
-							playsinline="playsInline"
+							playsInline="playsinline"
 							muted="muted"
 							loop="loop"
 						>

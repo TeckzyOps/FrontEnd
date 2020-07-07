@@ -30,8 +30,8 @@ function Counter() {
 	return (
 		<div className={classes.root}>
 			<Grid justify="center" container spacing={3}>
-				{tiers.map((tier) => (
-					<Grid xs={6} sm={6} item md>
+				{tiers.map((tier, i) => (
+					<Grid key={i} xs={6} sm={6} item md>
 						<ReactWOW animation="fadeIn" offset={300} callback={handlePlay}>
 							<div className={classes.counterItem}>
 								<div className={classes.text}>

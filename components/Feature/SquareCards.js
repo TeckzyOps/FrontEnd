@@ -60,13 +60,13 @@ export default function SquareCards() {
 	return (
 		<div className={classes.root}>
 			<Grid justify="center" container spacing={3}>
-				{tiers.map((tier) => (
-					<Grid item sm={4} xs={4} md>
+				{tiers.map((tier, i) => (
+					<Grid key={i} item sm={4} xs={4} md>
 						<IconButton
 							variant="outlined"
 							color="secondary"
 							className={classes.standarsbtn}
-							aria-label="add to shopping cart"
+							aria-label={tier.title}
 						>
 							<img src={tier.imgsrc} width="50%" />
 						</IconButton>
