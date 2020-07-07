@@ -23,8 +23,8 @@ let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
 
 const tiers = [
-	{ title: "Freelancing", imgsrc: "static/images/freelance.svg" },
 	{ title: "Groom/Bride", imgsrc: "static/images/bride.svg" },
+	{ title: "Freelancing", imgsrc: "static/images/freelance.svg" },
 	{ title: "Vendor", imgsrc: "static/images/vendor.svg" },
 	{
 		title: "Seller",
