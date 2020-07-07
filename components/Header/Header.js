@@ -59,6 +59,8 @@ function Header(props) {
 		createData(navMenu[2], "#" + navMenu[2]),
 		createData(navMenu[3], "#" + navMenu[3]),
 		createData(navMenu[4], "#" + navMenu[4]),
+		createData(navMenu[5], "#" + navMenu[5]),
+		createData(navMenu[6], "#" + navMenu[6]),
 	]);
 	const [openDrawer, setOpenDrawer] = useState(false);
 	const handleOpenDrawer = () => {
@@ -109,9 +111,9 @@ function Header(props) {
 											</Button>
 										</li>
 									))}
-									<li>
+									{/* <li>
 										<Button href="/contact">Contact</Button>
-									</li>
+									</li> */}
 								</Scrollspy>
 							)}
 						</nav>
