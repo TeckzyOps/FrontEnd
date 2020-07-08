@@ -6,46 +6,30 @@ class Service {
 		this.service = axios;
 	}
 
-	getHeaders() {
-		return `Authorization: "Bearer " + ${varToken}`;
-	}
-
 	redirectTo = (document, path) => {
 		document.location = path;
 	};
 
 	get(path) {
-		return this.service.get(path, {
-			headers: getHeaders(),
-		});
+		return this.service.get(path);
 	}
 
 	patch(path, payload) {
-		return this.service.request(
-			{
-				method: "PATCH",
-				url: path,
-				responseType: "json",
-				data: payload,
-			},
-			{
-				headers: getHeaders(),
-			}
-		);
+		return this.service.request({
+			method: "PATCH",
+			url: path,
+			responseType: "json",
+			data: payload,
+		});
 	}
 
 	post(path, payload) {
-		return this.service.request(
-			{
-				method: "POST",
-				url: path,
-				responseType: "json",
-				data: payload,
-			},
-			{
-				headers: getHeaders(),
-			}
-		);
+		return this.service.request({
+			method: "POST",
+			url: path,
+			responseType: "json",
+			data: payload,
+		});
 	}
 }
 

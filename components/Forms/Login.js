@@ -14,12 +14,13 @@ import SocialAuth from "./SocialAuth";
 import Title from "../Title/TitleSecondary";
 import AuthFrame from "./AuthFrame";
 import useStyles from "./form-style";
+import { userActions } from "../../_actions/user.actions";
 
 function Login(props) {
 	const classes = useStyles();
 	const { t } = props;
 	const [values, setValues] = useState({
-		email: "",
+		username: "",
 		password: "",
 	});
 
@@ -43,7 +44,17 @@ function Login(props) {
 	};
 
 	const handleSubmit = () => {
-		console.log("data submited");
+		console.log("data submited: ", values);
+		if (values.username && values.password) {
+			userActions
+				.login(values.username, values.password)
+				.then(function (response) {
+					console.log("ressss", response);
+				})
+				.catch(function (error) {
+					console.error(error);
+				});
+		}
 	};
 
 	return (
@@ -79,11 +90,14 @@ function Login(props) {
 								variant="filled"
 								className={classes.input}
 								label={t("common:login_username")}
-								onChange={handleChange("email")}
-								name="email"
-								value={values.email}
+								onChange={handleChange("username")}
+								name="username"
+								value={values.username}
 								validators={["required", "isEmail"]}
-								errorMessages={["This field is required", "Email is not valid"]}
+								errorMessages={[
+									"This field is required",
+									"username is not valid",
+								]}
 							/>
 						</Grid>
 						<Grid item xs={12}>

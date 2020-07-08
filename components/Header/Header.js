@@ -27,8 +27,7 @@ function createData(name, url) {
 }
 
 const LinkBtn = React.forwardRef(function LinkBtn(props, ref) {
-	// eslint-disable-line
-	return <AnchorLink to={props.to} {...props} innerRef={ref} />; // eslint-disable-line
+	return <AnchorLink to={props.to} {...props} innerRef={ref} />;
 });
 
 function Header(props) {

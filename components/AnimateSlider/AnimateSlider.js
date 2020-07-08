@@ -1,6 +1,7 @@
 /* eslint-disable */
-
-import React from "react";
+import IconButton from "@material-ui/core/IconButton";
+import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
+import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
 import Slider from "react-animated-slider";
@@ -18,30 +19,18 @@ import AnimationStyles from "react-awesome-slider/src/styled/fold-out-animation/
 
 const content = [
 	{
-		title: "title",
-		button: "Read More",
-		image:
-			"https://www.weddingwishlist.com/wedding-board/wp-content/uploads/2019/01/Wedding-Planners-in-Kolkata-1024x538.jpg",
-		user: "Luanda Gjokaj",
-		userProfile: imgAPI.avatar[2],
+		url: "https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4",
 	},
 	{
-		title: "title",
-		button: "Discover",
-		image:
-			"http://www.hamaraevent.com/lib/js/kcfinder/upload/images/image1%2825%29.jpeg",
-		user: "Erich Behrens",
-		userProfile: imgAPI.avatar[7],
+		url:
+			"http://e14aaeb709f7cde1ae68-a1d0a134a31b545b257b15f8a8ba5726.r70.cf3.rackcdn.com/projects/31432/1427815464209-bf74131a7528d0ea5ce8c0710f530bb5/1280x720.mp4",
 	},
 	{
-		title: "title",
-		button: "Buy now",
-		image:
-			"http://www.hamaraevent.com/lib/js/kcfinder/upload/images/image3%2818%29.jpeg",
-		user: "Bruno Vizovskyy",
-		userProfile: imgAPI.avatar[8],
+		url:
+			"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
 	},
 ];
+let isPlay = false;
 
 function AnimateSlider(props) {
 	const classes = useStyles();
@@ -53,50 +42,30 @@ function AnimateSlider(props) {
 					<div
 						key={index.toString()}
 						className="slider-content"
-						style={{
-							background: `url('${item.image}') no-repeat center center`,
-						}}
+						// style={{
+						// 	background: `url('${item.image}') no-repeat center center`,
+						// }}
 					>
-						<video
-							className="video"
-							playsInline="playsinline"
-							muted="muted"
-							loop="loop"
-						>
-							<source
-								src="https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4"
-								type="video/mp4"
-							/>
-							<track default kind="captions" srcLang="en" src="" />
-						</video>
 						{/* <iframe width="100%" height="100%" className="video"
                 src="https://www.youtube.com/embed/tgbNymZ7vqY?rel=0&modestbranding=0&autohide=1&controls=0">
                 </iframe> */}
 						<div className="inner">
-							{/* <Typography variant="h1">{t('common:' + item.title)}</Typography>
-              <Typography variant="body1">{t('starter-landing:description_text')}</Typography> */}
-							<div className={classes.heroButtons}>
-								<Grid container spacing={2} justify="center">
-									<Grid item>
-										{/* <Button variant="contained" color="primary">
-                      View Tutorial
-                    </Button> */}
-									</Grid>
-									<Grid item>
-										{/* <Button variant="outlined" color="primary">
-                      Start Now!
-                    </Button> */}
-									</Grid>
-								</Grid>
-							</div>
+							<video
+								className="video"
+								playsInline="playsinline"
+								muted="muted"
+								loop="loop"
+								controls={true}
+								// onClick={handlePlay.bind(this)}
+								id={index.toString()}
+							>
+								<source
+									src="https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4"
+									type="video/mp4"
+								/>
+								<track default kind="captions" srcLang="en" src="" />
+							</video>
 						</div>
-						{/* <section>
-              <img src={item.userProfile} alt={item.user} />
-              <span>
-                Posted by&nbsp;
-                <strong>{item.user}</strong>
-              </span>
-            </section> */}
 					</div>
 				))}
 			</Slider>

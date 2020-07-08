@@ -1,15 +1,17 @@
 import axios from "axios";
 import Router from "next/router";
+import LocalStorageService from "../_services/LocalStorageService";
+const localStorageService = LocalStorageService.getService();
 
-axios.create({
+var AxiosIns = axios.create({
 	baseURL: "https://shaadiwala.herokuapp.com/api/",
 	responseType: "json",
 	headers: { csrf: "token" },
 });
 
-axios.interceptors.request.use(
+AxiosIns.interceptors.request.use(
 	(config) => {
-		const token = localStorageService.getAccessToken();
+		const token = LocalStorageService.getService().getAccessToken();
 		if (token) {
 			config.headers["Authorization"] = "Bearer " + token;
 		}
@@ -23,14 +25,13 @@ axios.interceptors.request.use(
 
 //Add a response interceptor
 
-axios.interceptors.response.use(
+AxiosIns.interceptors.response.use(
 	(response) => {
 		return response;
 	},
 	function (error) {
 		const originalRequest = error.config;
 		console.error("Request Failed:", originalRequest);
-
 		if (error.response) {
 			// Request was made but server responded with something
 			// other than 2xx
@@ -97,4 +98,4 @@ axios.interceptors.response.use(
 // 		return Promise.reject(error);
 // 	}
 // );
-export default axios;
+export default AxiosIns;
