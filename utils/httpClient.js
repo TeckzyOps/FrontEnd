@@ -27,6 +27,9 @@ AxiosIns.interceptors.request.use(
 
 AxiosIns.interceptors.response.use(
 	(response) => {
+		if (response.data.access_token) {
+			LocalStorageService.getService().setToken(response.data.access_token);
+		}
 		return response;
 	},
 	function (error) {

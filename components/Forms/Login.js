@@ -14,10 +14,13 @@ import SocialAuth from "./SocialAuth";
 import Title from "../Title/TitleSecondary";
 import AuthFrame from "./AuthFrame";
 import useStyles from "./form-style";
+import { useRouter } from "next/router";
 import { userActions } from "../../_actions/user.actions";
 
 function Login(props) {
 	const classes = useStyles();
+	const router = useRouter();
+
 	const { t } = props;
 	const [values, setValues] = useState({
 		username: "",
@@ -50,6 +53,7 @@ function Login(props) {
 				.login(values.username, values.password)
 				.then(function (response) {
 					console.log("ressss", response);
+					router.push("/dashboard");
 				})
 				.catch(function (error) {
 					console.error(error);
@@ -93,7 +97,7 @@ function Login(props) {
 								onChange={handleChange("username")}
 								name="username"
 								value={values.username}
-								validators={["required", "isEmail"]}
+								validators={["required"]}
 								errorMessages={[
 									"This field is required",
 									"username is not valid",
