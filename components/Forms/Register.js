@@ -44,7 +44,6 @@ function Register(props) {
 
 	const handleCheck = (event) => {
 		setCheck(event.target.checked);
-		setOTP(!showOTP);
 	};
 
 	const handleSubmit = () => {
