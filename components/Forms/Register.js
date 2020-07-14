@@ -13,7 +13,7 @@ import Title from "../Title/TitleSecondary";
 import AuthFrame from "./AuthFrame";
 import useStyles from "./form-style";
 import Snackbar from "../VerifyDialog/snackbar";
-import Otpdialog from "../VerifyDialog/otpdialog";
+import Otpdialog from "../VerifyDialog/OtpDialog";
 import { userActions } from "../../_actions/user.actions";
 
 function Register(props) {
