@@ -12,7 +12,7 @@ import routeLink from "~/static/text/link";
 import Title from "../Title/TitleSecondary";
 import AuthFrame from "./AuthFrame";
 import useStyles from "./form-style";
-import Snackbar from "../VerifyDialog/snackbar";
+import Snackbar from "../VerifyDialog/Snackbar";
 import Otpdialog from "../VerifyDialog/OtpDialog";
 import { userActions } from "../../_actions/user.actions";
 
