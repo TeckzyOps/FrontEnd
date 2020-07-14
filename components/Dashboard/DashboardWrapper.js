@@ -135,7 +135,7 @@ const DashBoardWraapper = ({ props }) => {
 			})
 			.catch(function (error) {
 				if (error.response.data.message) {
-					setValues({ ...values, ["error"]: error.response.data.message });
+					// setValues({ ...values, ["error"]: error.response.data.message });
 				}
 
 				console.error("errrrr ", error);

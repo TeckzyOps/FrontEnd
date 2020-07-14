@@ -3,14 +3,12 @@ import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
 import clsx from "clsx";
-import Typography from "@material-ui/core/Typography";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Grid from "@material-ui/core/Grid";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { withTranslation } from "~/i18n";
 import routeLink from "~/static/text/link";
-import SocialAuth from "./SocialAuth";
 import Title from "../Title/TitleSecondary";
 import AuthFrame from "./AuthFrame";
 import useStyles from "./form-style";
@@ -56,24 +54,31 @@ function Register(props) {
 			}
 			return true;
 		});
-	});
+	}, [values]);
 
 	const handleChange = (name) => (event) => {
+		console.log("Handle Change");
 		setValues({ ...values, [name]: event.target.value });
 	};
 
 	const handleCheck = (event) => {
+		console.log("Handle Check");
+
 		setCheck(event.target.checked);
-		setOTP(true);
+		// setOTP(true);
 	};
 
 	const handleSubmit = () => {
+		console.log("Handle Submit");
+
 		if (values.name && values.mobile && values.password) {
 			userActions
 				.register(values.name, values.mobile, values.password)
 				.then(function (response) {
 					console.log("ressss", response);
+					// userActions.sendOTP(value.mobile).then(() => {
 					setOTP(!showOTP);
+					// });
 				})
 				.catch(function (error) {
 					console.error(error.response);
@@ -108,11 +113,11 @@ function Register(props) {
 					</Button>
 				</div>
 
-				<div className={classes.separator}>
+				{/* <div className={classes.separator}>
 					<Typography>
 						{showOTP ? values.otpStatus : t("common:register_or")}
 					</Typography>
-				</div>
+				</div> */}
 				{/* OTP FORM---------------------------------------- */}
 				{showOTP && <Otpdialog mobile={values.mobile} />}
 				{/* Register Form Starts from here---- */}
@@ -187,8 +192,8 @@ function Register(props) {
 							<FormControlLabel
 								control={
 									<Checkbox
+										onClick={(e) => handleCheck(e)}
 										checked={check}
-										onChange={(e) => handleCheck(e)}
 										color="secondary"
 										value={check}
 										className={classes.check}
