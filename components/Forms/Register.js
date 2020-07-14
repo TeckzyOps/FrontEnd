@@ -15,6 +15,7 @@ import Title from "../Title/TitleSecondary";
 import AuthFrame from "./AuthFrame";
 import useStyles from "./form-style";
 import Snackbar from "../VerifyDialog/Snackbar";
+import Typography from "@material-ui/core/Typography";
 import Otpdialog from "../VerifyDialog/OtpDialog";
 import { userActions } from "../../_actions/user.actions";
 
@@ -63,6 +64,10 @@ function Register(props) {
 	};
 
 	const handleCheck = (event) => {
+<<<<<<< Updated upstream
+=======
+		console.log("Handle Check");
+>>>>>>> Stashed changes
 		setCheck(event.target.checked);
 		setOTP(true);
 	};
@@ -110,7 +115,9 @@ function Register(props) {
 
 				<div className={classes.separator}>
 					<Typography>
-						{showOTP ? values.otpStatus : t("common:register_or")}
+						{showOTP
+							? t("common:otp_sentto") + values.mobile
+							: t("common:register_or")}
 					</Typography>
 				</div>
 				{/* OTP FORM---------------------------------------- */}
@@ -192,6 +199,7 @@ function Register(props) {
 										color="secondary"
 										value={check}
 										className={classes.check}
+										required
 									/>
 								}
 								label={
