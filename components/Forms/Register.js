@@ -64,12 +64,8 @@ function Register(props) {
 	};
 
 	const handleCheck = (event) => {
-<<<<<<< Updated upstream
-=======
-		console.log("Handle Check");
->>>>>>> Stashed changes
 		setCheck(event.target.checked);
-		setOTP(true);
+		// setOTP(true);
 	};
 
 	const handleSubmit = () => {
