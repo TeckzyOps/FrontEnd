@@ -70,6 +70,8 @@ class MyApp extends App {
 		var self = this;
 		AxiosIns.interceptors.response.use(
 			function (response) {
+				LocalStorageService.getService().setToken(response.data.access_token);
+
 				self.setState({ Netloading: false });
 				return response;
 			},
