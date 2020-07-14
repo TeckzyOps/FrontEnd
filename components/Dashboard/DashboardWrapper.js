@@ -104,6 +104,11 @@ const DashBoardWraapper = ({ props }) => {
 	const classes = useStyles();
 	const router = useRouter();
 	const [anchorEl, setAnchorEl] = React.useState(null);
+	const [snackbar, showsnackbar] = React.useState(false);
+	const [values, setValues] = React.useState({
+		error: "",
+	});
+
 	const [state, setState] = React.useState({
 		left: false,
 	});

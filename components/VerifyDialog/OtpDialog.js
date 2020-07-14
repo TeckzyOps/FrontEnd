@@ -1,6 +1,6 @@
 import useStyles from "../Forms/form-style";
 import React, { useState, useEffect } from "react";
-import Snackbar from "../VerifyDialog/snackbar";
+import Snackbar from "../VerifyDialog/Snackbar";
 import { userActions } from "../../_actions/user.actions";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { withTranslation } from "~/i18n";
