@@ -6,6 +6,7 @@ import clsx from "clsx";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { withTranslation } from "~/i18n";
 import routeLink from "~/static/text/link";
