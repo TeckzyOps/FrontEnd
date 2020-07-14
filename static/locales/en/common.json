@@ -39,6 +39,7 @@
 	"register_mobile": "Mobile? *",
 	"register_password": "Password",
 	"register_confirm": "Confirm Password",
+	"otp_sentto": "OTP Sent To: ",
 	"register_title": "Nice to meet you :)",
 	"register_subtitle": "Just register to join with us",
 	"accept": "Accept",

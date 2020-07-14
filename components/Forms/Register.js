@@ -113,11 +113,13 @@ function Register(props) {
 					</Button>
 				</div>
 
-				{/* <div className={classes.separator}>
+				<div className={classes.separator}>
 					<Typography>
-						{showOTP ? values.otpStatus : t("common:register_or")}
+						{showOTP
+							? t("common:otp_sentto") + values.mobile
+							: t("common:register_or")}
 					</Typography>
-				</div> */}
+				</div>
 				{/* OTP FORM---------------------------------------- */}
 				{showOTP && <Otpdialog mobile={values.mobile} />}
 				{/* Register Form Starts from here---- */}
@@ -197,6 +199,7 @@ function Register(props) {
 										color="secondary"
 										value={check}
 										className={classes.check}
+										required
 									/>
 								}
 								label={
