@@ -10,21 +10,27 @@ import Grid from "@material-ui/core/Grid";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { withTranslation } from "~/i18n";
 import routeLink from "~/static/text/link";
-import SocialAuth from "./SocialAuth";
+import Snackbar from "../VerifyDialog/snackbar";
 import Title from "../Title/TitleSecondary";
 import AuthFrame from "./AuthFrame";
 import useStyles from "./form-style";
 import { useRouter } from "next/router";
 import { userActions } from "../../_actions/user.actions";
+import base64 from "../../utils/Base64";
+import LocalStorageService from "../../_services/LocalStorageService";
+const localStorageService = LocalStorageService.getService();
 
 function Login(props) {
 	const classes = useStyles();
 	const router = useRouter();
+	const [check, setCheck] = useState(false);
+	const [snackbar, showsnackbar] = useState(false);
 
 	const { t } = props;
 	const [values, setValues] = useState({
 		username: "",
 		password: "",
+		error: "",
 	});
 
 	useEffect(() => {
@@ -35,8 +41,6 @@ function Login(props) {
 			return true;
 		});
 	});
-
-	const [check, setCheck] = useState(false);
 
 	const handleChange = (name) => (event) => {
 		setValues({ ...values, [name]: event.target.value });
@@ -49,6 +53,10 @@ function Login(props) {
 	const handleSubmit = () => {
 		console.log("data submited: ", values);
 		if (values.username && values.password) {
+			if (check) {
+				localStorageService.setValue("username", values.username);
+				localStorageService.setValue("password", base64.btoa(values.password));
+			}
 			userActions
 				.login(values.username, values.password)
 				.then(function (response) {
@@ -56,7 +64,12 @@ function Login(props) {
 					router.push("/dashboard");
 				})
 				.catch(function (error) {
-					console.error(error);
+					if (error.response.data.message) {
+						setValues({ ...values, ["error"]: error.response.data.message });
+					}
+
+					console.error("errrrr ", error);
+					showsnackbar(true);
 				});
 		}
 	};
@@ -66,6 +79,11 @@ function Login(props) {
 			title={t("common:login_title")}
 			subtitle={t("common:login_subtitle")}
 		>
+			<Snackbar
+				isOpen={snackbar}
+				message={values.error}
+				close={() => showsnackbar(false)}
+			/>
 			<div>
 				<div className={classes.head}>
 					<Title align="left">{t("common:login")}</Title>
@@ -80,10 +98,10 @@ function Login(props) {
 						{t("common:login_create")}
 					</Button>
 				</div>
-				<SocialAuth />
-				<div className={classes.separator}>
+				{/* <SocialAuth /> */}
+				{/* <div className={classes.separator}>
 					<Typography>{t("common:login_or")}</Typography>
-				</div>
+				</div> */}
 				<ValidatorForm
 					onError={(errors) => console.log(errors)}
 					onSubmit={handleSubmit}

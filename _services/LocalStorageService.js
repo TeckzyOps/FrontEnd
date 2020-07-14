@@ -12,6 +12,16 @@ const LocalStorageService = (function () {
 			localStorage.setItem("access_token", token);
 		}
 	}
+	function _setValue(key, value) {
+		if (key && value) {
+			localStorage.setItem(key, value);
+		}
+	}
+	function _getValue(key) {
+		if (key) {
+			return localStorage.getItem(key);
+		}
+	}
 	function _getAccessToken() {
 		return localStorage.getItem("access_token");
 	}
@@ -21,9 +31,18 @@ const LocalStorageService = (function () {
 	function _clearToken() {
 		localStorage.removeItem("access_token");
 	}
+
+	function _removeKey(key) {
+		if (key) {
+			localStorage.removeItem(key);
+		}
+	}
 	return {
 		getService: _getService,
 		setToken: _setToken,
+		setValue: _setValue,
+		getValue: _getValue,
+		removeValue: _removeKey,
 		getAccessToken: _getAccessToken,
 		getRefreshToken: _getRefreshToken,
 		clearToken: _clearToken,

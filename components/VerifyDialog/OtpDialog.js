@@ -1,135 +1,80 @@
-import React from "react";
-import {
-	Button,
-	Grid,
-	Slide,
-	DialogTitle,
-	DialogActions,
-	DialogContent,
-	DialogContentText,
-	Dialog,
-} from "@material-ui/core";
-import { useRouter } from "next/router";
-import { fade, darken } from "@material-ui/core/styles/colorManipulator";
-import {
-	createMuiTheme,
-	responsiveFontSizes,
-	MuiThemeProvider,
-	makeStyles,
-} from "@material-ui/core/styles";
+import useStyles from "../Forms/form-style";
+import React, { useState, useEffect } from "react";
+import Snackbar from "../VerifyDialog/snackbar";
 import { userActions } from "../../_actions/user.actions";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
-import { useTextAlign } from "~/theme/common";
+import { withTranslation } from "~/i18n";
+import { useRouter } from "next/router";
+import { Grid, Button } from "@material-ui/core";
+import PropTypes from "prop-types";
 
-let theme = createMuiTheme();
-theme = responsiveFontSizes(theme);
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-	return <Slide direction="up" ref={ref} {...props} />;
-});
-
-const useStyles = makeStyles((theme) => ({
-	root: {
-		flexGrow: 1,
-	},
-	hide: {
-		display: "none",
-	},
-	show: { display: "block" },
-	input: {
-		width: "100%",
-		"& label": {
-			left: theme.spacing(0.5),
-		},
-		"& > div": {
-			overflow: "hidden",
-			background:
-				theme.palette.type === "dark" ? "rgba(255, 255, 255, 0.1)" : "#eeeeee",
-			"&:hover": {
-				background: darken(theme.palette.background.paper, 0.1),
-			},
-			"& input, textarea": {
-				paddingLeft: theme.spacing(2),
-				"&:focus": {
-					background: theme.palette.background.default,
-				},
-			},
-		},
-		"&$light": {
-			"& label": {
-				color: theme.palette.common.white,
-			},
-			"& > div": {
-				border: `1px solid ${fade(theme.palette.primary.light, 0.5)}`,
-				"& input": {
-					color: theme.palette.common.white,
-					"&:focus": {
-						background: fade(theme.palette.text.hint, 0.2),
-					},
-					"&:hover": {
-						background: fade(theme.palette.text.hint, 0.2),
-					},
-				},
-			},
-		},
-	},
-	btnArea: {
-		marginTop: theme.spacing(5),
-		"& button": {
-			marginTop: theme.spacing(2),
-		},
-		"& span": {
-			"& a": {
-				textDecoration: "none !important",
-				color:
-					theme.palette.type === "dark"
-						? theme.palette.primary.light
-						: theme.palette.primary.dark,
-			},
-		},
-		"&$flex": {
-			display: "flex",
-			justifyContent: "space-between",
-			[theme.breakpoints.down("sm")]: {
-				display: "block",
-			},
-		},
-	},
-}));
-
-export default function OtpDialog({ isOpen, mobile }) {
-	const [open, setOpen] = React.useState(false);
-	const [showOTP, setOTP] = React.useState(false);
-	const [values, setValues] = React.useState({
-		otp: "",
-		otpStatus: "",
-	});
+function otpdialog(props) {
 	const classes = useStyles();
 	const router = useRouter();
+	let btnRef = React.useRef();
+	const [snackbar, showsnackbar] = useState(false);
+	const { t } = props;
+	const [values, setValues] = useState({
+		mobile: props.mobile,
+		otp: "",
+		otpTimer: 15,
+		error: "",
+		intervalid: "",
+	});
 
-	const handleClickOpen = () => {
-		setOpen(true);
-	};
+	useEffect(() => {
+		console.log("trigger use effect hook");
 
-	const handleClose = () => {
-		setOpen(false);
-	};
+		setTimeout(() => {
+			reqOtp;
+		}, 1000);
+	}, [values.otpTimer]);
 
 	const reqOtp = () => {
-		setOTP(!showOTP);
-		if (mobile) {
+		setValues({
+			mobile: "7054796555",
+		});
+
+		if (values.mobile) {
+			decrementClock();
 			userActions
-				.sendOTP(mobile)
+				.sendOTP(values.mobile)
 				.then(function (response) {
 					console.log("ressss", response);
 					setValues({
 						...values,
-						["otpStatus"]: "OTP Sent to Mobile: " + mobile + " ",
+						["otpStatus"]: "OTP Sent to Mobile: " + values.mobile,
+					});
+					setValues({
+						...values,
+						["otp"]: response.data.otp,
 					});
 				})
 				.catch(function (error) {
 					console.error(error);
+					setValues({ ...values, ["error"]: error.response.data.message });
+					showsnackbar(true);
 				});
+		}
+	};
+
+	const handleChange = (name) => (event) => {
+		setValues({ ...values, [name]: event.target.value });
+	};
+	const decrementClock = () => {
+		setValues({
+			otpTimer: values.otpTimer - 1,
+		});
+		if (btnRef.current) {
+			btnRef.current.setAttribute("disabled", "disabled");
+		}
+
+		if (values.otpTimer <= 0) {
+			clearInterval(values.intervalid);
+			setValues({
+				otpTimer: 15,
+			});
+			btnRef.current.removeAttribute("disabled");
 		}
 	};
 	const verifyOtp = () => {
@@ -142,100 +87,64 @@ export default function OtpDialog({ isOpen, mobile }) {
 				})
 				.catch(function (error) {
 					console.error(error);
+					setValues({ ...values, ["error"]: error.response.data.message });
+					showsnackbar(true);
 				});
 		}
 	};
-
-	const handleChange = (name) => (event) => {
-		setValues({ ...values, [name]: event.target.value });
-	};
-
 	return (
 		<div>
-			<Dialog
-				open={isOpen}
-				TransitionComponent={Transition}
-				keepMounted
-				onClose={handleClose}
-				aria-labelledby="alert-dialog-slide-title"
-				aria-describedby="alert-dialog-slide-description"
+			<Snackbar
+				isOpen={snackbar}
+				message={values.error}
+				close={() => showsnackbar(false)}
+			/>
+			<ValidatorForm
+				onError={(errors) => console.log(errors)}
+				onSubmit={verifyOtp}
 			>
-				<DialogTitle id="alert-dialog-slide-title">
-					{"Mobile Verification"}
-				</DialogTitle>
-
-				<DialogContent>
-					<Grid justify="center" container spacing={3}>
-						<Grid item sm={12} xs={12} md>
-							<div className={showOTP ? classes.hide : classes.show}>
-								<Button
-									variant="contained"
-									onClick={reqOtp}
-									fullWidth
-									type="submit"
-									color="secondary"
-									size="large"
-								>
-									Request OTP to Verify Mobile!
-								</Button>
-								<Button
-									variant="contained"
-									fullWidth
-									onClick={() => router.push("/login")}
-									type="submit"
-									color="secondary"
-									size="large"
-								>
-									Skip For Now!
-								</Button>
-							</div>
-							{values.otpStatus}
-							<ValidatorForm
-								className={showOTP ? classes.show : classes.hide}
-								onError={(errors) => console.log(errors)}
-								onSubmit={verifyOtp}
-							>
-								<Grid container spacing={3}>
-									<Grid item xs={12}>
-										<TextValidator
-											variant="filled"
-											className={classes.input}
-											onChange={handleChange("otp")}
-											value={values.otp}
-											label="OTP"
-											name="OTP"
-											validators={["required"]}
-											errorMessages={[
-												"This field is required",
-												"OTP is not valid",
-											]}
-										/>
-									</Grid>
-								</Grid>
-								<div className={classes.btnArea}>
-									<Button
-										variant="contained"
-										fullWidth
-										type="submit"
-										color="secondary"
-										size="large"
-									>
-										Verify OTP
-									</Button>
-								</div>
-							</ValidatorForm>
-						</Grid>
+				<Grid container spacing={3}>
+					<Grid item xs={12}>
+						<TextValidator
+							variant="filled"
+							className={classes.input}
+							onChange={handleChange("otp")}
+							value={values.otp}
+							label="OTP"
+							name="OTP"
+							validators={["required"]}
+							errorMessages={["This field is required", "OTP is not valid"]}
+						/>
 					</Grid>
-				</DialogContent>
-				<DialogActions>
-					{/* <Button onClick={handleClose} color="primary">
-						Disagree
+				</Grid>
+				<div className={classes.formHelper}>
+					<Button
+						size="small"
+						className={classes.buttonLink}
+						ref={btnRef}
+						onClick={reqOtp}
+					>
+						Resend OTP
 					</Button>
-					<Button onClick={handleClose} color="primary">
-						Agree
-					</Button> */}
-				</DialogActions>
-			</Dialog>
+					<p>{values.otpTimer}</p>
+				</div>
+				<div className={classes.btnArea}>
+					<Button
+						variant="contained"
+						fullWidth
+						type="submit"
+						color="secondary"
+						size="large"
+					>
+						Verify OTP
+					</Button>
+				</div>
+			</ValidatorForm>
 		</div>
 	);
 }
+
+otpdialog.propTypes = {
+	mobile: PropTypes.string.isRequired,
+};
+export default withTranslation(["common"])(otpdialog);

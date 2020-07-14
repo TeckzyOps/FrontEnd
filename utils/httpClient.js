@@ -9,8 +9,22 @@ var AxiosIns = axios.create({
 	headers: { csrf: "token" },
 });
 
-AxiosIns.interceptors.request.use(
+const loaderhtml = () => {
+	return obj;
+};
+/*AxiosIns.interceptors.request.use(
 	(config) => {
+		// var obj = document.createElement("div");
+		// obj.id = "::preloader";
+		// obj.style.cssText = "position:fixed;z-index:10000;width:100%;height:100%;";
+
+		var newimg = document.createElement("img");
+		newimg.setAttribute("src", "/static/images/loading.svg");
+		newimg.id = "interceptorPreloader";
+		newimg.style.cssText =
+			"opacity: 0.5;position:fixed;top: calc(50% - 50px);left: calc(50% - 50px);";
+		// obj.appendChild(newimg);
+		document.body.appendChild(newimg);
 		const token = LocalStorageService.getService().getAccessToken();
 		if (token) {
 			config.headers["Authorization"] = "Bearer " + token;
@@ -27,6 +41,11 @@ AxiosIns.interceptors.request.use(
 
 AxiosIns.interceptors.response.use(
 	(response) => {
+		var element = document.getElementById("interceptorPreloader");
+		if (element !== null || undefined) {
+			element.parentNode.removeChild(element);
+		}
+
 		if (response.data.access_token) {
 			LocalStorageService.getService().setToken(response.data.access_token);
 		}
@@ -100,5 +119,5 @@ AxiosIns.interceptors.response.use(
 // 		}
 // 		return Promise.reject(error);
 // 	}
-// );
+// );*/
 export default AxiosIns;
