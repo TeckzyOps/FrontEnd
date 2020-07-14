@@ -15,6 +15,7 @@ import AuthFrame from "./AuthFrame";
 import useStyles from "./form-style";
 import { useRouter } from "next/router";
 import { userActions } from "../../_actions/user.actions";
+import Typography from "@material-ui/core/Typography";
 import base64 from "../../utils/Base64";
 import LocalStorageService from "../../_services/LocalStorageService";
 const localStorageService = LocalStorageService.getService();
@@ -60,6 +61,19 @@ function Login(props) {
 			userActions
 				.login(values.username, values.password)
 				.then(function (response) {
+					if (
+						response.data.is_mobile_verified &&
+						response.data.is_mobile_verified == "0"
+					) {
+						setOTP(true);
+					}
+
+					if (
+						response.data.is_email_verified &&
+						response.data.is_email_verified == "0"
+					) {
+						setOTP(true);
+					}
 					console.log("ressss", response);
 					if (
 						response.data.is_mobile_verified &&

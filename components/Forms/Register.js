@@ -13,6 +13,7 @@ import Title from "../Title/TitleSecondary";
 import AuthFrame from "./AuthFrame";
 import useStyles from "./form-style";
 import Snackbar from "../VerifyDialog/Snackbar";
+import Typography from "@material-ui/core/Typography";
 import Otpdialog from "../VerifyDialog/OtpDialog";
 import { userActions } from "../../_actions/user.actions";
 
