@@ -9,32 +9,37 @@ import { Grid, Button } from "@material-ui/core";
 import PropTypes from "prop-types";
 
 function otpdialog(props) {
+	const OTP_TIMER = 15;
 	const classes = useStyles();
 	const router = useRouter();
 	let btnRef = React.useRef();
 	const [snackbar, showsnackbar] = useState(false);
 	const { t } = props;
+	const [counter, setCounter] = useState(OTP_TIMER);
 	const [values, setValues] = useState({
 		mobile: props.mobile,
 		otp: "",
-		otpTimer: 15,
 		error: "",
 		intervalid: "",
 	});
 
 	useEffect(() => {
-		console.log("trigger use effect hook");
+		reqOtp();
+	}, []);
 
-		setTimeout(() => {
-			reqOtp;
-		}, 1000);
-	}, [values.otpTimer]);
+	// useEffect(() => {
+	// 	console.log("trigger use effect hook");
+
+	// 	setTimeout(() => {
+	// 		reqOtp;
+	// 	}, 1000);
+	// }, [values.otpTimer]);
+	useEffect(() => {
+		counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
+	}, [counter]);
 
 	const reqOtp = () => {
-		setValues({
-			mobile: "7054796555",
-		});
-
+		setCounter(OTP_TIMER);
 		if (values.mobile) {
 			decrementClock();
 			userActions
@@ -78,9 +83,9 @@ function otpdialog(props) {
 		}
 	};
 	const verifyOtp = () => {
-		if (mobile && values.otp) {
+		if (values.mobile && values.otp) {
 			userActions
-				.verifyOTP(mobile, values.otp)
+				.verifyOTP(values.mobile, values.otp)
 				.then(function (response) {
 					console.log("ressss", response);
 					router.push("/login");
@@ -92,6 +97,7 @@ function otpdialog(props) {
 				});
 		}
 	};
+
 	return (
 		<div>
 			<Snackbar
@@ -120,13 +126,14 @@ function otpdialog(props) {
 				<div className={classes.formHelper}>
 					<Button
 						size="small"
-						className={classes.buttonLink}
+						className={classes}
 						ref={btnRef}
 						onClick={reqOtp}
+						disabled={counter ? true : false}
 					>
 						Resend OTP
 					</Button>
-					<p>{values.otpTimer}</p>
+					<p>{counter}</p>
 				</div>
 				<div className={classes.btnArea}>
 					<Button
