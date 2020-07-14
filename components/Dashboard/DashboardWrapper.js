@@ -25,6 +25,10 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
+import { userActions } from "../../_actions/user.actions";
+import { useRouter } from "next/router";
+import LocalStorageService from "../../_services/LocalStorageService";
+const localStorageService = LocalStorageService.getService();
 
 const useStyles = makeStyles((theme) => ({
 	list: {
@@ -98,6 +102,7 @@ const useStyles = makeStyles((theme) => ({
 
 const DashBoardWraapper = ({ props }) => {
 	const classes = useStyles();
+	const router = useRouter();
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [state, setState] = React.useState({
 		left: false,
@@ -116,6 +121,26 @@ const DashBoardWraapper = ({ props }) => {
 	const handleMenuClose = () => {
 		setAnchorEl(null);
 		handleMobileMenuClose();
+	};
+
+	const handleLogout = () => {
+		setAnchorEl(null);
+		handleMobileMenuClose();
+		userActions
+			.logout()
+			.then(function (response) {
+				console.log("ressss", response);
+				router.push("/");
+				localStorageService.removeValue("access_token");
+			})
+			.catch(function (error) {
+				if (error.response.data.message) {
+					setValues({ ...values, ["error"]: error.response.data.message });
+				}
+
+				console.error("errrrr ", error);
+				showsnackbar(true);
+			});
 	};
 
 	const handleMobileMenuOpen = (event) => {
@@ -180,7 +205,7 @@ const DashBoardWraapper = ({ props }) => {
 		>
 			<MenuItem onClick={handleMenuClose}>Profile</MenuItem>
 			<MenuItem onClick={handleMenuClose}>My account</MenuItem>
-			<MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+			<MenuItem onClick={handleLogout}>Logout</MenuItem>
 		</Menu>
 	);
 

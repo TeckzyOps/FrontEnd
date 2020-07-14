@@ -1,4 +1,5 @@
-/* eslint-disable */ 
+/* eslint-disable */
+
 import React from "react";
 import App, { Container } from "next/app";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
@@ -17,6 +18,11 @@ import "../vendors/animate-extends.css";
 import "../vendors/page-transition.css";
 import "../vendors/slick/slick.css";
 import "../vendors/slick/slick-theme.css";
+import AxiosIns from "../utils/httpClient";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Router from "next/router";
+import LocalStorageService from "../_services/LocalStorageService";
+import Backdrop from "@material-ui/core/Backdrop";
 
 let themeType = "light";
 if (typeof Storage !== "undefined") {
@@ -25,6 +31,7 @@ if (typeof Storage !== "undefined") {
 
 class MyApp extends App {
 	state = {
+		Netloading: false,
 		loading: true,
 		theme: {
 			...appTheme("burgundy", themeType),
@@ -33,6 +40,51 @@ class MyApp extends App {
 	};
 
 	componentDidMount() {
+		AxiosIns.interceptors.request.use(
+			(config) => {
+				// var obj = document.createElement("div");
+				// obj.id = "::preloader";
+				// obj.style.cssText = "position:fixed;z-index:10000;width:100%;height:100%;";
+
+				// var newimg = document.createElement("img");
+				// newimg.setAttribute("src", "/static/images/loading.svg");
+				// newimg.id = "interceptorPreloader";
+				// newimg.style.cssText =
+				// 	"opacity: 0.5;position:fixed;top: calc(50% - 50px);left: calc(50% - 50px);";
+				// // obj.appendChild(newimg);
+				// document.body.appendChild(newimg);
+				this.setState({ Netloading: true });
+				const token = LocalStorageService.getService().getAccessToken();
+				if (token) {
+					config.headers["Authorization"] = "Bearer " + token;
+				}
+				// config.headers['Content-Type'] = 'application/json';
+				return config;
+			},
+			(error) => {
+				Promise.reject(error);
+			}
+		);
+
+		//Add a response interceptor
+		var self = this;
+		AxiosIns.interceptors.response.use(
+			function (response) {
+				self.setState({ Netloading: false });
+				return response;
+			},
+			function (error) {
+				console.error(error.response);
+				self.setState({ Netloading: false });
+				if (401 === error.response.status) {
+					Router.push("/login");
+					return Promise.reject(error);
+				} else {
+					return Promise.reject(error);
+				}
+			}
+		);
+
 		// Set layout direction
 		document.dir = i18n.language === "ar" ? "rtl" : "ltr";
 
@@ -85,7 +137,7 @@ class MyApp extends App {
 	};
 
 	render() {
-		const { theme, loading } = this.state;
+		const { theme, loading, Netloading } = this.state;
 		const muiTheme = createMuiTheme(theme);
 		const { Component, pageProps, router } = this.props; // eslint-disable-line
 		const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
@@ -94,6 +146,26 @@ class MyApp extends App {
 				<StylesProvider jss={jss}>
 					<MuiThemeProvider theme={muiTheme}>
 						<CssBaseline />
+						<Backdrop
+							style={{ zIndex: 99, color: "#fff", opacity: 0.5 }}
+							open={Netloading}
+						/>
+						{Netloading && (
+							<CircularProgress
+								left={50}
+								top={30}
+								style={{
+									position: "fixed",
+									left: "50%",
+									top: "50%",
+									zIndex: 1000,
+									textAlign: "center",
+								}}
+								size={50}
+								color="primary"
+							/>
+						)}
+
 						<Loading
 							show={loading}
 							color={theme.palette.primary.main}

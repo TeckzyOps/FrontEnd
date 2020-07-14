@@ -14,19 +14,27 @@ import SocialAuth from "./SocialAuth";
 import Title from "../Title/TitleSecondary";
 import AuthFrame from "./AuthFrame";
 import useStyles from "./form-style";
-import OtpDialog from "../VerifyDialog/OtpDialog";
+import Snackbar from "../VerifyDialog/snackbar";
+import Otpdialog from "../VerifyDialog/otpdialog";
 import { userActions } from "../../_actions/user.actions";
 
 function Register(props) {
 	const classes = useStyles();
+
 	const { t } = props;
 	const [values, setValues] = useState({
 		name: "",
-		email: "",
+		mobile: "",
 		password: "",
 		confirmPassword: "",
+		otp: "",
+		otpStatus: "",
+		otpTimer: 15,
+		error: "",
 	});
 	const [showOTP, setOTP] = useState(false);
+	const [snackbar, showsnackbar] = useState(false);
+	const [check, setCheck] = useState(false);
 
 	useEffect(() => {
 		ValidatorForm.addValidationRule("isPasswordMatch", (value) => {
@@ -35,19 +43,31 @@ function Register(props) {
 			}
 			return true;
 		});
+		ValidatorForm.addValidationRule("isShort", (value) => {
+			if (value.length >= 1 && value.length < 6) {
+				return false;
+			}
+			return true;
+		});
+		ValidatorForm.addValidationRule("isMobile", (value) => {
+			var phoneno = /^\d{10}$/;
+			if (value.length >= 1 && !value.match(phoneno)) {
+				return false;
+			}
+			return true;
+		});
 	});
 
-	const [check, setCheck] = useState(false);
 	const handleChange = (name) => (event) => {
 		setValues({ ...values, [name]: event.target.value });
 	};
 
 	const handleCheck = (event) => {
 		setCheck(event.target.checked);
+		setOTP(true);
 	};
 
 	const handleSubmit = () => {
-		console.log("data submited");
 		if (values.name && values.mobile && values.password) {
 			userActions
 				.register(values.name, values.mobile, values.password)
@@ -56,7 +76,9 @@ function Register(props) {
 					setOTP(!showOTP);
 				})
 				.catch(function (error) {
-					console.error(error);
+					console.error(error.response);
+					setValues({ ...values, ["error"]: error.response.data.message });
+					showsnackbar(true);
 				});
 		}
 	};
@@ -66,8 +88,12 @@ function Register(props) {
 			title={t("common:register_title")}
 			subtitle={t("common:register_subtitle")}
 		>
+			<Snackbar
+				isOpen={snackbar}
+				message={values.error}
+				close={() => showsnackbar(false)}
+			/>
 			<div>
-				{showOTP && <OtpDialog isOpen={showOTP} mobile="7054796555" />}
 				<div className={classes.head}>
 					<Title align="left">{t("common:register")}</Title>
 					<Button
@@ -81,99 +107,113 @@ function Register(props) {
 						{t("common:register_already")}
 					</Button>
 				</div>
-				<SocialAuth />
+
 				<div className={classes.separator}>
-					<Typography>{t("common:register_or")}</Typography>
+					<Typography>
+						{showOTP ? values.otpStatus : t("common:register_or")}
+					</Typography>
 				</div>
-				<ValidatorForm
-					onError={(errors) => console.log(errors)}
-					onSubmit={handleSubmit}
-				>
-					<Grid container spacing={3}>
-						<Grid item xs={12}>
-							<TextValidator
-								variant="filled"
-								className={classes.input}
-								label={t("common:register_name")}
-								onChange={handleChange("name")}
-								name="name"
-								value={values.name}
-								validators={["required"]}
-								errorMessages={["This field is required"]}
-							/>
-						</Grid>
-						<Grid item xs={12}>
-							<TextValidator
-								variant="filled"
-								className={classes.input}
-								label={t("common:register_mobile")}
-								onChange={handleChange("mobile")}
-								name="mobile"
-								value={values.mobile}
-								validators={["required"]}
-								errorMessages={[
-									"This field is required",
-									"Mobile is not valid",
-								]}
-							/>
-						</Grid>
-						<Grid item md={6} xs={12}>
-							<TextValidator
-								variant="filled"
-								type="password"
-								className={classes.input}
-								label={t("common:register_password")}
-								validators={["required"]}
-								onChange={handleChange("password")}
-								errorMessages={["This field is required"]}
-								name="password"
-								value={values.password}
-							/>
-						</Grid>
-						<Grid item md={6} xs={12}>
-							<TextValidator
-								variant="filled"
-								type="password"
-								className={classes.input}
-								label={t("common:register_confirm")}
-								validators={["isPasswordMatch", "required"]}
-								errorMessages={["Password mismatch", "this field is required"]}
-								onChange={handleChange("confirmPassword")}
-								name="confirm"
-								value={values.confirmPassword}
-							/>
-						</Grid>
-					</Grid>
-					<div className={classes.btnArea}>
-						<FormControlLabel
-							control={
-								<Checkbox
-									checked={check}
-									onChange={(e) => handleCheck(e)}
-									color="secondary"
-									value={check}
-									className={classes.check}
+				{/* OTP FORM---------------------------------------- */}
+				{showOTP && <Otpdialog mobile={values.mobile} />}
+				{/* Register Form Starts from here---- */}
+				{!showOTP && (
+					<ValidatorForm
+						onError={(errors) => console.log(errors)}
+						onSubmit={handleSubmit}
+					>
+						<Grid container spacing={3}>
+							<Grid item xs={12}>
+								<TextValidator
+									variant="filled"
+									className={classes.input}
+									label={t("common:register_name")}
+									onChange={handleChange("name")}
+									name="name"
+									value={values.name}
+									validators={["required"]}
+									errorMessages={["This field is required"]}
 								/>
-							}
-							label={
-								<span>
-									{t("common:form_terms")}
-									&nbsp;
-									<a href="#">{t("common:form_privacy")}</a>
-								</span>
-							}
-						/>
-						<Button
-							variant="contained"
-							fullWidth
-							type="submit"
-							color="secondary"
-							size="large"
-						>
-							{t("common:continue")}
-						</Button>
-					</div>
-				</ValidatorForm>
+							</Grid>
+							<Grid item xs={12}>
+								<TextValidator
+									variant="filled"
+									className={classes.input}
+									label={t("common:register_mobile")}
+									onChange={handleChange("mobile")}
+									name="mobile"
+									value={values.mobile}
+									validators={["isMobile", "required"]}
+									errorMessages={[
+										"Mobile is not valid",
+										"This field is required",
+									]}
+								/>
+							</Grid>
+							<Grid item md={6} xs={12}>
+								<TextValidator
+									variant="filled"
+									type="password"
+									className={classes.input}
+									label={t("common:register_password")}
+									validators={["isShort", "required"]}
+									onChange={handleChange("password")}
+									errorMessages={[
+										"Password too short!",
+										"This field is required",
+									]}
+									name="password"
+									value={values.password}
+								/>
+							</Grid>
+							<Grid item md={6} xs={12}>
+								<TextValidator
+									variant="filled"
+									type="password"
+									className={classes.input}
+									label={t("common:register_confirm")}
+									validators={["isShort", "isPasswordMatch", "required"]}
+									errorMessages={[
+										"Password too short!",
+										"Password mismatch",
+										"this field is required",
+									]}
+									onChange={handleChange("confirmPassword")}
+									name="confirm"
+									value={values.confirmPassword}
+								/>
+							</Grid>
+						</Grid>
+						<div className={classes.btnArea}>
+							<FormControlLabel
+								control={
+									<Checkbox
+										checked={check}
+										onChange={(e) => handleCheck(e)}
+										color="secondary"
+										value={check}
+										className={classes.check}
+									/>
+								}
+								label={
+									<span>
+										{t("common:form_terms")}
+										&nbsp;
+										<a href="#">{t("common:form_privacy")}</a>
+									</span>
+								}
+							/>
+							<Button
+								variant="contained"
+								fullWidth
+								type="submit"
+								color="secondary"
+								size="large"
+							>
+								{t("common:continue")}
+							</Button>
+						</div>
+					</ValidatorForm>
+				)}
 			</div>
 		</AuthFrame>
 	);
