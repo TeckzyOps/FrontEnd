@@ -18,6 +18,8 @@ import { useRouter } from "next/router";
 import { userActions } from "../../_actions/user.actions";
 import base64 from "../../utils/Base64";
 import LocalStorageService from "../../_services/LocalStorageService";
+import FormContainer from "./FormContainer";
+import * as Yup from "yup";
 const localStorageService = LocalStorageService.getService();
 
 function Login(props) {
@@ -43,6 +45,18 @@ function Login(props) {
 		});
 	});
 
+	const valschema = {
+		username: Yup.string().required("UserName is required"),
+		password: Yup.string()
+			.min(6, "Password must be at least 6 characters")
+			.required("Password is required"),
+	};
+
+	const elements = [
+		{ name: "username", type: "text", label: "Username" },
+		{ name: "password", type: "password", label: "Password" },
+	];
+	const btn = { label: "Login" };
 	const handleChange = (name) => (event) => {
 		setValues({ ...values, [name]: event.target.value });
 	};
@@ -51,7 +65,7 @@ function Login(props) {
 		setCheck(event.target.checked);
 	};
 
-	const handleSubmit = () => {
+	const handleSubmit = (values) => {
 		console.log("data submited: ", values);
 		if (values.username && values.password) {
 			if (check) {
@@ -78,12 +92,7 @@ function Login(props) {
 					router.push("/dashboard");
 				})
 				.catch(function (error) {
-					if (error.response.data.message) {
-						setValues({ ...values, ["error"]: error.response.data.message });
-					}
-
 					console.error("errrrr ", error);
-					showsnackbar(true);
 				});
 		}
 	};
@@ -119,11 +128,36 @@ function Login(props) {
 							{t("common:login_create")}
 						</Button>
 					</div>
-					{/* <SocialAuth /> */}
-					{/* <div className={classes.separator}>
-					<Typography>{t("common:login_or")}</Typography>
-				</div> */}
-					<ValidatorForm
+					<FormContainer
+						elements={elements}
+						valSchema={valschema}
+						btn={btn}
+						onSubmit={handleSubmit}
+						helperEle={() => (
+							<div className={classes.formHelper}>
+								<FormControlLabel
+									control={
+										<Checkbox
+											checked={check}
+											onChange={(e) => handleCheck(e)}
+											color="secondary"
+											value={check}
+											className={classes.check}
+										/>
+									}
+									label={<span>{t("common:login_remember")}</span>}
+								/>
+								<Button
+									size="small"
+									className={classes.buttonLink}
+									href="/forgot"
+								>
+									{t("common:login_forgot")}
+								</Button>
+							</div>
+						)}
+					/>
+					{/* <ValidatorForm
 						onError={(errors) => console.log(errors)}
 						onSubmit={handleSubmit}
 					>
@@ -189,7 +223,7 @@ function Login(props) {
 								{t("common:continue")}
 							</Button>
 						</div>
-					</ValidatorForm>
+					</ValidatorForm> */}
 				</div>
 			)}
 		</AuthFrame>

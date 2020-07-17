@@ -11,6 +11,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Loading from "react-loading-bar";
 import { i18n, appWithTranslation } from "../i18n";
 import appTheme from "../theme/appTheme";
+import Snackbar from "../components/VerifyDialog/Snackbar";
 /* import css vendors */
 import "../node_modules/react-loading-bar/dist/index.css";
 import "../node_modules/animate.css/animate.css";
@@ -33,6 +34,8 @@ class MyApp extends App {
 	state = {
 		Netloading: false,
 		loading: true,
+		showSnackbar: false,
+		snackbarError: "",
 		theme: {
 			...appTheme("burgundy", themeType),
 			direction: i18n.language === "ar" ? "rtl" : "ltr",
@@ -78,6 +81,16 @@ class MyApp extends App {
 			function (error) {
 				console.error(error.response);
 				self.setState({ Netloading: false });
+				if (error.response.data.message) {
+					self.setState({ snackbarError: error.response.data.message });
+					self.setState({ showSnackbar: true });
+				} else if (
+					error instanceof Error &&
+					typeof error.message !== "undefined"
+				) {
+					self.setState({ snackbarError: error.message });
+					self.setState({ showSnackbar: true });
+				}
 				if (401 === error.response.status) {
 					Router.push("/login");
 					return Promise.reject(error);
@@ -172,6 +185,11 @@ class MyApp extends App {
 							show={loading}
 							color={theme.palette.primary.main}
 							showSpinner={false}
+						/>
+						<Snackbar
+							isOpen={this.state.showSnackbar}
+							message={this.state.snackbarError}
+							close={() => this.setState({ showSnackbar: false })}
 						/>
 						<div id="main-wrap">
 							<PageTransition timeout={300} classNames="page-fade-transition">

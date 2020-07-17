@@ -13,7 +13,9 @@ import routeLink from "~/static/text/link";
 import Title from "../Title/TitleSecondary";
 import AuthFrame from "./AuthFrame";
 import useStyles from "./form-style";
-import Snackbar from "../VerifyDialog/Snackbar";
+import FormContainer from "./FormContainer";
+import * as Yup from "yup";
+
 import Otpdialog from "../VerifyDialog/OtpDialog";
 import { userActions } from "../../_actions/user.actions";
 
@@ -29,11 +31,44 @@ function Register(props) {
 		otp: "",
 		otpStatus: "",
 		otpTimer: 15,
-		error: "",
 	});
 	const [showOTP, setOTP] = useState(false);
-	const [snackbar, showsnackbar] = useState(false);
+
 	const [check, setCheck] = useState(false);
+
+	const valschema = {
+		name: Yup.string().required("UserName is required"),
+		mobile: Yup.string().required("Password is required"),
+		password: Yup.string()
+			.required("UserName is required")
+			.min(6, "Password must be at least 6 characters"),
+		confirm: Yup.string()
+			.required("UserName is required")
+			.oneOf([Yup.ref("password"), null], "Passwords must match")
+			.min(6, "Password must be at least 6 characters"),
+	};
+
+	const elements = [
+		{ name: "name", type: "text", label: t("common:register_name") },
+		{ name: "mobile", type: "text", label: t("common:register_mobile") },
+		{
+			name: "password",
+			type: "password",
+			label: t("common:register_password"),
+		},
+		{ name: "confirm", type: "password", label: t("common:register_confirm") },
+		{
+			name: "accept",
+			type: "checkbox",
+			label: (
+				<span>
+					{t("common:form_terms")}&nbsp;
+					<a href="#">{t("common:form_privacy")}</a>
+				</span>
+			),
+		},
+	];
+	const btn = { label: "Register" };
 
 	useEffect(() => {
 		ValidatorForm.addValidationRule("isPasswordMatch", (value) => {
@@ -69,9 +104,7 @@ function Register(props) {
 		// setOTP(true);
 	};
 
-	const handleSubmit = () => {
-		console.log("Handle Submit");
-
+	const handleSubmit = (values) => {
 		if (values.name && values.mobile && values.password) {
 			userActions
 				.register(values.name, values.mobile, values.password)
@@ -83,8 +116,6 @@ function Register(props) {
 				})
 				.catch(function (error) {
 					console.error(error.response);
-					setValues({ ...values, ["error"]: error.response.data.message });
-					showsnackbar(true);
 				});
 		}
 	};
@@ -94,11 +125,6 @@ function Register(props) {
 			title={t("common:register_title")}
 			subtitle={t("common:register_subtitle")}
 		>
-			<Snackbar
-				isOpen={snackbar}
-				message={values.error}
-				close={() => showsnackbar(false)}
-			/>
 			<div>
 				<div className={classes.head}>
 					<Title align="left">{t("common:register")}</Title>
@@ -125,103 +151,109 @@ function Register(props) {
 				{showOTP && <Otpdialog mobile={values.mobile} />}
 				{/* Register Form Starts from here---- */}
 				{!showOTP && (
-					<ValidatorForm
-						onError={(errors) => console.log(errors)}
+					<FormContainer
+						elements={elements}
+						valSchema={valschema}
+						btn={btn}
 						onSubmit={handleSubmit}
-					>
-						<Grid container spacing={3}>
-							<Grid item xs={12}>
-								<TextValidator
-									variant="filled"
-									className={classes.input}
-									label={t("common:register_name")}
-									onChange={handleChange("name")}
-									name="name"
-									value={values.name}
-									validators={["required"]}
-									errorMessages={["This field is required"]}
-								/>
-							</Grid>
-							<Grid item xs={12}>
-								<TextValidator
-									variant="filled"
-									className={classes.input}
-									label={t("common:register_mobile")}
-									onChange={handleChange("mobile")}
-									name="mobile"
-									value={values.mobile}
-									validators={["isMobile", "required"]}
-									errorMessages={[
-										"Mobile is not valid",
-										"This field is required",
-									]}
-								/>
-							</Grid>
-							<Grid item md={6} xs={12}>
-								<TextValidator
-									variant="filled"
-									type="password"
-									className={classes.input}
-									label={t("common:register_password")}
-									validators={["isShort", "required"]}
-									onChange={handleChange("password")}
-									errorMessages={[
-										"Password too short!",
-										"This field is required",
-									]}
-									name="password"
-									value={values.password}
-								/>
-							</Grid>
-							<Grid item md={6} xs={12}>
-								<TextValidator
-									variant="filled"
-									type="password"
-									className={classes.input}
-									label={t("common:register_confirm")}
-									validators={["isShort", "isPasswordMatch", "required"]}
-									errorMessages={[
-										"Password too short!",
-										"Password mismatch",
-										"this field is required",
-									]}
-									onChange={handleChange("confirmPassword")}
-									name="confirm"
-									value={values.confirmPassword}
-								/>
-							</Grid>
-						</Grid>
-						<div className={classes.btnArea}>
-							<FormControlLabel
-								control={
-									<Checkbox
-										onClick={(e) => handleCheck(e)}
-										checked={check}
-										color="secondary"
-										value={check}
-										className={classes.check}
-										required
-									/>
-								}
-								label={
-									<span>
-										{t("common:form_terms")}
-										&nbsp;
-										<a href="#">{t("common:form_privacy")}</a>
-									</span>
-								}
-							/>
-							<Button
-								variant="contained"
-								fullWidth
-								type="submit"
-								color="secondary"
-								size="large"
-							>
-								{t("common:continue")}
-							</Button>
-						</div>
-					</ValidatorForm>
+					/>
+					// <ValidatorForm
+					// 	onError={(errors) => console.log(errors)}
+					// 	onSubmit={handleSubmit}
+					// >
+					// 	<Grid container spacing={3}>
+					// 		<Grid item xs={12}>
+					// 			<TextValidator
+					// 				variant="filled"
+					// 				className={classes.input}
+					// 				label={t("common:register_name")}
+					// 				onChange={handleChange("name")}
+					// 				name="name"
+					// 				value={values.name}
+					// 				validators={["required"]}
+					// 				errorMessages={["This field is required"]}
+					// 			/>
+					// 		</Grid>
+					// 		<Grid item xs={12}>
+					// 			<TextValidator
+					// 				variant="filled"
+					// 				className={classes.input}
+					// 				label={t("common:register_mobile")}
+					// 				onChange={handleChange("mobile")}
+					// 				name="mobile"
+					// 				value={values.mobile}
+					// 				validators={["isMobile", "required"]}
+					// 				errorMessages={[
+					// 					"Mobile is not valid",
+					// 					"This field is required",
+					// 				]}
+					// 			/>
+					// 		</Grid>
+					// 		<Grid item md={6} xs={12}>
+					// 			<TextValidator
+					// 				variant="filled"
+					// 				type="password"
+					// 				className={classes.input}
+					// 				label={t("common:register_password")}
+					// 				validators={["isShort", "required"]}
+					// 				onChange={handleChange("password")}
+					// 				errorMessages={[
+					// 					"Password too short!",
+					// 					"This field is required",
+					// 				]}
+					// 				name="password"
+					// 				value={values.password}
+					// 			/>
+					// 		</Grid>
+					// 		<Grid item md={6} xs={12}>
+					// 			<TextValidator
+					// 				variant="filled"
+					// 				type="password"
+					// 				className={classes.input}
+					// 				label={t("common:register_confirm")}
+					// 				validators={["isShort", "isPasswordMatch", "required"]}
+					// 				errorMessages={[
+					// 					"Password too short!",
+					// 					"Password mismatch",
+					// 					"this field is required",
+					// 				]}
+					// 				onChange={handleChange("confirmPassword")}
+					// 				name="confirm"
+					// 				value={values.confirmPassword}
+					// 			/>
+					// 		</Grid>
+					// 	</Grid>
+					// 	<div className={classes.btnArea}>
+					// 		<FormControlLabel
+					// 			control={
+					// 				<Checkbox
+					// 					onClick={(e) => handleCheck(e)}
+					// 					checked={check}
+					// 					color="secondary"
+					// 					value={check}
+					// 					className={classes.check}
+					// 					required
+					// 				/>
+					// 			}
+					// 			label={
+					// 				<span>
+					// 					{t("common:form_terms")}
+					// 					&nbsp;
+					// 					<a href="#">{t("common:form_privacy")}</a>
+					// 				</span>
+					// 			}
+					// 		/>
+					// 		<Button
+					// 			variant="contained"
+					// 			fullWidth
+					// 			type="submit"
+					// 			color="secondary"
+					// 			size="large"
+					// 		>
+					// 			{t("common:continue")}
+					// 		</Button>
+					// 	</div>
+					// </ValidatorForm>
 				)}
 			</div>
 		</AuthFrame>
