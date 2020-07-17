@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Component } from "react";
 import PropTypes from "prop-types";
 
 import Grid from "@material-ui/core/Grid";
 import { Formik, Field, Form, ErrorMessage } from "formik";
+import { createYupSchema } from "../../utils/yupSchemaCreator";
 import * as Yup from "yup";
 import {
 	Button,
@@ -44,15 +45,96 @@ function FormContainer(props) {
 	function getInitVals(obj) {
 		let initValues = {};
 		obj.forEach((element) => {
-			initValues[element.name] = "";
+			initValues[element.id] = "";
 		});
 
 		return initValues;
 	}
+	const renderFormElements = (prop) =>
+		props.elements.map((item, index) => {
+			const fieldMap = {
+				text: TextField,
+				checkbox: CheckboxWithLabel,
+				select: TextField,
+				password: TextField,
+			};
+			const Component = fieldMap[item.type];
+			let error = prop.errors.hasOwnProperty(item.id) && prop.errors[item.id];
+			let styles = { width: "100%" };
+			if (item.type == "checkbox") {
+				return (
+					<Grid key={index} item xs={12}>
+						<Box margin={1}>
+							<FormControlLabel
+								control={
+									<Field
+										component={Component}
+										label={item.label}
+										name={item.id}
+										placeholder={item.placeholder}
+										onChange={prop.handleChange}
+										error={error}
+									/>
+								}
+								label={item.label}
+							/>
+						</Box>
+					</Grid>
+				);
+			} else if (item.type == "select") {
+				return (
+					<Grid key={index} item xs={12}>
+						<Box margin={1}>
+							<Field
+								component={Component}
+								type="text"
+								name="select"
+								label={item.label}
+								select
+								variant="standard"
+								onChange={prop.handleChange}
+								error={error}
+								placeholder={item.placeholder}
+								helperText={item.helpertext}
+								margin="normal"
+								InputLabelProps={{
+									shrink: true,
+								}}
+							>
+								{item.options.map((option) => (
+									<MenuItem key={option.value} value={option.value}>
+										{option.label}
+									</MenuItem>
+								))}
+							</Field>
+						</Box>
+					</Grid>
+				);
+			} else {
+				return (
+					<Grid key={index} item xs={12}>
+						<Box margin={1}>
+							<Field
+								style={styles}
+								component={Component}
+								label={item.label}
+								name={item.id}
+								placeholder={item.placeholder}
+								value={prop.values[item.id]}
+								onChange={prop.handleChange}
+								error={"error"}
+							/>
+						</Box>
+					</Grid>
+				);
+			}
+			return "";
+		});
+	const schema = Yup.object().shape(props.elements.reduce(createYupSchema, {}));
 	return (
 		<Formik
 			initialValues={getInitVals(props.elements)}
-			validationSchema={Yup.object().shape(props.valSchema)}
+			validationSchema={schema.concat(props.valSchema)}
 			onSubmit={(values, { setSubmitting }) => {
 				setTimeout(() => {
 					setSubmitting(false);
@@ -60,10 +142,12 @@ function FormContainer(props) {
 				}, 500);
 			}}
 		>
-			{({ errors, isSubmitting, submitForm, status, touched }) => (
+			{(prop) => (
 				<Form>
 					<Grid container spacing={3}>
-						{props.elements.map((item, index) => (
+						{renderFormElements(prop)}
+
+						{/* {props.elements.map((item, index) => (
 							<Grid key={index} item xs={12}>
 								<Box margin={1}>
 									{item.type == "checkbox" && (
@@ -72,7 +156,7 @@ function FormContainer(props) {
 												<Field
 													component={CheckboxWithLabel}
 													type={item.type}
-													name={item.name}
+													name={item.id}
 												/>
 											}
 											label={item.label}
@@ -104,7 +188,7 @@ function FormContainer(props) {
 											style={{
 												width: "100%",
 											}}
-											name={item.name}
+											name={item.id}
 											type={item.type}
 											label={item.label}
 											component={UpperCasingTextField}
@@ -112,7 +196,7 @@ function FormContainer(props) {
 									)}
 								</Box>
 							</Grid>
-						))}
+						))} */}
 					</Grid>
 
 					{HelperElement && <HelperElement />}
@@ -124,8 +208,8 @@ function FormContainer(props) {
 								type="submit"
 								color="secondary"
 								size="large"
-								disabled={isSubmitting}
-								onClick={submitForm}
+								disabled={prop.isSubmitting}
+								onClick={prop.submitForm}
 							>
 								{props.btn.label}
 							</Button>
@@ -141,7 +225,7 @@ FormContainer.propTypes = {
 	elements: PropTypes.array.isRequired,
 	onSubmit: PropTypes.func,
 	helperEle: PropTypes.func,
-	valSchema: PropTypes.object.isRequired,
+	valSchema: PropTypes.array,
 	btn: PropTypes.object.isRequired,
 };
 

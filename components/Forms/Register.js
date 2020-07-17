@@ -14,6 +14,7 @@ import Title from "../Title/TitleSecondary";
 import AuthFrame from "./AuthFrame";
 import useStyles from "./form-style";
 import FormContainer from "./FormContainer";
+import { regForm } from "../../static/FormData/RegForm";
 import * as Yup from "yup";
 
 import Otpdialog from "../VerifyDialog/OtpDialog";
@@ -35,39 +36,28 @@ function Register(props) {
 	const [showOTP, setOTP] = useState(false);
 
 	const [check, setCheck] = useState(false);
+	console.log(withTranslation(["common"]));
 
-	const valschema = {
-		name: Yup.string().required("UserName is required"),
-		mobile: Yup.string().required("Password is required"),
-		password: Yup.string()
-			.required("UserName is required")
-			.min(6, "Password must be at least 6 characters"),
-		confirm: Yup.string()
-			.required("UserName is required")
-			.oneOf([Yup.ref("password"), null], "Passwords must match")
-			.min(6, "Password must be at least 6 characters"),
-	};
-
-	const elements = [
-		{ name: "name", type: "text", label: t("common:register_name") },
-		{ name: "mobile", type: "text", label: t("common:register_mobile") },
-		{
-			name: "password",
-			type: "password",
-			label: t("common:register_password"),
-		},
-		{ name: "confirm", type: "password", label: t("common:register_confirm") },
-		{
-			name: "accept",
-			type: "checkbox",
-			label: (
-				<span>
-					{t("common:form_terms")}&nbsp;
-					<a href="#">{t("common:form_privacy")}</a>
-				</span>
-			),
-		},
-	];
+	// const elements = [
+	// 	{ name: "name", type: "text", label: t("common:register_name") },
+	// 	{ name: "mobile", type: "text", label: t("common:register_mobile") },
+	// 	{
+	// 		name: "password",
+	// 		type: "password",
+	// 		label: t("common:register_password"),
+	// 	},
+	// 	{ name: "confirm", type: "password", label: t("common:register_confirm") },
+	// 	{
+	// 		name: "accept",
+	// 		type: "checkbox",
+	// 		label: (
+	// 			<span>
+	// 				{t("common:form_terms")}&nbsp;
+	// 				<a href="#">{t("common:form_privacy")}</a>
+	// 			</span>
+	// 		),
+	// 	},
+	// ];
 	const btn = { label: "Register" };
 
 	useEffect(() => {
@@ -151,12 +141,7 @@ function Register(props) {
 				{showOTP && <Otpdialog mobile={values.mobile} />}
 				{/* Register Form Starts from here---- */}
 				{!showOTP && (
-					<FormContainer
-						elements={elements}
-						valSchema={valschema}
-						btn={btn}
-						onSubmit={handleSubmit}
-					/>
+					<FormContainer elements={regForm} btn={btn} onSubmit={handleSubmit} />
 					// <ValidatorForm
 					// 	onError={(errors) => console.log(errors)}
 					// 	onSubmit={handleSubmit}
