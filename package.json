@@ -31,6 +31,8 @@
     "babel-plugin-root-import": "^6.4.1",
     "clsx": "^1.0.4",
     "express": "^4.17.1",
+    "formik": "^2.1.5",
+    "formik-material-ui": "^2.0.1",
     "history": "^5.0.0",
     "js-cookies": "^1.0.4",
     "jss": "^10.0.0-alpha.21",
@@ -62,7 +64,8 @@
     "recompose": "^0.30.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "yup": "^0.29.1"
   },
   "devDependencies": {}
 }

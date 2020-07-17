@@ -13,7 +13,6 @@ function otpdialog(props) {
 	const classes = useStyles();
 	const router = useRouter();
 	let btnRef = React.useRef();
-	const [snackbar, showsnackbar] = useState(false);
 	const { t } = props;
 	const [counter, setCounter] = useState(OTP_TIMER);
 	const [values, setValues] = useState({
@@ -57,8 +56,6 @@ function otpdialog(props) {
 				})
 				.catch(function (error) {
 					console.error(error);
-					setValues({ ...values, ["error"]: error.response.data.message });
-					showsnackbar(true);
 				});
 		}
 	};
@@ -92,19 +89,12 @@ function otpdialog(props) {
 				})
 				.catch(function (error) {
 					console.error(error);
-					setValues({ ...values, ["error"]: error.response.data.message });
-					showsnackbar(true);
 				});
 		}
 	};
 
 	return (
 		<div>
-			<Snackbar
-				isOpen={snackbar}
-				message={values.error}
-				close={() => showsnackbar(false)}
-			/>
 			<ValidatorForm
 				onError={(errors) => console.log(errors)}
 				onSubmit={verifyOtp}
