@@ -28,7 +28,6 @@ import MailIcon from "@material-ui/icons/Mail";
 import { userActions } from "../../_actions/user.actions";
 import { useRouter } from "next/router";
 import LocalStorageService from "../../_services/LocalStorageService";
-import Link from "next/link";
 const localStorageService = LocalStorageService.getService();
 
 const useStyles = makeStyles((theme) => ({
@@ -209,10 +208,8 @@ const DashBoardWraapper = ({ props }) => {
 			open={isMenuOpen}
 			onClose={handleMenuClose}
 		>
-			<Link href="profile">
-				<MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-			</Link>{" "}
-			<MenuItem onClick={handleMenuClose}> My account</MenuItem>
+			<MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+			<MenuItem onClick={handleMenuClose}>My account</MenuItem>
 			<MenuItem onClick={handleLogout}>Logout</MenuItem>
 		</Menu>
 	);

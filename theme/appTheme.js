@@ -1,5 +1,4 @@
-/* eslint-disable */
-
+/* eslint-disable */ 
 import palette from "./palette";
 const appTheme = (color, mode) => ({
 	palette: {
@@ -11,9 +10,6 @@ const appTheme = (color, mode) => ({
 				mode === "dark" ? "rgba(128,128,128, 0.9)" : "rgba(128,128,128, 0.05)",
 			hoverOpacity: 0.05,
 		},
-	},
-	flex: {
-		display: "flex",
 	},
 	typography: {
 		fontFamily: ["Roboto", "Roboto Condensed", "sans-serif"].join(","),
