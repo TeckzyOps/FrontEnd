@@ -19,6 +19,7 @@ import { userActions } from "../../_actions/user.actions";
 import base64 from "../../utils/Base64";
 import LocalStorageService from "../../_services/LocalStorageService";
 import FormContainer from "./FormContainer";
+import { loginForm } from "../../static/FormData/loginForm";
 import * as Yup from "yup";
 const localStorageService = LocalStorageService.getService();
 
@@ -45,17 +46,6 @@ function Login(props) {
 		});
 	});
 
-	const valschema = {
-		username: Yup.string().required("UserName is required"),
-		password: Yup.string()
-			.min(6, "Password must be at least 6 characters")
-			.required("Password is required"),
-	};
-
-	const elements = [
-		{ name: "username", type: "text", label: "Username" },
-		{ name: "password", type: "password", label: "Password" },
-	];
 	const btn = { label: "Login" };
 	const handleChange = (name) => (event) => {
 		setValues({ ...values, [name]: event.target.value });
@@ -129,8 +119,7 @@ function Login(props) {
 						</Button>
 					</div>
 					<FormContainer
-						elements={elements}
-						valSchema={valschema}
+						elements={loginForm}
 						btn={btn}
 						onSubmit={handleSubmit}
 						helperEle={() => (
