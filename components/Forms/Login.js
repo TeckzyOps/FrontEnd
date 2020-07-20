@@ -21,6 +21,16 @@ import LocalStorageService from "../../_services/LocalStorageService";
 import FormContainer from "./FormContainer";
 import { loginForm } from "../../static/FormData/loginForm";
 import * as Yup from "yup";
+import {
+	createMuiTheme,
+	responsiveFontSizes,
+	MuiThemeProvider,
+	makeStyles,
+} from "@material-ui/core/styles";
+import { useTextAlign } from "~/theme/common";
+
+let theme = createMuiTheme();
+theme = responsiveFontSizes(theme);
 const localStorageService = LocalStorageService.getService();
 
 function Login(props) {
@@ -55,7 +65,7 @@ function Login(props) {
 		setCheck(event.target.checked);
 	};
 
-	const handleSubmit = (values) => {
+	const handleSubmit = (values, setError) => {
 		console.log("data submited: ", values);
 		if (values.username && values.password) {
 			if (check) {
@@ -66,20 +76,31 @@ function Login(props) {
 				.login(values.username, values.password)
 				.then(function (response) {
 					console.log("ressss", response);
-					if (
-						response.data.is_mobile_verified &&
-						response.data.is_mobile_verified == "0"
-					) {
-						setOTP(true);
-					}
+					if (response.data.input_error) {
+						setError(response.data.input_error);
+					} else {
+						if (
+							response.data.is_mobile_verified &&
+							response.data.is_mobile_verified == "0"
+						) {
+							setOTP(true);
+						}
 
-					if (
-						response.data.is_email_verified &&
-						response.data.is_email_verified == "0"
-					) {
-						setOTP(true);
+						if (
+							response.data.is_email_verified &&
+							response.data.is_email_verified == "0"
+						) {
+							setOTP(true);
+						}
+						if (
+							response.data.is_mobile_verified &&
+							response.data.is_mobile_verified == "0" &&
+							response.data.is_email_verified &&
+							response.data.is_email_verified == "0"
+						) {
+							router.push("/dashboard");
+						}
 					}
-					router.push("/dashboard");
 				})
 				.catch(function (error) {
 					console.error("errrrr ", error);
@@ -92,11 +113,6 @@ function Login(props) {
 			title={t("common:login_title")}
 			subtitle={t("common:login_subtitle")}
 		>
-			<Snackbar
-				isOpen={snackbar}
-				message={values.error}
-				close={() => showsnackbar(false)}
-			/>
 			<div className={classes.separator}>
 				<Typography>
 					{showOTP ? t("common:otp_sentto") + values.username : ""}
@@ -105,18 +121,16 @@ function Login(props) {
 			{showOTP && <Otpdialog mobile={values.username} />}
 			{!showOTP && (
 				<div>
-					<div className={classes.head}>
-						<Title align="left">{t("common:login")}</Title>
-						<Button
-							size="small"
-							className={classes.buttonLink}
-							href={routeLink.starter.register}
-						>
-							<Icon className={clsx(classes.icon, classes.signArrow)}>
-								arrow_forward
-							</Icon>
-							{t("common:login_create")}
-						</Button>
+					<div>
+						<Grid justify="center" container spacing={3}>
+							<div>
+								<Grid item xs={12}>
+									<MuiThemeProvider theme={theme}>
+										<Title align="left">{t("common:login")}</Title>
+									</MuiThemeProvider>
+								</Grid>
+							</div>
+						</Grid>
 					</div>
 					<FormContainer
 						elements={loginForm}
@@ -146,6 +160,22 @@ function Login(props) {
 							</div>
 						)}
 					/>
+					<Grid justify="center" container spacing={3}>
+						<div>
+							<Grid item xs={12}>
+								<Button
+									size="small"
+									className={classes.buttonLink}
+									href={routeLink.starter.register}
+								>
+									<Icon className={clsx(classes.icon, classes.signArrow)}>
+										arrow_forward
+									</Icon>
+									{t("common:login_create")}
+								</Button>
+							</Grid>
+						</div>
+					</Grid>
 					{/* <ValidatorForm
 						onError={(errors) => console.log(errors)}
 						onSubmit={handleSubmit}

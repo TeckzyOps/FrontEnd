@@ -16,7 +16,6 @@ export const regForm = [
 			},
 		],
 	},
-
 	{
 		id: "mobile",
 		label: "Mobile",
@@ -72,6 +71,29 @@ export const regForm = [
 			{
 				type: "oneOf",
 				params: [[Yup.ref("password"), null], "Passwords must match"],
+			},
+		],
+	},
+	{
+		id: "agreement",
+		name: "accept",
+		type: "checkbox",
+		label: (
+			<span>
+				I have read and accept the Terms of&nbsp;
+				<a href="#">Service and Privacy Policy *</a>
+			</span>
+		),
+		validationType: "boolean",
+		value: false,
+		validations: [
+			{
+				type: "required",
+				params: ["Password is required"],
+			},
+			{
+				type: "oneOf",
+				params: [[true], "You must accept the terms and conditions"],
 			},
 		],
 	},

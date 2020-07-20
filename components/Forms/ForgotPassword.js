@@ -21,6 +21,16 @@ import {
 	otp,
 	newPassword,
 } from "../../static/FormData/forgetPasswordForm";
+import {
+	createMuiTheme,
+	responsiveFontSizes,
+	MuiThemeProvider,
+	makeStyles,
+} from "@material-ui/core/styles";
+import { useTextAlign } from "~/theme/common";
+
+let theme = createMuiTheme();
+theme = responsiveFontSizes(theme);
 
 function ForgotPassword(props) {
 	const classes = useStyles();
@@ -59,7 +69,6 @@ function ForgotPassword(props) {
 	};
 
 	const handleSubmit = (values) => {
-		console.log("forgetPasswordForm.length == ", forgetPasswordForm.length);
 		if (forgetPasswordForm.length < 2) {
 			reqOtp(values);
 		}
@@ -86,12 +95,15 @@ function ForgotPassword(props) {
 				<Grid justify="center" container spacing={3}>
 					<div>
 						<Grid item xs={12}>
-							<Title align="left">{t("common:retrieve_password")}</Title>
+							<MuiThemeProvider theme={theme}>
+								<Title align="left">{t("common:retrieve_password")}</Title>
+							</MuiThemeProvider>
 						</Grid>
 					</div>
 				</Grid>
 				<FormContainer
 					elements={forgetPasswordForm}
+					defaultValue={{ otp: values.otp }}
 					btn={
 						forgetPasswordForm.length > 2
 							? { label: "Reset Password" }
@@ -104,7 +116,6 @@ function ForgotPassword(props) {
 								<Button
 									size="small"
 									ref={btnRef}
-									defaultValue={{ otp: values.otp }}
 									onClick={reqOtp(values)}
 									disabled={counter ? true : false}
 								>

@@ -31,6 +31,41 @@ function FormContainer(props) {
 		props.elements.reduce(stateExtraxtor, {})
 	);
 
+	const toTitleCase = (s) => {
+		if (typeof s === "string" && s.length > 0) {
+			const words = s.split(" ");
+			if (Array.isArray(words) && words.length > 0) {
+				if (words.length === 1) {
+					const word = words[0];
+					const matches = word.charAt(0).match(/\w+/i);
+					const lines = word.split("\n");
+					if (Array.isArray(lines) && lines.length > 1) {
+						return lines
+							.map((line) => {
+								return toTitleCase(line);
+							})
+							.join("\n");
+					} else if (Array.isArray(matches)) {
+						return word
+							.split("")
+							.map((c, i) => {
+								if (i === 0) {
+									return c.toUpperCase();
+								}
+								return c.toLowerCase();
+							})
+							.join("");
+					} else {
+						return word.charAt(0).concat(toTitleCase(word.slice(1)));
+					}
+				} else {
+					return words.map((word) => toTitleCase(word)).join(" ");
+				}
+			}
+		}
+		return "";
+	};
+
 	useEffect(() => {
 		if (props.defaultvals) {
 			setValues(props.defaultvals);
@@ -43,19 +78,16 @@ function FormContainer(props) {
 	}, [props.defaultvals ? props.defaultvals : ""]);
 
 	function stateExtraxtor(state, obj) {
-		state[obj.id] = obj.value ? obj.value : "";
+		if (obj.type == "checkbox") {
+			state[obj.id] = obj.value ? obj.value : false;
+		} else {
+			state[obj.id] = obj.value ? obj.value : "";
+		}
+
 		return state;
 	}
 	console.log(values);
 
-	function getInitVals(obj) {
-		let initValues = {};
-		obj.forEach((element) => {
-			initValues[element.id] = "";
-		});
-
-		return initValues;
-	}
 	const renderFormElements = (prop) =>
 		props.elements.map((item, index) => {
 			const fieldMap = {
@@ -66,29 +98,54 @@ function FormContainer(props) {
 			};
 			const Component = fieldMap[item.type ? item.type : text];
 			let error = prop.errors.hasOwnProperty(item.id) && prop.errors[item.id];
+
 			let styles = { width: "100%" };
 			if (item.type && item.type == "checkbox") {
 				return (
 					<Grid key={index} item xs={12}>
 						<Box margin={1}>
-							<FormControlLabel
+							<Field
+								type={item.type}
+								component={Component}
+								name={item.id}
+								className={
+									"form-check-input " +
+									(prop.errors[item.id] && prop.touched[item.id]
+										? " is-invalid"
+										: "")
+								}
+							/>
+							<label htmlFor="acceptTerms" className="form-check-label">
+								{item.label}
+							</label>
+							<ErrorMessage
+								style={{ color: "red" }}
+								name={item.id}
+								component="div"
+								className="invalid-feedback"
+							/>
+							{/* <FormControlLabel
 								control={
 									<Field
+										type={item.type}
 										component={Component}
 										name={item.id}
+										label={
+											item.label ? item.label : "Enter " + toTitleCase(item.id)
+										}
 										placeholder={
 											item.placeholder
 												? item.placeholder
 												: "Enter " + toTitleCase(item.id)
 										}
 										onChange={prop.handleChange}
-										error={error}
+										error={error.toString()}
 									/>
 								}
 								label={
 									item.label ? item.label : "Enter " + toTitleCase(item.id)
 								}
-							/>
+							/> */}
 						</Box>
 					</Grid>
 				);
@@ -156,11 +213,14 @@ function FormContainer(props) {
 			enableReinitialize
 			initialValues={values}
 			validationSchema={schema.concat(props.valSchema)}
-			onSubmit={(values, { setSubmitting }) => {
-				setTimeout(() => {
-					setSubmitting(false);
-					props.onSubmit(values);
-				}, 500);
+			onSubmit={(values, { setSubmitting, setFieldError }) => {
+				setSubmitting(false);
+				const setError = (result) => {
+					Object.keys(result).forEach((k) => {
+						setFieldError(k, result[k][0]);
+					});
+				};
+				let res = props.onSubmit(values, setError);
 			}}
 		>
 			{(prop) => (
@@ -230,7 +290,6 @@ function FormContainer(props) {
 								color="secondary"
 								size="large"
 								disabled={prop.isSubmitting}
-								onClick={prop.submitForm}
 							>
 								{props.btn.label}
 							</Button>
@@ -240,41 +299,6 @@ function FormContainer(props) {
 			)}
 		</Formik>
 	);
-
-	const toTitleCase = (s) => {
-		if (typeof s === "string" && s.length > 0) {
-			const words = s.split(" ");
-			if (Array.isArray(words) && words.length > 0) {
-				if (words.length === 1) {
-					const word = words[0];
-					const matches = word.charAt(0).match(/\w+/i);
-					const lines = word.split("\n");
-					if (Array.isArray(lines) && lines.length > 1) {
-						return lines
-							.map((line) => {
-								return toTitleCase(line);
-							})
-							.join("\n");
-					} else if (Array.isArray(matches)) {
-						return word
-							.split("")
-							.map((c, i) => {
-								if (i === 0) {
-									return c.toUpperCase();
-								}
-								return c.toLowerCase();
-							})
-							.join("");
-					} else {
-						return word.charAt(0).concat(toTitleCase(word.slice(1)));
-					}
-				} else {
-					return words.map((word) => toTitleCase(word)).join(" ");
-				}
-			}
-		}
-		return "";
-	};
 }
 
 FormContainer.propTypes = {
