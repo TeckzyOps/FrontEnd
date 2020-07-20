@@ -16,6 +16,7 @@ export const regForm = [
 			},
 		],
 	},
+
 	{
 		id: "mobile",
 		label: "Mobile",
@@ -24,13 +25,10 @@ export const regForm = [
 		value: "",
 		validations: [
 			{
-				type: "min",
+				type: "length",
 				params: [10, "Mobile number cannot be less than 10 characters"],
 			},
-			{
-				type: "max",
-				params: [10, "Mobile number cannot be more than 10 characters"],
-			},
+
 			{
 				type: "required",
 				params: ["Mobile number is required"],

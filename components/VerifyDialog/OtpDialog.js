@@ -7,6 +7,8 @@ import { withTranslation } from "~/i18n";
 import { useRouter } from "next/router";
 import { Grid, Button } from "@material-ui/core";
 import PropTypes from "prop-types";
+import FormContainer from "../Forms/FormContainer";
+import { userVerificationForm } from "../../static/FormData/userVerificationForm";
 
 function otpdialog(props) {
 	const OTP_TIMER = 15;
@@ -16,7 +18,7 @@ function otpdialog(props) {
 	const { t } = props;
 	const [counter, setCounter] = useState(OTP_TIMER);
 	const [values, setValues] = useState({
-		mobile: props.mobile,
+		username: props.username,
 		otp: "",
 		error: "",
 		intervalid: "",
@@ -26,23 +28,16 @@ function otpdialog(props) {
 		reqOtp();
 	}, []);
 
-	// useEffect(() => {
-	// 	console.log("trigger use effect hook");
-
-	// 	setTimeout(() => {
-	// 		reqOtp;
-	// 	}, 1000);
-	// }, [values.otpTimer]);
 	useEffect(() => {
 		counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
 	}, [counter]);
 
 	const reqOtp = () => {
 		setCounter(OTP_TIMER);
-		if (values.mobile) {
+		if (values.username) {
 			decrementClock();
 			userActions
-				.sendOTP(values.mobile)
+				.sendOTP(values.username)
 				.then(function (response) {
 					console.log("ressss", response);
 					setValues({
@@ -79,10 +74,10 @@ function otpdialog(props) {
 			btnRef.current.removeAttribute("disabled");
 		}
 	};
-	const verifyOtp = () => {
-		if (values.mobile && values.otp) {
+	const verifyOtp = (values) => {
+		if (values.username && values.otp) {
 			userActions
-				.verifyOTP(values.mobile, values.otp)
+				.verifyOTP(values.username, values.otp)
 				.then(function (response) {
 					console.log("ressss", response);
 					router.push("/login");
@@ -92,10 +87,29 @@ function otpdialog(props) {
 				});
 		}
 	};
-
+	const btn = { label: "Verify OTP" };
 	return (
 		<div>
-			<ValidatorForm
+			<FormContainer
+				elements={props.formData ? props.formData : userVerificationForm}
+				btn={btn}
+				defaultvals={{ otp: values.otp, username: values.username }}
+				helperEle={() => (
+					<div className={classes.formHelper}>
+						<Button
+							size="small"
+							ref={btnRef}
+							onClick={reqOtp}
+							disabled={counter ? true : false}
+						>
+							Resend OTP
+						</Button>
+						<p>{counter}</p>
+					</div>
+				)}
+				onSubmit={verifyOtp}
+			/>
+			{/* <ValidatorForm
 				onError={(errors) => console.log(errors)}
 				onSubmit={verifyOtp}
 			>
@@ -136,12 +150,13 @@ function otpdialog(props) {
 						Verify OTP
 					</Button>
 				</div>
-			</ValidatorForm>
+			</ValidatorForm> */}
 		</div>
 	);
 }
 
 otpdialog.propTypes = {
-	mobile: PropTypes.string.isRequired,
+	username: PropTypes.string,
+	formData: PropTypes.array,
 };
 export default withTranslation(["common"])(otpdialog);

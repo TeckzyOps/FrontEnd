@@ -26,7 +26,7 @@ function Register(props) {
 	const { t } = props;
 	const [values, setValues] = useState({
 		name: "",
-		mobile: "",
+		mobile: "7054796555",
 		password: "",
 		confirmPassword: "",
 		otp: "",
@@ -47,16 +47,16 @@ function Register(props) {
 	// 		label: t("common:register_password"),
 	// 	},
 	// 	{ name: "confirm", type: "password", label: t("common:register_confirm") },
-	// 	{
-	// 		name: "accept",
-	// 		type: "checkbox",
-	// 		label: (
-	// 			<span>
-	// 				{t("common:form_terms")}&nbsp;
-	// 				<a href="#">{t("common:form_privacy")}</a>
-	// 			</span>
-	// 		),
-	// 	},
+	// {
+	// 	name: "accept",
+	// 	type: "checkbox",
+	// 	label: (
+	// 		<span>
+	// 			{t("common:form_terms")}&nbsp;
+	// 			<a href="#">{t("common:form_privacy")}</a>
+	// 		</span>
+	// 	),
+	// },
 	// ];
 	const btn = { label: "Register" };
 
@@ -138,7 +138,7 @@ function Register(props) {
 					</Typography>
 				</div>
 				{/* OTP FORM---------------------------------------- */}
-				{showOTP && <Otpdialog mobile={values.mobile} />}
+				{showOTP && <Otpdialog username={values.mobile} />}
 				{/* Register Form Starts from here---- */}
 				{!showOTP && (
 					<FormContainer elements={regForm} btn={btn} onSubmit={handleSubmit} />

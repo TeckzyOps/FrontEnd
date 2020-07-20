@@ -27,21 +27,27 @@ import {
 
 function FormContainer(props) {
 	const HelperElement = props.helperEle;
+	const [values, setValues] = useState(
+		props.elements.reduce(stateExtraxtor, {})
+	);
 
-	function UpperCasingTextField(props) {
-		const {
-			form: { setFieldValue },
-			field: { name },
-		} = props;
-		const onChange = React.useCallback(
-			(event) => {
-				const { value } = event.target;
-				setFieldValue(name, value);
-			},
-			[setFieldValue, name]
-		);
-		return <MuiTextField {...fieldToTextField(props)} onChange={onChange} />;
+	useEffect(() => {
+		if (props.defaultvals) {
+			setValues(props.defaultvals);
+		}
+
+		// for (const [key, value] of Object.entries(props.defaultvals)) {
+		// 	console.log(`${key}: ${value}`);
+		// 	Form.setFieldValue(key, value);
+		// }
+	}, [props.defaultvals ? props.defaultvals : ""]);
+
+	function stateExtraxtor(state, obj) {
+		state[obj.id] = obj.value ? obj.value : "";
+		return state;
 	}
+	console.log(values);
+
 	function getInitVals(obj) {
 		let initValues = {};
 		obj.forEach((element) => {
@@ -58,10 +64,10 @@ function FormContainer(props) {
 				select: TextField,
 				password: TextField,
 			};
-			const Component = fieldMap[item.type];
+			const Component = fieldMap[item.type ? item.type : text];
 			let error = prop.errors.hasOwnProperty(item.id) && prop.errors[item.id];
 			let styles = { width: "100%" };
-			if (item.type == "checkbox") {
+			if (item.type && item.type == "checkbox") {
 				return (
 					<Grid key={index} item xs={12}>
 						<Box margin={1}>
@@ -69,19 +75,24 @@ function FormContainer(props) {
 								control={
 									<Field
 										component={Component}
-										label={item.label}
 										name={item.id}
-										placeholder={item.placeholder}
+										placeholder={
+											item.placeholder
+												? item.placeholder
+												: "Enter " + toTitleCase(item.id)
+										}
 										onChange={prop.handleChange}
 										error={error}
 									/>
 								}
-								label={item.label}
+								label={
+									item.label ? item.label : "Enter " + toTitleCase(item.id)
+								}
 							/>
 						</Box>
 					</Grid>
 				);
-			} else if (item.type == "select") {
+			} else if (item.type && item.type == "select") {
 				return (
 					<Grid key={index} item xs={12}>
 						<Box margin={1}>
@@ -94,7 +105,11 @@ function FormContainer(props) {
 								variant="standard"
 								onChange={prop.handleChange}
 								error={error}
-								placeholder={item.placeholder}
+								placeholder={
+									item.placeholder
+										? item.placeholder
+										: "Enter " + toTitleCase(item.id)
+								}
 								helperText={item.helpertext}
 								margin="normal"
 								InputLabelProps={{
@@ -116,11 +131,17 @@ function FormContainer(props) {
 						<Box margin={1}>
 							<Field
 								style={styles}
+								type={item.type ? item.type : "text"}
 								component={Component}
-								label={item.label}
+								label={
+									item.label ? item.label : "Enter " + toTitleCase(item.id)
+								}
 								name={item.id}
-								placeholder={item.placeholder}
-								value={prop.values[item.id]}
+								placeholder={
+									item.placeholder
+										? item.placeholder
+										: "Enter " + toTitleCase(item.id)
+								}
 								onChange={prop.handleChange}
 								error={"error"}
 							/>
@@ -128,12 +149,12 @@ function FormContainer(props) {
 					</Grid>
 				);
 			}
-			return "";
 		});
 	const schema = Yup.object().shape(props.elements.reduce(createYupSchema, {}));
 	return (
 		<Formik
-			initialValues={getInitVals(props.elements)}
+			enableReinitialize
+			initialValues={values}
 			validationSchema={schema.concat(props.valSchema)}
 			onSubmit={(values, { setSubmitting }) => {
 				setTimeout(() => {
@@ -219,6 +240,41 @@ function FormContainer(props) {
 			)}
 		</Formik>
 	);
+
+	const toTitleCase = (s) => {
+		if (typeof s === "string" && s.length > 0) {
+			const words = s.split(" ");
+			if (Array.isArray(words) && words.length > 0) {
+				if (words.length === 1) {
+					const word = words[0];
+					const matches = word.charAt(0).match(/\w+/i);
+					const lines = word.split("\n");
+					if (Array.isArray(lines) && lines.length > 1) {
+						return lines
+							.map((line) => {
+								return toTitleCase(line);
+							})
+							.join("\n");
+					} else if (Array.isArray(matches)) {
+						return word
+							.split("")
+							.map((c, i) => {
+								if (i === 0) {
+									return c.toUpperCase();
+								}
+								return c.toLowerCase();
+							})
+							.join("");
+					} else {
+						return word.charAt(0).concat(toTitleCase(word.slice(1)));
+					}
+				} else {
+					return words.map((word) => toTitleCase(word)).join(" ");
+				}
+			}
+		}
+		return "";
+	};
 }
 
 FormContainer.propTypes = {
@@ -226,6 +282,7 @@ FormContainer.propTypes = {
 	onSubmit: PropTypes.func,
 	helperEle: PropTypes.func,
 	valSchema: PropTypes.array,
+	defaultvals: PropTypes.object,
 	btn: PropTypes.object.isRequired,
 };
 
