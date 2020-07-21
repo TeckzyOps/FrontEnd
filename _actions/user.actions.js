@@ -7,6 +7,7 @@ export const userActions = {
 	register,
 	sendOTP,
 	verifyOTP,
+	forgetPassword,
 };
 
 function logout() {
@@ -41,6 +42,15 @@ function sendOTP(username) {
 	return Service.post(apiEndpoint, payload);
 }
 
+function forgetPassword(username, otp, password) {
+	let apiEndpoint = "forgetPassword";
+	let payload = {
+		userid: username,
+		verification_code: otp,
+		password: password,
+	};
+	return Service.post(apiEndpoint, payload);
+}
 function verifyOTP(username, otp) {
 	let apiEndpoint = "VerifyOtp";
 	let payload = {

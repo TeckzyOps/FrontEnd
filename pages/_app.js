@@ -81,8 +81,8 @@ class MyApp extends App {
 			function (error) {
 				console.error(error.response);
 				self.setState({ Netloading: false });
-				if (error.response.data.message) {
-					self.setState({ snackbarError: error.response.data.message });
+				if (error.response.data.custom_error) {
+					self.setState({ snackbarError: error.response.data.custom_error });
 					self.setState({ showSnackbar: true });
 				} else if (
 					error instanceof Error &&

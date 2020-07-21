@@ -4,7 +4,6 @@ import brand from "../static/text/brand";
 import ForgotPassword from "../components/Forms/ForgotPassword";
 
 function Login() {
-	console.log(axios);
 	return (
 		<Fragment>
 			<Head>

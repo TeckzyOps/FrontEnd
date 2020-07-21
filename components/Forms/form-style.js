@@ -211,7 +211,7 @@ const styles = makeStyles((theme) => ({
 			marginTop: theme.spacing(2),
 			justifyContent: "center",
 			"& a": {
-				display: "none",
+				display: "block",
 			},
 		},
 	},
