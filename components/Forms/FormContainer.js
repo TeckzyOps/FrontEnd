@@ -284,7 +284,7 @@ function FormContainer(props) {
 					<div>
 						<Box margin={1}>
 							<Button
-								variant="contained"
+								variant="outlined"
 								fullWidth
 								type="submit"
 								color="secondary"
