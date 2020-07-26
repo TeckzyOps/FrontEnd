@@ -79,6 +79,7 @@ function Login(props) {
 					if (response.data.input_error) {
 						setError(response.data.input_error);
 					} else {
+						console.log(response.data.is_mobile_verified);
 						if (
 							response.data.is_mobile_verified &&
 							response.data.is_mobile_verified == "0"
@@ -94,13 +95,13 @@ function Login(props) {
 						}
 						if (
 							(response.data.is_mobile_verified &&
-							response.data.is_mobile_verified != "0") ||
+								response.data.is_mobile_verified != "0") ||
 							(response.data.is_email_verified &&
-							response.data.is_email_verified != "0")
+								response.data.is_email_verified != "0")
 						) {
 							router.push("/dashboard");
-						}else{
-							setError({username:["Username not verified"]});
+						} else {
+							setError({ username: ["Username not verified"] });
 							console.error("errrrr ", "Username not verified");
 						}
 					}

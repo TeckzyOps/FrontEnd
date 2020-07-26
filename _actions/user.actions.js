@@ -25,9 +25,14 @@ function login(username, password) {
 	return Service.post(apiEndpoint, payload);
 }
 
-function changePassword(confirmpassword) {
+function changePassword({ password, new_password }) {
 	let apiEndpoint = "changePassword";
-	let payLoad = {};
+	let payLoad = {
+		password: password,
+		new_password: new_password,
+		userid: Math.random(),
+	};
+
 	return Service.post(apiEndpoint, payLoad);
 }
 

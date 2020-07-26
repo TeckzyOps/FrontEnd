@@ -1,27 +1,15 @@
 import { ref } from "yup";
 export const changePassword = [
 	{
-		id: "password-current",
+		id: "password",
 		label: "Current Password",
-		placeholder: "**********",
+		placeholder: "Current password",
 		type: "password",
-		// validationType: "string",
-		// value: "",
-		// validations: [
-		// 	{
-		// 		type: "required",
-		// 		params: ["UserName is required"],
-		// 	},
-		// 	{
-		// 		type: "min",
-		// 		params: [5, "UserName cannot be less than 5 characters"],
-		// 	},
-		// ],
 	},
 	{
-		id: "password",
+		id: "new_password",
 		label: "Password",
-		placeholder: "Password",
+		placeholder: "New Password",
 		type: "password",
 		validationType: "string",
 		value: "",
@@ -54,7 +42,7 @@ export const changePassword = [
 			},
 			{
 				type: "oneOf",
-				params: [[ref("password")], "Passwords do not match"],
+				params: [[ref("new_password")], "Passwords do not match"],
 			},
 		],
 	},
