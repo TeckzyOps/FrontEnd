@@ -90,6 +90,9 @@ class MyApp extends App {
 				) {
 					self.setState({ snackbarError: error.message });
 					self.setState({ showSnackbar: true });
+				} else if (!error.response) {
+					self.setState({ snackbarError: "Err: NO Response, Try Again!" });
+					self.setState({ showSnackbar: true });
 				}
 				if (401 === error.response.status) {
 					Router.push("/login");

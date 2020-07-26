@@ -26,7 +26,7 @@ const AccountDetails = (props) => {
 	const classes = useStyles();
 
 	const [values, setValues] = useState({
-		firstName: "Shen",
+		Name: "Shen",
 		lastName: "Zhi",
 		email: "shen.zhi@devias.io",
 		phone: "",
@@ -138,10 +138,10 @@ const AccountDetails = (props) => {
 									<Grid item>
 										<TextField
 											fullWidth
-											helperText="Please specify the first name"
+											helperText="Please specify the name"
 											label="First name"
 											margin="dense"
-											name="firstName"
+											name="Name"
 											onChange={handleChange}
 											required
 											value={values.firstName}
