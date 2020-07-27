@@ -20,6 +20,7 @@ import base64 from "../../utils/Base64";
 import LocalStorageService from "../../_services/LocalStorageService";
 import FormContainer from "./FormContainer";
 import { loginForm } from "../../static/FormData/loginForm";
+import Otpdialog from "../VerifyDialog/OtpDialog";
 import * as Yup from "yup";
 import {
 	createMuiTheme,
@@ -81,19 +82,6 @@ function Login(props) {
 					} else {
 						console.log(response.data.is_mobile_verified);
 						if (
-							response.data.is_mobile_verified &&
-							response.data.is_mobile_verified == "0"
-						) {
-							setOTP(true);
-						}
-
-						if (
-							response.data.is_email_verified &&
-							response.data.is_email_verified == "0"
-						) {
-							setOTP(true);
-						}
-						if (
 							(response.data.is_mobile_verified &&
 								response.data.is_mobile_verified != "0") ||
 							(response.data.is_email_verified &&
@@ -102,7 +90,9 @@ function Login(props) {
 							router.push("/dashboard");
 						} else {
 							setError({ username: ["Username not verified"] });
+							setValues({ ...values, ["username"]: values.username });
 							console.error("errrrr ", "Username not verified");
+							setOTP(true);
 						}
 					}
 				})
@@ -110,6 +100,10 @@ function Login(props) {
 					console.error("errrrr ", error);
 				});
 		}
+	};
+
+	const closeOTPDialog = () => {
+		setOTP(false);
 	};
 
 	return (
@@ -122,7 +116,9 @@ function Login(props) {
 					{showOTP ? t("common:otp_sentto") + values.username : ""}
 				</Typography>
 			</div>
-			{showOTP && <Otpdialog mobile={values.username} />}
+			{showOTP && (
+				<Otpdialog doClose={closeOTPDialog} username={values.username} />
+			)}
 			{!showOTP && (
 				<div>
 					<div>

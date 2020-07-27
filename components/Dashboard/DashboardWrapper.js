@@ -29,6 +29,7 @@ import { userActions } from "../../_actions/user.actions";
 import { useRouter } from "next/router";
 import LocalStorageService from "../../_services/LocalStorageService";
 import Link from "next/link";
+import routerLink from "~/static/text/link";
 const localStorageService = LocalStorageService.getService();
 
 const useStyles = makeStyles((theme) => ({
@@ -209,7 +210,7 @@ const DashBoardWraapper = ({ props }) => {
 			open={isMenuOpen}
 			onClose={handleMenuClose}
 		>
-			<Link href="profile">
+			<Link href={routerLink.starter.profile}>
 				<MenuItem onClick={handleMenuClose}>Profile</MenuItem>
 			</Link>{" "}
 			<MenuItem onClick={handleMenuClose}> My account</MenuItem>

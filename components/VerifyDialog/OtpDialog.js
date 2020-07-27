@@ -80,7 +80,10 @@ function otpdialog(props) {
 				.verifyOTP(values.username, values.otp)
 				.then(function (response) {
 					console.log("ressss", response);
-					router.push("/login");
+					if (response.data.otp_verification_status) {
+						props.doClose();
+						router.push("/login");
+					}
 				})
 				.catch(function (error) {
 					console.error(error);
@@ -158,5 +161,6 @@ function otpdialog(props) {
 otpdialog.propTypes = {
 	username: PropTypes.string,
 	formData: PropTypes.array,
+	doClose: PropTypes.func,
 };
 export default withTranslation(["common"])(otpdialog);

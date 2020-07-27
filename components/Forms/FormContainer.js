@@ -24,47 +24,46 @@ import {
 	Select,
 	Switch,
 } from "formik-material-ui";
+const toTitleCase = (s) => {
+	if (typeof s === "string" && s.length > 0) {
+		const words = s.split(" ");
+		if (Array.isArray(words) && words.length > 0) {
+			if (words.length === 1) {
+				const word = words[0];
+				const matches = word.charAt(0).match(/\w+/i);
+				const lines = word.split("\n");
+				if (Array.isArray(lines) && lines.length > 1) {
+					return lines
+						.map((line) => {
+							return toTitleCase(line);
+						})
+						.join("\n");
+				} else if (Array.isArray(matches)) {
+					return word
+						.split("")
+						.map((c, i) => {
+							if (i === 0) {
+								return c.toUpperCase();
+							}
+							return c.toLowerCase();
+						})
+						.join("");
+				} else {
+					return word.charAt(0).concat(toTitleCase(word.slice(1)));
+				}
+			} else {
+				return words.map((word) => toTitleCase(word)).join(" ");
+			}
+		}
+	}
+	return "";
+};
 
-function FormContainer(props) {
+const FormContainer = React.forwardRef((props, refs) => {
 	const HelperElement = props.helperEle;
 	const [values, setValues] = useState(
 		props.elements.reduce(stateExtraxtor, {})
 	);
-
-	const toTitleCase = (s) => {
-		if (typeof s === "string" && s.length > 0) {
-			const words = s.split(" ");
-			if (Array.isArray(words) && words.length > 0) {
-				if (words.length === 1) {
-					const word = words[0];
-					const matches = word.charAt(0).match(/\w+/i);
-					const lines = word.split("\n");
-					if (Array.isArray(lines) && lines.length > 1) {
-						return lines
-							.map((line) => {
-								return toTitleCase(line);
-							})
-							.join("\n");
-					} else if (Array.isArray(matches)) {
-						return word
-							.split("")
-							.map((c, i) => {
-								if (i === 0) {
-									return c.toUpperCase();
-								}
-								return c.toLowerCase();
-							})
-							.join("");
-					} else {
-						return word.charAt(0).concat(toTitleCase(word.slice(1)));
-					}
-				} else {
-					return words.map((word) => toTitleCase(word)).join(" ");
-				}
-			}
-		}
-		return "";
-	};
 
 	useEffect(() => {
 		if (props.defaultvals) {
@@ -86,7 +85,6 @@ function FormContainer(props) {
 
 		return state;
 	}
-	console.log(values);
 
 	const renderFormElements = (prop) =>
 		props.elements.map((item, index) => {
@@ -124,28 +122,6 @@ function FormContainer(props) {
 								component="div"
 								className="invalid-feedback"
 							/>
-							{/* <FormControlLabel
-								control={
-									<Field
-										type={item.type}
-										component={Component}
-										name={item.id}
-										label={
-											item.label ? item.label : "Enter " + toTitleCase(item.id)
-										}
-										placeholder={
-											item.placeholder
-												? item.placeholder
-												: "Enter " + toTitleCase(item.id)
-										}
-										onChange={prop.handleChange}
-										error={error.toString()}
-									/>
-								}
-								label={
-									item.label ? item.label : "Enter " + toTitleCase(item.id)
-								}
-							/> */}
 						</Box>
 					</Grid>
 				);
@@ -208,76 +184,28 @@ function FormContainer(props) {
 			}
 		});
 	const schema = Yup.object().shape(props.elements.reduce(createYupSchema, {}));
+
+	const handleSubmit = (values, { setSubmitting, setFieldError }) => {
+		setSubmitting(false);
+		const setError = (result) => {
+			Object.keys(result).forEach((k) => {
+				setFieldError(k, result[k][0]);
+			});
+		};
+		let res = props.onSubmit(values, setError);
+	};
 	return (
 		<Formik
+			innerRef={refs}
 			enableReinitialize
 			initialValues={values}
 			validationSchema={schema.concat(props.valSchema)}
-			onSubmit={(values, { setSubmitting, setFieldError }) => {
-				setSubmitting(false);
-				const setError = (result) => {
-					Object.keys(result).forEach((k) => {
-						setFieldError(k, result[k][0]);
-					});
-				};
-				let res = props.onSubmit(values, setError);
-			}}
+			onSubmit={handleSubmit}
 		>
 			{(prop) => (
 				<Form>
 					<Grid container spacing={3}>
 						{renderFormElements(prop)}
-
-						{/* {props.elements.map((item, index) => (
-							<Grid key={index} item xs={12}>
-								<Box margin={1}>
-									{item.type == "checkbox" && (
-										<FormControlLabel
-											control={
-												<Field
-													component={CheckboxWithLabel}
-													type={item.type}
-													name={item.id}
-												/>
-											}
-											label={item.label}
-										/>
-									)}
-									{item.type == "select" && (
-										<Field
-											component={TextField}
-											type="text"
-											name="select"
-											label={item.label}
-											select
-											variant="standard"
-											helperText={item.helpertext}
-											margin="normal"
-											InputLabelProps={{
-												shrink: true,
-											}}
-										>
-											{item.options.map((option) => (
-												<MenuItem key={option.value} value={option.value}>
-													{option.label}
-												</MenuItem>
-											))}
-										</Field>
-									)}
-									{item.type != "checkbox" && item.type != "select" && (
-										<Field
-											style={{
-												width: "100%",
-											}}
-											name={item.id}
-											type={item.type}
-											label={item.label}
-											component={UpperCasingTextField}
-										/>
-									)}
-								</Box>
-							</Grid>
-						))} */}
 					</Grid>
 
 					{HelperElement && <HelperElement />}
@@ -299,7 +227,7 @@ function FormContainer(props) {
 			)}
 		</Formik>
 	);
-}
+});
 
 FormContainer.propTypes = {
 	elements: PropTypes.array.isRequired,
@@ -307,7 +235,7 @@ FormContainer.propTypes = {
 	helperEle: PropTypes.func,
 	valSchema: PropTypes.array,
 	defaultvals: PropTypes.object,
-	btn: PropTypes.object.isRequired,
+	btn: PropTypes.object,
 };
 
 export default FormContainer;

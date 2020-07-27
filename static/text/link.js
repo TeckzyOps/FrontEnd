@@ -5,6 +5,7 @@ const link = {
 		login: "/login",
 		register: "/register",
 		dashboard: "/dashboard",
+		profile: "/dashboard/profile",
 	},
 };
 
