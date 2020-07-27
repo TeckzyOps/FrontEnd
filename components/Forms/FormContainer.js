@@ -209,22 +209,20 @@ const FormContainer = React.forwardRef((props, refs) => {
 					</Grid>
 
 					{HelperElement && <HelperElement />}
-					{props.btn && (
-						<div>
-							<Box margin={1}>
-								<Button
-									variant="contained"
-									fullWidth
-									type="submit"
-									color="secondary"
-									size="large"
-									disabled={prop.isSubmitting}
-								>
-									{props.btn.label}
-								</Button>
-							</Box>
-						</div>
-					)}
+					<div>
+						<Box margin={1}>
+							<Button
+								variant="outlined"
+								fullWidth
+								type="submit"
+								color="secondary"
+								size="large"
+								disabled={prop.isSubmitting}
+							>
+								{props.btn.label}
+							</Button>
+						</Box>
+					</div>
 				</Form>
 			)}
 		</Formik>

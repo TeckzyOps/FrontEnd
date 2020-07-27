@@ -80,6 +80,7 @@ function Login(props) {
 					if (response.data.input_error) {
 						setError(response.data.input_error);
 					} else {
+						console.log(response.data.is_mobile_verified);
 						if (
 							(response.data.is_mobile_verified &&
 								response.data.is_mobile_verified != "0") ||
