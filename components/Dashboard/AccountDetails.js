@@ -36,7 +36,7 @@ const AccountDetails = (props) => {
 	const [profileUpdateSuccess, setProfileUpdateSuccess] = useState(false);
 
 	const _handleModalClose = () => {
-		setProfileUpdateSuccess(() => false);
+		setProfileUpdateSuccess(() => true);
 	};
 
 	const _renderModal = () => {
@@ -73,9 +73,8 @@ const AccountDetails = (props) => {
 		setSubmitting,
 		resetForm,
 	}) => {
-		setSubmitting(true);
 		console.log("Submitted");
-		// setProfileUpdateSuccess(() => true);
+		setProfileUpdateSuccess(() => true);
 		resetForm();
 	};
 
