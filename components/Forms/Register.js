@@ -33,7 +33,7 @@ function Register(props) {
 	const { t } = props;
 	const [values, setValues] = useState({
 		name: "",
-		mobile: "7054796555",
+		mobile: "",
 		password: "",
 		confirmPassword: "",
 		otp: "",
