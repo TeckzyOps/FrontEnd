@@ -137,7 +137,7 @@ const DashBoardWraapper = ({ props }) => {
 			.logout()
 			.then(function (response) {
 				console.log("ressss", response);
-				router.push("/");
+				router.push("/login");
 				localStorageService.removeValue("access_token");
 			})
 			.catch(function (error) {
