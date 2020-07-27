@@ -60,6 +60,7 @@ function Register(props) {
 					}
 
 					if (response.data.message) {
+						setValues({ ...values, ["mobile"]: values.mobile });
 						setOTP(!showOTP);
 					}
 					console.log("ressss", response);
