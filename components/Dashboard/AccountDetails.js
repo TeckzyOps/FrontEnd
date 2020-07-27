@@ -150,25 +150,12 @@ const AccountDetails = (props) => {
 							<Divider />
 							<CardContent>
 								<Grid container spacing={3}>
-									<Grid item>
+									<Grid item md={12} xs={12}>
 										<TextField
 											fullWidth
-											helperText="Please specify the name"
 											label="First name"
 											margin="dense"
-											name="Name"
-											onChange={handleChange}
-											required
-											value={values.firstName}
-											variant="standard"
-										/>
-									</Grid>
-									<Grid item md={6} xs={12}>
-										<TextField
-											fullWidth
-											label="Last name"
-											margin="dense"
-											name="lastName"
+											name="name"
 											onChange={handleChange}
 											required
 											value={values.lastName}
@@ -198,27 +185,6 @@ const AccountDetails = (props) => {
 											value={values.phone}
 											variant="standard"
 										/>
-									</Grid>
-									<Grid item md={6} xs={12}>
-										<TextField
-											fullWidth
-											label="Select State"
-											margin="dense"
-											name="state"
-											onChange={handleChange}
-											required
-											select
-											// eslint-disable-next-line react/jsx-sort-props
-											SelectProps={{ native: true }}
-											value={values.state}
-											variant="standard"
-										>
-											{states.map((option) => (
-												<option key={option.value} value={option.value}>
-													{option.label}
-												</option>
-											))}
-										</TextField>
 									</Grid>
 									<Grid item md={6} xs={12}>
 										<TextField
