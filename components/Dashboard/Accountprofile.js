@@ -79,6 +79,8 @@ const AccountProfile = (props) => {
 		country: "India",
 		timezone: "GTM-7",
 		avatar: "/images/avatars/avatar_11.png",
+		email: "teckzy.inc@gmail.com",
+		mobile: "7054796555",
 	};
 	const handlempinClose = () => {
 		setmpinOpen(false);

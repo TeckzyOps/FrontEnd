@@ -16,6 +16,7 @@ import AuthFrame from "./AuthFrame";
 import useStyles from "./form-style";
 import FormContainer from "./FormContainer";
 import { userActions } from "../../_actions/user.actions";
+import Timer from "../timer/Timer";
 import {
 	forgetPasswordForm,
 	otp,
@@ -31,25 +32,23 @@ import { useTextAlign } from "~/theme/common";
 
 let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
-
+let otpval = "";
 function ForgotPassword(props) {
 	const classes = useStyles();
 	const { t } = props;
 	const OTP_TIMER = 15;
 	let btnRef = React.useRef();
-	const [counter, setCounter] = useState(OTP_TIMER);
+	const [counter, setCounter] = useState(true);
 	const [values, setValues] = useState({
 		username: "",
 		otp: "",
+		counterid: "",
 	});
 	const [formschema, setformschema] = useState(forgetPasswordForm);
-
-	useEffect(() => {
-		counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
-	}, [counter]);
-
+	const changeOTPBtnState = () => {
+		setCounter(!counter);
+	};
 	const reqOtp = (values) => {
-		setCounter(OTP_TIMER);
 		if (values.username) {
 			userActions
 				.sendOTP(values.username)
@@ -57,10 +56,6 @@ function ForgotPassword(props) {
 					if (forgetPasswordForm.length < 2) {
 						setformschema(forgetPasswordForm.push(otp, newPassword));
 					}
-					setValues({
-						...values,
-						["otp"]: response.data.otp,
-					});
 				})
 				.catch(function (error) {
 					console.error(error);
@@ -68,8 +63,9 @@ function ForgotPassword(props) {
 		}
 	};
 
-	const handleSubmit = (values) => {
+	const handleSubmit = (vals) => {
 		if (forgetPasswordForm.length < 2) {
+			setValues({ ...values, ["username"]: vals.username });
 			reqOtp(values);
 		}
 		if (forgetPasswordForm.length > 2) {
@@ -84,6 +80,10 @@ function ForgotPassword(props) {
 					});
 			}
 		}
+	};
+
+	const resendClicked = () => {
+		reqOtp(values);
 	};
 
 	return (
@@ -103,7 +103,7 @@ function ForgotPassword(props) {
 				</Grid>
 				<FormContainer
 					elements={forgetPasswordForm}
-					defaultValue={{ otp: values.otp }}
+					defaultValue={{ otp: otpval }}
 					btn={
 						forgetPasswordForm.length > 2
 							? { label: "Reset Password" }
@@ -112,17 +112,7 @@ function ForgotPassword(props) {
 					onSubmit={handleSubmit}
 					helperEle={() =>
 						forgetPasswordForm.length > 2 && (
-							<div className={classes.formHelper}>
-								<Button
-									size="small"
-									ref={btnRef}
-									onClick={reqOtp(values)}
-									disabled={counter ? true : false}
-								>
-									Resend OTP
-								</Button>
-								<p>{counter}</p>
-							</div>
+							<Timer resendClicked={resendClicked} />
 						)
 					}
 				/>
