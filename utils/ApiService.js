@@ -10,7 +10,16 @@ class Service {
 		document.location = path;
 	};
 
-	get(path) {
+	get(path, payload) {
+		let query = "?";
+		if (payload) {
+			Object.keys(payload).forEach((k) => {
+				query == "?"
+					? (query += k + "=" + payload[k])
+					: (query += "&" + k + "=" + payload[k]);
+			});
+		}
+		path += query;
 		return this.service.get(path);
 	}
 
@@ -23,12 +32,15 @@ class Service {
 		});
 	}
 
-	post(path, payload) {
+	post(path, payload, progressUpdater) {
 		return this.service.request({
 			method: "POST",
 			url: path,
 			responseType: "json",
 			data: payload,
+			onUploadProgress: (event) => {
+				progressUpdater(event);
+			},
 		});
 	}
 }

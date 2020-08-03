@@ -17,28 +17,31 @@ import useStyles from "./form-style";
 import { useRouter } from "next/router";
 import { userActions } from "../../_actions/user.actions";
 import base64 from "../../utils/Base64";
-import LocalStorageService from "../../_services/LocalStorageService";
+
 import FormContainer from "./FormContainer";
 import { loginForm } from "../../static/FormData/loginForm";
 import Otpdialog from "../VerifyDialog/OtpDialog";
-import * as Yup from "yup";
+import api, { addBearerToken, removeBearerToken } from "../../utils/httpClient";
+// import { setToken } from "../Hoc/withAuth";
+import Cookies from "js-cookie";
 import {
 	createMuiTheme,
 	responsiveFontSizes,
 	MuiThemeProvider,
 	makeStyles,
 } from "@material-ui/core/styles";
+import { profileActions } from "../../_actions/profile.action";
 import { useTextAlign } from "~/theme/common";
 
 let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
+import LocalStorageService from "../../_services/LocalStorageService";
 const localStorageService = LocalStorageService.getService();
 
 function Login(props) {
 	const classes = useStyles();
 	const router = useRouter();
 	const [check, setCheck] = useState(false);
-	const [snackbar, showsnackbar] = useState(false);
 	const [showOTP, setOTP] = useState(false);
 
 	const { t } = props;
@@ -48,30 +51,38 @@ function Login(props) {
 		error: "",
 	});
 
-	useEffect(() => {
-		ValidatorForm.addValidationRule("isPasswordMatch", (value) => {
-			if (value !== values.password) {
-				return false;
-			}
-			return true;
-		});
-	});
-
 	const btn = { label: "Login" };
 	const handleChange = (name) => (event) => {
 		setValues({ ...values, [name]: event.target.value });
 	};
+	React.useEffect(() => {
+		if (
+			localStorageService.getValue("username") &&
+			localStorageService.getValue("password")
+		) {
+			setCheck(true);
+			setValues({
+				...values,
+				["username"]: localStorageService.getValue("username"),
+				["password"]: base64.atob(localStorageService.getValue("password")),
+			});
+		}
+
+		console.error("dashboardprops--> ", props);
+	}, []);
 
 	const handleCheck = (event) => {
 		setCheck(event.target.checked);
 	};
 
 	const handleSubmit = (values, setError) => {
-		console.log("data submited: ", values);
 		if (values.username && values.password) {
 			if (check) {
 				localStorageService.setValue("username", values.username);
 				localStorageService.setValue("password", base64.btoa(values.password));
+			} else {
+				localStorageService.removeValue("username");
+				localStorageService.removeValue("password");
 			}
 			userActions
 				.login(values.username, values.password)
@@ -81,12 +92,46 @@ function Login(props) {
 						setError(response.data.input_error);
 					} else {
 						if (
-							(response.data.is_mobile_verified &&
+							((response.data.is_mobile_verified &&
 								response.data.is_mobile_verified != "0") ||
-							(response.data.is_email_verified &&
-								response.data.is_email_verified != "0")
+								(response.data.is_email_verified &&
+									response.data.is_email_verified != "0")) &&
+							response.data.user_data
 						) {
+							if (response.data.access_token) {
+								Cookies.set("token", response.data.access_token);
+								localStorageService.setValue(
+									"token",
+									response.data.access_token
+								);
+								addBearerToken(response.data.access_token);
+							}
+
+							if (response.data.user_data) {
+								Cookies.set(
+									"loginDetails",
+									JSON.stringify(response.data.user_data)
+								);
+								localStorageService.setValue(
+									"loginDetails",
+									JSON.stringify(response.data.user_data)
+								);
+
+								profileActions
+									.getUserProfileDetails()
+									.then(function (response) {
+										Cookies.set("userDetails", JSON.stringify(response.data));
+										localStorageService.setValue(
+											"userDetails",
+											JSON.stringify(response.data)
+										);
+									})
+									.catch(function (error) {
+										console.error("errrrr ", error);
+									});
+							}
 							router.push("/dashboard");
+							// setToken(response.data.access_token, response.data.user_data);
 						} else {
 							setError({ username: ["Username not verified"] });
 							setValues({ ...values, ["username"]: values.username });
@@ -134,6 +179,7 @@ function Login(props) {
 					<FormContainer
 						elements={loginForm}
 						btn={btn}
+						defaultvals={values}
 						onSubmit={handleSubmit}
 						helperEle={() => (
 							<div className={classes.formHelper}>

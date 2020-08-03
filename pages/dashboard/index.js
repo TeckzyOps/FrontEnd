@@ -9,6 +9,9 @@ import ButtonBase from "@material-ui/core/ButtonBase";
 import Chip from "@material-ui/core/Chip";
 import IconButton from "@material-ui/core/IconButton";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import withAuth from "../../components/Hoc/withAuth";
+import LocalStorageService from "../../_services/LocalStorageService";
+const localStorageService = LocalStorageService.getService();
 
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -82,15 +85,29 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: "12px",
 	},
 }));
-export default function UserDashBoard(props) {
+function UserDashBoard(props) {
 	const classes = useStyles();
 	const [value /*setValue*/] = React.useState(1);
+	React.useEffect(() => {
+		console.error("dashboardprops--> ", props);
+	}, []);
 	return (
 		<Fragment>
 			<Head>
-				<title>Dashboard &nbsp; - Login</title>
+				<title>Dashboard &nbsp;</title>
 			</Head>
-			<DashboardWrapper />
+			<DashboardWrapper logindata={props.logindata} />
 		</Fragment>
 	);
 }
+UserDashBoard.getInitialProps = async (ctx) => {
+	console.log(ctx);
+	// const isBrowser = () => typeof window !== "undefined";
+	// return {
+	// 	logindata:
+	// 		typeof window !== "undefined"
+	// 			? ctx.req.headers.cookie.loginDetails
+	// 			: JSON.parse(LocalStorageService.getValue("loginDetails")),
+	// };
+};
+export default withAuth(UserDashBoard);

@@ -46,6 +46,7 @@ const LocalStorageService = (function () {
 		getAccessToken: _getAccessToken,
 		getRefreshToken: _getRefreshToken,
 		clearToken: _clearToken,
+		is: () => typeof localStorage !== "undefined",
 	};
 })();
 export default LocalStorageService;

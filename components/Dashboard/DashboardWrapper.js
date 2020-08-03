@@ -28,8 +28,14 @@ import MailIcon from "@material-ui/icons/Mail";
 import { userActions } from "../../_actions/user.actions";
 import { useRouter } from "next/router";
 import LocalStorageService from "../../_services/LocalStorageService";
+import ExpandLess from "@material-ui/icons/ExpandLess";
+import ExpandMore from "@material-ui/icons/ExpandMore";
+import Collapse from "@material-ui/core/Collapse";
+import ListSubheader from "@material-ui/core/ListSubheader";
 import Link from "next/link";
 import routerLink from "~/static/text/link";
+import { useAuth } from "../provider/Auth";
+import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
 const localStorageService = LocalStorageService.getService();
 
 const useStyles = makeStyles((theme) => ({
@@ -44,6 +50,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 	menuButton: {
 		marginRight: theme.spacing(2),
+	},
+	nested: {
+		paddingLeft: theme.spacing(4),
 	},
 	title: {
 		display: "none",
@@ -102,15 +111,18 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const DashBoardWraapper = ({ props }) => {
+const DashBoardWrapper = (props) => {
 	const classes = useStyles();
 	const router = useRouter();
+	const { logout } = useAuth();
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [snackbar, showsnackbar] = React.useState(false);
+	const [profileCollapse, setProfileCollapse] = React.useState(false);
 	const [values, setValues] = React.useState({
 		error: "",
 	});
 
+	const [loginData, setloginData] = React.useState(props.logindata || {});
 	const [state, setState] = React.useState({
 		left: false,
 	});
@@ -121,6 +133,11 @@ const DashBoardWraapper = ({ props }) => {
 		setAnchorEl(event.currentTarget);
 	};
 
+	React.useEffect(() => {
+		if (localStorageService.getValue("loginDetails")) {
+			setloginData(JSON.parse(LocalStorageService.getValue("loginDetails")));
+		}
+	}, []);
 	const handleMobileMenuClose = () => {
 		setMobileMoreAnchorEl(null);
 	};
@@ -133,21 +150,7 @@ const DashBoardWraapper = ({ props }) => {
 	const handleLogout = () => {
 		setAnchorEl(null);
 		handleMobileMenuClose();
-		userActions
-			.logout()
-			.then(function (response) {
-				console.log("ressss", response);
-				router.push("/");
-				localStorageService.removeValue("access_token");
-			})
-			.catch(function (error) {
-				if (error.response.data.message) {
-					// setValues({ ...values, ["error"]: error.response.data.message });
-				}
-
-				console.error("errrrr ", error);
-				showsnackbar(true);
-			});
+		logout();
 	};
 
 	const handleMobileMenuOpen = (event) => {
@@ -178,14 +181,34 @@ const DashBoardWraapper = ({ props }) => {
 			onKeyDown={toggleDrawer(anchor, false)}
 		>
 			<List>
-				{["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-					<ListItem button key={text}>
-						<ListItemIcon>
-							{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-						</ListItemIcon>
-						<ListItemText primary={text} />
-					</ListItem>
-				))}
+				<ListItem button>
+					<ListItemText primary="Dashboard" />
+				</ListItem>
+				<ListItem
+					component="a"
+					href={routerLink.starter.profile}
+					button
+					onClick={() => setProfileCollapse(!profileCollapse)}
+				>
+					<ListItemText primary="Profile" />
+					{profileCollapse ? <ExpandLess /> : <ExpandMore />}
+				</ListItem>
+				<Collapse in={profileCollapse} timeout="auto" unmountOnExit>
+					<List component="div" disablePadding>
+						<ListItem button className={classes.nested}>
+							<ListItemText primary="User Details" />
+						</ListItem>
+						<ListItem button className={classes.nested}>
+							<ListItemText primary="Account Details" />
+						</ListItem>
+					</List>
+				</Collapse>
+				<ListItem button>
+					<ListItemText primary="Contact US!" />
+				</ListItem>
+				<ListItem button>
+					<ListItemText primary="Logout" />
+				</ListItem>
 			</List>
 			<Divider />
 			<List>
@@ -272,7 +295,7 @@ const DashBoardWraapper = ({ props }) => {
 						<MenuIcon />
 					</IconButton>
 					<Typography className={classes.title} variant="h6" noWrap>
-						Welcome, Name
+						Welcome, {loginData.name}
 					</Typography>
 					<div className={classes.search}>
 						<div className={classes.searchIcon}>
@@ -336,4 +359,4 @@ const DashBoardWraapper = ({ props }) => {
 	);
 };
 
-export default DashBoardWraapper;
+export default DashBoardWrapper;

@@ -81,7 +81,10 @@ function otpdialog(props) {
 				.then(function (response) {
 					console.log("ressss", response);
 					if (response.data.otp_verification_status) {
-						props.doClose();
+						if (props.doClose) {
+							props.doClose();
+						}
+
 						router.push("/login");
 					}
 				})
