@@ -103,18 +103,27 @@ const ProfileForm = (props) => {
 		district: Yup.string().required("Required"),
 		city: Yup.string().required("Required"),
 		password: Yup.string().required("Required"),
-		id_proof_type: Yup.string().required("Required"),
-		id_proof_number: Yup.string().required("Required"),
+		id_proof_type: Yup.string(),
+		id_proof_number: Yup.string(),
 		id_proof_path: Yup.mixed()
+			.test("fileSize", "File Size is too large", (value) => {
+				if (value) {
+					return value.size <= 2000000;
+				} else {
+					return true;
+				}
+			})
 			.test(
-				"fileSize",
-				"File Size is too large",
-				(value) => value.size <= 2000000
-			)
-			.test("fileType", "Unsupported File Format, Upload a PDF file", (value) =>
-				["application/pdf"].includes(value.type)
-			)
-			.required("Required"),
+				"fileType",
+				"Unsupported File Format, Upload a PDF file",
+				(value) => {
+					if (value) {
+						return ["application/pdf"].includes(value.type);
+					} else {
+						return true;
+					}
+				}
+			),
 	});
 
 	React.useEffect(() => {
@@ -155,19 +164,19 @@ const ProfileForm = (props) => {
 	};
 
 	const initVals = {
-		gender: values.gender ? gender[parseInt(values.gender) - 1] : "", //Select
+		gender: values.gender ? gender[parseInt(values.gender) - 1] : "",
 		dob: values.dob ? values.dob : "",
-		religion: values.religion ? values.religion : "", //Select
-		mother_tongue: values.mother_tongue ? values.mother_tongue : "", //Select
+		religion: values.religion ? values.religion : "",
+		mother_tongue: values.mother_tongue ? values.mother_tongue : "",
 		profession: values.profession ? values.profession : "",
 		profession_details: values.profession_details
 			? values.profession_details
 			: "",
-		occupation: values.occupation ? values.occupation : "", //Select
+		occupation: values.occupation ? values.occupation : "",
 		language_speak:
 			values.language_speak && Array.isArray(JSON.parse(values.language_speak))
 				? JSON.parse(values.language_speak)
-				: [], //Select with multi
+				: [],
 		interest:
 			values.interest && Array.isArray(JSON.parse(values.interest))
 				? JSON.parse(values.interest)
@@ -175,23 +184,22 @@ const ProfileForm = (props) => {
 		education:
 			values.education && Array.isArray(JSON.parse(values.education))
 				? JSON.parse(values.education)
-				: [], //Select with multi
+				: [],
 		experience:
 			values.experience && Array.isArray(JSON.parse(values.experience))
 				? JSON.parse(values.experience)
-				: [], //Select with multi
+				: [],
 		current_address: values.current_address ? values.current_address : "",
 		area: values.area ? values.area : "",
 		city: values.city ? values.city : "",
 		district: values.district ? values.district : "",
 		state: values.state ? values.state : "",
-		id_proof_type: values.id_proof_type ? values.id_proof_type : "", //Select Pand Ad dl
+		id_proof_type: values.id_proof_type ? values.id_proof_type : "",
 		id_proof_number: values.id_proof_number ? values.id_proof_number : "",
 		id_proof_path: null,
 		password: "",
 	};
 	const _handleSubmit = ({ vals, setSubmitting, setFieldError }) => {
-		console.log(values);
 		let payload = new FormData();
 		payload.append("id_proof_path", vals["id_proof_path"]);
 
@@ -211,7 +219,12 @@ const ProfileForm = (props) => {
 			}
 		}
 		payload.append("login_id", loginData["id"].toString());
+		if (loginData && loginData.mpin) {
+			payload.append("mpin", vals.password);
+			payload.delete("password");
+		}
 		if (payload) {
+			setSubmitting(false);
 			profileActions
 				.setUserProfileDetails(payload)
 				.then(function (response) {
@@ -292,9 +305,6 @@ const ProfileForm = (props) => {
 				enableReinitialize
 				initialValues={initVals}
 				validationSchema={profileSchema}
-				validator={(e) => {
-					console.error(e);
-				}}
 				onSubmit={(vals, { setSubmitting, resetForm, setFieldError }) =>
 					_handleSubmit({
 						vals,
@@ -315,6 +325,7 @@ const ProfileForm = (props) => {
 						isValid,
 						isSubmitting,
 					} = props;
+					console.error(props);
 					return (
 						<div>
 							<CardHeader
@@ -323,7 +334,7 @@ const ProfileForm = (props) => {
 							/>
 							<Divider />
 							<CardContent>
-								<Form>
+								<Form autocomplete="off">
 									<Accordion>
 										<AccordionSummary
 											expandIcon={<ExpandMoreIcon />}
@@ -339,6 +350,7 @@ const ProfileForm = (props) => {
 												<Grid item md={4} xs={12}>
 													<Box margin={1}>
 														<Field
+															required
 															onChange={handleChange}
 															fullWidth
 															component={CustomTextField}
@@ -367,6 +379,7 @@ const ProfileForm = (props) => {
 												<Grid item md={4} xs={12}>
 													<Box margin={1}>
 														<Field
+															required
 															fullWidth
 															component={CustomTextField}
 															type="text"
@@ -394,6 +407,7 @@ const ProfileForm = (props) => {
 												<Grid item md={4} xs={12}>
 													<Box margin={1}>
 														<Field
+															required
 															fullWidth
 															component={CustomTextField}
 															type="text"
@@ -421,6 +435,7 @@ const ProfileForm = (props) => {
 												<Grid item md={6} xs={12}>
 													<Box margin={1}>
 														<Field
+															required
 															fullWidth
 															component={TextField}
 															type="text"
@@ -448,6 +463,7 @@ const ProfileForm = (props) => {
 												</Grid>
 												<Grid item md={6} xs={12}>
 													<Field
+														required
 														fullWidth
 														type="date"
 														component={TextField}
@@ -459,6 +475,7 @@ const ProfileForm = (props) => {
 														name="dob"
 														onChange={handleChange}
 														placeholder="Date of Birth"
+														margin="dense"
 													/>
 												</Grid>
 
@@ -493,6 +510,7 @@ const ProfileForm = (props) => {
 												<Grid item md={6} xs={12}>
 													<Box margin={1}>
 														<Field
+															required
 															fullWidth
 															component={TextField}
 															type="text"
@@ -524,6 +542,7 @@ const ProfileForm = (props) => {
 															Language Speak
 														</InputLabel>
 														<Field
+															required
 															fullWidth
 															component={Select}
 															type="text"
@@ -851,6 +870,7 @@ const ProfileForm = (props) => {
 																	<input
 																		id={field.name}
 																		multiple
+																		style={{ display: "none" }}
 																		name={field.name}
 																		type="file"
 																		onChange={(event) => {
@@ -882,8 +902,8 @@ const ProfileForm = (props) => {
 												<Grid item md={12} xs={12}>
 													<Box margin={1}>
 														<Field
-															fullWidth
 															required
+															fullWidth
 															type="password"
 															component={TextField}
 															label={

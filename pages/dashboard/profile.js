@@ -38,6 +38,8 @@ const Account = (props) => {
 					<Grid item lg={8} md={6} xl={8} xs={12}>
 						<div>
 							<AccountDetails />
+							<br />
+							<br />
 							<ProfileForm
 								logindata={props.logindata}
 								userdata={props.userdata}

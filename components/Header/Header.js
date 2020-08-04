@@ -136,6 +136,7 @@ function Header(props) {
 									<Button variant="contained" color="primary" href="/login">
 										Login
 									</Button>
+									&nbsp;
 									<Button variant="contained" color="primary" href="/register">
 										Register
 									</Button>

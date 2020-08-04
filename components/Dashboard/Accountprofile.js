@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { withTranslation } from "~/i18n";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import clsx from "clsx";
 import moment from "moment";
@@ -97,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AccountProfile = (props) => {
-	const { className, ...rest } = props;
+	const { t, className, ...rest } = props;
 	const [loginDetails, updateloginDetails] = React.useState({});
 	const [dp, setDP] = React.useState({
 		file: null,
@@ -119,6 +120,8 @@ const AccountProfile = (props) => {
 		email: "",
 		mobile: "",
 	});
+
+	const [profile, setProfile] = React.useState({});
 	const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
 	React.useEffect(() => {
@@ -129,11 +132,25 @@ const AccountProfile = (props) => {
 				JSON.parse(LocalStorageService.getValue("loginDetails"))
 			);
 		}
+		if (localStorageService.getValue("userDetails")) {
+			setProfile(JSON.parse(LocalStorageService.getValue("loginDetails")));
+		}
+		if (localStorageService.getValue("loginDetails")) {
+			updateloginDetails(
+				JSON.parse(LocalStorageService.getValue("loginDetails"))
+			);
+		}
 		if (loginDet) {
 			setUser({
 				name: loginDet.name, //JSON.parse(LocalStorageService.getValue("userdata"))["name"],
-				city: "Goarkhpur",
-				avatar: "/images/avatars/avatar_11.png",
+				city: "",
+				avatar: localStorageService.getValue("userDetails")
+					? JSON.parse(localStorageService.getValue("userDetails"))["data"][
+							"image_path"
+					  ]
+					: Cookies.getJSON("userDetails")
+					? Cookies.getJSON("userDetails")["data"]["image_path"]
+					: "",
 				email: loginDet.email, //JSON.parse(LocalStorageService.getValue("userdata"))["email"],
 				mobile: loginDet.mobile, //JSON.parse(LocalStorageService.getValue("userdata"))["mobile"],
 			});
@@ -152,7 +169,7 @@ const AccountProfile = (props) => {
 
 		if (loginDetails && loginDetails.mpin) {
 			payload.append("mpin", vals.password);
-			delete payload["password"];
+			payload.delete("password");
 		}
 		if (payload) {
 			profileActions
@@ -169,6 +186,12 @@ const AccountProfile = (props) => {
 						});
 					} else if (!response.data.custom_error) {
 						setOpeDPDialog(!opeDPDialog);
+					}
+					if (response.data.id) {
+						setUser({
+							...user,
+							["avatar"]: response.data.image_path,
+						});
 					}
 				})
 				.catch(function (error) {
@@ -266,25 +289,26 @@ const AccountProfile = (props) => {
 								component="span"
 							>
 								<Avatar
+									src={user.avatar}
 									className={classes.large}
 									style={{
 										width: "100px",
 										height: "100px",
 									}}
 								>
-									{showPreloadImage()}
+									{!user.avatar && showPreloadImage()}
 								</Avatar>
 							</IconButton>
 						</div>
 					</div>
-					<div className={classes.progress}>
+					{/* <div className={classes.progress}>
 						<Typography variant="body1">Profile Completeness: 70%</Typography>
 						<LinearProgress value={70} variant="determinate" />
-					</div>
+					</div> */}
 				</CardContent>
 				<Divider />
 				<CardActions>
-					<Button
+					{/* <Button
 						className={classes.uploadButton}
 						color="primary"
 						variant="text"
@@ -292,7 +316,7 @@ const AccountProfile = (props) => {
 						<MuiThemeProvider theme={theme}>
 							<Typography variant="button">Upload Picture</Typography>
 						</MuiThemeProvider>
-					</Button>
+					</Button> */}
 					<Button onClick={handlempinOpen} variant="text">
 						<MuiThemeProvider theme={theme}>
 							<Typography variant="button">Generate MPIN</Typography>
@@ -452,11 +476,11 @@ const AccountProfile = (props) => {
 											Cancel
 										</Button>
 									) : (
-										"You Can't go back, Now!"
+										t("common:cant_revert")
 									)}
 									<div className={classes.wrapper}>
 										<Button
-											disabled={true}
+											disabled={isSubmitting}
 											type="submit"
 											color="primary"
 											autoFocus
@@ -484,4 +508,4 @@ AccountProfile.propTypes = {
 	className: PropTypes.string,
 };
 
-export default AccountProfile;
+export default withTranslation(["common"])(AccountProfile);

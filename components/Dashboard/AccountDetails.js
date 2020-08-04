@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import clsx from "clsx";
+import { withTranslation } from "~/i18n";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/styles";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -50,6 +51,7 @@ const AccountDetails = (props) => {
 	const { loginDetails, updateloginDetails } = useAuth();
 
 	const classes = useStyles();
+	const { t } = props;
 
 	const [values, setValues] = useState({});
 	const [profileUpdateSuccess, setProfileUpdateSuccess] = useState(false);
@@ -90,25 +92,6 @@ const AccountDetails = (props) => {
 		setProfileUpdateSuccess(() => true);
 	};
 
-	const handleLoginDetailsSubmit = () => {
-		if (values.mpin && values.password) {
-			profileActions
-				.changeMPIN(values.mpin, values.password)
-				.then(function (response) {
-					console.log("ressss", response);
-					if (response.data.input_error) {
-						setError(response.data.input_error);
-					}
-					if (response.data.data) {
-						setValues(response.data.data);
-					}
-				})
-				.catch(function (error) {
-					console.error("errrrr ", error);
-				});
-		}
-	};
-
 	const _renderModal = () => {
 		const onClick = () => {
 			setProfileUpdateSuccess(() => false);
@@ -137,13 +120,16 @@ const AccountDetails = (props) => {
 		console.log(values);
 		let payload = {};
 		for (var i in vals) {
-			if (!values.hasOwnProperty(i) || vals[i] !== values[i]) {
-				payload[i] = vals[i];
+			if (
+				(!values.hasOwnProperty(i) || vals[i] !== values[i]) &&
+				vals[i].toString() != ""
+			) {
+				payload[i] = vals[i] && vals[i];
 			}
 		}
 
 		if (payload && Object.keys(payload).length > 1) {
-			if (loginDetails && loginDetails.mpin) {
+			if (values && values.mpin) {
 				payload["mpin"] = payload.password;
 				delete payload["password"];
 			}
@@ -167,6 +153,9 @@ const AccountDetails = (props) => {
 					setSubmitting(false);
 					console.error("errrrr ", error);
 				});
+		} else {
+			setSubmitting(false);
+			resetForm();
 		}
 	};
 
@@ -177,9 +166,9 @@ const AccountDetails = (props) => {
 		password: Yup.string().min(4, "Too Short!").required("Required"),
 	});
 	const initVals = {
-		name: values.name,
-		mobile: values.mobile,
-		email: values.email,
+		name: values.name || "",
+		mobile: values.mobile || "",
+		email: values.email || "",
 		password: "",
 	};
 	return (
@@ -197,7 +186,6 @@ const AccountDetails = (props) => {
 				}
 				render={(props) => {
 					const {
-						values,
 						touched,
 						errors,
 						handleBlur,
@@ -308,14 +296,10 @@ const AccountDetails = (props) => {
 												required
 												type="password"
 												component={TextField}
-												label={
-													loginDetails && loginDetails.mpin
-														? "M-PIN"
-														: "Password"
-												}
+												label={values && values.mpin ? "M-PIN" : "Password"}
 												name="password"
 												placeholder={
-													loginDetails && loginDetails.mpin
+													values && values.mpin
 														? "Enter M-PIN"
 														: "Enter Password"
 												}
@@ -326,6 +310,7 @@ const AccountDetails = (props) => {
 							</CardContent>
 							<Divider />
 							<CardActions>
+								{props.isSubmitting && t("common:cant_revert")}
 								<Button
 									disabled={props.isSubmitting}
 									type="submit"
@@ -359,4 +344,4 @@ AccountDetails.getInitialProps = async ({ req }) => {
 	return { Details: loginDetails };
 };
 
-export default AccountDetails;
+export default withTranslation(["common"])(AccountDetails);

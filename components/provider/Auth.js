@@ -51,6 +51,11 @@ export const AuthProvider = ({ children }) => {
 
 	const updateloginDetails = (loginDetails) => {
 		setloginDetails(loginDetails);
+		Cookies.set("loginDetails", JSON.stringify(loginDetails));
+		localStorageService.setValue(
+			"loginDetails",
+			JSON.stringify(response.data.user_data)
+		);
 	};
 
 	const logout = () => {
@@ -58,7 +63,7 @@ export const AuthProvider = ({ children }) => {
 			.logout()
 			.then(function (response) {
 				console.log("ressss", response);
-				redirectAfterLogout();
+
 				Cookies.remove("token");
 				Cookies.remove("loginDetails");
 				Cookies.remove("userDetails");
@@ -67,6 +72,7 @@ export const AuthProvider = ({ children }) => {
 				localStorage && localStorageService.removeValue("userDetails");
 				setUser(null);
 				removeBearerToken();
+				redirectAfterLogout();
 			})
 			.catch(function (error) {
 				if (error.response) {
