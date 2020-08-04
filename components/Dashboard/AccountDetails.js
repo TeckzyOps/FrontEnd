@@ -204,6 +204,7 @@ const AccountDetails = (props) => {
 							<CardContent>
 								<Grid container spacing={3}>
 									<Grid item md={12} xs={12}>
+
 										<Box margin={1}>
 											<Field
 												fullWidth
@@ -214,6 +215,7 @@ const AccountDetails = (props) => {
 												placeholder="Full Name"
 											/>
 										</Box>
+
 									</Grid>
 									<Grid item md={6} xs={12}>
 										<Box margin={1}>
@@ -289,6 +291,7 @@ const AccountDetails = (props) => {
 											/>
 										</Box>
 									</Grid>
+
 									<Grid item md={12} xs={12}>
 										<Box margin={1}>
 											<Field
@@ -305,6 +308,7 @@ const AccountDetails = (props) => {
 												}
 											/>
 										</Box>
+
 									</Grid>
 								</Grid>
 							</CardContent>
