@@ -17,6 +17,7 @@
 	"form_terms": "I have read and accept the Terms of",
 	"form_privacy": "Service & Privacy Policy *",
 	"form_send": "Send Message",
+	"cant_revert": "You Cant Go Back, Now!",
 	"login": "login",
 	"retrieve_password": "Recover Password",
 	"login_create": "Create new account",

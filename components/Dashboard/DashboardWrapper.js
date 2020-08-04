@@ -151,7 +151,6 @@ const DashBoardWrapper = (props) => {
 	const handleLogout = () => {
 		setAnchorEl(null);
 		handleMobileMenuClose();
-
 		logout();
 	};
 

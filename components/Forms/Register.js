@@ -77,9 +77,6 @@ function Register(props) {
 		}
 	};
 
-	const closeOTPDialog = () => {
-		setOTP(false);
-	};
 	return (
 		<AuthFrame
 			title={t("common:register_title")}
@@ -107,9 +104,7 @@ function Register(props) {
 					{showOTP && <CheckCircleSharpIcon />}
 				</div>
 				{/* OTP FORM---------------------------------------- */}
-				{showOTP && (
-					<Otpdialog doClose={closeOTPDialog} username={values.mobile} />
-				)}
+				{showOTP && <Otpdialog username={values.mobile} />}
 				{/* Register Form Starts from here---- */}
 				{!showOTP && (
 					<div>
