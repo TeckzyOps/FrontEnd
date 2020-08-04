@@ -342,7 +342,7 @@ const ProfileForm = (props) => {
 											id="panel1c-header"
 										>
 											<Typography className={classes.heading}>
-												...Expand
+												Profile
 											</Typography>
 										</AccordionSummary>
 										<AccordionDetails>
