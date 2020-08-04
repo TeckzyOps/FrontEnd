@@ -1,5 +1,4 @@
 /* eslint-disable */
-
 import React from "react";
 import App, { Container } from "next/app";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
@@ -24,6 +23,8 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Router from "next/router";
 import LocalStorageService from "../_services/LocalStorageService";
 import Backdrop from "@material-ui/core/Backdrop";
+import { AuthProvider } from "../components/provider/Auth";
+import Cookies from "js-cookie";
 
 let themeType = "light";
 if (typeof Storage !== "undefined") {
@@ -33,6 +34,8 @@ if (typeof Storage !== "undefined") {
 class MyApp extends App {
 	state = {
 		Netloading: false,
+		user: {},
+		token: "",
 		loading: true,
 		showSnackbar: false,
 		snackbarError: "",
@@ -45,23 +48,7 @@ class MyApp extends App {
 	componentDidMount() {
 		AxiosIns.interceptors.request.use(
 			(config) => {
-				// var obj = document.createElement("div");
-				// obj.id = "::preloader";
-				// obj.style.cssText = "position:fixed;z-index:10000;width:100%;height:100%;";
-
-				// var newimg = document.createElement("img");
-				// newimg.setAttribute("src", "/static/images/loading.svg");
-				// newimg.id = "interceptorPreloader";
-				// newimg.style.cssText =
-				// 	"opacity: 0.5;position:fixed;top: calc(50% - 50px);left: calc(50% - 50px);";
-				// // obj.appendChild(newimg);
-				// document.body.appendChild(newimg);
 				this.setState({ Netloading: true });
-				const token = LocalStorageService.getService().getAccessToken();
-				if (token) {
-					config.headers["Authorization"] = "Bearer " + token;
-				}
-				// config.headers['Content-Type'] = 'application/json';
 				return config;
 			},
 			(error) => {
@@ -69,11 +56,10 @@ class MyApp extends App {
 			}
 		);
 
-		//Add a response interceptor
 		var self = this;
 		AxiosIns.interceptors.response.use(
 			function (response) {
-				LocalStorageService.getService().setToken(response.data.access_token);
+				// LocalStorageService.getService().setToken(response.data.access_token);
 
 				self.setState({ Netloading: false });
 				return response;
@@ -81,7 +67,7 @@ class MyApp extends App {
 			function (error) {
 				console.error(error.response);
 				self.setState({ Netloading: false });
-				if (error.response.data.custom_error) {
+				if (error.response) {
 					self.setState({ snackbarError: error.response.data.custom_error });
 					self.setState({ showSnackbar: true });
 				} else if (
@@ -161,51 +147,53 @@ class MyApp extends App {
 		const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 		return (
 			<Container>
-				<StylesProvider jss={jss}>
-					<MuiThemeProvider theme={muiTheme}>
-						<CssBaseline />
-						<Backdrop
-							style={{ zIndex: 99, color: "#fff", opacity: 0.5 }}
-							open={Netloading}
-						/>
-						{Netloading && (
-							<CircularProgress
-								left={50}
-								top={30}
-								style={{
-									position: "fixed",
-									left: "50%",
-									top: "50%",
-									zIndex: 1000,
-									textAlign: "center",
-								}}
-								size={50}
-								color="primary"
+				<AuthProvider>
+					<StylesProvider jss={jss}>
+						<MuiThemeProvider theme={muiTheme}>
+							<CssBaseline />
+							<Backdrop
+								style={{ zIndex: 99, color: "#fff", opacity: 0.5 }}
+								open={Netloading}
 							/>
-						)}
-
-						<Loading
-							show={loading}
-							color={theme.palette.primary.main}
-							showSpinner={false}
-						/>
-						<Snackbar
-							isOpen={this.state.showSnackbar}
-							message={this.state.snackbarError}
-							close={() => this.setState({ showSnackbar: false })}
-						/>
-						<div id="main-wrap">
-							<PageTransition timeout={300} classNames="page-fade-transition">
-								<Component
-									{...pageProps}
-									onToggleDark={this.toggleDarkTheme}
-									onToggleDir={this.toggleDirection}
-									key={router.route}
+							{Netloading && (
+								<CircularProgress
+									left={50}
+									top={30}
+									style={{
+										position: "fixed",
+										left: "50%",
+										top: "50%",
+										zIndex: 1000,
+										textAlign: "center",
+									}}
+									size={50}
+									color="primary"
 								/>
-							</PageTransition>
-						</div>
-					</MuiThemeProvider>
-				</StylesProvider>
+							)}
+
+							<Loading
+								show={loading}
+								color={theme.palette.primary.main}
+								showSpinner={false}
+							/>
+							<Snackbar
+								isOpen={this.state.showSnackbar}
+								message={this.state.snackbarError}
+								close={() => this.setState({ showSnackbar: false })}
+							/>
+							<div id="main-wrap">
+								<PageTransition timeout={300} classNames="page-fade-transition">
+									<Component
+										{...pageProps}
+										onToggleDark={this.toggleDarkTheme}
+										onToggleDir={this.toggleDirection}
+										key={router.route}
+									/>
+								</PageTransition>
+							</div>
+						</MuiThemeProvider>
+					</StylesProvider>
+				</AuthProvider>
 			</Container>
 		);
 	}

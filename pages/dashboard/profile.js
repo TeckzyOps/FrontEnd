@@ -1,19 +1,24 @@
 import React, { Fragment } from "react";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
 import DashboardWrapper from "../../components/Dashboard/DashboardWrapper";
 import Head from "next/head";
 
 import AccountProfile from "../../components/Dashboard/Accountprofile";
 import AccountDetails from "../../components/Dashboard/AccountDetails";
+import ProfileForm from "../../components/Dashboard/ProfileForm";
+import withAuth from "../../components/Hoc/withAuth";
+import LocalStorageService from "../../_services/LocalStorageService";
+const localStorageService = LocalStorageService.getService();
 
+import { profileActions } from "../../_actions/profile.action";
 const useStyles = makeStyles((theme) => ({
 	root: {
 		padding: theme.spacing(4),
 	},
 }));
 
-const Account = () => {
+const Account = (props) => {
 	const classes = useStyles();
 
 	return (
@@ -21,19 +26,39 @@ const Account = () => {
 			<Head>
 				<title>Dashboard &nbsp; - Login</title>
 			</Head>
-			<DashboardWrapper />
+			<DashboardWrapper logindata={props.logindata} userdata={props.userdata} />
 			<div className={classes.root}>
 				<Grid container spacing={4}>
 					<Grid item lg={4} md={6} xl={4} xs={12}>
-						<AccountProfile />
+						<AccountProfile
+							logindata={props.logindata}
+							userdata={props.userdata}
+						/>
 					</Grid>
 					<Grid item lg={8} md={6} xl={8} xs={12}>
-						<AccountDetails />
+						<div>
+							<AccountDetails />
+							<ProfileForm
+								logindata={props.logindata}
+								userdata={props.userdata}
+							/>
+						</div>
 					</Grid>
 				</Grid>
 			</div>
 		</Fragment>
 	);
 };
-
-export default Account;
+// Account.getInitialProps = async (ctx) => {
+// 	return {
+// 		logindata:
+// 			typeof window !== "undefined"
+// 				? ctx.req.headers.cookie.loginDetails
+// 				: JSON.parse(LocalStorageService.getValue("loginDetails")),
+// 		userdata:
+// 			typeof window !== "undefined"
+// 				? ctx.req.headers.cookie.userDetails
+// 				: JSON.parse(LocalStorageService.getValue("userDetails")),
+// 	};
+// };
+export default withAuth(Account);

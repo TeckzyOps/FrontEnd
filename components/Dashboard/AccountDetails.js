@@ -2,19 +2,44 @@ import React, { useState } from "react";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/styles";
-import { Formik } from "formik";
+import { Formik, Field, Form, ErrorMessage } from "formik";
 import Spinner from "../Spinner/spinner";
 import Alert from "./../alert/alert";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import EditIcon from "@material-ui/icons/Edit";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
+import Tooltip from "@material-ui/core/Tooltip";
+import { profileActions } from "../../_actions/profile.action";
+import LocalStorageService from "../../_services/LocalStorageService";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+import { cookieActions } from "../Hoc/cookies";
+import { useAuth } from "../provider/Auth";
+const localStorageService = LocalStorageService.getService();
+import {
+	fieldToTextField,
+	TextField,
+	CheckboxWithLabel,
+	TextFieldProps,
+	Select,
+	Switch,
+} from "formik-material-ui";
+
 import {
 	Card,
 	CardHeader,
 	CardContent,
 	CardActions,
 	Divider,
+	Box,
 	Grid,
 	Button,
-	TextField,
+	InputAdornment,
+	IconButton,
 } from "@material-ui/core";
+import * as Yup from "yup";
 
 const useStyles = makeStyles(() => ({
 	root: {},
@@ -22,28 +47,72 @@ const useStyles = makeStyles(() => ({
 
 const AccountDetails = (props) => {
 	const { className, ...rest } = props;
+	const { loginDetails, updateloginDetails } = useAuth();
 
 	const classes = useStyles();
 
-	const [values, setValues] = useState({
-		Name: "Shen",
-		lastName: "Zhi",
-		email: "shen.zhi@devias.io",
-		phone: "",
-		state: "Alabama",
-		country: "USA",
-	});
+	const [values, setValues] = useState({});
 	const [profileUpdateSuccess, setProfileUpdateSuccess] = useState(false);
+	const [editUsername, setEditUsername] = useState(false);
+	const [password, setpassword] = useState("");
+
+	const email_verified = values["email_verified_at"];
+
+	const mobile_verified = values["mobile_verified_at"];
+	React.useEffect(() => {
+		if (localStorageService.getValue("loginDetails")) {
+			setValues(JSON.parse(LocalStorageService.getValue("loginDetails")));
+		}
+		// setValues({
+		// 	name: cookieActions.cookie.getJSON("userdata")["name"], //JSON.parse(LocalStorageService.getValue("userdata"))["name"],
+		// 	email: cookieActions.cookie.getJSON("userdata")["email"], //JSON.parse(LocalStorageService.getValue("userdata"))["email"],
+		// 	mobile: cookieActions.cookie.getJSON("userdata")["mobile"], //JSON.parse(LocalStorageService.getValue("userdata"))["mobile"],
+		// 	password: "",
+		// });
+
+		console.error(values);
+	}, []);
+
+	const _handlesubmitkey = (event) => {
+		setpassword(event.target.value);
+	};
+
+	const mobileTooltip = values.mobile_verified_at
+		? "Verified"
+		: "Mobile Not Verified!";
+	const emailTooltip = values.email
+		? values.email_verified_at
+			? "Verified"
+			: "E-Mail ID Not Verified!"
+		: "Add An E-Mail ID!";
 
 	const _handleModalClose = () => {
 		setProfileUpdateSuccess(() => true);
+	};
+
+	const handleLoginDetailsSubmit = () => {
+		if (values.mpin && values.password) {
+			profileActions
+				.changeMPIN(values.mpin, values.password)
+				.then(function (response) {
+					console.log("ressss", response);
+					if (response.data.input_error) {
+						setError(response.data.input_error);
+					}
+					if (response.data.data) {
+						setValues(response.data.data);
+					}
+				})
+				.catch(function (error) {
+					console.error("errrrr ", error);
+				});
+		}
 	};
 
 	const _renderModal = () => {
 		const onClick = () => {
 			setProfileUpdateSuccess(() => false);
 		};
-		console.log(profileUpdateSuccess);
 
 		return (
 			<Alert
@@ -57,180 +126,220 @@ const AccountDetails = (props) => {
 	};
 
 	const handleChange = (event) => {
-		setValues({
-			...values,
-			[event.target.name]: event.target.value,
-		});
+		console.log(event);
+		// setValues({
+		// 	...values,
+		// 	[event.target.name]: event.target.value,
+		// });
 	};
 
-	const _handleSubmit = ({
-		firstName,
-		lastName,
-		email,
-		phone,
-		state,
-		country,
-		setSubmitting,
-		resetForm,
-	}) => {
-		console.log("Submitted");
-		setProfileUpdateSuccess(() => true);
-		resetForm();
+	const _handleSubmit = ({ vals, setSubmitting, resetForm }) => {
+		console.log(values);
+		let payload = {};
+		for (var i in vals) {
+			if (!values.hasOwnProperty(i) || vals[i] !== values[i]) {
+				payload[i] = vals[i];
+			}
+		}
+
+		if (payload && Object.keys(payload).length > 1) {
+			if (loginDetails && loginDetails.mpin) {
+				payload["mpin"] = payload.password;
+				delete payload["password"];
+			}
+			console.log(payload);
+			profileActions
+				.updateLogin(payload)
+				.then(function (response) {
+					if (response.data.id) {
+						setProfileUpdateSuccess(() => true);
+						updateloginDetails(response.data);
+						setValues(response.data);
+					}
+					setSubmitting(false);
+					resetForm();
+					console.log("ressss", response);
+					if (response.data.input_error) {
+						setError(response.data.input_error);
+					}
+				})
+				.catch(function (error) {
+					setSubmitting(false);
+					console.error("errrrr ", error);
+				});
+		}
 	};
 
-	const states = [
-		{
-			value: "alabama",
-			label: "Alabama",
-		},
-		{
-			value: "new-york",
-			label: "New York",
-		},
-		{
-			value: "san-francisco",
-			label: "San Francisco",
-		},
-	];
-
-	const gender = [
-		{
-			value: "1",
-			label: "Male",
-		},
-		{
-			value: "2",
-			label: "Female",
-		},
-		{
-			value: "3",
-			label: "Other",
-		},
-	];
-
+	const profileSchema = Yup.object().shape({
+		name: Yup.string().min(2, "Too Short!").max(50, "Too Long!"),
+		mobile: Yup.string().length(10, "Too Short!"),
+		email: Yup.string().email("Invalid email"),
+		password: Yup.string().min(4, "Too Short!").required("Required"),
+	});
+	const initVals = {
+		name: values.name,
+		mobile: values.mobile,
+		email: values.email,
+		password: "",
+	};
 	return (
 		<Card {...rest} className={clsx(classes.root, className)}>
 			<Formik
-				initialValues={values}
-				onSubmit={(
-					{ firstName, lastName, email, phone, state, country },
-					{ setSubmitting, resetForm }
-				) =>
+				enableReinitialize
+				initialValues={initVals}
+				validationSchema={profileSchema}
+				onSubmit={(vals, { setSubmitting, resetForm }) =>
 					_handleSubmit({
-						firstName,
-						lastName,
-						email,
-						phone,
-						state,
-						country,
+						vals,
 						setSubmitting,
 						resetForm,
 					})
 				}
 				render={(props) => {
-					console.log(props);
 					const {
 						values,
 						touched,
 						errors,
-						handleChange,
 						handleBlur,
 						handleSubmit,
+						handleChange,
 						isValid,
 						isSubmitting,
 					} = props;
-					return isSubmitting ? (
-						<Spinner />
-					) : (
-						<form autoComplete="off" noValidate onSubmit={handleSubmit}>
+					return (
+						<Form>
 							<CardHeader
 								subheader="The information can be edited"
-								title="Profile"
+								title="Account Details"
 							/>
 							<Divider />
 							<CardContent>
 								<Grid container spacing={3}>
 									<Grid item md={12} xs={12}>
-										<TextField
-											fullWidth
-											label="First name"
-											margin="dense"
-											name="name"
-											onChange={handleChange}
-											required
-											value={values.lastName}
-											variant="standard"
-										/>
+
+										<Box margin={1}>
+											<Field
+												fullWidth
+												type="text"
+												component={TextField}
+												label="Full Name"
+												name="name"
+												placeholder="Full Name"
+											/>
+										</Box>
+
 									</Grid>
 									<Grid item md={6} xs={12}>
-										<TextField
-											fullWidth
-											label="Email Address"
-											margin="dense"
-											name="email"
-											onChange={handleChange}
-											required
-											value={values.email}
-											variant="standard"
-										/>
+										<Box margin={1}>
+											<Field
+												fullWidth
+												type="text"
+												component={TextField}
+												label="Email"
+												name="email"
+												placeholder="Email"
+												InputProps={{
+													endAdornment: (
+														<InputAdornment position="end">
+															<Tooltip
+																title={
+																	values.email
+																		? values.email_verified_at
+																			? "Verified"
+																			: "E-Mail ID Not Verified!"
+																		: "Add An E-Mail ID!"
+																}
+															>
+																<IconButton aria-label="toggle phone">
+																	{!email_verified && (
+																		<ErrorOutlineIcon color="primary" />
+																	)}
+																	{email_verified && (
+																		<CheckCircleIcon
+																			style={{ color: "green" }}
+																		/>
+																	)}
+																</IconButton>
+															</Tooltip>
+														</InputAdornment>
+													),
+												}}
+											/>
+										</Box>
 									</Grid>
 									<Grid item md={6} xs={12}>
-										<TextField
-											fullWidth
-											label="Phone Number"
-											margin="dense"
-											name="phone"
-											onChange={handleChange}
-											type="number"
-											value={values.phone}
-											variant="standard"
-										/>
+										<Box margin={1}>
+											<Field
+												fullWidth
+												type="text"
+												component={TextField}
+												label="Mobile"
+												name="mobile"
+												placeholder="Enter Mobile"
+												InputProps={{
+													endAdornment: (
+														<InputAdornment position="end">
+															<Tooltip
+																title={
+																	values.mobile_verified_at
+																		? "Verified"
+																		: "Mobile Not Verified!"
+																}
+															>
+																<IconButton aria-label="toggle phone">
+																	{!mobile_verified && (
+																		<ErrorOutlineIcon color="primary" />
+																	)}
+																	{mobile_verified && (
+																		<CheckCircleIcon
+																			style={{ color: "green" }}
+																		/>
+																	)}
+																</IconButton>
+															</Tooltip>
+														</InputAdornment>
+													),
+												}}
+											/>
+										</Box>
 									</Grid>
-									<Grid item md={6} xs={12}>
-										<TextField
-											fullWidth
-											label="Gender"
-											margin="dense"
-											name="state"
-											onChange={handleChange}
-											required
-											select
-											// eslint-disable-next-line react/jsx-sort-props
-											SelectProps={{ native: true }}
-											value={values.state}
-											variant="standard"
-										>
-											{gender.map((option) => (
-												<option key={option.value} value={option.value}>
-													{option.label}
-												</option>
-											))}
-										</TextField>
-									</Grid>
-									<Grid item md={6} xs={12}>
-										<TextField
-											fullWidth
-											label="Date of Birth"
-											margin="dense"
-											name="dob"
-											onChange={handleChange}
-											required
-											type="date"
-											// eslin-disable-next-line react/jsx-sort-props
-											SelectProps={{ native: true }}
-											value={values.state}
-											variant="standard"
-										></TextField>
+
+									<Grid item md={12} xs={12}>
+										<Box margin={1}>
+											<Field
+												fullWidth
+												required
+												type="password"
+												component={TextField}
+												label={
+													loginDetails && loginDetails.mpin
+														? "M-PIN"
+														: "Password"
+												}
+												name="password"
+												placeholder={
+													loginDetails && loginDetails.mpin
+														? "Enter M-PIN"
+														: "Enter Password"
+												}
+											/>
+										</Box>
+
 									</Grid>
 								</Grid>
 							</CardContent>
 							<Divider />
 							<CardActions>
-								<Button type="submit" color="primary" variant="outlined">
+								<Button
+									disabled={props.isSubmitting}
+									type="submit"
+									color="primary"
+									variant="outlined"
+								>
 									Save details
 								</Button>
 							</CardActions>
-						</form>
+						</Form>
 					);
 				}}
 			/>
@@ -241,6 +350,17 @@ const AccountDetails = (props) => {
 
 AccountDetails.propTypes = {
 	className: PropTypes.string,
+};
+AccountDetails.getInitialProps = async ({ req }) => {
+	console.log("Getting in Init Props");
+
+	const loginDetails = {
+		name: "", //JSON.parse(LocalStorageService.getValue("userdata"))["name"],
+		email: "", //JSON.parse(LocalStorageService.getValue("userdata"))["email"],
+		mobile: "", //JSON.parse(LocalStorageService.getValue("userdata"))["mobile"],
+		password: "",
+	};
+	return { Details: loginDetails };
 };
 
 export default AccountDetails;
