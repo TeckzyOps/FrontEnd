@@ -416,7 +416,13 @@ const AccountProfile = (props) => {
 																	}
 																}}
 															/>
-															<label htmlFor={field.name}>
+															<label
+																style={{
+																	display: "flex",
+																	justifyContent: "center",
+																}}
+																htmlFor={field.name}
+															>
 																<IconButton color="primary" component="span">
 																	<Avatar
 																		className={classes.large}

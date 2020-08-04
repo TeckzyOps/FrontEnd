@@ -192,18 +192,7 @@ const DashBoardWrapper = (props) => {
 					onClick={() => setProfileCollapse(!profileCollapse)}
 				>
 					<ListItemText primary="Profile" />
-					{profileCollapse ? <ExpandLess /> : <ExpandMore />}
 				</ListItem>
-				<Collapse in={profileCollapse} timeout="auto" unmountOnExit>
-					<List component="div" disablePadding>
-						<ListItem button className={classes.nested}>
-							<ListItemText primary="User Details" />
-						</ListItem>
-						<ListItem button className={classes.nested}>
-							<ListItemText primary="Account Details" />
-						</ListItem>
-					</List>
-				</Collapse>
 				<ListItem button>
 					<ListItemText primary="Contact US!" />
 				</ListItem>
