@@ -100,10 +100,7 @@ function Login(props) {
 						) {
 							if (response.data.access_token) {
 								Cookies.set("token", response.data.access_token);
-								localStorageService.setValue(
-									"token",
-									response.data.access_token
-								);
+								localStorageService.setToken(response.data.access_token);
 								addBearerToken(response.data.access_token);
 							}
 
@@ -120,17 +117,20 @@ function Login(props) {
 								profileActions
 									.getUserProfileDetails()
 									.then(function (response) {
-										Cookies.set("userDetails", JSON.stringify(response.data));
-										localStorageService.setValue(
-											"userDetails",
-											JSON.stringify(response.data)
-										);
+										if (response.data) {
+											Cookies.set("userDetails", JSON.stringify(response.data));
+											localStorageService.setValue(
+												"userDetails",
+												JSON.stringify(response.data)
+											);
+											router.push("/dashboard");
+										}
 									})
 									.catch(function (error) {
 										console.error("errrrr ", error);
 									});
 							}
-							router.push("/dashboard");
+
 							// setToken(response.data.access_token, response.data.user_data);
 						} else {
 							setError({ username: ["Username not verified"] });

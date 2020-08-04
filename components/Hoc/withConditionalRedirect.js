@@ -42,29 +42,10 @@ export default function withConditionalRedirect({
 }) {
 	const WithConditionalRedirectWrapper = (props) => {
 		const router = useRouter();
-		if (LocalStorageService.is() && !LocalStorageService.getValue("token")) {
+		if (LocalStorageService.is() && !LocalStorageService.getAccessToken()) {
 			router.push(routerLink.starter.login);
 			return <></>;
 		}
-		// if (isBrowser) {
-		// 	if (LocalStorageService.getValue("loginDetails")) {
-		// 		logindata = LocalStorageService.getValue("loginDetails");
-		// 	} else {
-		// 		const logindat = profileActions.getLoginDetails();
-		// 		logindata = logindat.data.id && logindat.data;
-		// 	}
-
-		// 	if (LocalStorageService.getValue("userdata")) {
-		// 		userData = LocalStorageService.getValue("userdata");
-		// 	} else {
-		// 		const userDat = profileActions.getUserProfileDetails();
-		// 		userData = userDat.data.states && userDat.data;
-		// 	}
-		// }
-		// const user = {
-		// 	logindata: logindata,
-		// 	userData: userData,
-		// };
 		return <WrappedComponent {...props} />;
 	};
 

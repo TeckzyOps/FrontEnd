@@ -14,8 +14,7 @@ import MobileMenu from "./MobileMenu";
 import logo from "~/static/images/logo.png";
 import "~/vendors/hamburger-menu.css";
 import useStyles from "./header-style";
-import { logout } from "../Hoc/withAuth";
-// import { useAuth } from "../provider/Auth";
+import { useAuth } from "../provider/Auth";
 import navMenu from "./menu";
 
 let counter = 0;
@@ -34,7 +33,8 @@ const LinkBtn = React.forwardRef(function LinkBtn(props, ref) {
 
 function Header(props) {
 	const [fixed, setFixed] = useState(false);
-	// const { isAuthenticated, loginDetails, logout } = useAuth();
+	const { isAuthenticated, loginDetails, logout } = useAuth();
+
 	let flagFixed = false;
 	const handleScroll = () => {
 		const doc = document.documentElement;
@@ -121,16 +121,8 @@ function Header(props) {
 						</nav>
 						<nav className={classes.userMenu}>
 							{/* { isDesktop && <Button href="/login">Login</Button> } */}
-							<div>
-								<Button variant="contained" color="primary" href="/login">
-									Login
-								</Button>
-								<Button variant="contained" color="primary" href="/register">
-									Register
-								</Button>
-							</div>
 
-							{/* {isAuthenticated ? (
+							{isAuthenticated ? (
 								<div>
 									<Button variant="contained" color="primary" href="/dashboard">
 										Hi, {loginDetails.Name}
@@ -148,7 +140,7 @@ function Header(props) {
 										Register
 									</Button>
 								</div>
-							)} */}
+							)}
 
 							{isDesktop && <span className={classes.vDivider} />}
 							<Settings toggleDark={onToggleDark} toggleDir={onToggleDir} />

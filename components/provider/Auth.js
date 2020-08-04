@@ -61,7 +61,10 @@ export const AuthProvider = ({ children }) => {
 				redirectAfterLogout();
 				Cookies.remove("token");
 				Cookies.remove("loginDetails");
-				localStorageService.removeValue("access_token");
+				Cookies.remove("userDetails");
+				localStorage && localStorageService.clearToken();
+				localStorage && localStorageService.removeValue("loginDetails");
+				localStorage && localStorageService.removeValue("userDetails");
 				setUser(null);
 				removeBearerToken();
 			})

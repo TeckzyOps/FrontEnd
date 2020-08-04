@@ -456,7 +456,7 @@ const AccountProfile = (props) => {
 									)}
 									<div className={classes.wrapper}>
 										<Button
-											disabled={isSubmitting}
+											disabled={true}
 											type="submit"
 											color="primary"
 											autoFocus

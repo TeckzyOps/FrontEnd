@@ -33,6 +33,7 @@ import ExpandMore from "@material-ui/icons/ExpandMore";
 import Collapse from "@material-ui/core/Collapse";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Link from "next/link";
+import { Button } from "@material-ui/core/";
 import routerLink from "~/static/text/link";
 import { useAuth } from "../provider/Auth";
 import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
@@ -122,7 +123,7 @@ const DashBoardWrapper = (props) => {
 		error: "",
 	});
 
-	const [loginData, setloginData] = React.useState(props.logindata || {});
+	const [loginData, setloginData] = React.useState({});
 	const [state, setState] = React.useState({
 		left: false,
 	});
@@ -236,7 +237,7 @@ const DashBoardWrapper = (props) => {
 			<Link href={routerLink.starter.profile}>
 				<MenuItem onClick={handleMenuClose}>Profile</MenuItem>
 			</Link>{" "}
-			<MenuItem onClick={handleMenuClose}> My account</MenuItem>
+			{/* <MenuItem onClick={handleMenuClose}> My account</MenuItem> */}
 			<MenuItem onClick={handleLogout}>Logout</MenuItem>
 		</Menu>
 	);
@@ -297,7 +298,7 @@ const DashBoardWrapper = (props) => {
 					<Typography className={classes.title} variant="h6" noWrap>
 						Welcome, {loginData.name}
 					</Typography>
-					<div className={classes.search}>
+					{/* <div className={classes.search}>
 						<div className={classes.searchIcon}>
 							<SearchIcon />
 						</div>
@@ -309,14 +310,24 @@ const DashBoardWrapper = (props) => {
 							}}
 							inputProps={{ "aria-label": "search" }}
 						/>
-					</div>
+					</div> */}
 					<div className={classes.grow} />
 					<div className={classes.sectionDesktop}>
-						<IconButton aria-label="show 4 new mails" color="inherit">
+						<Button
+							size="large"
+							variant="contained"
+							color="primary"
+							className={classes.button}
+							startIcon={<AccountBalanceWalletIcon />}
+						>
+							0.00
+						</Button>
+						{/* <IconButton aria-label="show 4 new mails" color="inherit">
 							<Badge badgeContent={4} color="secondary">
-								<MailIcon />
+								<AccountBalanceWalletIcon /> <div></div>
+								<p></p>
 							</Badge>
-						</IconButton>
+						</IconButton> */}
 						<IconButton aria-label="show 17 new notifications" color="inherit">
 							<Badge badgeContent={17} color="secondary">
 								<NotificationsIcon />

@@ -39,7 +39,7 @@ class Service {
 			responseType: "json",
 			data: payload,
 			onUploadProgress: (event) => {
-				progressUpdater(event);
+				progressUpdater && progressUpdater(event);
 			},
 		});
 	}

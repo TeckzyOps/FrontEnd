@@ -96,12 +96,11 @@ function UserDashBoard(props) {
 			<Head>
 				<title>Dashboard &nbsp;</title>
 			</Head>
-			<DashboardWrapper logindata={props.logindata} />
+			<DashboardWrapper />
 		</Fragment>
 	);
 }
 UserDashBoard.getInitialProps = async (ctx) => {
-	console.log(ctx);
 	// const isBrowser = () => typeof window !== "undefined";
 	// return {
 	// 	logindata:

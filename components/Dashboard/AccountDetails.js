@@ -98,8 +98,9 @@ const AccountDetails = (props) => {
 					console.log("ressss", response);
 					if (response.data.input_error) {
 						setError(response.data.input_error);
-					} else {
-						setmpinOpen(false);
+					}
+					if (response.data.data) {
+						setValues(response.data.data);
 					}
 				})
 				.catch(function (error) {
@@ -153,8 +154,10 @@ const AccountDetails = (props) => {
 					if (response.data.id) {
 						setProfileUpdateSuccess(() => true);
 						updateloginDetails(response.data);
+						setValues(response.data);
 					}
 					setSubmitting(false);
+					resetForm();
 					console.log("ressss", response);
 					if (response.data.input_error) {
 						setError(response.data.input_error);
@@ -236,7 +239,15 @@ const AccountDetails = (props) => {
 												InputProps={{
 													endAdornment: (
 														<InputAdornment position="end">
-															<Tooltip title={emailTooltip}>
+															<Tooltip
+																title={
+																	values.email
+																		? values.email_verified_at
+																			? "Verified"
+																			: "E-Mail ID Not Verified!"
+																		: "Add An E-Mail ID!"
+																}
+															>
 																<IconButton aria-label="toggle phone">
 																	{!email_verified && (
 																		<ErrorOutlineIcon color="primary" />
@@ -266,7 +277,13 @@ const AccountDetails = (props) => {
 												InputProps={{
 													endAdornment: (
 														<InputAdornment position="end">
-															<Tooltip title={mobileTooltip}>
+															<Tooltip
+																title={
+																	values.mobile_verified_at
+																		? "Verified"
+																		: "Mobile Not Verified!"
+																}
+															>
 																<IconButton aria-label="toggle phone">
 																	{!mobile_verified && (
 																		<ErrorOutlineIcon color="primary" />
