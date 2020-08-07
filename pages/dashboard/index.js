@@ -116,7 +116,12 @@ function UserDashBoard(props) {
 			<Dashboard>
 				<Grid container spacing={3}>
 					Chart
-					<Grid item xs={12} md={8} lg={9}>
+					<Grid item xs={12} md={4} lg={4}>
+						<Paper className={fixedHeightPaper}>
+							<Revenue />
+						</Paper>
+					</Grid>
+					<Grid item xs={12} md={4} lg={4}>
 						<Paper className={fixedHeightPaper}>
 							<Revenue />
 						</Paper>
