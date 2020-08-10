@@ -1,5 +1,8 @@
 import React, { Fragment } from "react";
+import clsx from "clsx";
+
 import DashboardWrapper from "../../components/Dashboard/DashboardWrapper";
+import Dashboard from "../../components/Dashboard/DashboardWrap";
 import Head from "next/head";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -9,8 +12,10 @@ import ButtonBase from "@material-ui/core/ButtonBase";
 import Chip from "@material-ui/core/Chip";
 import IconButton from "@material-ui/core/IconButton";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import Revenue from "./../../components/statCard/Revenue";
 import withAuth from "../../components/Hoc/withAuth";
 import LocalStorageService from "../../_services/LocalStorageService";
+
 const localStorageService = LocalStorageService.getService();
 
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
@@ -53,6 +58,15 @@ const useStyles = makeStyles((theme) => ({
 		position: "relative",
 		margin: "center",
 	},
+	paper: {
+		padding: theme.spacing(2),
+		display: "flex",
+		overflow: "auto",
+		flexDirection: "column",
+	},
+	fixedHeight: {
+		height: 240,
+	},
 
 	resumo: {
 		//background: "linear-gradient(45deg, #5DA6AF 30%, #FF8E53 90%)",
@@ -87,6 +101,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 function UserDashBoard(props) {
 	const classes = useStyles();
+	const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
 	const [value /*setValue*/] = React.useState(1);
 	React.useEffect(() => {
 		console.error("dashboardprops--> ", props);
@@ -96,7 +112,22 @@ function UserDashBoard(props) {
 			<Head>
 				<title>Dashboard &nbsp;</title>
 			</Head>
-			<DashboardWrapper />
+			{/* <DashboardWrapper /> */}
+			<Dashboard>
+				<Grid container spacing={3}>
+					Chart
+					<Grid item xs={12} md={4} lg={4}>
+						<Paper className={fixedHeightPaper}>
+							<Revenue />
+						</Paper>
+					</Grid>
+					<Grid item xs={12} md={4} lg={4}>
+						<Paper className={fixedHeightPaper}>
+							<Revenue />
+						</Paper>
+					</Grid>
+				</Grid>
+			</Dashboard>
 		</Fragment>
 	);
 }
