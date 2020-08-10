@@ -12,17 +12,13 @@ const localStorageService = LocalStorageService.getService();
 const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
-	const [user, setUser] = useState(null);
-	const [loginDetails, setloginDetails] = useState(null);
-
+	const [details, setDetails] = useState(null);
+	const [token, setToken] = useState(null);
 	useEffect(() => {
 		const token = Cookies.get("token");
 		const loginDet = Cookies.getJSON("loginDetails");
 		if (token) {
 			setToken(token);
-		}
-		if (loginDet) {
-			setloginDetails(loginDet);
 		}
 	}, []);
 
@@ -49,29 +45,18 @@ export const AuthProvider = ({ children }) => {
 			});
 	};
 
-	const updateloginDetails = (loginDetails) => {
-		setloginDetails(loginDetails);
-		Cookies.set("loginDetails", JSON.stringify(loginDetails));
-		localStorageService.setValue(
-			"loginDetails",
-			JSON.stringify(response.data.user_data)
-		);
-	};
-
 	const logout = () => {
 		userActions
 			.logout()
 			.then(function (response) {
 				console.log("ressss", response);
-
 				Cookies.remove("token");
-				Cookies.remove("loginDetails");
-				Cookies.remove("userDetails");
+				Cookies.remove("Details");
 				localStorage && localStorageService.clearToken();
-				localStorage && localStorageService.removeValue("loginDetails");
-				localStorage && localStorageService.removeValue("userDetails");
-				setUser(null);
+				localStorage && localStorageService.removeValue("Details");
+				setDetails(null);
 				removeBearerToken();
+				setToken(null);
 				redirectAfterLogout();
 			})
 			.catch(function (error) {
@@ -85,20 +70,6 @@ export const AuthProvider = ({ children }) => {
 			});
 	};
 
-	const setToken = (token, loginDetails) => {
-		if (token) {
-			Cookies.set("token", token);
-			addBearerToken(token);
-		}
-
-		if (loginDetails) {
-			Cookies.set("loginDetails", JSON.stringify(loginDetails));
-			setloginDetails(loginDetails);
-		}
-
-		updateUser();
-	};
-
 	const redirectAfterLogin = () => {
 		Router.push(routerLink.starter.dashboard);
 	};
@@ -106,15 +77,39 @@ export const AuthProvider = ({ children }) => {
 		Router.push(routerLink.starter.login);
 	};
 
+	const postloginsetToken = (token) => {
+		Cookies.set("token", token);
+		localStorageService.setToken(token);
+		addBearerToken(token);
+	};
+
+	const postsetLoginData = (logindata) => {
+		let det = {
+			login: logindata,
+			profile: {},
+		};
+		Cookies.set("Details", JSON.stringify(det));
+		localStorageService.setValue("Details", JSON.stringify(det));
+	};
+	const postsetUserData = (userdata) => {
+		let det = Cookies.getJSON("Details");
+		if (!det) {
+			det = localStorageService.getValue("Details");
+		}
+		det["profile"] = userdata;
+		Cookies.set("Details", JSON.stringify(det));
+		localStorageService.setValue("Details", JSON.stringify(det));
+		setDetails(det);
+	};
+
 	return (
 		<AuthContext.Provider
 			value={{
-				setToken,
-				updateloginDetails,
-				updateUser,
-				user,
-				loginDetails,
-				isAuthenticated: !!user,
+				postloginsetToken,
+				postsetLoginData,
+				postsetUserData,
+				details,
+				isAuthenticated: !!token,
 				logout,
 			}}
 		>

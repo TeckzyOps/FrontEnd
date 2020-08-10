@@ -99,11 +99,12 @@ const useStyles = makeStyles((theme) => ({
 
 const AccountProfile = (props) => {
 	const { t, className, ...rest } = props;
-	const [loginDetails, updateloginDetails] = React.useState({});
+	const [details, setDetails] = React.useState({});
 	const [dp, setDP] = React.useState({
 		file: null,
 		imagePreviewUrl: null,
 	});
+	const [avatar, setAvatar] = React.useState("");
 	const [openmpin, setmpinOpen] = React.useState(false);
 	const [uploadProgress, updateUploadProgress] = React.useState(0);
 	const [loading, setLoading] = React.useState(false);
@@ -126,35 +127,19 @@ const AccountProfile = (props) => {
 
 	React.useEffect(() => {
 		const token = Cookies.get("token");
-		const loginDet = Cookies.getJSON("loginDetails");
-		if (localStorageService.getValue("loginDetails")) {
-			updateloginDetails(
-				JSON.parse(LocalStorageService.getValue("loginDetails"))
-			);
-		}
-		if (localStorageService.getValue("userDetails")) {
-			setProfile(JSON.parse(LocalStorageService.getValue("loginDetails")));
-		}
-		if (localStorageService.getValue("loginDetails")) {
-			updateloginDetails(
-				JSON.parse(LocalStorageService.getValue("loginDetails"))
-			);
-		}
-		if (loginDet) {
-			setUser({
-				name: loginDet.name, //JSON.parse(LocalStorageService.getValue("userdata"))["name"],
-				city: "",
-				avatar: localStorageService.getValue("userDetails")
-					? JSON.parse(localStorageService.getValue("userDetails"))["data"][
-							"image_path"
-					  ]
-					: Cookies.getJSON("userDetails")
-					? Cookies.getJSON("userDetails")["data"]["image_path"]
-					: "",
-				email: loginDet.email, //JSON.parse(LocalStorageService.getValue("userdata"))["email"],
-				mobile: loginDet.mobile, //JSON.parse(LocalStorageService.getValue("userdata"))["mobile"],
-			});
-		}
+		setDetails(localStorageService.getUserDetails("Details"));
+		setAvatar(
+			localStorageService.getUserDetails("Details").profile.data.image_path
+		);
+		// if (loginDet) {
+		// 	setUser({
+		// 		name: details.login.name, //JSON.parse(LocalStorageService.getValue("userdata"))["name"],
+		// 		city: "",
+		// 		avatar: details.profile["image_path"] || "",
+		// 		email: details.login.email, //JSON.parse(LocalStorageService.getValue("userdata"))["email"],
+		// 		mobile: details.login.mobile, //JSON.parse(LocalStorageService.getValue("userdata"))["mobile"],
+		// 	});
+		// }
 	}, []);
 
 	const classes = useStyles();
@@ -164,10 +149,10 @@ const AccountProfile = (props) => {
 	const _handledpSubmit = ({ vals, setSubmitting, setFieldError }) => {
 		let payload = new FormData();
 		payload.append("image_path", vals["image_path"]);
-		payload.append("login_id", loginDetails["id"].toString());
+		payload.append("login_id", details.login["id"].toString());
 		payload.append("password", vals.password);
 
-		if (loginDetails && loginDetails.mpin) {
+		if (details.login && details.login.mpin) {
 			payload.append("mpin", vals.password);
 			payload.delete("password");
 		}
@@ -188,9 +173,12 @@ const AccountProfile = (props) => {
 						setOpeDPDialog(!opeDPDialog);
 					}
 					if (response.data.id) {
-						setUser({
-							...user,
-							["avatar"]: response.data.image_path,
+						setDetails({
+							...details,
+							["profile"]: {
+								...details.profile,
+								["image_path"]: response.data.image_path,
+							},
 						});
 					}
 				})
@@ -250,28 +238,28 @@ const AccountProfile = (props) => {
 					<div className={classes.details}>
 						<div>
 							<Typography gutterBottom variant="h6">
-								{user.name}
+								{details.login ? details.login.name : ""}
 							</Typography>
-							<Typography
+							{/* <Typography
 								className={classes.locationText}
 								color="textSecondary"
 								variant="body1"
 							>
 								{user.city}
+							</Typography> */}
+							<Typography
+								className={classes.locationText}
+								color="textPrimary"
+								variant="body1"
+							>
+								{details.login ? details.login.mobile : ""}
 							</Typography>
 							<Typography
 								className={classes.locationText}
 								color="textPrimary"
 								variant="body1"
 							>
-								{user.mobile} {editDetails.mobile && <EditIcon />}
-							</Typography>
-							<Typography
-								className={classes.locationText}
-								color="textPrimary"
-								variant="body1"
-							>
-								{user.email} {editDetails.email && <EditIcon />}
+								{details.login ? details.login.email : ""}
 							</Typography>
 							{/* <Typography
 								className={classes.dateText}
@@ -289,14 +277,15 @@ const AccountProfile = (props) => {
 								component="span"
 							>
 								<Avatar
-									src={user.avatar}
+									key={avatar}
+									src={avatar}
 									className={classes.large}
 									style={{
 										width: "100px",
 										height: "100px",
 									}}
 								>
-									{!user.avatar && showPreloadImage()}
+									{!avatar && showPreloadImage()}
 								</Avatar>
 							</IconButton>
 						</div>
@@ -431,7 +420,7 @@ const AccountProfile = (props) => {
 																			height: "100%",
 																		}}
 																	>
-																		{showPreloadImage()}
+																		{!avatar && showPreloadImage()}
 																	</Avatar>
 																</IconButton>
 															</label>
@@ -453,13 +442,13 @@ const AccountProfile = (props) => {
 													type="password"
 													component={TextField}
 													label={
-														loginDetails && loginDetails.mpin
+														details.login && details.login.mpin
 															? "M-PIN"
 															: "Password"
 													}
 													name="password"
 													placeholder={
-														loginDetails && loginDetails.mpin
+														details.login && details.login.mpin
 															? "Enter M-PIN"
 															: "Enter Password"
 													}
