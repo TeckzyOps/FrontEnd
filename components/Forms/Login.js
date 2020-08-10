@@ -17,7 +17,7 @@ import useStyles from "./form-style";
 import { useRouter } from "next/router";
 import { userActions } from "../../_actions/user.actions";
 import base64 from "../../utils/Base64";
-import { useAuth } from "../provider/Auth";
+
 import FormContainer from "./FormContainer";
 import { loginForm } from "../../static/FormData/loginForm";
 import Otpdialog from "../VerifyDialog/OtpDialog";
@@ -41,7 +41,6 @@ const localStorageService = LocalStorageService.getService();
 function Login(props) {
 	const classes = useStyles();
 	const router = useRouter();
-	const { postloginsetToken, postsetLoginData, postsetUserData } = useAuth();
 	const [check, setCheck] = useState(false);
 	const [showOTP, setOTP] = useState(false);
 
@@ -99,14 +98,31 @@ function Login(props) {
 									response.data.is_email_verified != "0")) &&
 							response.data.user_data
 						) {
-							if (response.data.user_data && response.data.access_token) {
-								postsetLoginData(response.data.user_data);
-								postloginsetToken(response.data.access_token);
+							if (response.data.access_token) {
+								Cookies.set("token", response.data.access_token);
+								localStorageService.setToken(response.data.access_token);
+								addBearerToken(response.data.access_token);
+							}
+
+							if (response.data.user_data) {
+								Cookies.set(
+									"loginDetails",
+									JSON.stringify(response.data.user_data)
+								);
+								localStorageService.setValue(
+									"loginDetails",
+									JSON.stringify(response.data.user_data)
+								);
+
 								profileActions
 									.getUserProfileDetails()
 									.then(function (response) {
 										if (response.data) {
-											postsetUserData(response.data);
+											Cookies.set("userDetails", JSON.stringify(response.data));
+											localStorageService.setValue(
+												"userDetails",
+												JSON.stringify(response.data)
+											);
 											router.push("/dashboard");
 										}
 									})

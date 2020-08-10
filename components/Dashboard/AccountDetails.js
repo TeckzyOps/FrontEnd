@@ -48,32 +48,45 @@ const useStyles = makeStyles(() => ({
 
 const AccountDetails = (props) => {
 	const { className, ...rest } = props;
-	const { postsetLoginData } = useAuth();
+	const { loginDetails, updateloginDetails } = useAuth();
 
 	const classes = useStyles();
 	const { t } = props;
 
-	const [details, setDetails] = useState({});
+	const [values, setValues] = useState({});
 	const [profileUpdateSuccess, setProfileUpdateSuccess] = useState(false);
 	const [editUsername, setEditUsername] = useState(false);
 	const [password, setpassword] = useState("");
 
+	const email_verified = values["email_verified_at"];
+
+	const mobile_verified = values["mobile_verified_at"];
 	React.useEffect(() => {
 		if (localStorageService.getValue("loginDetails")) {
 			setValues(JSON.parse(LocalStorageService.getValue("loginDetails")));
 		}
-		setDetails(localStorageService.getUserDetails("Details"));
 		// setValues({
 		// 	name: cookieActions.cookie.getJSON("userdata")["name"], //JSON.parse(LocalStorageService.getValue("userdata"))["name"],
 		// 	email: cookieActions.cookie.getJSON("userdata")["email"], //JSON.parse(LocalStorageService.getValue("userdata"))["email"],
 		// 	mobile: cookieActions.cookie.getJSON("userdata")["mobile"], //JSON.parse(LocalStorageService.getValue("userdata"))["mobile"],
 		// 	password: "",
 		// });
+
+		console.error(values);
 	}, []);
 
 	const _handlesubmitkey = (event) => {
 		setpassword(event.target.value);
 	};
+
+	const mobileTooltip = values.mobile_verified_at
+		? "Verified"
+		: "Mobile Not Verified!";
+	const emailTooltip = values.email
+		? values.email_verified_at
+			? "Verified"
+			: "E-Mail ID Not Verified!"
+		: "Add An E-Mail ID!";
 
 	const _handleModalClose = () => {
 		setProfileUpdateSuccess(() => true);
@@ -97,14 +110,18 @@ const AccountDetails = (props) => {
 
 	const handleChange = (event) => {
 		console.log(event);
+		// setValues({
+		// 	...values,
+		// 	[event.target.name]: event.target.value,
+		// });
 	};
 
 	const _handleSubmit = ({ vals, setSubmitting, resetForm }) => {
-		console.log(details);
+		console.log(values);
 		let payload = {};
 		for (var i in vals) {
 			if (
-				(!details.login.hasOwnProperty(i) || vals[i] !== details.login[i]) &&
+				(!values.hasOwnProperty(i) || vals[i] !== values[i]) &&
 				vals[i].toString() != ""
 			) {
 				payload[i] = vals[i] && vals[i];
@@ -112,7 +129,7 @@ const AccountDetails = (props) => {
 		}
 
 		if (payload && Object.keys(payload).length > 1) {
-			if (details.login && details.login.mpin) {
+			if (values && values.mpin) {
 				payload["mpin"] = payload.password;
 				delete payload["password"];
 			}
@@ -122,8 +139,8 @@ const AccountDetails = (props) => {
 				.then(function (response) {
 					if (response.data.id) {
 						setProfileUpdateSuccess(() => true);
-						postsetLoginData(response.data);
-						setDetails({ ...details, ["login"]: response.data });
+						updateloginDetails(response.data);
+						setValues(response.data);
 					}
 					setSubmitting(false);
 					resetForm();
@@ -149,9 +166,9 @@ const AccountDetails = (props) => {
 		password: Yup.string().min(4, "Too Short!").required("Required"),
 	});
 	const initVals = {
-		name: (details.login && details.login.name) || "",
-		mobile: (details.login && details.login.mobile) || "",
-		email: (details.login && details.login.email) || "",
+		name: values.name || "",
+		mobile: values.mobile || "",
+		email: values.email || "",
 		password: "",
 	};
 	return (
@@ -212,20 +229,18 @@ const AccountDetails = (props) => {
 														<InputAdornment position="end">
 															<Tooltip
 																title={
-																	details.login && details.login.email
-																		? details.login.email_verified_at
+																	values.email
+																		? values.email_verified_at
 																			? "Verified"
 																			: "E-Mail ID Not Verified!"
 																		: "Add An E-Mail ID!"
 																}
 															>
 																<IconButton aria-label="toggle phone">
-																	{!(
-																		details.login &&
-																		details.login.email_verified_at
-																	) ? (
+																	{!email_verified && (
 																		<ErrorOutlineIcon color="primary" />
-																	) : (
+																	)}
+																	{email_verified && (
 																		<CheckCircleIcon
 																			style={{ color: "green" }}
 																		/>
@@ -252,19 +267,16 @@ const AccountDetails = (props) => {
 														<InputAdornment position="end">
 															<Tooltip
 																title={
-																	details.login &&
-																	details.login.mobile_verified_at
+																	values.mobile_verified_at
 																		? "Verified"
 																		: "Mobile Not Verified!"
 																}
 															>
 																<IconButton aria-label="toggle phone">
-																	{!(
-																		details.login &&
-																		details.login.mobile_verified_at
-																	) ? (
+																	{!mobile_verified && (
 																		<ErrorOutlineIcon color="primary" />
-																	) : (
+																	)}
+																	{mobile_verified && (
 																		<CheckCircleIcon
 																			style={{ color: "green" }}
 																		/>
@@ -284,14 +296,10 @@ const AccountDetails = (props) => {
 												required
 												type="password"
 												component={TextField}
-												label={
-													details.login && details.login.mpin
-														? "M-PIN"
-														: "Password"
-												}
+												label={values && values.mpin ? "M-PIN" : "Password"}
 												name="password"
 												placeholder={
-													details.login && details.login.mpin
+													values && values.mpin
 														? "Enter M-PIN"
 														: "Enter Password"
 												}
@@ -323,6 +331,17 @@ const AccountDetails = (props) => {
 
 AccountDetails.propTypes = {
 	className: PropTypes.string,
+};
+AccountDetails.getInitialProps = async ({ req }) => {
+	console.log("Getting in Init Props");
+
+	const loginDetails = {
+		name: "", //JSON.parse(LocalStorageService.getValue("userdata"))["name"],
+		email: "", //JSON.parse(LocalStorageService.getValue("userdata"))["email"],
+		mobile: "", //JSON.parse(LocalStorageService.getValue("userdata"))["mobile"],
+		password: "",
+	};
+	return { Details: loginDetails };
 };
 
 export default withTranslation(["common"])(AccountDetails);

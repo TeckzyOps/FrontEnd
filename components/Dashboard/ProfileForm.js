@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import Spinner from "../Spinner/spinner";
-import { withTranslation } from "~/i18n";
 import Alert from "./../alert/alert";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
@@ -32,8 +31,6 @@ import {
 	interest,
 	languages,
 } from "~static/text/profiledata";
-import { state } from "~static/text/state";
-import { cities } from "~static/text/city";
 
 // import { useAuth } from "../provider/Auth";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
@@ -89,9 +86,8 @@ const ProfileForm = (props) => {
 	// const { loginDetails, user, updateUser } = useAuth();
 
 	const classes = useStyles();
-	const { t } = props;
 
-	const [details, setDetails] = useState({});
+	const [values, setValues] = useState({});
 	const [loginData, setloginData] = React.useState({});
 	const [states, setStates] = useState([]);
 	const [district, setDistrict] = useState([]);
@@ -131,19 +127,22 @@ const ProfileForm = (props) => {
 	});
 
 	React.useEffect(() => {
-		// console.error(Object.keys(state));
-		setStates(Object.keys(state));
-		setDetails(localStorageService.getUserDetails("Details"));
+		if (localStorageService.getValue("userDetails")) {
+			setStates(
+				JSON.parse(LocalStorageService.getValue("userDetails"))["states"]
+			);
+		}
 	}, []);
 	React.useEffect(() => {
-		if (details.profile && details.profile.data.state) {
-			setDistrict(state[details.profile.data.state]);
+		if (localStorageService.getValue("loginDetails")) {
+			setloginData(JSON.parse(LocalStorageService.getValue("loginDetails")));
 		}
-		if (details.profile && details.profile.data.district) {
-			setCity(cities[details.profile.data.district]);
+		if (localStorageService.getValue("userDetails")) {
+			setValues(
+				JSON.parse(LocalStorageService.getValue("userDetails"))["data"]
+			);
 		}
-	}, [details]);
-
+	}, []);
 	const _handleModalClose = () => {
 		setProfileUpdateSuccess(() => true);
 	};
@@ -165,106 +164,62 @@ const ProfileForm = (props) => {
 	};
 
 	const initVals = {
-		gender:
-			details.profile && details.profile.data.gender
-				? details.profile.data.gender
-				: "",
-		dob:
-			details.profile && details.profile.data.dob
-				? details.profile.data.dob
-				: "",
-		religion:
-			details.profile && details.profile.data.religion
-				? details.profile.data.religion
-				: "",
-		mother_tongue:
-			details.profile && details.profile.data.mother_tongue
-				? details.profile.data.mother_tongue
-				: "",
-		profession:
-			details.profile && details.profile.data.profession
-				? details.profile.data.profession
-				: "",
-		profession_details:
-			details.profile && details.profile.data.profession_details
-				? details.profile.data.profession_details
-				: "",
-		occupation:
-			details.profile && details.profile.data.occupation
-				? details.profile.data.occupation
-				: "",
+		gender: values.gender ? gender[parseInt(values.gender) - 1] : "",
+		dob: values.dob ? values.dob : "",
+		religion: values.religion ? values.religion : "",
+		mother_tongue: values.mother_tongue ? values.mother_tongue : "",
+		profession: values.profession ? values.profession : "",
+		profession_details: values.profession_details
+			? values.profession_details
+			: "",
+		occupation: values.occupation ? values.occupation : "",
 		language_speak:
-			details.profile &&
-			details.profile.data.language_speak &&
-			Array.isArray(JSON.parse(details.profile.data.language_speak))
-				? JSON.parse(details.profile.data.language_speak)
+			values.language_speak && Array.isArray(JSON.parse(values.language_speak))
+				? JSON.parse(values.language_speak)
 				: [],
 		interest:
-			details.profile &&
-			details.profile.data.interest &&
-			Array.isArray(JSON.parse(details.profile.data.interest))
-				? JSON.parse(details.profile.data.interest)
+			values.interest && Array.isArray(JSON.parse(values.interest))
+				? JSON.parse(values.interest)
 				: [],
 		education:
-			details.profile &&
-			details.profile.data.education &&
-			Array.isArray(JSON.parse(details.profile.data.education))
-				? JSON.parse(details.profile.data.education)
+			values.education && Array.isArray(JSON.parse(values.education))
+				? JSON.parse(values.education)
 				: [],
 		experience:
-			details.profile &&
-			details.profile.data.experience &&
-			Array.isArray(JSON.parse(details.profile.data.experience))
-				? JSON.parse(details.profile.data.experience)
+			values.experience && Array.isArray(JSON.parse(values.experience))
+				? JSON.parse(values.experience)
 				: [],
-		current_address:
-			details.profile && details.profile.data.current_address
-				? details.profile.data.current_address
-				: "",
-		area:
-			details.profile && details.profile.data.area
-				? details.profile.data.area
-				: "",
-		city:
-			details.profile && details.profile.data.city
-				? details.profile.data.city
-				: "",
-		district:
-			details.profile && details.profile.data.district
-				? details.profile.data.district
-				: "",
-		state:
-			details.profile && details.profile.data.state
-				? details.profile.data.state
-				: "",
-		id_proof_type: "",
-		id_proof_number: "",
+		current_address: values.current_address ? values.current_address : "",
+		area: values.area ? values.area : "",
+		city: values.city ? values.city : "",
+		district: values.district ? values.district : "",
+		state: values.state ? values.state : "",
+		id_proof_type: values.id_proof_type ? values.id_proof_type : "",
+		id_proof_number: values.id_proof_number ? values.id_proof_number : "",
 		id_proof_path: null,
 		password: "",
 	};
 	const _handleSubmit = ({ vals, setSubmitting, setFieldError }) => {
 		let payload = new FormData();
-		vals["id_proof_path"] &&
-			payload.append("id_proof_path", vals["id_proof_path"]);
+		payload.append("id_proof_path", vals["id_proof_path"]);
 
 		for (var i in vals) {
-			if (
-				!details.profile.data.hasOwnProperty(i) ||
-				vals[i] !== details.profile.data[i]
-			) {
+			if ((!values.hasOwnProperty(i) || vals[i] !== values[i]) && vals[i]) {
 				if (i != "id_proof_path") {
 					if (Array.isArray(vals[i])) {
 						if (vals[i].length > 0) {
 							payload.append(i, JSON.stringify(vals[i]));
 						}
 					} else {
-						payload.append(i, vals[i]);
+						if (vals[i].toString().length > 0) {
+							payload.append(i, vals[i]);
+						}
 					}
 				}
 			}
 		}
-		payload.append("login_id", details.login["id"]);
-		if (details.login && details.login.mpin) {
+		payload.append("login_id", loginData["id"].toString());
+		if (loginData && loginData.mpin) {
 			payload.append("mpin", vals.password);
 			payload.delete("password");
 		}
@@ -278,19 +233,13 @@ const ProfileForm = (props) => {
 						Object.keys(response.data.input_error).forEach((k) => {
 							setFieldError(k, result[k][0]);
 						});
-					}
-
-					if (response.data.id) {
-						setDetails({ ...details, ["profile"]: response.data });
-						let det = localStorageService.getUserDetails("Details");
-						det["profile"] = response.data;
-						Cookies.set("Details", JSON.stringify(det));
-						localStorageService.setValue("Details", JSON.stringify(det));
+					} else {
 					}
 				})
 				.catch(function (error) {
 					console.error("errrrr ", error);
 				});
+			console.log(payload);
 		}
 	};
 
@@ -299,11 +248,32 @@ const ProfileForm = (props) => {
 
 		switch (e.target.name) {
 			case "state":
-				setDistrict(state[e.target.value]);
+				profileActions
+					.getDistrict(e.target.value)
+					.then(function (response) {
+						console.log("ressss", response);
+						if (response.data.districts) {
+							setDistrict(response.data.districts);
+							// setError(response.data.input_error);
+						}
+					})
+					.catch(function (error) {
+						console.error("errrrr ", error);
+					});
 				break;
 			case "district":
-				profileActions;
-				setCity(cities[e.target.value]);
+				profileActions
+					.getCity(e.target.value)
+					.then(function (response) {
+						console.log("ressss", response);
+						if (!response.data.input_error) {
+							setCity(response.data.cities);
+							// setError(response.data.input_error);
+						}
+					})
+					.catch(function (error) {
+						console.error("errrrr ", error);
+					});
 				break;
 			// case "city":
 			// 	text = "How you like them apples?";
@@ -355,7 +325,7 @@ const ProfileForm = (props) => {
 						isValid,
 						isSubmitting,
 					} = props;
-
+					console.error(props);
 					return (
 						<div>
 							<CardHeader
@@ -399,8 +369,8 @@ const ProfileForm = (props) => {
 															}}
 														>
 															{states.map((option) => (
-																<MenuItem key={option} value={option}>
-																	{option}
+																<MenuItem key={option.id} value={option.id}>
+																	{option.name}
 																</MenuItem>
 															))}
 														</Field>
@@ -426,9 +396,9 @@ const ProfileForm = (props) => {
 																shrink: true,
 															}}
 														>
-															{district.map((option, index) => (
-																<MenuItem key={index} value={option}>
-																	{option}
+															{district.map((option) => (
+																<MenuItem key={option.id} value={option.id}>
+																	{option.name}
 																</MenuItem>
 															))}
 														</Field>
@@ -454,9 +424,9 @@ const ProfileForm = (props) => {
 																shrink: true,
 															}}
 														>
-															{city.map((option, index) => (
-																<MenuItem key={index} value={option}>
-																	{option}
+															{city.map((option) => (
+																<MenuItem key={option.id} value={option.id}>
+																	{option.name}
 																</MenuItem>
 															))}
 														</Field>
@@ -484,7 +454,7 @@ const ProfileForm = (props) => {
 															}}
 														>
 															{gender.map((option, index) => (
-																<MenuItem key={index} value={index + 1}>
+																<MenuItem key={index} value={option}>
 																	{option}
 																</MenuItem>
 															))}
@@ -899,6 +869,7 @@ const ProfileForm = (props) => {
 																<div>
 																	<input
 																		id={field.name}
+																		multiple
 																		style={{ display: "none" }}
 																		name={field.name}
 																		type="file"
@@ -915,9 +886,8 @@ const ProfileForm = (props) => {
 																			color="primary"
 																			component="span"
 																		>
-																			Upload
+																			Upload {props.getFie}
 																		</Button>
-																		{field.value && field.value.name}
 																	</label>
 																</div>
 															)}
@@ -937,13 +907,13 @@ const ProfileForm = (props) => {
 															type="password"
 															component={TextField}
 															label={
-																details.login && details.login.mpin
+																loginData && loginData.mpin
 																	? "M-PIN"
 																	: "Password"
 															}
 															name="password"
 															placeholder={
-																details.login && details.login.mpin
+																loginData && loginData.mpin
 																	? "Enter M-PIN"
 																	: "Enter Password"
 															}
@@ -956,19 +926,10 @@ const ProfileForm = (props) => {
 										</AccordionDetails>
 										<Divider />
 										<AccordionActions>
-											{!props.isSubmitting ? (
-												<Button onClick={props.resetForm} size="small">
-													Reset To Default
-												</Button>
-											) : (
-												t("common:cant_revert")
-											)}
-											<Button
-												disable={props.isSubmitting}
-												type="submit"
-												color="primary"
-												variant="outlined"
-											>
+											<Button onClick={props.resetForm} size="small">
+												Reset To Default
+											</Button>
+											<Button type="submit" color="primary" variant="outlined">
 												Save details
 											</Button>
 										</AccordionActions>
@@ -988,4 +949,4 @@ ProfileForm.propTypes = {
 	className: PropTypes.string,
 };
 
-export default withTranslation(["common"])(ProfileForm);
+export default ProfileForm;

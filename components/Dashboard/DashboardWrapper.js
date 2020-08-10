@@ -122,11 +122,12 @@ const DashBoardWrapper = (props) => {
 	const [values, setValues] = React.useState({
 		error: "",
 	});
+
+	const [loginData, setloginData] = React.useState({});
 	const [state, setState] = React.useState({
 		left: false,
 	});
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-	const [details, setDetails] = React.useState({});
 	const isMenuOpen = Boolean(anchorEl);
 	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 	const handleProfileMenuOpen = (event) => {
@@ -134,7 +135,9 @@ const DashBoardWrapper = (props) => {
 	};
 
 	React.useEffect(() => {
-		setDetails(localStorageService.getUserDetails("Details"));
+		if (localStorageService.getValue("loginDetails")) {
+			setloginData(JSON.parse(LocalStorageService.getValue("loginDetails")));
+		}
 	}, []);
 	const handleMobileMenuClose = () => {
 		setMobileMoreAnchorEl(null);
@@ -282,7 +285,7 @@ const DashBoardWrapper = (props) => {
 						<MenuIcon />
 					</IconButton>
 					<Typography className={classes.title} variant="h6" noWrap>
-						Welcome, {details.login ? details.login.name : ""}
+						Welcome, {loginData.name}
 					</Typography>
 					{/* <div className={classes.search}>
 						<div className={classes.searchIcon}>

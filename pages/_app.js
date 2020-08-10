@@ -81,10 +81,6 @@ class MyApp extends App {
 					self.setState({ showSnackbar: true });
 				}
 				if (401 === error.response.status) {
-					Cookies.remove("token");
-					Cookies.remove("Details");
-					localStorage && localStorageService.clearToken();
-					localStorage && localStorageService.removeValue("Details");
 					Router.push("/login");
 					return Promise.reject(error);
 				} else {

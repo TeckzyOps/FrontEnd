@@ -1,4 +1,3 @@
-import Cookies from "js-cookie";
 const LocalStorageService = (function () {
 	var _service;
 	function _getService() {
@@ -23,11 +22,6 @@ const LocalStorageService = (function () {
 			return localStorage.getItem(key);
 		}
 	}
-	function _getJSON(key) {
-		if (key) {
-			return JSON.parse(localStorage.getItem(key));
-		}
-	}
 	function _getAccessToken() {
 		return localStorage.getItem("access_token");
 	}
@@ -43,12 +37,6 @@ const LocalStorageService = (function () {
 			localStorage.removeItem(key);
 		}
 	}
-
-	function _getUserDetails() {
-		return Cookies.getJSON("Details")
-			? Cookies.getJSON("Details")
-			: _getService().getJSON("Details");
-	}
 	return {
 		getService: _getService,
 		setToken: _setToken,
@@ -58,8 +46,6 @@ const LocalStorageService = (function () {
 		getAccessToken: _getAccessToken,
 		getRefreshToken: _getRefreshToken,
 		clearToken: _clearToken,
-		getJSON: _getJSON,
-		getUserDetails: _getUserDetails,
 		is: () => typeof localStorage !== "undefined",
 	};
 })();

@@ -2,7 +2,6 @@ import React, { useState, useEffect, Fragment } from "react";
 import PropTypes from "prop-types";
 import AppBar from "@material-ui/core/AppBar";
 import clsx from "clsx";
-import Cookies from "js-cookie";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import Container from "@material-ui/core/Container";
@@ -16,8 +15,6 @@ import logo from "~/static/images/logo.png";
 import "~/vendors/hamburger-menu.css";
 import useStyles from "./header-style";
 import { useAuth } from "../provider/Auth";
-import LocalStorageService from "../../_services/LocalStorageService";
-const localStorageService = LocalStorageService.getService();
 import navMenu from "./menu";
 
 let counter = 0;
@@ -36,9 +33,8 @@ const LinkBtn = React.forwardRef(function LinkBtn(props, ref) {
 
 function Header(props) {
 	const [fixed, setFixed] = useState(false);
-	const { isAuthenticated, Details, logout } = useAuth();
+	const { isAuthenticated, loginDetails, logout } = useAuth();
 
-	const [details, setDetails] = useState({});
 	let flagFixed = false;
 	const handleScroll = () => {
 		const doc = document.documentElement;
@@ -56,7 +52,6 @@ function Header(props) {
 	const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 	useEffect(() => {
 		handleScroll();
-		setDetails(localStorageService.getUserDetails("Details"));
 		// window.addEventListener("scroll", handleScroll);
 	}, []);
 
@@ -130,9 +125,8 @@ function Header(props) {
 							{isAuthenticated ? (
 								<div>
 									<Button variant="contained" color="primary" href="/dashboard">
-										Hi, {details.login.name}
+										Hi, {loginDetails.Name}
 									</Button>
-									&nbsp;
 									<Button variant="contained" color="primary" onClick={logout}>
 										Logout
 									</Button>
