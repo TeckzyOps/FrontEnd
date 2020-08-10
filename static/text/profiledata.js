@@ -70,6 +70,7 @@ export const experience = ["None", "1 Years", "2 Years", "3 Years", "4 Years"];
 export const education = ["10+2", "Bachelors", "Masters"];
 export const interest = ["Angular", "jQuery", "Polymer", "React", "Vue.js"];
 export const languages = [
+	"Hindi",
 	"Angika",
 	"Arunachali",
 	"Assamese",
