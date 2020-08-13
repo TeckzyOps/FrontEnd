@@ -13,6 +13,7 @@ import TopSlider from "../components/AnimateSlider";
 import Feature from "../components/Feature";
 import Counter from "../components/Counter";
 
+import { Paper } from "@material-ui/core";
 import Pricing from "../components/Pricing";
 import Subscribe from "../components/Subscribe";
 import Footer from "../components/Footer";
@@ -61,9 +62,11 @@ function Landing(props) {
 							<TopSlider />
 						</Container>
 					</section>
-					<section className={clsx(classes.spaceTop)} id="feature">
+					<section className={clsx(classes.spaceTop, "my-5")} id="feature">
 						<Container fixed>
-							<Feature />
+							<Paper elevation={0}>
+								<Feature />
+							</Paper>
 						</Container>
 					</section>
 					<section className={classes.pageSection}>

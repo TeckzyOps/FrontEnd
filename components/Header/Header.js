@@ -129,7 +129,12 @@ function Header(props) {
 
 							{isAuthenticated ? (
 								<div>
-									<Button variant="contained" color="primary" href="/dashboard">
+									<Button
+										variant="contained"
+										className="mr-2"
+										color="primary"
+										href="/dashboard"
+									>
 										Hi, {details.login.name}
 									</Button>
 									&nbsp;
