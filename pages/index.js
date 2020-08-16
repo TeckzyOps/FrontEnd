@@ -14,13 +14,13 @@ import Feature from "../components/Feature";
 import Counter from "../components/Counter";
 
 import { Paper } from "@material-ui/core";
-import Pricing from "../components/Pricing";
-import Subscribe from "../components/Subscribe";
 import Footer from "../components/Footer";
-import PageNav from "../components/PageNav";
-import Notification from "../components/Notification";
 import brand from "../static/text/brand";
+import PageNav from "../components/PageNav";
 import service from "./../utils/ApiService";
+import Notification from "../components/Notification";
+import Subscribe from "../components/Subscribe";
+import Pricing from "../components/Pricing";
 
 const sectionMargin = (margin) => margin * 2;
 const useStyles = makeStyles((theme) => ({
