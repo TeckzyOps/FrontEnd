@@ -18,21 +18,32 @@ import {
 	makeStyles,
 } from "@material-ui/core/styles";
 import { useTextAlign } from "~/theme/common";
+import Link from "next/link";
 
 let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
 
 const tiers = [
-	{ title: "Groom/Bride", imgsrc: "static/images/bride.svg" },
-	{ title: "Freelancing", imgsrc: "static/images/freelance.svg" },
-	{ title: "Vendor", imgsrc: "static/images/vendor.svg" },
+	{
+		title: "Groom/Bride",
+		imgsrc: "static/images/bride.svg",
+		url: "/matrimony",
+	},
+	{
+		title: "Freelancing",
+		imgsrc: "static/images/freelance.svg",
+		url: "/matrimony",
+	},
+	{ title: "Vendor", imgsrc: "static/images/vendor.svg", url: "/matrimony" },
 	{
 		title: "Seller",
 		imgsrc: "static/images/seller.svg",
+		url: "/matrimony",
 	},
 	{
 		title: "Worker",
 		imgsrc: "static/images/worker.svg",
+		url: "/matrimony",
 	},
 ];
 
@@ -61,22 +72,24 @@ export default function SquareCards() {
 		<div className={classes.root}>
 			<Grid justify="center" container spacing={3}>
 				{tiers.map((tier, i) => (
-					<Grid key={i} item sm={4} xs={4} md>
-						<IconButton
-							variant="outlined"
-							color="secondary"
-							className={classes.standarsbtn}
-							aria-label={tier.title}
-						>
-							<img src={tier.imgsrc} width="50%" />
-						</IconButton>
-						<br />
-						<MuiThemeProvider theme={theme}>
-							<Typography variant="caption" display="block" gutterBottom>
-								{tier.title}
-							</Typography>
-						</MuiThemeProvider>
-					</Grid>
+					<Link href={tier.url}>
+						<Grid key={i} item sm={4} xs={4} md>
+							<IconButton
+								variant="outlined"
+								color="secondary"
+								className={classes.standarsbtn}
+								aria-label={tier.title}
+							>
+								<img src={tier.imgsrc} width="50%" />
+							</IconButton>
+							<br />
+							<MuiThemeProvider theme={theme}>
+								<Typography variant="caption" display="block" gutterBottom>
+									{tier.title}
+								</Typography>
+							</MuiThemeProvider>
+						</Grid>
+					</Link>
 				))}
 			</Grid>
 		</div>
