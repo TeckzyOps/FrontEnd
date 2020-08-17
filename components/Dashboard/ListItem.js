@@ -11,6 +11,7 @@ import BarChartIcon from "@material-ui/icons/BarChart";
 import routerLink from "~/static/text/link";
 import Link from "@material-ui/core/Link";
 
+import CardMembershipIcon from "@material-ui/icons/CardMembership";
 import LayersIcon from "@material-ui/icons/Layers";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import SettingsIcon from "@material-ui/icons/Settings";
@@ -48,6 +49,12 @@ export const mainListItems = (
 				<SettingsIcon />
 			</ListItemIcon>
 			<ListItemText primary="Setting" />
+		</ListItem>
+		<ListItem component={Link} href={routerLink.starter.freelancer} button>
+			<ListItemIcon>
+				<CardMembershipIcon />
+			</ListItemIcon>
+			<ListItemText primary="Freelancer" />
 		</ListItem>
 	</div>
 );
