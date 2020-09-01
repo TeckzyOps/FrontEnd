@@ -12,7 +12,7 @@ import ButtonBase from "@material-ui/core/ButtonBase";
 import Chip from "@material-ui/core/Chip";
 import IconButton from "@material-ui/core/IconButton";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import Revenue from "./../../components/statCard/Revenue";
+import Revenue from "./../../components/StatCard/Revenue";
 import withAuth from "../../components/Hoc/withAuth";
 import LocalStorageService from "../../_services/LocalStorageService";
 
