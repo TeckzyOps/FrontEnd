@@ -1,17 +1,18 @@
 import React from "react";
-import withAuth from "../../components/Hoc/withAuth";
+import withAuth from "../../../components/Hoc/withAuth";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Card } from "@material-ui/core";
 import Head from "next/head";
-import LocalStorageService from "../../_services/LocalStorageService";
-import DashboardWrapper from "../../components/Dashboard/DashboardWrapper";
+import LocalStorageService from "../../../_services/LocalStorageService";
+import DashboardWrapper from "../../../components/Dashboard/DashboardWrapper";
 import Typography from "@material-ui/core/Typography";
-import MatrimonyProfile from "../../components/cards/MatrimonyProfile";
+import MatrimonyProfile from "../../../components/cards/MatrimonyProfile";
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
 import IconButton from "@material-ui/core/IconButton";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
-
+import routerLink from "~/static/text/link";
+import Link from "@material-ui/core/Link";
 const localStorageService = LocalStorageService.getService();
 
 const useStyles = makeStyles((theme) => ({
@@ -48,7 +49,11 @@ const Matrimony = (props) => {
 					<Grid item lg={4} md={6} xl={4} xs={12}>
 						<Card className={classes.addCard}>
 							<div className={classes.col}>
-								<Fab color="primary" aria-label="add">
+								<Fab
+									href={routerLink.starter.matrimonynew}
+									color="primary"
+									aria-label="add"
+								>
 									<AddIcon />
 								</Fab>
 							</div>

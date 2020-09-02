@@ -6,6 +6,8 @@ const link = {
 		register: "/register",
 		dashboard: "/dashboard",
 		profile: "/dashboard/profile",
+		matrimony: "/dashboard/matrimony/",
+		matrimonynew: "/dashboard/matrimony/create_matrimony",
 	},
 };
 
