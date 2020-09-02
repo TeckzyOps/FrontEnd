@@ -22,6 +22,7 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
+import routerLink from "~/static/text/link";
 import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
 
 import { mainListItems, secondaryListItems } from "./ListItem";
@@ -202,7 +203,6 @@ export default function Dashboard(props) {
 			anchorEl={mobileMoreAnchorEl}
 			anchorOrigin={{ vertical: "top", horizontal: "right" }}
 			id={mobileMenuId}
-			keepMounted
 			transformOrigin={{ vertical: "top", horizontal: "right" }}
 			open={isMobileMenuOpen}
 			onClose={handleMobileMenuClose}

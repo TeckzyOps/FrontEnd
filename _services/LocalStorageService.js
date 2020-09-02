@@ -10,7 +10,7 @@ const LocalStorageService = (function () {
 	}
 	function _setToken(token) {
 		if (token) {
-			localStorage.setItem("access_token", token);
+			localStorage.setItem("token", token);
 		}
 	}
 	function _setValue(key, value) {
@@ -29,7 +29,7 @@ const LocalStorageService = (function () {
 		}
 	}
 	function _getAccessToken() {
-		return localStorage.getItem("access_token");
+		return localStorage.getItem("token");
 	}
 	function _getRefreshToken() {
 		return localStorage.getItem("refresh_token");

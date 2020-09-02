@@ -21,10 +21,11 @@ import "../vendors/slick/slick-theme.css";
 import AxiosIns from "../utils/httpClient";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Router from "next/router";
-import LocalStorageService from "../_services/LocalStorageService";
 import Backdrop from "@material-ui/core/Backdrop";
 import { AuthProvider } from "../components/provider/Auth";
 import Cookies from "js-cookie";
+import LocalStorageService from "../_services/LocalStorageService";
+const localStorageService = LocalStorageService.getService();
 
 let themeType = "light";
 if (typeof Storage !== "undefined") {
@@ -49,6 +50,11 @@ class MyApp extends App {
 		AxiosIns.interceptors.request.use(
 			(config) => {
 				this.setState({ Netloading: true });
+				const token = Cookies.get("token");
+				if (null != token && config.url != "login") {
+					config.headers.Authorization = "Bearer " + token;
+				}
+
 				return config;
 			},
 			(error) => {
@@ -68,6 +74,13 @@ class MyApp extends App {
 				console.error(error.response);
 				self.setState({ Netloading: false });
 				if (error.response) {
+					if (401 === error.response.status) {
+						Cookies.remove("token");
+						Cookies.remove("Details");
+						localStorage && localStorageService.clearToken();
+						localStorage && localStorageService.removeValue("Details");
+						Router.push("/login");
+					}
 					self.setState({ snackbarError: error.response.data.custom_error });
 					self.setState({ showSnackbar: true });
 				} else if (
@@ -80,16 +93,8 @@ class MyApp extends App {
 					self.setState({ snackbarError: "Err: NO Response, Try Again!" });
 					self.setState({ showSnackbar: true });
 				}
-				if (401 === error.response.status) {
-					Cookies.remove("token");
-					Cookies.remove("Details");
-					localStorage && localStorageService.clearToken();
-					localStorage && localStorageService.removeValue("Details");
-					Router.push("/login");
-					return Promise.reject(error);
-				} else {
-					return Promise.reject(error);
-				}
+
+				return Promise.reject(error);
 			}
 		);
 

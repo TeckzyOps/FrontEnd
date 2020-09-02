@@ -32,7 +32,7 @@ export const mainListItems = (
 			</ListItemIcon>
 			<ListItemText primary="Order" />
 		</ListItem>
-		<ListItem component={Link} href={routerLink.starter.profile} button>
+		<ListItem component={Link} href={routerLink.starter.matrimony} button>
 			<ListItemIcon>
 				<PeopleIcon />
 			</ListItemIcon>

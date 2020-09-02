@@ -7,6 +7,9 @@ const link = {
 		dashboard: "/dashboard",
 		profile: "/dashboard/profile",
 		freelancer: "/dashboard/freelancer",
+		matrimony: "/dashboard/matrimony/",
+		matrimonynew: "/dashboard/matrimony/create_matrimony",
+
 	},
 };
 

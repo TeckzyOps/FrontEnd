@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 
 import Cookies from "js-cookie";
 import api, { addBearerToken, removeBearerToken } from "../../utils/httpClient";
+import axios from "../../utils/httpClient";
 import { profileActions } from "../../_actions/profile.action";
 import { userActions } from "../../_actions/user.actions";
 import Router from "next/router";
@@ -55,7 +56,8 @@ export const AuthProvider = ({ children }) => {
 				localStorage && localStorageService.clearToken();
 				localStorage && localStorageService.removeValue("Details");
 				setDetails(null);
-				removeBearerToken();
+				// removeBearerToken();
+				// delete axios.defaults.headers.Authorization;
 				setToken(null);
 				redirectAfterLogout();
 			})
@@ -80,7 +82,6 @@ export const AuthProvider = ({ children }) => {
 	const postloginsetToken = (token) => {
 		Cookies.set("token", token);
 		localStorageService.setToken(token);
-		addBearerToken(token);
 	};
 
 	const postsetLoginData = (logindata) => {
