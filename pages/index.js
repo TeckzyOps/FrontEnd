@@ -13,13 +13,14 @@ import TopSlider from "../components/AnimateSlider";
 import Feature from "../components/Feature";
 import Counter from "../components/Counter";
 
-import Pricing from "../components/Pricing";
-import Subscribe from "../components/Subscribe";
+import { Paper } from "@material-ui/core";
 import Footer from "../components/Footer";
-import PageNav from "../components/PageNav";
-import Notification from "../components/Notification";
 import brand from "../static/text/brand";
+import PageNav from "../components/PageNav";
 import service from "./../utils/ApiService";
+import Notification from "../components/Notification";
+import Subscribe from "../components/Subscribe";
+import Pricing from "../components/Pricing";
 
 const sectionMargin = (margin) => margin * 2;
 const useStyles = makeStyles((theme) => ({
@@ -61,9 +62,11 @@ function Landing(props) {
 							<TopSlider />
 						</Container>
 					</section>
-					<section className={clsx(classes.spaceTop)} id="feature">
+					<section className={clsx(classes.spaceTop, "my-5")} id="feature">
 						<Container fixed>
-							<Feature />
+							<Paper elevation={0}>
+								<Feature />
+							</Paper>
 						</Container>
 					</section>
 					<section className={classes.pageSection}>
