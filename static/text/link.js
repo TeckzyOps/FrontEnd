@@ -8,7 +8,9 @@ const link = {
 		profile: "/dashboard/profile",
 		freelancer: "/dashboard/freelancer",
 		matrimony: "/dashboard/matrimony/",
+		matrimonyAds: "/dashboard/matrimony/ListAds",
 		matrimonynew: "/dashboard/matrimony/create_matrimony",
+		matrimonyprofile: "/dashboard/matrimony/profile",
 
 	},
 };
