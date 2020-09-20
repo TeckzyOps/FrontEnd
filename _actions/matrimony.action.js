@@ -6,14 +6,29 @@ export const matrimonyActions = {
 	UpdateFamilyDetails,
 	UpdateLifeStyleDetails,
 	getBasicDetails,
-	getLoginDetails,
-	getDistrict,
-	getCity,
-	setUserProfileDetails,
+	getDefaultPrefs,
+	getFamilyDetails,
+	editMatrimony,
+	getLifeStyleDetails,
+	getMatrimonyAds,
+	UpdateDefaultPrefs,
+	uploadMatrimonyImage,
+	search,
 };
 
-function createMatrimony(payload) {
-	let apiEndpoint = "createMetrimonyId";
+function uploadMatrimonyImage(payload) {
+	let apiEndpoint = "metrimonyImageUpload";
+	return Service.post(apiEndpoint, payload);
+}
+
+function createMatrimony(payload, action) {
+	return action == 0
+		? Service.post("createMetrimonyId", payload)
+		: Service.post("editMetrimonyId", payload);
+}
+
+function editMatrimony(payload) {
+	let apiEndpoint = "editMetrimonyId";
 	return Service.post(apiEndpoint, payload);
 }
 
@@ -23,18 +38,37 @@ function UpdateFamilyDetails(payload) {
 }
 
 function UpdateLifeStyleDetails(payload) {
-	let apiEndpoint = "createUpdateMatrimonyLifeStyle";
+	let apiEndpoint = "createUpdateMetrimonyLifeStyle";
 
 	return Service.post(apiEndpoint, payload);
+}
+function UpdateDefaultPrefs(payload) {
+	let apiEndpoint = "createUpdateMetrimonyDefaultSetting";
+
+	return Service.post(apiEndpoint, payload);
+}
+
+function getDefaultPrefs(payload) {
+	let apiEndpoint = "createUpdateMetrimonyDefaultSetting";
+
+	return Service.get(apiEndpoint, payload);
+}
+function getFamilyDetails(payload) {
+	let apiEndpoint = "createUpdateMetrimonyFamily";
+	return Service.get(apiEndpoint, payload);
 }
 function getBasicDetails(payload) {
 	let apiEndpoint = "createMetrimonyId";
 	return Service.get(apiEndpoint, payload);
 }
+function getLifeStyleDetails(payload) {
+	let apiEndpoint = "createUpdateMetrimonyLifeStyle";
 
-function setUserProfileDetails(payload, progressUpdater) {
-	let apiEndpoint = "createProfile";
-	return Service.post(apiEndpoint, payload, progressUpdater);
+	return Service.get(apiEndpoint, payload);
+}
+function getMatrimonyAds() {
+	let apiEndpoint = "selfMetrimonyData";
+	return Service.get(apiEndpoint);
 }
 
 function getDistrict(stateid) {
@@ -51,6 +85,12 @@ function getCity(districtid) {
 	let payload = {
 		district_id: districtid,
 	};
+
+	return Service.get(apiEndpoint, payload);
+}
+
+function search(payload) {
+	let apiEndpoint = "metrimonyFilters";
 
 	return Service.get(apiEndpoint, payload);
 }

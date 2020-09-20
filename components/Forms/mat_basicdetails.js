@@ -28,6 +28,8 @@ import {
 	occupation,
 	idType,
 	religion,
+	maritialStatus,
+	caste,
 	experience,
 	countryList,
 	interest,
@@ -86,18 +88,24 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const Basicdetails = (props) => {
+const Basicdetails = ({
+	initvalue,
+	setmatrimonyid,
+	matrimonyid,
+	setbasicdetails,
+	nextform,
+	...props
+}) => {
 	const { className, ...rest } = props;
 	// const { loginDetails, user, updateUser } = useAuth();
 
 	const classes = useStyles();
 	const { t } = props;
 
-	const [details, setDetails] = useState(props.prefilldata || {});
-	const [loginData, setloginData] = React.useState({});
 	const [states, setStates] = useState([]);
 	const [district, setDistrict] = useState([]);
 	const [city, setCity] = useState([]);
+	const [formAction, setFormAction] = useState(0);
 	const [profileUpdateSuccess, setProfileUpdateSuccess] = useState(false);
 	const profileSchema = Yup.object().shape({
 		filled_by: Yup.string().required("Required"),
@@ -142,9 +150,7 @@ const Basicdetails = (props) => {
 	React.useEffect(() => {
 		// console.error(Object.keys(state));
 		setStates(Object.keys(state));
-		setDetails(localStorageService.getUserDetails("Details"));
 	}, []);
-	React.useEffect(() => {}, [details]);
 
 	const _handleModalClose = () => {
 		setProfileUpdateSuccess(() => true);
@@ -153,7 +159,6 @@ const Basicdetails = (props) => {
 	const _renderModal = () => {
 		const onClick = () => {
 			setProfileUpdateSuccess(() => false);
-			props.nextForm();
 		};
 
 		return (
@@ -167,75 +172,66 @@ const Basicdetails = (props) => {
 		);
 	};
 
-	const initVals = {
-		filled_by: "",
-		name: details.name ? details.name : "",
-		gender: details.gender ? details.gender : "",
-		dob_year: "",
-		height: "",
-		religion: details.religion ? details.religion : "",
-		cast: "",
-		mother_tongue: details.mother_tongue ? details.mother_tongue : "",
-		marital_status: "",
-		childrens: "",
-		childrens_living_status: "",
-		manglik_status: "",
-		country: "",
-		state: details.state ? details.state : "",
-		district: details.district ? details.district : "",
-		education:
-			details.education && Array.isArray(JSON.parse(details.education))
-				? JSON.parse(details.education)
-				: [],
-		proffesion: details.proffesion ? details.proffesion : "",
-		occupation: details.occupation ? details.occupation : "",
-		salary: "",
-		gotra: "",
-		living_with_parents_status: "",
-		wedding_budget: "",
-	};
 	const _handleSubmit = ({ vals, setSubmitting, resetForm, setFieldError }) => {
 		let payload = new FormData();
-
-		for (var i in vals) {
-			if (Array.isArray(vals[i])) {
-				if (vals[i].length > 0) {
-					payload.append(i, JSON.stringify(vals[i]));
-				}
-			} else {
-				if (vals[i]) {
-					payload.append(i, vals[i]);
-				}
+		let proceed = false;
+		let valKeyArr = Object.keys(vals);
+		for (var i = 0; i < valKeyArr.length; i++) {
+			if (initvalue[valKeyArr[i]] != vals[valKeyArr[i]]) {
+				proceed = true;
+				break;
 			}
 		}
 
-		if (payload) {
-			matrimonyActions
-				.createMatrimony(payload)
-				.then(function (response) {
-					setSubmitting(false);
-					console.log("ressss", response);
-					if (response.data.input_error) {
-						Object.keys(response.data.input_error).forEach((k) => {
-							setFieldError(k, response.data.input_error[k][0]);
-						});
+		if (proceed) {
+			for (var i in vals) {
+				if (Array.isArray(vals[i])) {
+					if (vals[i].length > 0) {
+						payload.append(i, JSON.stringify(vals[i]));
 					}
+				} else {
+					if (vals[i]) {
+						payload.append(i, vals[i]);
+					}
+				}
+			}
+			payload.append("metrimony_id", matrimonyid);
+			if (payload) {
+				let action = 0;
+				if (matrimonyid && matrimonyid > 0) {
+					action = 1;
+				}
 
-					if (response.data.data.id) {
-						props.setMatrimonyID(response.data.data.id);
-						props.nextForm();
-						// setProfileUpdateSuccess(() => true);
-					}
-				})
-				.catch(function (error) {
-					setSubmitting(false);
-					if (error.response.data.input_error) {
-						Object.keys(error.response.data.input_error).forEach((k) => {
-							setFieldError(k, error.response.data.input_error[k][0]);
-						});
-					}
-					console.error("errrrr ", error);
-				});
+				matrimonyActions
+					.createMatrimony(payload, action)
+					.then(function (response) {
+						setSubmitting(false);
+						console.log("ressss", response);
+						if (response.data.input_error) {
+							Object.keys(response.data.input_error).forEach((k) => {
+								setFieldError(k, response.data.input_error[k][0]);
+							});
+						}
+
+						if (response.data.data.id) {
+							setmatrimonyid(response.data.data.id);
+							setbasicdetails(response.data.data);
+							nextform();
+							// setProfileUpdateSuccess(() => true);
+						}
+					})
+					.catch(function (error) {
+						setSubmitting(false);
+						if (error.response && error.response.data.input_error) {
+							Object.keys(error.response.data.input_error).forEach((k) => {
+								setFieldError(k, error.response.data.input_error[k][0]);
+							});
+						}
+						console.error("errrrr ", error);
+					});
+			}
+		} else {
+			nextform();
 		}
 	};
 
@@ -271,6 +267,31 @@ const Basicdetails = (props) => {
 		return <MuiTextField {...fieldToTextField(props)} onChange={onChange} />;
 	}
 
+	const initialValues = {
+		filled_by: "",
+		name: "",
+		gender: "",
+		dob_year: "",
+		height: "",
+		religion: "",
+		cast: "",
+		mother_tongue: "",
+		marital_status: "",
+		childrens: "",
+		childrens_living_status: "",
+		manglik_status: "",
+		country: "",
+		state: "",
+		district: "",
+		education: "",
+		proffesion: "",
+		occupation: "",
+		salary: "",
+		gotra: "",
+		living_with_parents_status: "",
+		wedding_budget: "",
+	};
+
 	return (
 		<Card {...rest} className={clsx(classes.root, className)}>
 			{/* <Button type="submit" color="primary" variant="outlined">
@@ -278,7 +299,16 @@ const Basicdetails = (props) => {
 			</Button> */}
 			<Formik
 				enableReinitialize
-				initialValues={initVals}
+				initialValues={initvalue}
+				// initialValues={Object.keys(initvalue).reduce(function (state, obj) {
+				// 	try {
+				// 		state[obj] = JSON.parse(initvalue[obj]);
+				// 	} catch (e) {
+				// 		state[obj] = initvalue[obj];
+				// 	}
+
+				// 	return state;
+				// }, {})}
 				validationSchema={profileSchema}
 				onSubmit={(vals, { setSubmitting, resetForm, setFieldError }) =>
 					_handleSubmit({
@@ -309,7 +339,7 @@ const Basicdetails = (props) => {
 							/>
 							<Divider />
 							<CardContent>
-								<Form autocomplete="off">
+								<Form autoComplete="off">
 									<Grid container spacing={3}>
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
@@ -483,7 +513,7 @@ const Basicdetails = (props) => {
 														shrink: true,
 													}}
 												>
-													{states.map((option, index) => (
+													{caste.map((option, index) => (
 														<MenuItem key={index} value={option}>
 															{option}
 														</MenuItem>
@@ -543,13 +573,11 @@ const Basicdetails = (props) => {
 														shrink: true,
 													}}
 												>
-													{["Single", "Divorced", "Awaiting Divorced"].map(
-														(option, index) => (
-															<MenuItem key={index} value={index + 1}>
-																{option}
-															</MenuItem>
-														)
-													)}
+													{maritialStatus.map((option, index) => (
+														<MenuItem key={index} value={index + 1}>
+															{option}
+														</MenuItem>
+													))}
 												</Field>
 											</Box>
 										</Grid>
@@ -579,10 +607,7 @@ const Basicdetails = (props) => {
 												></Field>
 											</Box>
 										</Grid>
-										{console.log(
-											null == props.values.marital_status,
-											props.values.marital_status < 1
-										)}
+
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
@@ -734,7 +759,7 @@ const Basicdetails = (props) => {
 											</Box>
 										</Grid>
 
-										<Grid item md={6} xs={12}>
+										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
 													required
@@ -765,7 +790,7 @@ const Basicdetails = (props) => {
 											</Box>
 										</Grid>
 
-										<Grid item md={6} xs={12}>
+										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
 													required
@@ -925,12 +950,7 @@ const Basicdetails = (props) => {
 									</Grid>
 
 									<Divider />
-									<Grid
-										container
-										alignItems="flex-end"
-										justify="flex-end"
-										xs={12}
-									>
+									<Grid container alignItems="flex-end" justify="flex-end">
 										{!props.isSubmitting ? (
 											<Button onClick={props.resetForm} size="small">
 												Reset To Default
@@ -938,8 +958,9 @@ const Basicdetails = (props) => {
 										) : (
 											t("common:cant_revert")
 										)}
+
 										<Button
-											disable={props.isSubmitting}
+											disabled={props.isSubmitting}
 											type="submit"
 											color="primary"
 											variant="outlined"
