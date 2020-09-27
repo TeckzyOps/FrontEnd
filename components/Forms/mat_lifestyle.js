@@ -297,18 +297,6 @@ const Lifestyledetails = ({
 							<CardContent>
 								<Form>
 									<Grid container spacing={3}>
-										<Field
-											required
-											onChange={handleChange}
-											component={TextField}
-											type="hidden"
-											name="metrimony_id"
-											variant="standard"
-											helperText={
-												formprops.errors.hasOwnProperty("father_occupation") &&
-												formprops.errors["father_occupation"]
-											}
-										/>
 										<Grid item md={6} xs={12}>
 											<Box margin={1}>
 												<InputLabel shrink={true} htmlFor="Language Speak">

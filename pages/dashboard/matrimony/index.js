@@ -319,11 +319,7 @@ const MatrimonySearch = (props) => {
 								</Grid>
 								<br></br>
 								<Link href={routerLink.starter.matrimonyAds}>
-									<Button
-										variant="outlined"
-										onClick={handleFilterOpen}
-										color="secondary"
-									>
+									<Button variant="outlined" color="secondary">
 										Post an AD
 									</Button>
 								</Link>
@@ -385,6 +381,13 @@ const MatrimonySearch = (props) => {
 								>
 									Reset
 								</Button>
+							</Grid>
+							<Grid item>
+								<Link href={routerLink.starter.matrimonyAds}>
+									<Button variant="outlined" color="secondary">
+										Post an AD
+									</Button>
+								</Link>
 							</Grid>
 						</Grid>
 						<br />

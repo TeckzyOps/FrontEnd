@@ -70,7 +70,7 @@ import {
 	InputAdornment,
 	IconButton,
 } from "@material-ui/core";
-import { freelancerActions } from "../../_actions/freelancer.action";
+import { workerActions } from "../../_actions/worker.action";
 const useStyles = makeStyles((theme) => ({
 	root: {
 		flexGrow: 1,
@@ -96,14 +96,13 @@ const freelancerform = (props) => {
 	const [freelancerData, setFreelancerData] = useState({
 		gst_file_path: null,
 		license_file_path: null,
-		certificate_file_path: null,
-		advertisement_file_path: null,
+
 		service_category: "",
 		sub_service: "",
 		bussiness_name: "",
 		total_experience: "",
 		bussineess_description: "",
-		min_service_price: "",
+		working_address: "",
 		max_service_price: "",
 		address: "",
 		city: "",
@@ -232,8 +231,8 @@ const freelancerform = (props) => {
 		payload.append("except_shaadiwala_offer", except_shaadiwala_offer);
 		payload.delete("doc_type");
 		if (payload) {
-			freelancerActions
-				.createFreelancer(payload)
+			workerActions
+				.createWorker(payload)
 				.then(function (response) {
 					setSubmitting(false);
 					console.log("ressss", response);
