@@ -23,6 +23,8 @@ import DefaultPrefs from "../../../components/Forms/mat_defaultpreferences";
 import StepButton from "@material-ui/core/StepButton";
 import Button from "@material-ui/core/Button";
 import { withRouter } from "react-router";
+import { useTheme } from "@material-ui/core/styles";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { matrimonyActions } from "../../../_actions/matrimony.action";
 
 const localStorageService = LocalStorageService.getService();
@@ -38,7 +40,6 @@ function getSteps() {
 
 const useStyles = makeStyles((theme) => ({
 	root: {
-		padding: theme.spacing(4),
 		"& > *": {
 			margin: theme.spacing(1),
 		},
@@ -58,6 +59,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 const Matrimony = (props) => {
 	const classes = useStyles();
+	const theme = useTheme();
+	const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
+	const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 	const [activeStep, setActiveStep] = React.useState(0);
 	const [details, setDetails] = React.useState({});
 	const [matrimony_id, setMatrimonyId] = React.useState(0);
@@ -278,67 +282,48 @@ const Matrimony = (props) => {
 
 			<DashboardWrapper logindata={props.logindata} userdata={props.userdata} />
 			<div className={classes.root}>
-				<Stepper activeStep={activeStep}>
-					{steps.map((label, index) => {
-						const stepProps = {};
-						const labelProps = {};
+				<Grid container justifyContent="center" spacing={2}>
+					<Grid item xs={12}>
+						<Stepper activeStep={activeStep}>
+							{isMobile && (
+								<Step>
+									<StepButton onClick={handleStep(activeStep)}>
+										{steps[activeStep]}
+									</StepButton>
+								</Step>
+							)}
+							{isDesktop &&
+								steps.map((label, index) => {
+									const stepProps = {};
+									const labelProps = {};
 
-						return (
-							<Step key={label} {...stepProps}>
-								<StepButton onClick={handleStep(index)}>{label}</StepButton>
-							</Step>
-						);
-					})}
-				</Stepper>
-				<div>
-					{activeStep === steps.length ? (
+									return (
+										<Step key={label} {...stepProps}>
+											<StepButton onClick={handleStep(index)}>
+												{label}
+											</StepButton>
+										</Step>
+									);
+								})}
+						</Stepper>
+					</Grid>
+					<Grid item xs={12}>
 						<div>
-							<Typography className={classes.instructions}>
-								All steps completed - you&apos;re finished
-							</Typography>
-							<Button onClick={handleReset} className={classes.button}>
-								Reset
-							</Button>
+							{activeStep === steps.length ? (
+								<div>
+									<Typography className={classes.instructions}>
+										All steps completed - you&apos;re finished
+									</Typography>
+									<Button onClick={handleReset} className={classes.button}>
+										Reset
+									</Button>
+								</div>
+							) : (
+								<div>{getStepContent(activeStep)}</div>
+							)}
 						</div>
-					) : (
-						<div>
-							{getStepContent(activeStep)}
-
-							<div>
-								<Button
-									disabled={activeStep === 0}
-									onClick={handleBack}
-									className={classes.button}
-								>
-									Back
-								</Button>
-								<Button
-									variant="contained"
-									color="primary"
-									onClick={handleNext}
-									className={classes.button}
-								>
-									{activeStep === steps.length - 1 ? "Finish" : "Next"}
-								</Button>
-							</div>
-						</div>
-					)}
-				</div>
-				{/* <Grid container spacing={2}>
-					<Paper className={classes.paper}>
-						<Grid container spacing={2}>
-							<Grid item md={12} xs={12}>
-								<Basicdetails />
-							</Grid>
-							<Grid item md={12} xs={12}>
-								<Lifestyledetails />
-							</Grid>
-							<Grid item md={12} xs={12}>
-								<Familydetails />
-							</Grid>
-						</Grid>
-					</Paper>
-				</Grid> */}
+					</Grid>
+				</Grid>
 			</div>
 		</React.Fragment>
 	);

@@ -9,7 +9,7 @@ export const loginForm = [
 		validations: [
 			{
 				type: "required",
-				params: ["UserNMobile/E-Mailame is required"],
+				params: ["Mobile/E-Mail is required"],
 			},
 			{
 				type: "min",
