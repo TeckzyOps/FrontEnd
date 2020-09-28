@@ -195,7 +195,10 @@ const Basicdetails = ({
 					}
 				}
 			}
-			payload.append("metrimony_id", matrimonyid);
+			if (matrimonyid) {
+				payload.append("metrimony_id", matrimonyid);
+			}
+
 			if (payload) {
 				let action = 0;
 				if (matrimonyid && matrimonyid > 0) {
