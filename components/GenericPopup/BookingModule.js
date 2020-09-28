@@ -40,12 +40,13 @@ const useStyles = makeStyles((theme) => ({
 const BookingModule = ({ freelancer_id, ...props }) => {
 	const classes = useStyles();
 	const [img, setImg] = React.useState({});
+
 	const [date, changeDate] = React.useState(new Date());
 	const [remoteData, setRemoteData] = React.useState([]);
 	const [remoteError, setRemoteError] = React.useState("");
 	const [bookingInit, setBookingInit] = React.useState(false);
 	const [comments, setComments] = React.useState("");
-	const [selectedDays, setSelectedDays] = React.useState([1, 2, 15]);
+	const [selectedDays, setSelectedDays] = React.useState([]);
 
 	function formatDate(date) {
 		var d = new Date(date),
@@ -59,14 +60,29 @@ const BookingModule = ({ freelancer_id, ...props }) => {
 		return [year, month, day].join("-");
 	}
 	React.useEffect(() => {
-		console.log(formatDate(date));
-	}, [date]);
+		getBookings();
+	}, []);
 
 	function getBookings() {
+		let mm = ("0" + (new Date(date).getMonth() + 1)).slice(-2);
+		let yyyy = new Date(date).getFullYear();
+		setSelectedDays([]);
 		freelancerActions
-			.bookDate({ freelancer_id: 1 })
+			.getbookDate({ freelancer_id: 1, month: mm, year: yyyy })
 			.then(function (response) {
 				console.log("ressss", response);
+				if (Array.isArray(response.data.data.data)) {
+					setRemoteData(response.data.data.data);
+					response.data.data.data.forEach((obj) => {
+						let date = new Date(obj.date_of_booking);
+						let mon = ("0" + (date.getMonth() + 1)).slice(-2);
+						let year = date.getFullYear();
+						if (mm == mon && yyyy == year) {
+							let d = date.getDate();
+							setSelectedDays(selectedDays.concat(d));
+						}
+					});
+				}
 			})
 			.catch(function (error) {
 				console.error("errrrr ", error);
@@ -77,7 +93,7 @@ const BookingModule = ({ freelancer_id, ...props }) => {
 		let payload = {
 			freelancer_id: 1,
 			date_of_booking: formatDate(date),
-			comments: comments,
+			comment: comments,
 		};
 		if (Object.values(payload).length <= 0) {
 			return;
@@ -96,6 +112,7 @@ const BookingModule = ({ freelancer_id, ...props }) => {
 	}
 	const handleMonthChange = async () => {
 		// just select random days to simulate server side based data
+		getBookings();
 		return new Promise((resolve) => {
 			setTimeout(() => {
 				setSelectedDays([1, 2, 3].map(() => getRandomNumber(1, 28)));
@@ -194,33 +211,35 @@ const BookingModule = ({ freelancer_id, ...props }) => {
 							</Grid>
 							<Grid item md={6} sm={12}>
 								<List className={classes.root}>
-									<ListItem alignItems="flex-start">
-										<ListItemAvatar>
-											<Avatar
-												alt="Remy Sharp"
-												src="/static/images/avatar/1.jpg"
-											/>
-										</ListItemAvatar>
-										<ListItemText
-											primary="Brunch this weekend?"
-											secondary={
-												<React.Fragment>
-													<Typography
-														component="span"
-														variant="body2"
-														className={classes.inline}
-														color="textPrimary"
-													>
-														Ali Connors
-													</Typography>
-													{
-														" — I'll be in your neighborhood doing errands this…"
+									{remoteData.map((data, index) => (
+										<div key={index}>
+											<ListItem alignItems="flex-start">
+												<ListItemAvatar>
+													<Avatar
+														alt={new Date(data.date_of_booking).getDate()}
+													/>
+												</ListItemAvatar>
+												<ListItemText
+													primary={data.date_of_booking}
+													secondary={
+														<React.Fragment>
+															<Typography
+																component="span"
+																variant="body2"
+																className={classes.inline}
+																color="textPrimary"
+															>
+																Status : "Booked"
+															</Typography>
+															<br></br>
+															{data.comment}
+														</React.Fragment>
 													}
-												</React.Fragment>
-											}
-										/>
-									</ListItem>
-									<Divider variant="inset" component="li" />
+												/>
+											</ListItem>
+											<Divider variant="inset" component="li" />
+										</div>
+									))}
 								</List>
 							</Grid>
 						</Grid>

@@ -8,7 +8,7 @@ import Link from "@material-ui/core/Link";
 import withAuth from "../../../components/Hoc/withAuth";
 import LocalStorageService from "../../../_services/LocalStorageService";
 const localStorageService = LocalStorageService.getService();
-import WorkerForm from "../../../components/Dashboard/WorkerFormForm";
+import WorkerForm from "../../../components/Dashboard/WorkerForm";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
