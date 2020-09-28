@@ -94,30 +94,23 @@ const freelancerform = (props) => {
 	const router = useRouter();
 	const [docSelected, setDocSelected] = useState(0);
 	const [freelancerData, setFreelancerData] = useState({
-		gst_file_path: null,
 		license_file_path: null,
-
 		service_category: "",
 		sub_service: "",
-		bussiness_name: "",
+		alternate_number: "",
 		total_experience: "",
 		bussineess_description: "",
 		working_address: "",
-		max_service_price: "",
-		address: "",
+		present_working: "",
 		city: "",
 		state: "",
 		district: "",
 		service_area: "",
-		locality: "",
-		office_map_link: "",
-		office_number: "",
-		catalog_pdf_match: "",
-		offer_tagline: "",
-		shadiwala_offer_files: "",
-		commission_percent: "",
-		min_commission: "",
-		max_commission: "",
+		salary_per_day: "",
+		salary_per_month: "",
+		google_location: "",
+		work_prefer: "",
+		noc_file_path: "",
 	});
 
 	const [profileUpdateSuccess, setProfileUpdateSuccess] = useState(false);
@@ -139,12 +132,8 @@ const freelancerform = (props) => {
 		}
 	}, []);
 	const fileDropdown = {
-		Catalog: "catalog_pdf_path",
-		GST: "gst_file_path",
-		"Shaadiwala Offer": "shaadiwala_offer_file",
-		Advertisement: "advertisement_file_path",
-		License: "license_file_path",
-		Certificate: "certificate_file_path",
+		"NOC Document": "noc_file_path",
+		"License Document": "license_file_path",
 	};
 	function CustomTextField(props) {
 		const {
@@ -178,11 +167,6 @@ const freelancerform = (props) => {
 	};
 	function deleteFile(doc, props) {
 		const docs = docData.filter((obj) => obj.document !== doc);
-		if (doc == "Advertisement") {
-			props.setFieldValue("want_advertisement", "0");
-		} else if (doc == "Shaadiwala Offer") {
-			props.setFieldValue("except_shaadiwala_offer", "0");
-		}
 		setDocData(docs);
 	}
 	const _handleSubmit = ({ vals, setSubmitting, resetForm, setFieldError }) => {
@@ -199,8 +183,6 @@ const freelancerform = (props) => {
 				}
 			}
 		}
-		let want_advertisement = 0;
-		let except_shaadiwala_offer = 0;
 		// Object.keys(fileDropdown).forEach((dropdown) => {
 		// 	payload.append(dropdown, freelancerData[fileDropdown[dropdown]]);
 		// 	if (
@@ -269,97 +251,23 @@ const freelancerform = (props) => {
 		);
 	};
 
-	const initVals = {
-		gst_file_path: null,
-		license_file_path: null,
-		certificate_file_path: null,
-		advertisement_file_path: null,
-		service_category: "",
-		sub_service: "",
-		bussiness_name: "",
-		total_experience: "",
-		bussineess_description: "",
-		min_service_price: "",
-		max_service_price: "",
-		address: "",
-		city: "",
-		state: "",
-		district: "",
-		service_area: "",
-		locality: "",
-		office_map_link: "",
-		office_number: "",
-		catalog_pdf_path: "",
-		offer_tagline: "",
-		shadiwala_offer_files: "",
-		commission_percent: "",
-		min_commission: "",
-		max_commission: "",
-	};
-
 	const profileSchema = Yup.object().shape({
 		service_category: Yup.string().required("Required"),
 		sub_service: Yup.string().required("Required"),
-		bussiness_name: Yup.string().required("Required"),
-		bussineess_description: Yup.string().required("Required"),
-		total_experience: Yup.number().required("Required"),
-		min_service_price: Yup.string().required("Required"),
-		max_service_price: Yup.string().required("Required"),
-		address: Yup.string().required("Required"),
+		alternate_number: "",
+		total_experience: "",
+		bussineess_description: "",
+		working_address: Yup.string().required("Required"),
+		present_working: Yup.string().required("Required"),
 		city: Yup.string().required("Required"),
 		state: Yup.string().required("Required"),
 		district: Yup.string().required("Required"),
-		locality: Yup.string().required("Required"),
-		office_map_link: Yup.string().required("Required"),
-		office_number: Yup.number().required("Required"),
-		catalog_pdf_match: Yup.string(),
-		offer_tagline: Yup.string(),
-		shadiwala_offer_files: Yup.mixed()
-			.test("fileSize", "File Size is too large", (value) => {
-				if (value) {
-					return value.size <= 2000000;
-				} else {
-					return true;
-				}
-			})
-			.test(
-				"fileType",
-				"Unsupported File Format, Upload a JPEG,JPG or PNG file",
-				(value) => {
-					if (value) {
-						return ["image/png", "image/jpg", "image/jpeg"].includes(
-							value.type
-						);
-					} else {
-						return true;
-					}
-				}
-			),
-		commission_percent: Yup.string().required("Required"),
-		max_commission: Yup.string().required("Required"),
-		max_commission: Yup.string().required("Required"),
-		advertisement_file_path: Yup.mixed()
-			.test("fileSize", "File Size is too large", (value) => {
-				if (value) {
-					return value.size <= 2000000;
-				} else {
-					return true;
-				}
-			})
-			.test(
-				"fileType",
-				"Unsupported File Format, Upload a JPEG,JPG or PNG file",
-				(value) => {
-					if (value) {
-						return ["image/png", "image/jpg", "image/jpeg"].includes(
-							value.type
-						);
-					} else {
-						return true;
-					}
-				}
-			),
-		gst_file_path: Yup.mixed()
+		service_area: Yup.string().required("Required"),
+		salary_per_day: Yup.string().required("Required"),
+		salary_per_month: Yup.string().required("Required"),
+		google_location: Yup.string(),
+		work_prefer: Yup.string().required("Required"),
+		noc_file_path: Yup.mixed()
 			.test("fileSize", "File Size is too large", (value) => {
 				if (value) {
 					return value.size <= 2000000;
@@ -379,25 +287,6 @@ const freelancerform = (props) => {
 				}
 			),
 		license_file_path: Yup.mixed()
-			.test("fileSize", "File Size is too large", (value) => {
-				if (value) {
-					return value.size <= 2000000;
-				} else {
-					return true;
-				}
-			})
-			.test(
-				"fileType",
-				"Unsupported File Format, Upload a PDF file",
-				(value) => {
-					if (value) {
-						return ["application/pdf"].includes(value.type);
-					} else {
-						return true;
-					}
-				}
-			),
-		certificate_file_path: Yup.mixed()
 			.test("fileSize", "File Size is too large", (value) => {
 				if (value) {
 					return value.size <= 2000000;
@@ -589,6 +478,78 @@ const freelancerform = (props) => {
 														Tell us about the service you provide!
 													</Typography>
 												</Grid>
+
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															component={TextField}
+															type="number"
+															name="alternate_number"
+															label="Alternate Contact No."
+															variant="standard"
+															helperText={
+																props.errors.hasOwnProperty("offer_tagline") &&
+																props.errors["offer_tagline"]
+															}
+															margin="dense"
+														/>
+													</Box>
+												</Grid>
+
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															type="text"
+															component={TextField}
+															name="total_experience"
+															label="Total Experince"
+															onChange={handleChange}
+															variant="standard"
+															helperText={
+																props.errors.hasOwnProperty("offer_tagline") &&
+																props.errors["offer_tagline"]
+															}
+															margin="dense"
+														/>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															required
+															onChange={handleChange}
+															fullWidth
+															component={TextField}
+															type="text"
+															name="present_working"
+															label="Are You Working Presently?"
+															select
+															variant="standard"
+															helperText={
+																props.errors.hasOwnProperty(
+																	"service_category"
+																) && props.errors["service_category"]
+															}
+															margin="normal"
+															InputLabelProps={{
+																shrink: true,
+															}}
+														>
+															{["No", "Yes"].map((option, index) => (
+																<MenuItem key={index} value={index}>
+																	{option}
+																</MenuItem>
+															))}
+														</Field>
+													</Box>
+												</Grid>
+												<Grid item xs={12}>
+													<Typography align="center" variant="h6" gutterBottom>
+														Tell us about your bussiness!
+													</Typography>
+												</Grid>
 												<Grid item md={4} xs={12}>
 													<Box margin={1}>
 														<Field
@@ -678,72 +639,6 @@ const freelancerform = (props) => {
 														</Field>
 													</Box>
 												</Grid>
-												<Grid item xs={6}>
-													<Typography variant="body2" gutterBottom>
-														Service Price
-													</Typography>
-													<div style={{ marginBottom: 20 }}>
-														<div>
-															<Grid container spacing={2}>
-																<Grid item xs={6}>
-																	<Field
-																		variant="outlined"
-																		fullWidth
-																		label="Maximum"
-																		component={TextField}
-																		type="text"
-																		name="max_service_price"
-																		helperText={
-																			props.errors.hasOwnProperty(
-																				"max_service_price"
-																			) && props.errors["max_service_price"]
-																		}
-																		style={{ marginRight: 10 }}
-																	/>
-																</Grid>
-																<Grid item xs={6}>
-																	<Field
-																		variant="outlined"
-																		fullWidth
-																		label="Minimum"
-																		component={TextField}
-																		name="min_service_price"
-																		helperText={
-																			props.errors.hasOwnProperty(
-																				"min_service_price"
-																			) && props.errors["min_service_price"]
-																		}
-																		type="text"
-																		style={{ marginRight: 10 }}
-																	/>
-																</Grid>
-															</Grid>
-														</div>
-													</div>
-												</Grid>
-												<Grid item xs={12}>
-													<Typography align="center" variant="h6" gutterBottom>
-														Tell us about your bussiness!
-													</Typography>
-												</Grid>
-
-												<Grid item md={12} xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															component={TextField}
-															type="text"
-															name="bussiness_name"
-															label="Business Name"
-															variant="standard"
-															helperText={
-																props.errors.hasOwnProperty("bussiness_name") &&
-																props.errors["bussiness_name"]
-															}
-															margin="dense"
-														/>
-													</Box>
-												</Grid>
 
 												<Grid item md={12} xs={12}>
 													<Box margin={1}>
@@ -772,43 +667,6 @@ const freelancerform = (props) => {
 													</Box>
 												</Grid>
 
-												<Grid item md={6} xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															component={TextField}
-															type="text"
-															name="offer_tagline"
-															label="Offer Tagline"
-															variant="standard"
-															helperText={
-																props.errors.hasOwnProperty("offer_tagline") &&
-																props.errors["offer_tagline"]
-															}
-															margin="dense"
-														/>
-													</Box>
-												</Grid>
-
-												<Grid item md={6} xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															type="text"
-															component={TextField}
-															name="total_experience"
-															label="Total Experince"
-															onChange={handleChange}
-															variant="standard"
-															helperText={
-																props.errors.hasOwnProperty("offer_tagline") &&
-																props.errors["offer_tagline"]
-															}
-															margin="dense"
-														/>
-													</Box>
-												</Grid>
-
 												<Grid item md={12} xs={12}>
 													<Box margin={1}>
 														<Field
@@ -816,8 +674,8 @@ const freelancerform = (props) => {
 															multiline={true}
 															type="text"
 															component={TextField}
-															name="address"
-															label="Business Address"
+															name="work_address"
+															label="Work Address"
 															multiline
 															rows={4}
 															onChange={handleChange}
@@ -841,7 +699,7 @@ const freelancerform = (props) => {
 															fullWidth
 															type="text"
 															component={TextField}
-															name="office_map_link"
+															name="google_location"
 															label="Map Link"
 															onChange={handleChange}
 															variant="standard"
@@ -856,8 +714,22 @@ const freelancerform = (props) => {
 															fullWidth
 															type="text"
 															component={TextField}
-															name="office_number"
-															label="Office Number"
+															name="salary_per_month"
+															label="Salary (Monthly)"
+															onChange={handleChange}
+															variant="standard"
+															margin="normal"
+														/>
+													</Box>
+												</Grid>
+												<Grid item md={6} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															type="text"
+															component={TextField}
+															name="salary_per_day"
+															label="Salary (Daily)"
 															onChange={handleChange}
 															variant="standard"
 															margin="normal"
@@ -963,76 +835,24 @@ const freelancerform = (props) => {
 															fullWidth
 															component={TextField}
 															type="text"
-															name="locality"
-															label="Locality"
+															name="work_prefer"
+															label="Work Prefer"
 															variant="standard"
+															select
 															helperText={
 																props.errors.hasOwnProperty("locality") &&
 																props.errors["locality"]
 															}
 															margin="dense"
-														/>
-													</Box>
-												</Grid>
-
-												<Grid item md={4} xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															component={TextField}
-															type="text"
-															name="commission_percent"
-															label="Comission Persent"
-															variant="standard"
-															select
-															helperText={
-																props.errors.hasOwnProperty(
-																	"commission_percent"
-																) && props.errors["commission_percent"]
-															}
-															margin="dense"
 														>
-															{["10%", "15%", "20%"].map((option, index) => (
-																<MenuItem key={index} value={index + 1}>
-																	{option}
-																</MenuItem>
-															))}
+															{["Religion No Bar", "Only Religion"].map(
+																(option, index) => (
+																	<MenuItem key={index} value={index + 1}>
+																		{option}
+																	</MenuItem>
+																)
+															)}
 														</Field>
-													</Box>
-												</Grid>
-
-												<Grid item md={4} xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															component={TextField}
-															type="text"
-															name="min_commission"
-															label="Min Comission"
-															variant="standard"
-															helperText={
-																props.errors.hasOwnProperty("min_commission") &&
-																props.errors["min_commission"]
-															}
-															margin="dense"
-														/>
-													</Box>
-												</Grid>
-												<Grid item md={4} xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															component={TextField}
-															type="text"
-															name="max_commission"
-															label="Max Comission"
-															variant="standard"
-															helperText={
-																props.errors.hasOwnProperty("max_commission") &&
-																props.errors["max_commission"]
-															}
-															margin="dense"
-														/>
 													</Box>
 												</Grid>
 
@@ -1064,19 +884,13 @@ const freelancerform = (props) => {
 																			shrink: true,
 																		}}
 																	>
-																		{[
-																			"",
-																			"Catalog",
-																			"GST",
-																			"Shaadiwala Offer",
-																			"Advertisement",
-																			"License",
-																			"Certificate",
-																		].map((option, index) => (
-																			<MenuItem key={index} value={option}>
-																				{option}
-																			</MenuItem>
-																		))}
+																		{Object.keys(fileDropdown).map(
+																			(option, index) => (
+																				<MenuItem key={index} value={option}>
+																					{option}
+																				</MenuItem>
+																			)
+																		)}
 																	</Field>
 																</Box>
 															</Grid>

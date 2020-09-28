@@ -15,6 +15,8 @@ const link = {
 		matrimonyAds: "/dashboard/matrimony/ListAds",
 		matrimonynew: "/dashboard/matrimony/create_matrimony",
 		matrimonyprofile: "/dashboard/matrimony/profile",
+		worker: "/dashboard/worker/",
+		freelancerDetails: "/dashboard/worker/details",
 	},
 };
 

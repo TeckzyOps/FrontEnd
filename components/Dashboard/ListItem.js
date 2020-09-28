@@ -62,11 +62,11 @@ export const mainListItems = (
 export const secondaryListItems = (
 	<div>
 		<ListSubheader inset>Services</ListSubheader>
-		<ListItem button>
+		<ListItem component={Link} href={routerLink.starter.worker} button>
 			<ListItemIcon>
 				<HelpIcon />
 			</ListItemIcon>
-			<ListItemText primary="Support" />
+			<ListItemText primary="Workers" />
 		</ListItem>
 		<ListItem button>
 			<ListItemIcon>

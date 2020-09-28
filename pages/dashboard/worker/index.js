@@ -31,7 +31,7 @@ import api, {
 	addBearerToken,
 	removeBearerToken,
 } from "../../../utils/httpClient";
-import { freelancerActions } from "../../../_actions/freelancer.action";
+import { workerActions } from "../../../_actions/worker.action";
 const localStorageService = LocalStorageService.getService();
 import {
 	createMuiTheme,
@@ -96,7 +96,7 @@ const index = (props) => {
 	const [bookingPopup, setBookingPopup] = React.useState(false);
 	React.useEffect(() => {
 		freelancerActions
-			.getFreelancer()
+			.getWorker()
 			.then(function (response) {
 				console.log("ressss", response);
 
@@ -136,7 +136,7 @@ const index = (props) => {
 							<div>
 								<Typography variant="h6">Add More Profile</Typography>
 								<Typography variant="subtitle" component="h2">
-									New Freelancer Ad
+									New Worker Application
 								</Typography>
 							</div>
 							<div className={classes.col}>

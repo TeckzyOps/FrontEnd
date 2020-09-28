@@ -220,45 +220,45 @@ const details = (props) => {
 					</Grid>
 
 					<Grid item lg={7} md={7} xl={7} xs={12}>
-						{/* <TableContainer component={Paper}>
+						<TableContainer component={Paper}>
 							<Table className={classes.table} aria-label="simple table">
 								<TableBody>
-									<TableCell align="left">Name</TableCell>
-									<TableCell align="left">{details.name}</TableCell>
+									<TableCell align="left">Service Category</TableCell>
+									<TableCell align="left">{details.service_category}</TableCell>
 								</TableBody>
 								<TableBody>
-									<TableCell align="left">Gender</TableCell>
+									<TableCell align="left">Sub Service</TableCell>
+									<TableCell align="left">{details.sub_service}</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">Service Area</TableCell>
+									<TableCell align="left">{details.service_area}</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">Total Experience</TableCell>
 									<TableCell align="left">
-										{gender[details.gender - 1]}
+										{details.total_experience}"
 									</TableCell>
 								</TableBody>
 								<TableBody>
-									<TableCell align="left">Birth Year</TableCell>
-									<TableCell align="left">{details.dob_year}</TableCell>
+									<TableCell align="left">Business Name</TableCell>
+									<TableCell align="left">{details.bussiness_name}</TableCell>
 								</TableBody>
 								<TableBody>
-									<TableCell align="left">Height</TableCell>
-									<TableCell align="left">{details.height}"</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Religion</TableCell>
-									<TableCell align="left">{details.religion}</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Cast</TableCell>
-									<TableCell align="left">{details.cast}</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Mother Tongue</TableCell>
-									<TableCell align="left">{details.mother_tongue}</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Marital Status</TableCell>
+									<TableCell align="left">Business Description</TableCell>
 									<TableCell align="left">
-										{maritialStatus[details.marital_status - 1]}
+										{details.bussineess_description}
 									</TableCell>
 								</TableBody>
 								<TableBody>
+									<TableCell align="left">Address</TableCell>
+									<TableCell align="left">{details.address}</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">City</TableCell>
+									<TableCell align="left">{details.district}</TableCell>
+								</TableBody>
+								{/* <TableBody>
 									<TableCell align="left">Childrens</TableCell>
 									<TableCell align="left">{details.childrens}</TableCell>
 								</TableBody>
@@ -313,9 +313,9 @@ const details = (props) => {
 								<TableBody>
 									<TableCell align="left">Wedding Budget</TableCell>
 									<TableCell align="left">{details.wedding_budget}</TableCell>
-								</TableBody>
+								</TableBody> */}
 							</Table>
-						</TableContainer> */}
+						</TableContainer>
 					</Grid>
 				</Grid>
 			</div>
