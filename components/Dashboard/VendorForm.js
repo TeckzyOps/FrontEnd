@@ -76,8 +76,9 @@ import {
 	InputAdornment,
 	IconButton,
 } from "@material-ui/core";
-import { freelancerActions } from "../../_actions/freelancer.action";
+import { vendorActions } from "../../_actions/vendor.action";
 import LocalStorageService from "../../_services/LocalStorageService";
+import "~/vendors/responsive-table.css";
 const localStorageService = LocalStorageService.getService();
 let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
@@ -93,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
 		margin: theme.spacing(4, 0, 2),
 	},
 }));
-const freelancerform = (props) => {
+const vendorform = (props) => {
 	const { className, ...rest } = props;
 	const classes = useStyles();
 
@@ -103,7 +104,7 @@ const freelancerform = (props) => {
 	const [details, setDetails] = React.useState({});
 	const router = useRouter();
 	const [docSelected, setDocSelected] = useState(0);
-	const [freelancerData, setFreelancerData] = useState({
+	const [vendorData, setVendorData] = useState({
 		gst_file_path: null,
 		license_file_path: null,
 		certificate_file_path: null,
@@ -136,13 +137,13 @@ const freelancerform = (props) => {
 	React.useEffect(() => {
 		setDetails(localStorageService.getUserDetails("Details"));
 		if (id) {
-			freelancerActions
-				.getFreelancer({ freelancer_id: id })
+			vendorActions
+				.getVendor({ vendor_id: id })
 				.then(function (response) {
 					console.log("ressss", response);
 
 					if (response.data.data.id) {
-						setFreelancerData(response.data.data);
+						setVendorData(response.data.data);
 					}
 				})
 				.catch(function (error) {
@@ -197,8 +198,8 @@ const freelancerform = (props) => {
 
 	// function submitManually(payload, setSubmitting, resetForm, setFieldError){
 	// 	if (payload) {
-	// 		freelancerActions
-	// 			.createFreelancer(payload)
+	// 		vendorActions
+	// 			.createvendor(payload)
 	// 			.then(function (response) {
 	// 				setSubmitting(false);
 	// 				console.log("ressss", response);
@@ -235,16 +236,16 @@ const freelancerform = (props) => {
 		let want_advertisement = 0;
 		let except_shaadiwala_offer = 0;
 		// Object.keys(fileDropdown).forEach((dropdown) => {
-		// 	payload.append(dropdown, freelancerData[fileDropdown[dropdown]]);
+		// 	payload.append(dropdown, vendorData[fileDropdown[dropdown]]);
 		// 	if (
 		// 		dropdown == "Advertisement" &&
-		// 		freelancerData[fileDropdown[dropdown]] != null
+		// 		vendorData[fileDropdown[dropdown]] != null
 		// 	) {
 		// 		want_advertisement = 1;
 		// 	}
 		// 	if (
 		// 		dropdown == "Shaadiwala Offer" &&
-		// 		freelancerData[fileDropdown[dropdown]] != null
+		// 		vendorData[fileDropdown[dropdown]] != null
 		// 	) {
 		// 		except_shaadiwala_offer = 1;
 		// 	}
@@ -264,8 +265,8 @@ const freelancerform = (props) => {
 		payload.append("except_shaadiwala_offer", except_shaadiwala_offer);
 		payload.delete("doc_type");
 		if (payload) {
-			freelancerActions
-				.createFreelancer(payload)
+			vendorActions
+				.createVendor(payload)
 				.then(function (response) {
 					setSubmitting(false);
 					console.log("ressss", response);
@@ -288,7 +289,7 @@ const freelancerform = (props) => {
 	const _renderModal = () => {
 		const onClick = () => {
 			setProfileUpdateSuccess(() => false);
-			router.push(routerLink.starter.freelancerVids + "?id=" + id);
+			router.push(routerLink.starter.vendorVids + "?id=" + id);
 		};
 
 		return (
@@ -498,7 +499,7 @@ const freelancerform = (props) => {
 
 							<List dense={true}>
 								{Object.keys(fileDropdown).map((title, index) => {
-									if (freelancerData[fileDropdown[title]] != null) {
+									if (vendorData[fileDropdown[title]] != null) {
 										return (
 											<ListItem key={index}>
 												<ListItemAvatar>
@@ -509,7 +510,7 @@ const freelancerform = (props) => {
 
 												<ListItemText
 													target="_blank"
-													href={freelancerData[fileDropdown[title]]}
+													href={vendorData[fileDropdown[title]]}
 													primary={title}
 												/>
 
@@ -518,8 +519,8 @@ const freelancerform = (props) => {
 														edge="end"
 														aria-label="comments"
 														onClick={() =>
-															setFreelancerData({
-																...freelancerData,
+															setVendorData({
+																...vendorData,
 																[fileDropdown[title]]: null,
 															})
 														}
@@ -540,7 +541,7 @@ const freelancerform = (props) => {
 								<Link
 									style={{ textDecoration: "none" }}
 									href={
-										routerLink.starter.freelancerVids +
+										routerLink.starter.vendorVids +
 										"?id" +
 										props.router.query.id
 									}
@@ -554,9 +555,7 @@ const freelancerform = (props) => {
 								<Link
 									style={{ textDecoration: "none" }}
 									href={
-										routerLink.starter.freelancerImg +
-										"?id" +
-										props.router.query.id
+										routerLink.starter.vendorImg + "?id" + props.router.query.id
 									}
 								>
 									<Button variant="text">
@@ -578,7 +577,7 @@ const freelancerform = (props) => {
 					<div>
 						<Formik
 							enableReinitialize
-							initialValues={freelancerData}
+							initialValues={vendorData}
 							validationSchema={profileSchema}
 							onSubmit={(vals, { setSubmitting, resetForm, setFieldError }) =>
 								_handleSubmit({
@@ -612,7 +611,7 @@ const freelancerform = (props) => {
 														align="center"
 														gutterBottom
 													>
-														Freelancer Application Form
+														Vendor Application Form
 													</Typography>
 												</Grid>
 											</Grid>
@@ -717,7 +716,7 @@ const freelancerform = (props) => {
 															</Field>
 														</Box>
 													</Grid>
-													<Grid item xs={6}>
+													<Grid item xs={12}>
 														<Typography variant="body2" gutterBottom>
 															Service Price
 														</Typography>
@@ -1099,7 +1098,7 @@ const freelancerform = (props) => {
 																justify="flex-start"
 																alignItems="flex-end"
 															>
-																<Grid item xs={6}>
+																<Grid item md={6} xs={12}>
 																	<Box margin={1}>
 																		<Field
 																			onChange={handleChange}
@@ -1136,7 +1135,7 @@ const freelancerform = (props) => {
 																		</Field>
 																	</Box>
 																</Grid>
-																<Grid item xs={6}>
+																<Grid item md={6} xs={12}>
 																	<Box margin={1}>
 																		<Field
 																			name="doc"
@@ -1185,6 +1184,7 @@ const freelancerform = (props) => {
 																	</Box>
 																</Grid>
 															</Grid>
+
 															<Table
 																className={classes.table}
 																aria-label="simple table"
@@ -1303,8 +1303,4 @@ const freelancerform = (props) => {
 	);
 };
 
-freelancerform.propTypes = {
-	className: PropTypes.string,
-};
-
-export default withRouter(withTranslation(["common"])(freelancerform));
+export default withRouter(withTranslation(["common"])(vendorform));

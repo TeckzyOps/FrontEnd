@@ -273,7 +273,7 @@ const Familydetails = ({
 						<div>
 							<CardHeader
 								subheader="The information can be edited"
-								title="Basic Details"
+								title="Family Details"
 							/>
 							<Divider />
 							<CardContent>

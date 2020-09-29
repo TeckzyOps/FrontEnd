@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 import withAuth from "../../../components/Hoc/withAuth";
 import { makeStyles } from "@material-ui/core/styles";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
 import { Box, Typography } from "@material-ui/core";
 import routerLink from "~/static/text/link";
 import Link from "@material-ui/core/Link";
@@ -13,20 +8,29 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import { Grid, CardContent, Card, Button, Divider } from "@material-ui/core";
 import Head from "next/head";
 import LocalStorageService from "../../../_services/LocalStorageService";
-import DashboardWrapper from "../../../components/Dashboard/DashboardWrapper";
+import Dashboard from "../../../components/Dashboard/DashboardWrap";
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import IconButton from "@material-ui/core/IconButton";
 import { Fab, useMediaQuery, Tab, Tabs } from "@material-ui/core/";
 import { useTheme } from "@material-ui/core/styles";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import MobileStepper from "@material-ui/core/MobileStepper";
+import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import BookingModule from "../../../components/GenericPopup/BookingModule";
 import { useLocation, BrowserRouter as Router } from "react-router-dom";
 import api, {
 	addBearerToken,
 	removeBearerToken,
 } from "../../../utils/httpClient";
 
-import { freelancerActions } from "../../../_actions/freelancer.action";
+import { workerActions } from "../../../_actions/worker.action";
 const localStorageService = LocalStorageService.getService();
 import { withRouter } from "react-router";
 import Paper from "@material-ui/core/Paper";
@@ -38,7 +42,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 const useStyles = makeStyles((theme) => ({
 	root: {
-		display: "flex",
 		flexGrow: 1,
 	},
 	card: {
@@ -68,6 +71,13 @@ const useStyles = makeStyles((theme) => ({
 	},
 	"& hr": {
 		margin: theme.spacing(0, 0.5),
+	},
+	img: {
+		height: 255,
+		maxWidth: 400,
+		overflow: "hidden",
+		display: "block",
+		width: "100%",
 	},
 	gridList: {
 		flexWrap: "nowrap",
@@ -109,7 +119,36 @@ const content = [
 const details = (props) => {
 	const classes = useStyles();
 	const [value, setValue] = React.useState(0);
+
+	const [bookingPopup, setBookingPopup] = React.useState(false);
 	const theme = useTheme();
+	const [activeStep, setActiveStep] = React.useState(0);
+	const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+	const [images, setImages] = React.useState([]);
+	const maxSteps = images.length;
+
+	const handleNext = () => {
+		setActiveStep((prevActiveStep) => prevActiveStep + 1);
+	};
+	const handleBack = () => {
+		setActiveStep((prevActiveStep) => prevActiveStep - 1);
+	};
+	function getAllImages() {
+		workerActions
+			.getMedia({ worker_id: props.router.query.id, file_type: 1 })
+			.then(function (response) {
+				console.log("ressss", response);
+				if (Array.isArray(response.data.data)) {
+					setImages(response.data.data);
+				}
+			})
+			.catch(function (error) {
+				if (error.response && error.response.data.input_error) {
+				}
+				console.error("errrrr ", error);
+			});
+	}
+
 	const { onToggleDark, onToggleDir } = props;
 	const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
 	const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -125,13 +164,14 @@ const details = (props) => {
 	const [defaultdetails, setdefaultdetails] = React.useState({});
 	React.useEffect(() => {
 		console.log(props);
-		freelancerActions
-			.getFreelancer({ freelancer_id: props.router.query.id })
+		workerActions
+			.getWorker({ worker_id: props.router.query.id })
 			.then(function (response) {
 				console.log("ressss", response);
 
 				if (response.data.data.id) {
 					setdetails(response.data.data);
+					getAllImages();
 				}
 			})
 			.catch(function (error) {
@@ -142,44 +182,109 @@ const details = (props) => {
 	return (
 		<React.Fragment>
 			<Head>
-				<title>Freelancer &nbsp; - Details</title>
+				<title>Worker &nbsp; - Details</title>
 			</Head>
-			<DashboardWrapper logindata={props.logindata} userdata={props.userdata} />
-			<div
-				className={classes.root}
-				style={{ padding: "0 2%", marginTop: "2%" }}
-			>
-				<Grid container spacing={3} justify="space-around">
-					<Grid
-						style={{ borderRight: "0.5px dashed grey", padding: "0.6em" }}
-						item
-						md={5}
-						xs={12}
-					>
-						{/* <Slider
+			<Dashboard>
+				<div className={classes.root}>
+					<br></br>
+					<Grid container spacing={2} justify="flex-end">
+						<Grid item>
+							<Link
+								style={{ textDecoration: "none" }}
+								href={
+									routerLink.starter.workernew + "?id=" + props.router.query.id
+								}
+							>
+								<Button
+									disabled={props.router.query.id == null}
+									variant="outlined"
+									color="primary"
+								>
+									Edit Details
+								</Button>
+							</Link>
+						</Grid>
+						<Grid item>
+							<Button
+								disabled={props.router.query.id == null}
+								variant="outlined"
+								color="primary"
+								onClick={() => setBookingPopup(true)}
+							>
+								Booking Calendar
+							</Button>
+						</Grid>
+					</Grid>
+					<Grid container spacing={3} justify="space-around">
+						<Grid
+							style={{ borderRight: "0.5px dashed grey", padding: "0.6em" }}
+							item
+							md={5}
+							xs={12}
+						>
+							{/* <Slider
 							image={details.pictures != null ? details.pictures : ""}
 						/> */}
-						<Grid container>
-							<Grid
-								item
-								style={{
-									textAlign: "center",
-								}}
-								xs={12}
-							>
-								<img
-									src={primaryImage}
-									style={{
-										textAlign: "center",
-										objectFit: "cover",
-										width: "200px",
-										height: "250px",
-									}}
-								/>
-							</Grid>
-							<Grid item xs={12}>
+							<Grid container justify="center">
+								<Grid item>
+									{maxSteps <= 0 && (
+										<Typography
+											align="center"
+											component="h1"
+											variant="h6"
+											color="inherit"
+										>
+											Upload Some Images/Videos<br></br>to Showcase Here.
+										</Typography>
+									)}
+									{maxSteps > 0 && (
+										<div style={{ maxWidth: 400, flexGrow: 1 }}>
+											<img
+												className={classes.img}
+												src={images.length > 0 && images[activeStep].file_path}
+												alt={images.length > 0 && images[activeStep].file_path}
+											/>
+											<MobileStepper
+												steps={maxSteps}
+												position="static"
+												variant="text"
+												activeStep={activeStep}
+												nextButton={
+													<Button
+														size="small"
+														onClick={handleNext}
+														disabled={activeStep === maxSteps - 1}
+													>
+														Next
+														{theme.direction === "rtl" ? (
+															<KeyboardArrowLeft />
+														) : (
+															<KeyboardArrowRight />
+														)}
+													</Button>
+												}
+												backButton={
+													<Button
+														size="small"
+														onClick={handleBack}
+														disabled={activeStep === 0}
+													>
+														{theme.direction === "rtl" ? (
+															<KeyboardArrowRight />
+														) : (
+															<KeyboardArrowLeft />
+														)}
+														Back
+													</Button>
+												}
+											/>
+										</div>
+									)}
+								</Grid>
+
+								{/* <Grid item xs={12}>
 								<div className={classes.gridList_BG}>
-									<GridList className={classes.gridList} cols={2.5}>
+									<GridList className={classes.gridList} cols={3.5}>
 										{content.map((tile) => (
 											<GridListTile key={tile.image}>
 												<img
@@ -191,134 +296,190 @@ const details = (props) => {
 										))}
 									</GridList>
 								</div>
+							</Grid> */}
+							</Grid>
+
+							<Grid style={{ paddingTop: "2%", textAlign: "center" }}>
+								<Link
+									style={{ textDecoration: "none" }}
+									href={routerLink.starter.workerVids + "?id=" + details.id}
+								>
+									<Button
+										variant="contained"
+										color="primary"
+										size="large"
+										style={{ marginRight: "1%" }}
+									>
+										Upload Videos
+									</Button>
+								</Link>
+								<Link
+									style={{ textDecoration: "none" }}
+									href={routerLink.starter.workerImg + "?id=" + details.id}
+								>
+									<Button
+										variant="contained"
+										color="primary"
+										size="large"
+										style={{ marginRight: "1%" }}
+									>
+										Upload Images
+									</Button>
+								</Link>
 							</Grid>
 						</Grid>
 
-						<Grid style={{ paddingTop: "2%", textAlign: "center" }}>
-							<Button
-								variant="contained"
-								color="primary"
-								size="large"
-								style={{ marginRight: "1%" }}
-								onClick={() => setimageDialog(true)}
-							>
-								Change Images
-							</Button>
-							<Link
-								href={routerLink.starter.freelancernew + "?id=" + details.id}
-							>
-								<Button
-									variant="contained"
-									color="primary"
-									size="large"
-									style={{ marginLeft: "1%" }}
-								>
-									Change Details
-								</Button>
-							</Link>
+						<Grid item lg={7} md={7} xl={7} xs={12}>
+							<TableContainer component={Paper}>
+								<Table className={classes.table} aria-label="worker_Details">
+									<TableBody>
+										<TableCell align="left">Service Category</TableCell>
+										<TableCell align="left">
+											{details.service_category}
+										</TableCell>
+									</TableBody>
+									<TableBody>
+										<TableCell align="left">Sub Service</TableCell>
+										<TableCell align="left">{details.sub_service}</TableCell>
+									</TableBody>
+									<TableBody>
+										<TableCell align="left">Business Name</TableCell>
+										<TableCell align="left">{details.bussiness_name}</TableCell>
+									</TableBody>
+									<TableBody>
+										<TableCell align="left">Service Area</TableCell>
+										<TableCell align="left">{details.service_area}</TableCell>
+									</TableBody>
+									<TableBody>
+										<TableCell align="left">Total Experience</TableCell>
+										<TableCell align="left">
+											{details.total_experience}
+										</TableCell>
+									</TableBody>
+									<TableBody>
+										<TableCell align="left">Business Description</TableCell>
+										<TableCell align="left">
+											{details.bussineess_description}
+										</TableCell>
+									</TableBody>
+									<TableBody>
+										<TableCell align="left">Min Service Price</TableCell>
+										<TableCell align="left">
+											{details.min_service_price}
+										</TableCell>
+									</TableBody>
+									<TableBody>
+										<TableCell align="left">Max Service Price</TableCell>
+										<TableCell align="left">
+											{details.max_service_price}
+										</TableCell>
+									</TableBody>
+									<TableBody>
+										<TableCell align="left">Address</TableCell>
+										<TableCell align="left">{details.address}</TableCell>
+									</TableBody>
+									<TableBody>
+										<TableCell align="left">City</TableCell>
+										<TableCell align="left">{details.city}</TableCell>
+									</TableBody>
+									<TableBody>
+										<TableCell align="left">District</TableCell>
+										<TableCell align="left">{details.district}</TableCell>
+									</TableBody>
+									<TableBody>
+										<TableCell align="left">State</TableCell>
+										<TableCell align="left">{details.state}</TableCell>
+									</TableBody>
+									<TableBody>
+										<TableCell align="left">Locality</TableCell>
+										<TableCell align="left">{details.locality}</TableCell>
+									</TableBody>
+									<TableBody>
+										<TableCell align="left">Office Map Link</TableCell>
+										<TableCell align="left">
+											{details.office_map_link}
+										</TableCell>
+									</TableBody>
+									<TableBody>
+										<TableCell align="left">Office Number</TableCell>
+										<TableCell align="left">{details.office_number}</TableCell>
+									</TableBody>
+									<TableBody>
+										<TableCell align="left">Catalog Pdf Path</TableCell>
+										<TableCell align="left">
+											{details.catalog_pdf_path}
+										</TableCell>
+									</TableBody>
+									<TableBody>
+										<TableCell align="left">Offer Tagline</TableCell>
+										<TableCell align="left">{details.offer_tagline}</TableCell>
+									</TableBody>
+
+									{/* <TableBody>
+<TableCell align="left">Advertisement File</TableCell>
+<TableCell align="left">{details.advertisement_file_path}</TableCell>
+</TableBody>
+<TableBody>
+<TableCell align="left">GST File</TableCell>
+<TableCell align="left">{details.gst_file_path}</TableCell>
+</TableBody>
+<TableBody>
+<TableCell align="left">License File</TableCell>
+<TableCell align="left">{details.license_file_path}</TableCell>
+</TableBody>
+<TableBody>
+<TableCell align="left">Certificate File</TableCell>
+<TableCell align="left">{details.certificate_file_path}</TableCell>
+</TableBody> */}
+									<TableBody>
+										<TableCell align="left">Commission Percent</TableCell>
+										<TableCell align="left">
+											{details.commission_percent}
+										</TableCell>
+									</TableBody>
+									<TableBody>
+										<TableCell align="left">Commission Percent</TableCell>
+										<TableCell align="left">
+											{details.commission_percent}
+										</TableCell>
+									</TableBody>
+									<TableBody>
+										<TableCell align="left">Min Commission</TableCell>
+										<TableCell align="left">{details.min_commission}</TableCell>
+									</TableBody>
+									<TableBody>
+										<TableCell align="left">Max Commission</TableCell>
+										<TableCell align="left">{details.max_commission}</TableCell>
+									</TableBody>
+								</Table>
+							</TableContainer>
 						</Grid>
 					</Grid>
-
-					<Grid item lg={7} md={7} xl={7} xs={12}>
-						{/* <TableContainer component={Paper}>
-							<Table className={classes.table} aria-label="simple table">
-								<TableBody>
-									<TableCell align="left">Name</TableCell>
-									<TableCell align="left">{details.name}</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Gender</TableCell>
-									<TableCell align="left">
-										{gender[details.gender - 1]}
-									</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Birth Year</TableCell>
-									<TableCell align="left">{details.dob_year}</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Height</TableCell>
-									<TableCell align="left">{details.height}"</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Religion</TableCell>
-									<TableCell align="left">{details.religion}</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Cast</TableCell>
-									<TableCell align="left">{details.cast}</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Mother Tongue</TableCell>
-									<TableCell align="left">{details.mother_tongue}</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Marital Status</TableCell>
-									<TableCell align="left">
-										{maritialStatus[details.marital_status - 1]}
-									</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Childrens</TableCell>
-									<TableCell align="left">{details.childrens}</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Childrens Living Status</TableCell>
-									<TableCell align="left">
-										{details.childrens_living_status}
-									</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Manglik Status</TableCell>
-									<TableCell align="left">{details.manglik_status}</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Country</TableCell>
-									<TableCell align="left">{details.country}</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">State</TableCell>
-									<TableCell align="left">{details.state}</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">District</TableCell>
-									<TableCell align="left">{details.district}</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Education</TableCell>
-									<TableCell align="left">{details.education}</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Proffesion</TableCell>
-									<TableCell align="left">{details.proffesion}</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Occupation</TableCell>
-									<TableCell align="left">{details.occupation}</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Salary</TableCell>
-									<TableCell align="left">{details.salary}</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Gotra</TableCell>
-									<TableCell align="left">{details.gotra}</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Living With Parents ?</TableCell>
-									<TableCell align="left">
-										{details.living_with_parents_status}
-									</TableCell>
-								</TableBody>
-								<TableBody>
-									<TableCell align="left">Wedding Budget</TableCell>
-									<TableCell align="left">{details.wedding_budget}</TableCell>
-								</TableBody>
-							</Table>
-						</TableContainer> */}
-					</Grid>
-				</Grid>
-			</div>
+					<Dialog
+						fullWidth
+						fullScreen={fullScreen}
+						maxWidth={"md"}
+						open={bookingPopup}
+						onClose={() => setBookingPopup(false)}
+						aria-labelledby="max-width-dialog-title"
+					>
+						<DialogTitle id="max-width-dialog-title">
+							Booking Calendar
+						</DialogTitle>
+						<DialogContent>
+							<BookingModule
+								apifor="worker"
+								booking_id={props.router.query.id}
+							/>
+						</DialogContent>
+						<DialogActions>
+							<Button onClick={() => setBookingPopup(false)} color="primary">
+								Close
+							</Button>
+						</DialogActions>
+					</Dialog>
+				</div>
+			</Dashboard>
 		</React.Fragment>
 	);
 };

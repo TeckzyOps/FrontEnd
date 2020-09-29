@@ -27,19 +27,23 @@ import LocalStorageService from "../../_services/LocalStorageService";
 const localStorageService = LocalStorageService.getService();
 import Link from "@material-ui/core/Link";
 import SendIcon from "@material-ui/icons/Send";
-import { freelancerActions } from "../../_actions/freelancer.action";
+import { bookingActions } from "../../_actions/booking.action";
 import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
-	root: {
-		padding: theme.spacing(2),
-	},
+	root: {},
 }));
 
-const BookingModule = ({ freelancer_id, ...props }) => {
+const BookingModule = ({ booking_id, ...props }) => {
 	const classes = useStyles();
 	const [img, setImg] = React.useState({});
+	const theme = useTheme();
+
+	const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
+	const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
 	const [date, changeDate] = React.useState(new Date());
 	const [remoteData, setRemoteData] = React.useState([]);
@@ -47,7 +51,7 @@ const BookingModule = ({ freelancer_id, ...props }) => {
 	const [bookingInit, setBookingInit] = React.useState(false);
 	const [comments, setComments] = React.useState("");
 	const [selectedDays, setSelectedDays] = React.useState([]);
-
+	const apifor_id = props.apifor + "_id";
 	function formatDate(date) {
 		var d = new Date(date),
 			month = "" + (d.getMonth() + 1),
@@ -63,62 +67,79 @@ const BookingModule = ({ freelancer_id, ...props }) => {
 		getBookings();
 	}, []);
 
-	function getBookings() {
-		let mm = ("0" + (new Date(date).getMonth() + 1)).slice(-2);
-		let yyyy = new Date(date).getFullYear();
+	function getBookings(data) {
+		let d = date;
+		if (data) {
+			d = data;
+		}
+		let mm = ("0" + (new Date(d).getMonth() + 1)).slice(-2);
+		let yyyy = new Date(d).getFullYear();
+		let payload = { month: mm, year: yyyy };
 		setSelectedDays([]);
-		freelancerActions
-			.getbookDate({ freelancer_id: 1, month: mm, year: yyyy })
-			.then(function (response) {
-				console.log("ressss", response);
-				if (Array.isArray(response.data.data.data)) {
-					setRemoteData(response.data.data.data);
-					response.data.data.data.forEach((obj) => {
-						let date = new Date(obj.date_of_booking);
-						let mon = ("0" + (date.getMonth() + 1)).slice(-2);
-						let year = date.getFullYear();
-						if (mm == mon && yyyy == year) {
-							let d = date.getDate();
-							setSelectedDays(selectedDays.concat(d));
-						}
-					});
-				}
-			})
-			.catch(function (error) {
-				console.error("errrrr ", error);
-			});
+		setRemoteData([]);
+		if (props.apifor) {
+			payload[apifor_id] = booking_id;
+			bookingActions
+				.getbookDate(payload, props.apifor)
+				.then(function (response) {
+					console.log("ressss", response);
+					if (Array.isArray(response.data.data.data)) {
+						let dArray = [];
+						setRemoteData(response.data.data.data);
+						setComments("");
+						setBookingInit(false);
+						response.data.data.data.forEach((obj) => {
+							let date = new Date(obj.date_of_booking);
+							let mon = ("0" + (date.getMonth() + 1)).slice(-2);
+							let year = date.getFullYear();
+							if (mm == mon && yyyy == year) {
+								let d = date.getDate();
+								dArray.push(d);
+							}
+						});
+						setSelectedDays(dArray);
+					}
+				})
+				.catch(function (error) {
+					console.error("errrrr ", error);
+				});
+		}
 	}
 
 	function bookDate() {
 		let payload = {
-			freelancer_id: 1,
 			date_of_booking: formatDate(date),
 			comment: comments,
 		};
+
 		if (Object.values(payload).length <= 0) {
 			return;
 		}
-		freelancerActions
-			.bookDate(payload)
-			.then(function (response) {
-				console.log("ressss", response);
-			})
-			.catch(function (error) {
-				console.error("errrrr ", error);
-			});
+		if (props.apifor) {
+			payload[apifor_id] = booking_id;
+			bookingActions
+				.bookDate(payload, props.apifor)
+				.then(function (response) {
+					console.log("ressss", response);
+					if (response.data.data.id) {
+						setRemoteData(remoteData.concat(response.data.data));
+						setComments("");
+						setBookingInit(false);
+						let date = new Date(response.data.data.date_of_booking);
+						let d = date.getDate();
+						setSelectedDays(selectedDays.concat(d));
+					}
+				})
+				.catch(function (error) {
+					console.error("errrrr ", error);
+				});
+		}
 	}
-	function getRandomNumber(min, max) {
-		return Math.round(Math.random() * (max - min) + min);
-	}
-	const handleMonthChange = async () => {
+
+	const handleMonthChange = async (data) => {
 		// just select random days to simulate server side based data
-		getBookings();
-		return new Promise((resolve) => {
-			setTimeout(() => {
-				setSelectedDays([1, 2, 3].map(() => getRandomNumber(1, 28)));
-				resolve();
-			}, 1000);
-		});
+		console.log(data);
+		getBookings(data);
 	};
 
 	const handleCommentChange = (event) => {
@@ -136,11 +157,11 @@ const BookingModule = ({ freelancer_id, ...props }) => {
 					{/* Hero unit */}
 					<div className={classes.heroContent}>
 						<Grid container spacing={2}>
-							<Grid item md={6} sm={12}>
+							<Grid item md={6} sm={6} xs={12}>
 								<MuiPickersUtilsProvider utils={DateFnsUtils}>
 									<DatePicker
 										autoOk
-										orientation="landscape"
+										orientation={isMobile ? undefined : "landscape"}
 										variant="static"
 										openTo="date"
 										value={date}
@@ -178,6 +199,8 @@ const BookingModule = ({ freelancer_id, ...props }) => {
 								>
 									{bookingInit ? "Close." : "Book Selected Date."}
 								</Button>
+							</Grid>
+							<Grid item md={6} sm={6} xs={12}>
 								{bookingInit && (
 									<Grid item>
 										<Typography variant="h5">
@@ -207,40 +230,39 @@ const BookingModule = ({ freelancer_id, ...props }) => {
 										/>
 									</Grid>
 								)}
-								<Grid container justify="center" alignItems="center"></Grid>
-							</Grid>
-							<Grid item md={6} sm={12}>
-								<List className={classes.root}>
-									{remoteData.map((data, index) => (
-										<div key={index}>
-											<ListItem alignItems="flex-start">
-												<ListItemAvatar>
-													<Avatar
-														alt={new Date(data.date_of_booking).getDate()}
+								{!bookingInit && (
+									<List className={classes.root}>
+										{remoteData.map((data, index) => (
+											<div key={index}>
+												<ListItem alignItems="flex-start">
+													<ListItemAvatar>
+														<Avatar
+															alt={new Date(data.date_of_booking).getDate()}
+														/>
+													</ListItemAvatar>
+													<ListItemText
+														primary={data.date_of_booking}
+														secondary={
+															<React.Fragment>
+																<Typography
+																	component="span"
+																	variant="body2"
+																	className={classes.inline}
+																	color="textPrimary"
+																>
+																	Status : "Booked"
+																</Typography>
+																<br></br>
+																{data.comment}
+															</React.Fragment>
+														}
 													/>
-												</ListItemAvatar>
-												<ListItemText
-													primary={data.date_of_booking}
-													secondary={
-														<React.Fragment>
-															<Typography
-																component="span"
-																variant="body2"
-																className={classes.inline}
-																color="textPrimary"
-															>
-																Status : "Booked"
-															</Typography>
-															<br></br>
-															{data.comment}
-														</React.Fragment>
-													}
-												/>
-											</ListItem>
-											<Divider variant="inset" component="li" />
-										</div>
-									))}
-								</List>
+												</ListItem>
+												<Divider variant="inset" component="li" />
+											</div>
+										))}
+									</List>
+								)}
 							</Grid>
 						</Grid>
 					</div>

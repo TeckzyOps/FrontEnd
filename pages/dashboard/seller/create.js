@@ -8,26 +8,26 @@ import withAuth from "../../../components/Hoc/withAuth";
 import LocalStorageService from "../../../_services/LocalStorageService";
 import Dashboard from "../../../components/Dashboard/DashboardWrap";
 const localStorageService = LocalStorageService.getService();
-import FreelancerForm from "../../../components/Dashboard/FreelancerForm";
+import SellerForm from "../../../components/Dashboard/SellerForm";
 
 const useStyles = makeStyles((theme) => ({
 	root: {},
 }));
 
-const Freelancer = (props) => {
+const Seller = (props) => {
 	const classes = useStyles();
 
 	return (
 		<Fragment>
 			<Head>
-				<title>Dashboard &nbsp; - Login</title>
+				<title>Seller &nbsp; - New Application</title>
 			</Head>
 			<Dashboard>
 				<div className={classes.root}>
-					<FreelancerForm {...props} />
+					<SellerForm {...props} />
 				</div>
 			</Dashboard>
 		</Fragment>
 	);
 };
-export default Freelancer;
+export default Seller;

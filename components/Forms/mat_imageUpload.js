@@ -50,6 +50,7 @@ import {
 	Select,
 	Switch,
 } from "formik-material-ui";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import { useTextAlign } from "~/theme/common";
 import { mpinForm } from "~/static/FormData/mpinForm";
 import { useAuth } from "../provider/Auth";
@@ -99,19 +100,21 @@ const useStyles = makeStyles((theme) => ({
 const MatrimonyImageUpload = ({ matrimonyID, images, ...props }) => {
 	const { t, className, ...rest } = props;
 	const [dp, setDP] = React.useState({
-		file1: (images && images.one) || null,
-		imagePreviewUrl1: (images && images.one) || null,
-		file2: (images && images.two) || null,
-		imagePreviewUrl2: (images && images.two) || null,
-		file3: (images && images.three) || null,
-		imagePreviewUrl3: (images && images.three) || null,
-		file4: (images && images.four) || null,
-		imagePreviewUrl4: (images && images.four) || null,
-		file5: (images && images.five) || null,
-		imagePreviewUrl5: (images && images.five) || null,
-		file6: (images && images.six) || null,
-		imagePreviewUrl6: (images && images.six) || null,
+		file1: (images && images[0]) || null,
+		imagePreviewUrl1: (images && images[0]) || null,
+		file2: (images && images[1]) || null,
+		imagePreviewUrl2: (images && images[1]) || null,
+		file3: (images && images[2]) || null,
+		imagePreviewUrl3: (images && images[2]) || null,
+		file4: (images && images[3]) || null,
+		imagePreviewUrl4: (images && images[3]) || null,
+		file5: (images && images[4]) || null,
+		imagePreviewUrl5: (images && images[4]) || null,
+		file6: (images && images[5]) || null,
+		imagePreviewUrl6: (images && images[5]) || null,
 	});
+
+	const [upload, setUpload] = React.useState({});
 	const [avatar, setAvatar] = React.useState("");
 	const [uploadProgress, updateUploadProgress] = React.useState(0);
 	const [loading, setLoading] = React.useState(false);
@@ -140,6 +143,9 @@ const MatrimonyImageUpload = ({ matrimonyID, images, ...props }) => {
 				.then(function (response) {
 					setSubmitting(false);
 					console.log("ressss", response);
+					if (response.data.data.id) {
+						setUpload({ ...upload, ["" + index]: "true" });
+					}
 					if (response.data.input_error) {
 						Object.keys(response.data.input_error).forEach((k) => {
 							setFieldError(k, result[k][0]);
@@ -407,7 +413,8 @@ const MatrimonyImageUpload = ({ matrimonyID, images, ...props }) => {
 														size="large"
 														disabled={
 															props.values["image_" + (index + 1)] == null ||
-															isSubmitting
+															isSubmitting ||
+															upload[index + 1] == "true"
 														}
 														onClick={() =>
 															_handledpSubmit(
@@ -418,8 +425,15 @@ const MatrimonyImageUpload = ({ matrimonyID, images, ...props }) => {
 															)
 														}
 													>
-														Upload
+														{upload["" + (index + 1)] == "true"
+															? "Upload Successful"
+															: "Upload"}
 													</Button>
+													{upload["" + (index + 1)] == "true" && (
+														<IconButton>
+															<CheckCircleIcon />
+														</IconButton>
+													)}
 													{isSubmitting && (
 														<CircularProgress
 															variant="static"
@@ -469,10 +483,6 @@ const MatrimonyImageUpload = ({ matrimonyID, images, ...props }) => {
 			</div>
 		</Card>
 	);
-};
-
-MatrimonyImageUpload.propTypes = {
-	className: PropTypes.string,
 };
 
 export default withTranslation(["common"])(MatrimonyImageUpload);

@@ -50,8 +50,9 @@ function Header(props) {
 		}
 	};
 	const classes = useStyles();
-	const theme = useTheme();
 	const { onToggleDark, onToggleDir } = props;
+	const theme = useTheme();
+
 	const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
 	const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 	useEffect(() => {

@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Button } from "@material-ui/core";
-import DashboardWrapper from "../../../components/Dashboard/DashboardWrapper";
+import Dashboard from "../../../components/Dashboard/DashboardWrap";
 import Head from "next/head";
 import routerLink from "~/static/text/link";
 import Link from "@material-ui/core/Link";
@@ -11,9 +11,7 @@ const localStorageService = LocalStorageService.getService();
 import WorkerForm from "../../../components/Dashboard/WorkerForm";
 
 const useStyles = makeStyles((theme) => ({
-	root: {
-		padding: theme.spacing(4),
-	},
+	root: {},
 }));
 
 const CreateWorker = (props) => {
@@ -22,12 +20,13 @@ const CreateWorker = (props) => {
 	return (
 		<Fragment>
 			<Head>
-				<title>Dashboard &nbsp; - Login</title>
+				<title>Worker &nbsp; - New Application</title>
 			</Head>
-			<DashboardWrapper logindata={props.logindata} userdata={props.userdata} />
-			<div className={classes.root}>
-				<WorkerForm />
-			</div>
+			<Dashboard>
+				<div className={classes.root}>
+					<WorkerForm />
+				</div>
+			</Dashboard>
 		</Fragment>
 	);
 };

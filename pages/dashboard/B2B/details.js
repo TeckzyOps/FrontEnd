@@ -23,15 +23,15 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import MobileStepper from "@material-ui/core/MobileStepper";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
-
 import BookingModule from "../../../components/GenericPopup/BookingModule";
+
 import { useLocation, BrowserRouter as Router } from "react-router-dom";
 import api, {
 	addBearerToken,
 	removeBearerToken,
 } from "../../../utils/httpClient";
 
-import { freelancerActions } from "../../../_actions/freelancer.action";
+import { b2bActions } from "../../../_actions/b2b.action";
 const localStorageService = LocalStorageService.getService();
 import { withRouter } from "react-router";
 import Paper from "@material-ui/core/Paper";
@@ -128,6 +128,7 @@ const details = (props) => {
 	const [images, setImages] = React.useState([]);
 	const maxSteps = images.length;
 	const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
 	const handleNext = () => {
 		setActiveStep((prevActiveStep) => prevActiveStep + 1);
 	};
@@ -135,8 +136,8 @@ const details = (props) => {
 		setActiveStep((prevActiveStep) => prevActiveStep - 1);
 	};
 	function getAllImages() {
-		freelancerActions
-			.getMedia({ freelancer_id: props.router.query.id, file_type: 1 })
+		b2bActions
+			.getMedia({ b2b_id: props.router.query.id, file_type: 1 })
 			.then(function (response) {
 				console.log("ressss", response);
 				if (Array.isArray(response.data.data)) {
@@ -165,8 +166,8 @@ const details = (props) => {
 	const [defaultdetails, setdefaultdetails] = React.useState({});
 	React.useEffect(() => {
 		console.log(props);
-		freelancerActions
-			.getFreelancer({ freelancer_id: props.router.query.id })
+		b2bActions
+			.getB2b({ b2b_id: props.router.query.id })
 			.then(function (response) {
 				console.log("ressss", response);
 
@@ -183,7 +184,7 @@ const details = (props) => {
 	return (
 		<React.Fragment>
 			<Head>
-				<title>Freelancer &nbsp; - Details</title>
+				<title>B2B &nbsp; - Details</title>
 			</Head>
 			<Dashboard>
 				<div className={classes.root}>
@@ -193,9 +194,7 @@ const details = (props) => {
 							<Link
 								style={{ textDecoration: "none" }}
 								href={
-									routerLink.starter.freelancernew +
-									"?id=" +
-									props.router.query.id
+									routerLink.starter.b2bnew + "?id=" + props.router.query.id
 								}
 							>
 								<Button
@@ -305,7 +304,7 @@ const details = (props) => {
 							<Grid style={{ paddingTop: "2%", textAlign: "center" }}>
 								<Link
 									style={{ textDecoration: "none" }}
-									href={routerLink.starter.freelancerVids + "?id=" + details.id}
+									href={routerLink.starter.b2bVids + "?id=" + details.id}
 								>
 									<Button
 										variant="contained"
@@ -318,7 +317,7 @@ const details = (props) => {
 								</Link>
 								<Link
 									style={{ textDecoration: "none" }}
-									href={routerLink.starter.freelancerImg + "?id=" + details.id}
+									href={routerLink.starter.b2bImg + "?id=" + details.id}
 								>
 									<Button
 										variant="contained"
@@ -334,10 +333,7 @@ const details = (props) => {
 
 						<Grid item lg={7} md={7} xl={7} xs={12}>
 							<TableContainer component={Paper}>
-								<Table
-									className={classes.table}
-									aria-label="Freelancer_Details"
-								>
+								<Table className={classes.table} aria-label="b2b_Details">
 									<TableBody>
 										<TableCell align="left">Service Category</TableCell>
 										<TableCell align="left">
@@ -473,10 +469,7 @@ const details = (props) => {
 							Booking Calendar
 						</DialogTitle>
 						<DialogContent>
-							<BookingModule
-								apifor="freelancer"
-								booking_id={props.router.query.id}
-							/>
+							<BookingModule apifor="b2b" booking_id={props.router.query.id} />
 						</DialogContent>
 						<DialogActions>
 							<Button onClick={() => setBookingPopup(false)} color="primary">
