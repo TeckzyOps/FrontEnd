@@ -1,46 +1,46 @@
 import Service from "../utils/ApiService";
 import LocalStorageService from "../_services/LocalStorageService";
 const localStorageService = LocalStorageService.getService();
-export const workerActions = {
-	createWorker,
+export const sellerActions = {
+	createSeller,
 	submitMedia,
-	getWorker,
+	getSeller,
 	getMedia,
 	bookDate,
 	getbookDate,
 };
 
-function createWorker(payload) {
+function createSeller(payload) {
 	let apiEndpoint = "";
-	if (payload.Worker_id) {
-		apiEndpoint = "editWorkerId";
+	if (payload.seller_id) {
+		apiEndpoint = "editSellerId";
 	} else {
-		apiEndpoint = "createWorkerId";
+		apiEndpoint = "createSellerId";
 	}
 	return Service.post(apiEndpoint, payload);
 }
 
-function getWorker(payload) {
-	let apiEndpoint = "createWorkerId";
+function getSeller(payload) {
+	let apiEndpoint = "createSellerId";
 	return Service.get(apiEndpoint, payload);
 }
 
 function bookDate(payload) {
-	let apiEndpoint = "workerBooking";
+	let apiEndpoint = "sellerBooking";
 	return Service.post(apiEndpoint, payload);
 }
 
 function getbookDate(payload) {
-	let apiEndpoint = "workerBooking";
+	let apiEndpoint = "sellerBooking";
 	return Service.get(apiEndpoint, payload);
 }
 
 function submitMedia(payload) {
-	let apiEndpoint = "uploadWorkerFile";
+	let apiEndpoint = "uploadSellerFile";
 	return Service.post(apiEndpoint, payload);
 }
 
 function getMedia(payload) {
-	let apiEndpoint = "getWorkerFile";
+	let apiEndpoint = "getSellerFile";
 	return Service.get(apiEndpoint, payload);
 }

@@ -30,7 +30,7 @@ const localStorageService = LocalStorageService.getService();
 import Link from "@material-ui/core/Link";
 import video_icon from "~/static/video_icon.svg";
 import routerLink from "~/static/text/link";
-import { freelancerActions } from "../../../_actions/freelancer.action";
+import { b2bActions } from "../../../_actions/b2b.action";
 import { withRouter } from "react-router";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 const useStyles = makeStyles((theme) => ({
@@ -122,7 +122,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const FreelancerVid = (props) => {
+const b2bVid = (props) => {
 	const classes = useStyles();
 	const [vid, setVid] = React.useState({});
 	const [remoteData, setRemoteData] = React.useState([]);
@@ -138,8 +138,8 @@ const FreelancerVid = (props) => {
 	}, []);
 
 	function getAllVideos() {
-		freelancerActions
-			.getMedia({ freelancer_id: props.router.query.id, file_type: 2 })
+		b2bActions
+			.getMedia({ b2b_id: props.router.query.id, file_type: 2 })
 			.then(function (response) {
 				console.log("ressss", response);
 				if (Array.isArray(response.data.data)) {
@@ -167,10 +167,10 @@ const FreelancerVid = (props) => {
 	function submitVieo() {
 		let payload = new FormData();
 		payload.append("video_file", vid.fileObj);
-		payload.append("freelancer_id", props.router.query.id);
+		payload.append("b2b_id", props.router.query.id);
 		payload.append("title", vidTitle);
 		if (payload) {
-			freelancerActions
+			b2bActions
 				.submitMedia(payload)
 				.then(function (response) {
 					console.log("ressss", response);
@@ -188,7 +188,7 @@ const FreelancerVid = (props) => {
 	return (
 		<Fragment>
 			<Head>
-				<title>Freelancer &nbsp; - Upload Videos</title>
+				<title>B2B &nbsp; - Upload Videos</title>
 			</Head>
 			<Dashboard>
 				<div className={classes.root}>
@@ -204,7 +204,7 @@ const FreelancerVid = (props) => {
 											<Link
 												style={{ textDecoration: "none" }}
 												href={
-													routerLink.starter.freelancerDetails +
+													routerLink.starter.b2bDetails +
 													"?id=" +
 													props.router.query.id
 												}
@@ -401,4 +401,4 @@ const FreelancerVid = (props) => {
 		</Fragment>
 	);
 };
-export default withRouter(FreelancerVid);
+export default withRouter(b2bVid);

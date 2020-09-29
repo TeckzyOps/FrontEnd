@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import {
 	Grid,
 	TextField,
@@ -8,30 +8,31 @@ import {
 	Tooltip,
 	Button,
 	Card,
+	IconButton,
+	Divider,
 	CardActions,
 	CardContent,
-	IconButton,
 	CardMedia,
 	CssBaseline,
 	ButtonBase,
 } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
 import Dashboard from "../../../components/Dashboard/DashboardWrap";
 import Head from "next/head";
+import withAuth from "../../../components/Hoc/withAuth";
+import LocalStorageService from "../../../_services/LocalStorageService";
+const localStorageService = LocalStorageService.getService();
+import Link from "@material-ui/core/Link";
+import { withRouter } from "react-router";
+import routerLink from "~/static/text/link";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
-import withAuth from "../../../components/Hoc/withAuth";
-import LocalStorageService from "../../../_services/LocalStorageService";
-const localStorageService = LocalStorageService.getService();
-import Link from "@material-ui/core/Link";
-import video_icon from "~/static/video_icon.svg";
-import routerLink from "~/static/text/link";
-import { freelancerActions } from "../../../_actions/freelancer.action";
-import { withRouter } from "react-router";
+import { b2bActions } from "../../../_actions/b2b.action";
+import CloseIcon from "@material-ui/icons/Close";
+
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -43,16 +44,19 @@ const useStyles = makeStyles((theme) => ({
 	input: {
 		display: "none",
 	},
+	heroContent: {
+		backgroundColor: theme.palette.background.paper,
+		padding: theme.spacing(8, 0, 6),
+		border: "1px dotted grey",
+	},
+	heroButtons: {
+		marginTop: theme.spacing(2),
+	},
 	closeButton: {
 		position: "absolute",
 		right: theme.spacing(1),
 		top: theme.spacing(1),
 		color: theme.palette.grey[500],
-	},
-	heroContent: {
-		backgroundColor: theme.palette.background.paper,
-		padding: theme.spacing(8, 0, 6),
-		border: "1px dotted grey",
 	},
 	image: {
 		position: "relative",
@@ -107,7 +111,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	imageTitle: {
 		position: "relative",
-		padding: `${theme.spacing(2)}px ${theme.spacing(4)}px ${
+		padding: `${theme.spacing(2)}px ${theme.spacing(2)}px ${
 			theme.spacing(1) + 6
 		}px`,
 	},
@@ -122,24 +126,30 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const FreelancerVid = (props) => {
+const b2bVid = (props) => {
 	const classes = useStyles();
-	const [vid, setVid] = React.useState({});
+	const [img, setImg] = React.useState({});
 	const [remoteData, setRemoteData] = React.useState([]);
 	const [remoteError, setRemoteError] = React.useState("");
-	const [vidTitle, setVidTitle] = React.useState("");
-	const [selectedVideo, setSelectedVideo] = React.useState({});
+	const [selectedImg, setSelectedImg] = React.useState("");
 	const [open, setOpen] = React.useState(false);
 	const theme = useTheme();
-	const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-	React.useEffect(() => {
-		console.log(props);
-		getAllVideos();
-	}, []);
 
-	function getAllVideos() {
-		freelancerActions
-			.getMedia({ freelancer_id: props.router.query.id, file_type: 2 })
+	React.useEffect(() => {
+		getAllImages();
+	}, []);
+	function GetFilename(url) {
+		if (url) {
+			var m = url.toString().match(/.*\/(.+?)\./);
+			if (m && m.length > 1) {
+				return m[1];
+			}
+		}
+		return "";
+	}
+	function getAllImages() {
+		b2bActions
+			.getMedia({ b2b_id: props.router.query.id, file_type: 1 })
 			.then(function (response) {
 				console.log("ressss", response);
 				if (Array.isArray(response.data.data)) {
@@ -154,27 +164,16 @@ const FreelancerVid = (props) => {
 			});
 	}
 
-	function playselected(filepath, title) {
-		if (filepath && title) {
-			setOpen(true);
-			setSelectedVideo({
-				src: filepath,
-				title: title,
-			});
-		}
-	}
-
-	function submitVieo() {
+	function submitImage() {
 		let payload = new FormData();
-		payload.append("video_file", vid.fileObj);
-		payload.append("freelancer_id", props.router.query.id);
-		payload.append("title", vidTitle);
+		payload.append("image_file", img.fileObj);
+		payload.append("b2b_id", props.router.query.id);
 		if (payload) {
-			freelancerActions
+			b2bActions
 				.submitMedia(payload)
 				.then(function (response) {
 					console.log("ressss", response);
-					getAllVideos();
+					getAllImages();
 				})
 				.catch(function (error) {
 					if (error.response && error.response.data.input_error.image_file) {
@@ -184,11 +183,15 @@ const FreelancerVid = (props) => {
 				});
 		}
 	}
+	function openSelected(img) {
+		setSelectedImg(img);
+		setOpen(true);
+	}
 
 	return (
 		<Fragment>
 			<Head>
-				<title>Freelancer &nbsp; - Upload Videos</title>
+				<title>B2B &nbsp; - Upload Images</title>
 			</Head>
 			<Dashboard>
 				<div className={classes.root}>
@@ -204,7 +207,7 @@ const FreelancerVid = (props) => {
 											<Link
 												style={{ textDecoration: "none" }}
 												href={
-													routerLink.starter.freelancerDetails +
+													routerLink.starter.b2bDetails +
 													"?id=" +
 													props.router.query.id
 												}
@@ -230,26 +233,14 @@ const FreelancerVid = (props) => {
 										)}
 									</Grid>
 									<Grid container spacing={2} justify="center">
-										<Grid container justify="center" alignItems="center">
-											<Grid item>
-												<TextField
-													type="text"
-													onChange={(e) => setVidTitle(e.target.value)}
-													variant="outlined"
-													fullWidth
-													label="Video Title"
-												/>
-											</Grid>
-										</Grid>
 										<Grid item>
 											<input
-												accept="video/*"
+												accept="image/*"
 												className={classes.input}
 												id="contained-button-file"
 												onChange={(event) => {
 													let reader = new FileReader();
 													let file = event.currentTarget.files[0];
-													var fileUrl = URL.createObjectURL(file);
 
 													if (file) {
 														setRemoteError("");
@@ -259,7 +250,7 @@ const FreelancerVid = (props) => {
 																type: file.type,
 															});
 															var url = URL.createObjectURL(blob);
-															setVid({
+															setImg({
 																src: url,
 																fileObj: file,
 																name: file.name,
@@ -277,14 +268,14 @@ const FreelancerVid = (props) => {
 													color="primary"
 													component="span"
 												>
-													Choose Video
+													Choose An Image
 												</Button>
 											</label>
 										</Grid>
 										<Grid item>
 											<Button
-												onClick={submitVieo}
-												disabled={vid.src == null}
+												onClick={submitImage}
+												disabled={img.src == null}
 												variant="outlined"
 												color="primary"
 											>
@@ -292,7 +283,7 @@ const FreelancerVid = (props) => {
 											</Button>
 										</Grid>
 										<Grid item xs={12}>
-											{vid.src && (
+											{img.src && (
 												<table
 													style={{
 														borderCollapse: "collapse",
@@ -309,9 +300,9 @@ const FreelancerVid = (props) => {
 													</thead>
 													<tbody>
 														<tr>
-															<td>{vid.name}</td>
-															<td>{vid.type}</td>
-															<td>{vid.size ? vid.size + "MB" : ""}</td>
+															<td>{img.name}</td>
+															<td>{img.type}</td>
+															<td>{img.size ? img.size + "MB" : ""}</td>
 														</tr>
 													</tbody>
 												</table>
@@ -323,31 +314,29 @@ const FreelancerVid = (props) => {
 							</Container>
 						</div>
 						<br></br>
+						<Divider />
+						<br></br>
 						<Container className={classes.cardGrid} maxWidth="md">
 							{/* End hero unit */}
-							<Grid container spacing={2}>
-								{remoteData.map((card, index) => (
-									<Grid key={index} item md={6} xs={12}>
+							<Grid container spacing={1}>
+								{remoteData.map((card) => (
+									<Grid item key={card} xs={12} sm={4} md={4}>
 										<ButtonBase
-											onClick={() => playselected(card.file_path, card.title)}
+											onClick={() => openSelected(card.file_path)}
 											focusRipple
 											className={classes.image}
 											focusVisibleClassName={classes.focusVisible}
 											style={{
-												width: "300px",
+												width: "230px",
+												height: "250px",
 											}}
 										>
-											<span className={classes.imageSrc}>
-												<video
-													width="100%"
-													src={card.file_path}
-													playsInline="playsinline"
-													muted="muted"
-													loop="loop"
-													autoPlay={false}
-													controls={false}
-												/>
-											</span>
+											<span
+												className={classes.imageSrc}
+												style={{
+													backgroundImage: `url(${card.file_path})`,
+												}}
+											/>
 											<span className={classes.imageBackdrop} />
 											<span className={classes.imageButton}>
 												<Typography
@@ -356,7 +345,7 @@ const FreelancerVid = (props) => {
 													color="inherit"
 													className={classes.imageTitle}
 												>
-													{card.title}
+													{GetFilename(card.file_path)}
 													<span className={classes.imageMarked} />
 												</Typography>
 											</span>
@@ -367,16 +356,12 @@ const FreelancerVid = (props) => {
 						</Container>
 					</main>
 					<Dialog
-						fullScreen={fullScreen}
 						open={open}
 						onClose={() => setOpen(false)}
-						aria-labelledby={selectedVideo.title}
+						aria-labelledby={selectedImg}
 					>
-						<DialogTitle
-							id={selectedVideo.title}
-							onClose={() => setOpen(false)}
-						>
-							<Typography variant="h6">{selectedVideo.title}</Typography>
+						<DialogTitle onClose={() => setOpen(false)}>
+							<Typography variant="h6">{GetFilename(selectedImg)}</Typography>
 							<IconButton
 								aria-label="close"
 								className={classes.closeButton}
@@ -386,14 +371,7 @@ const FreelancerVid = (props) => {
 							</IconButton>
 						</DialogTitle>
 						<DialogContent>
-							<video
-								width="100%"
-								src={selectedVideo.src}
-								muted="muted"
-								loop="loop"
-								autoPlay={false}
-								controls={true}
-							/>
+							<img width="100%" src={selectedImg} height="100%" />
 						</DialogContent>
 					</Dialog>
 				</div>
@@ -401,4 +379,4 @@ const FreelancerVid = (props) => {
 		</Fragment>
 	);
 };
-export default withRouter(FreelancerVid);
+export default withRouter(b2bVid);

@@ -12,8 +12,7 @@ import {
 } from "@material-ui/core";
 import Head from "next/head";
 import LocalStorageService from "../../../_services/LocalStorageService";
-import DashboardWrapper from "../../../components/Dashboard/DashboardWrapper";
-import BookingModule from "../../../components/GenericPopup/BookingModule";
+import Dashboard from "../../../components/Dashboard/DashboardWrap";
 import Typography from "@material-ui/core/Typography";
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
 import IconButton from "@material-ui/core/IconButton";
@@ -22,11 +21,7 @@ import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import routerLink from "~/static/text/link";
 import Link from "@material-ui/core/Link";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
+
 import api, {
 	addBearerToken,
 	removeBearerToken,
@@ -42,16 +37,13 @@ import {
 let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
 const useStyles = makeStyles((theme) => ({
-	root: {
-		padding: theme.spacing(1),
-		"& > *": {
-			margin: theme.spacing(1),
-		},
-	},
+	root: {},
 
 	card: {
 		maxWidth: 300,
 		margin: "auto",
+		display: "flex",
+		flexDirection: "column",
 		transition: "0.3s",
 		boxShadow: "0 8px 40px -12px rgba(0,0,0,0.3)",
 		"&:hover": {
@@ -63,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	content: {
 		textAlign: "left",
-		padding: theme.spacing(3),
+		padding: theme.spacing(1),
 	},
 	divider: {
 		margin: `${theme.spacing(3)}px 0`,
@@ -81,21 +73,12 @@ const useStyles = makeStyles((theme) => ({
 			marginLeft: -theme.spacing(),
 		},
 	},
-	addCard: {
-		justifyContent: "center",
-		alignItems: "center",
-		display: "flex",
-		height: "100%",
-		maxWidth: 345,
-		flexDirection: "column",
-	},
 }));
 const index = (props) => {
 	const classes = useStyles();
 	const [adList, setadList] = React.useState([]);
-	const [bookingPopup, setBookingPopup] = React.useState(false);
 	React.useEffect(() => {
-		freelancerActions
+		workerActions
 			.getWorker()
 			.then(function (response) {
 				console.log("ressss", response);
@@ -114,120 +97,93 @@ const index = (props) => {
 				<title>Dashboard &nbsp; - Login</title>
 			</Head>
 
-			<DashboardWrapper logindata={props.logindata} userdata={props.userdata} />
-			<div className={classes.root}>
-				<Grid container spacing={2} justify="flex-end">
-					<Grid item>
-						<Button
-							variant="outlined"
-							onClick={() => setBookingPopup(true)}
-							color="secondary"
-						>
-							Booking Calendar
-						</Button>
-					</Grid>
-					<Grid item>
-						<BookingModule />
-					</Grid>
-				</Grid>
-				<Grid container spacing={2}>
-					<Grid item lg={4} md={6} xl={4} xs={12}>
-						<Card className={classes.addCard}>
-							<div>
+			<Dashboard>
+				<div className={classes.root}>
+					<Grid alignContent="center" container spacing={2}>
+						<Grid item md={3} xs={12}>
+							<Card
+								style={{ textAlign: "center", height: "100%" }}
+								className={classes.card}
+							>
 								<Typography variant="h6">Add More Profile</Typography>
+								<div className={classes.col}>
+									<Fab
+										href={routerLink.starter.workernew}
+										color="primary"
+										aria-label="add"
+									>
+										<AddIcon />
+									</Fab>
+								</div>
 								<Typography variant="subtitle" component="h2">
 									New Worker Application
 								</Typography>
-							</div>
-							<div className={classes.col}>
-								<Fab
-									href={routerLink.starter.freelancernew}
-									color="primary"
-									aria-label="add"
-								>
-									<AddIcon />
-								</Fab>
-							</div>
-						</Card>
-					</Grid>
+							</Card>
+						</Grid>
 
-					{adList &&
-						adList.map((ad, index) => (
-							<Grid item lg={4} md={6} xl={4} xs={12}>
-								<Link
-									style={{ textDecoration: "none" }}
-									href={routerLink.starter.freelancerDetails + "?id=" + ad.id}
-								>
-									<Card className={classes.card}>
-										{/* <CardMedia
+						{adList &&
+							adList.map((ad, index) => (
+								<Grid key={index} item md={3} xs={12}>
+									<Link
+										style={{ textDecoration: "none" }}
+										href={routerLink.starter.workerDetails + "?id=" + ad.id}
+									>
+										<Card className={classes.card}>
+											{/* <CardMedia
 											className={classes.media}
 											image={
 												"https://image.freepik.com/free-photo/river-foggy-mountains-landscape_1204-511.jpg"
 											}
 										/> */}
-										<CardContent className={classes.content}>
-											<MuiThemeProvider theme={theme}>
-												<Typography
-													className={"MuiTypography--heading"}
-													variant={"h5"}
-													gutterBottom
+											<CardContent className={classes.content}>
+												<MuiThemeProvider theme={theme}>
+													Tagline:
+													<Typography
+														className={"MuiTypography--heading"}
+														variant={"h5"}
+														gutterBottom
+													>
+														{ad.offer_tagline}
+													</Typography>
+													Business Name:
+													<Typography
+														className={"MuiTypography--heading"}
+														variant={"h6"}
+														gutterBottom
+													>
+														{ad.bussiness_name}
+													</Typography>
+													<Typography variant="subtitle1" color="textSecondary">
+														{ad.sub_service + " | " + ad.service_area}
+													</Typography>
+													Business Description:
+													<Typography
+														className={"MuiTypography--subheading"}
+														variant={"caption"}
+													>
+														{ad.bussineess_description}
+													</Typography>
+												</MuiThemeProvider>
+												<Divider className={classes.divider} light />
+											</CardContent>
+											<CardActions>
+												<Link
+													target="_blank"
+													href={"https://maps.google.com"}
+													rel="noopener"
 												>
-													{ad.offer_tagline}
-												</Typography>
-												<Typography
-													className={"MuiTypography--heading"}
-													variant={"h6"}
-													gutterBottom
-												>
-													{ad.bussiness_name}
-												</Typography>
-												<Typography variant="subtitle1" color="textSecondary">
-													{ad.sub_service + " | " + ad.service_area}
-												</Typography>
-												<Typography
-													className={"MuiTypography--subheading"}
-													variant={"caption"}
-												>
-													{ad.bussineess_description}
-												</Typography>
-											</MuiThemeProvider>
-											<Divider className={classes.divider} light />
-										</CardContent>
-										<CardActions>
-											<Link
-												target="_blank"
-												to={ad.office_map_link}
-												rel="noopener"
-											>
-												<IconButton>
-													<ExploreIcon fontSize="large" />
-												</IconButton>
-											</Link>
-										</CardActions>
-									</Card>
-								</Link>
-							</Grid>
-						))}
-				</Grid>
-
-				<Dialog
-					fullWidth
-					maxWidth={"md"}
-					open={bookingPopup}
-					onClose={() => setBookingPopup(false)}
-					aria-labelledby="max-width-dialog-title"
-				>
-					<DialogTitle id="max-width-dialog-title">
-						Booking Calendar
-					</DialogTitle>
-					<DialogContent></DialogContent>
-					<DialogActions>
-						<Button onClick={() => setBookingPopup(false)} color="primary">
-							Close
-						</Button>
-					</DialogActions>
-				</Dialog>
-			</div>
+													<IconButton>
+														<ExploreIcon fontSize="large" />
+													</IconButton>
+												</Link>
+											</CardActions>
+										</Card>
+									</Link>
+								</Grid>
+							))}
+					</Grid>
+				</div>
+			</Dashboard>
 		</React.Fragment>
 	);
 };

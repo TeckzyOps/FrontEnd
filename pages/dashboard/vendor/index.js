@@ -26,7 +26,7 @@ import api, {
 	addBearerToken,
 	removeBearerToken,
 } from "../../../utils/httpClient";
-import { freelancerActions } from "../../../_actions/freelancer.action";
+import { vendorActions } from "../../../_actions/vendor.action";
 const localStorageService = LocalStorageService.getService();
 import {
 	createMuiTheme,
@@ -78,8 +78,8 @@ const index = (props) => {
 	const classes = useStyles();
 	const [adList, setadList] = React.useState([]);
 	React.useEffect(() => {
-		freelancerActions
-			.getFreelancer()
+		vendorActions
+			.getVendor()
 			.then(function (response) {
 				console.log("ressss", response);
 
@@ -94,7 +94,7 @@ const index = (props) => {
 	return (
 		<React.Fragment>
 			<Head>
-				<title>Dashboard &nbsp; - Login</title>
+				<title>Vendor</title>
 			</Head>
 
 			<Dashboard>
@@ -108,7 +108,7 @@ const index = (props) => {
 								<Typography variant="h6">Add More Profile</Typography>
 								<div className={classes.col}>
 									<Fab
-										href={routerLink.starter.freelancernew}
+										href={routerLink.starter.vendornew}
 										color="primary"
 										aria-label="add"
 									>
@@ -116,7 +116,7 @@ const index = (props) => {
 									</Fab>
 								</div>
 								<Typography variant="subtitle" component="h2">
-									New Freelancer Application
+									New Vendor Application
 								</Typography>
 							</Card>
 						</Grid>
@@ -126,7 +126,7 @@ const index = (props) => {
 								<Grid key={index} item md={3} xs={12}>
 									<Link
 										style={{ textDecoration: "none" }}
-										href={routerLink.starter.freelancerDetails + "?id=" + ad.id}
+										href={routerLink.starter.vendorDetails + "?id=" + ad.id}
 									>
 										<Card className={classes.card}>
 											{/* <CardMedia

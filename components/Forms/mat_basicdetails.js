@@ -528,7 +528,6 @@ const Basicdetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}

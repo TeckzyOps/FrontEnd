@@ -74,7 +74,6 @@ import { workerActions } from "../../_actions/worker.action";
 const useStyles = makeStyles((theme) => ({
 	root: {
 		flexGrow: 1,
-		padding: theme.spacing(1),
 		margin: 0,
 	},
 	demo: {
@@ -84,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
 		margin: theme.spacing(4, 0, 2),
 	},
 }));
-const freelancerform = (props) => {
+const workerform = (props) => {
 	const { className, ...rest } = props;
 	const classes = useStyles();
 
@@ -93,7 +92,7 @@ const freelancerform = (props) => {
 	const [docData, setDocData] = useState([]);
 	const router = useRouter();
 	const [docSelected, setDocSelected] = useState(0);
-	const [freelancerData, setFreelancerData] = useState({
+	const [workerData, setWorkerData] = useState({
 		license_file_path: null,
 		service_category: "",
 		sub_service: "",
@@ -117,13 +116,13 @@ const freelancerform = (props) => {
 
 	React.useEffect(() => {
 		if (props.router.query.id) {
-			freelancerActions
-				.getFreelancer({ freelancer_id: props.router.query.id })
+			workerActions
+				.getWorker({ worker_id: props.router.query.id })
 				.then(function (response) {
 					console.log("ressss", response);
 
 					if (response.data.data.id) {
-						setFreelancerData(response.data.data);
+						setWorkerData(response.data.data);
 					}
 				})
 				.catch(function (error) {
@@ -184,16 +183,16 @@ const freelancerform = (props) => {
 			}
 		}
 		// Object.keys(fileDropdown).forEach((dropdown) => {
-		// 	payload.append(dropdown, freelancerData[fileDropdown[dropdown]]);
+		// 	payload.append(dropdown, workerData[fileDropdown[dropdown]]);
 		// 	if (
 		// 		dropdown == "Advertisement" &&
-		// 		freelancerData[fileDropdown[dropdown]] != null
+		// 		workerData[fileDropdown[dropdown]] != null
 		// 	) {
 		// 		want_advertisement = 1;
 		// 	}
 		// 	if (
 		// 		dropdown == "Shaadiwala Offer" &&
-		// 		freelancerData[fileDropdown[dropdown]] != null
+		// 		workerData[fileDropdown[dropdown]] != null
 		// 	) {
 		// 		except_shaadiwala_offer = 1;
 		// 	}
@@ -237,7 +236,7 @@ const freelancerform = (props) => {
 	const _renderModal = () => {
 		const onClick = () => {
 			setProfileUpdateSuccess(() => false);
-			router.push(routerLink.starter.freelancerVids);
+			router.push(routerLink.starter.workerVids + "?id=" + id);
 		};
 
 		return (
@@ -360,7 +359,7 @@ const freelancerform = (props) => {
 				<Grid item lg={4} md={4} xl={4} xs={12}>
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
-							<Link href={routerLink.starter.freelancerVids}>
+							<Link href={routerLink.starter.workerVids}>
 								<Button variant="contained" color="primary">
 									Upload Videos
 								</Button>
@@ -368,7 +367,7 @@ const freelancerform = (props) => {
 						</Grid>
 
 						<Grid item xs={12}>
-							<Link href={routerLink.starter.freelancerImg}>
+							<Link href={routerLink.starter.workerImg}>
 								<Button variant="contained" color="primary">
 									Upload Images
 								</Button>
@@ -383,7 +382,7 @@ const freelancerform = (props) => {
 						<div className={classes.demo}>
 							<List dense={true}>
 								{Object.keys(fileDropdown).map((title, index) => {
-									if (freelancerData[fileDropdown[title]] != null) {
+									if (workerData[fileDropdown[title]] != null) {
 										return (
 											<ListItem>
 												<ListItemAvatar>
@@ -394,7 +393,7 @@ const freelancerform = (props) => {
 												<div
 													key={index}
 													target="_blank"
-													href={freelancerData[fileDropdown[title]]}
+													href={workerData[fileDropdown[title]]}
 												>
 													<ListItemText primary={title} />
 												</div>
@@ -403,8 +402,8 @@ const freelancerform = (props) => {
 														edge="end"
 														aria-label="comments"
 														onClick={() =>
-															setFreelancerData({
-																...freelancerData,
+															setWorkerData({
+																...workerData,
 																[fileDropdown[title]]: null,
 															})
 														}
@@ -430,7 +429,7 @@ const freelancerform = (props) => {
 					<div>
 						<Formik
 							enableReinitialize
-							initialValues={freelancerData}
+							initialValues={workerData}
 							validationSchema={profileSchema}
 							onSubmit={(vals, { setSubmitting, resetForm, setFieldError }) =>
 								_handleSubmit({
@@ -463,7 +462,7 @@ const freelancerform = (props) => {
 													align="center"
 													gutterBottom
 												>
-													Freelancer Application Form
+													Worker Application Form
 												</Typography>
 											</Grid>
 										</Grid>
@@ -712,7 +711,7 @@ const freelancerform = (props) => {
 													<Box margin={1}>
 														<Field
 															fullWidth
-															type="text"
+															type="number"
 															component={TextField}
 															name="salary_per_month"
 															label="Salary (Monthly)"
@@ -726,7 +725,7 @@ const freelancerform = (props) => {
 													<Box margin={1}>
 														<Field
 															fullWidth
-															type="text"
+															type="number"
 															component={TextField}
 															name="salary_per_day"
 															label="Salary (Daily)"
@@ -845,7 +844,7 @@ const freelancerform = (props) => {
 															}
 															margin="dense"
 														>
-															{["Religion No Bar", "Only Religion"].map(
+															{["Doesn't Matter", "Only Religion"].map(
 																(option, index) => (
 																	<MenuItem key={index} value={index + 1}>
 																		{option}
@@ -986,6 +985,27 @@ const freelancerform = (props) => {
 																		</TableCell>
 																	</TableRow>
 																))}
+																{Object.keys(fileDropdown).map((obj) => {
+																	if (
+																		props.errors.hasOwnProperty(
+																			fileDropdown[obj]
+																		)
+																	) {
+																		return (
+																			<TableRow>
+																				<TableCell style={{ color: "red" }}>
+																					Error [{obj}]
+																				</TableCell>
+																				<TableCell
+																					style={{ color: "red" }}
+																					align="left"
+																				>
+																					{props.errors[fileDropdown[obj]]}
+																				</TableCell>
+																			</TableRow>
+																		);
+																	}
+																})}
 															</TableBody>
 														</Table>
 													</TableContainer>
@@ -1029,8 +1049,4 @@ const freelancerform = (props) => {
 	);
 };
 
-freelancerform.propTypes = {
-	className: PropTypes.string,
-};
-
-export default withRouter(withTranslation(["common"])(freelancerform));
+export default withRouter(withTranslation(["common"])(workerform));

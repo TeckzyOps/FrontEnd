@@ -16,7 +16,7 @@ import {
 	ButtonBase,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import DashboardWrapper from "../../../components/Dashboard/DashboardWrapper";
+import Dashboard from "../../../components/Dashboard/DashboardWrap";
 import Head from "next/head";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -29,7 +29,10 @@ import LocalStorageService from "../../../_services/LocalStorageService";
 const localStorageService = LocalStorageService.getService();
 import Link from "@material-ui/core/Link";
 import video_icon from "~/static/video_icon.svg";
-import { freelancerActions } from "../../../_actions/freelancer.action";
+import routerLink from "~/static/text/link";
+import { workerActions } from "../../../_actions/worker.action";
+import { withRouter } from "react-router";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 const useStyles = makeStyles((theme) => ({
 	root: {
 		padding: theme.spacing(4),
@@ -119,7 +122,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const FreelancerVid = (props) => {
+const workerVid = (props) => {
 	const classes = useStyles();
 	const [vid, setVid] = React.useState({});
 	const [remoteData, setRemoteData] = React.useState([]);
@@ -130,12 +133,13 @@ const FreelancerVid = (props) => {
 	const theme = useTheme();
 	const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 	React.useEffect(() => {
+		console.log(props);
 		getAllVideos();
 	}, []);
 
 	function getAllVideos() {
-		freelancerActions
-			.getMedia({ freelancer_id: 1, file_type: 2 })
+		workerActions
+			.getMedia({ worker_id: props.router.query.id, file_type: 2 })
 			.then(function (response) {
 				console.log("ressss", response);
 				if (Array.isArray(response.data.data)) {
@@ -143,10 +147,8 @@ const FreelancerVid = (props) => {
 				}
 			})
 			.catch(function (error) {
-				if (error.response && error.response.data.input_error) {
-					Object.keys(error.response.data.input_error).forEach((k) => {
-						setFieldError(k, error.response.data.input_error[k][0]);
-					});
+				if (error.response && error.response.data.input_error.image_file) {
+					setRemoteError(error.response.data.input_error.image_file);
 				}
 				console.error("errrrr ", error);
 			});
@@ -165,20 +167,18 @@ const FreelancerVid = (props) => {
 	function submitVieo() {
 		let payload = new FormData();
 		payload.append("video_file", vid.fileObj);
-		payload.append("freelancer_id", 1);
+		payload.append("worker_id", props.router.query.id);
 		payload.append("title", vidTitle);
 		if (payload) {
-			freelancerActions
+			workerActions
 				.submitMedia(payload)
 				.then(function (response) {
 					console.log("ressss", response);
 					getAllVideos();
 				})
 				.catch(function (error) {
-					if (error.response && error.response.data.input_error) {
-						Object.keys(error.response.data.input_error).forEach((k) => {
-							setFieldError(k, error.response.data.input_error[k][0]);
-						});
+					if (error.response && error.response.data.input_error.image_file) {
+						setRemoteError(error.response.data.input_error.image_file);
 					}
 					console.error("errrrr ", error);
 				});
@@ -188,182 +188,217 @@ const FreelancerVid = (props) => {
 	return (
 		<Fragment>
 			<Head>
-				<title>Freelancer &nbsp; - Upload Videos</title>
+				<title>Worker &nbsp; - Upload Videos</title>
 			</Head>
-			<DashboardWrapper logindata={props.logindata} userdata={props.userdata} />
-			<div className={classes.root}>
-				<CssBaseline />
+			<Dashboard>
+				<div className={classes.root}>
+					<CssBaseline />
 
-				<main>
-					{/* Hero unit */}
-					<div className={classes.heroContent}>
-						<Container maxWidth="sm">
-							<div className={classes.heroButtons}>
-								<Grid container spacing={2} justify="center">
-									<Grid container justify="center" alignItems="center">
+					<main>
+						{/* Hero unit */}
+						<div className={classes.heroContent}>
+							<Container maxWidth="sm">
+								<div className={classes.heroButtons}>
+									<Grid container spacing={2} justify="flex-start">
 										<Grid item>
-											<TextField
-												type="text"
-												onChange={(e) => setVidTitle(e.target.value)}
-												variant="outlined"
-												fullWidth
-												label="Video Title"
+											<Link
+												style={{ textDecoration: "none" }}
+												href={
+													routerLink.starter.workerDetails +
+													"?id=" +
+													props.router.query.id
+												}
+											>
+												<IconButton
+													color="primary"
+													disabled={props.router.query.id == null}
+												>
+													<ArrowBackIcon />
+												</IconButton>
+											</Link>
+										</Grid>
+										{remoteError && (
+											<Grid item>
+												<Typography
+													color="error"
+													variant="subtitle1"
+													component="h2"
+												>
+													Error : {remoteError}
+												</Typography>
+											</Grid>
+										)}
+									</Grid>
+									<Grid container spacing={2} justify="center">
+										<Grid container justify="center" alignItems="center">
+											<Grid item>
+												<TextField
+													type="text"
+													onChange={(e) => setVidTitle(e.target.value)}
+													variant="outlined"
+													fullWidth
+													label="Video Title"
+												/>
+											</Grid>
+										</Grid>
+										<Grid item>
+											<input
+												accept="video/*"
+												className={classes.input}
+												id="contained-button-file"
+												onChange={(event) => {
+													let reader = new FileReader();
+													let file = event.currentTarget.files[0];
+													var fileUrl = URL.createObjectURL(file);
+
+													if (file) {
+														setRemoteError("");
+														reader.readAsDataURL(file);
+														reader.onloadend = () => {
+															var blob = new Blob([reader.result], {
+																type: file.type,
+															});
+															var url = URL.createObjectURL(blob);
+															setVid({
+																src: url,
+																fileObj: file,
+																name: file.name,
+																type: file.type,
+																size: (file.size / (1024 * 1024)).toFixed(2),
+															});
+														};
+													}
+												}}
+												type="file"
 											/>
+											<label htmlFor="contained-button-file">
+												<Button
+													variant="contained"
+													color="primary"
+													component="span"
+												>
+													Choose Video
+												</Button>
+											</label>
+										</Grid>
+										<Grid item>
+											<Button
+												onClick={submitVieo}
+												disabled={vid.src == null}
+												variant="outlined"
+												color="primary"
+											>
+												Upload It!
+											</Button>
+										</Grid>
+										<Grid item xs={12}>
+											{vid.src && (
+												<table
+													style={{
+														borderCollapse: "collapse",
+														borderSpacing: 0,
+														width: "100%",
+													}}
+												>
+													<thead>
+														<tr>
+															<th>File Name</th>
+															<th>File Type</th>
+															<th>File Size</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td>{vid.name}</td>
+															<td>{vid.type}</td>
+															<td>{vid.size ? vid.size + "MB" : ""}</td>
+														</tr>
+													</tbody>
+												</table>
+											)}
+											<div></div>
 										</Grid>
 									</Grid>
-									<Grid item>
-										<input
-											accept="video/*"
-											className={classes.input}
-											id="contained-button-file"
-											onChange={(event) => {
-												let reader = new FileReader();
-												let file = event.currentTarget.files[0];
-												var fileUrl = URL.createObjectURL(file);
-
-												if (file) {
-													reader.readAsDataURL(file);
-													reader.onloadend = () => {
-														var blob = new Blob([reader.result], {
-															type: file.type,
-														});
-														var url = URL.createObjectURL(blob);
-														setVid({
-															src: url,
-															fileObj: file,
-															name: file.name,
-															type: file.type,
-															size: (file.size / (1024 * 1024)).toFixed(2),
-														});
-													};
-												}
+								</div>
+							</Container>
+						</div>
+						<br></br>
+						<Container className={classes.cardGrid} maxWidth="md">
+							{/* End hero unit */}
+							<Grid container spacing={2}>
+								{remoteData.map((card, index) => (
+									<Grid key={index} item md={6} xs={12}>
+										<ButtonBase
+											onClick={() => playselected(card.file_path, card.title)}
+											focusRipple
+											className={classes.image}
+											focusVisibleClassName={classes.focusVisible}
+											style={{
+												width: "300px",
 											}}
-											type="file"
-										/>
-										<label htmlFor="contained-button-file">
-											<Button
-												variant="contained"
-												color="primary"
-												component="span"
-											>
-												Choose Video
-											</Button>
-										</label>
-									</Grid>
-									<Grid item>
-										<Button
-											onClick={submitVieo}
-											disabled={vid.src == null}
-											variant="outlined"
-											color="primary"
 										>
-											Upload It!
-										</Button>
+											<span className={classes.imageSrc}>
+												<video
+													width="100%"
+													src={card.file_path}
+													playsInline="playsinline"
+													muted="muted"
+													loop="loop"
+													autoPlay={false}
+													controls={false}
+												/>
+											</span>
+											<span className={classes.imageBackdrop} />
+											<span className={classes.imageButton}>
+												<Typography
+													component="span"
+													variant="subtitle1"
+													color="inherit"
+													className={classes.imageTitle}
+												>
+													{card.title}
+													<span className={classes.imageMarked} />
+												</Typography>
+											</span>
+										</ButtonBase>
 									</Grid>
-									<Grid item xs={12}>
-										{vid.src && (
-											<table
-												style={{
-													borderCollapse: "collapse",
-													borderSpacing: 0,
-													width: "100%",
-												}}
-											>
-												<thead>
-													<tr>
-														<th>File Name</th>
-														<th>File Type</th>
-														<th>File Size</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														<td>{vid.name}</td>
-														<td>{vid.type}</td>
-														<td>{vid.size ? vid.size + "MB" : ""}</td>
-													</tr>
-												</tbody>
-											</table>
-										)}
-										<div></div>
-									</Grid>
-								</Grid>
-							</div>
+								))}
+							</Grid>
 						</Container>
-					</div>
-					<br></br>
-					<Container className={classes.cardGrid} maxWidth="md">
-						{/* End hero unit */}
-						<Grid container spacing={2}>
-							{remoteData.map((card, index) => (
-								<Grid key={index} item md={6} xs={12}>
-									<ButtonBase
-										onClick={() => playselected(card.file_path, card.title)}
-										focusRipple
-										className={classes.image}
-										focusVisibleClassName={classes.focusVisible}
-										style={{
-											width: "300px",
-										}}
-									>
-										<span className={classes.imageSrc}>
-											<video
-												width="100%"
-												src={card.file_path}
-												playsInline="playsinline"
-												muted="muted"
-												loop="loop"
-												autoPlay={false}
-												controls={false}
-											/>
-										</span>
-										<span className={classes.imageBackdrop} />
-										<span className={classes.imageButton}>
-											<Typography
-												component="span"
-												variant="subtitle1"
-												color="inherit"
-												className={classes.imageTitle}
-											>
-												{card.title}
-												<span className={classes.imageMarked} />
-											</Typography>
-										</span>
-									</ButtonBase>
-								</Grid>
-							))}
-						</Grid>
-					</Container>
-				</main>
-				<Dialog
-					fullScreen={fullScreen}
-					open={open}
-					onClose={() => setOpen(false)}
-					aria-labelledby={selectedVideo.title}
-				>
-					<DialogTitle id={selectedVideo.title} onClose={() => setOpen(false)}>
-						<Typography variant="h6">{selectedVideo.title}</Typography>
-						<IconButton
-							aria-label="close"
-							className={classes.closeButton}
-							onClick={() => setOpen(false)}
+					</main>
+					<Dialog
+						fullScreen={fullScreen}
+						open={open}
+						onClose={() => setOpen(false)}
+						aria-labelledby={selectedVideo.title}
+					>
+						<DialogTitle
+							id={selectedVideo.title}
+							onClose={() => setOpen(false)}
 						>
-							<CloseIcon />
-						</IconButton>
-					</DialogTitle>
-					<DialogContent>
-						<video
-							width="100%"
-							src={selectedVideo.src}
-							muted="muted"
-							loop="loop"
-							autoPlay={false}
-							controls={true}
-						/>
-					</DialogContent>
-				</Dialog>
-			</div>
+							<Typography variant="h6">{selectedVideo.title}</Typography>
+							<IconButton
+								aria-label="close"
+								className={classes.closeButton}
+								onClick={() => setOpen(false)}
+							>
+								<CloseIcon />
+							</IconButton>
+						</DialogTitle>
+						<DialogContent>
+							<video
+								width="100%"
+								src={selectedVideo.src}
+								muted="muted"
+								loop="loop"
+								autoPlay={false}
+								controls={true}
+							/>
+						</DialogContent>
+					</Dialog>
+				</div>
+			</Dashboard>
 		</Fragment>
 	);
 };
-export default FreelancerVid;
+export default withRouter(workerVid);
