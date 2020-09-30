@@ -26,23 +26,28 @@ theme = responsiveFontSizes(theme);
 const tiers = [
 	{
 		title: "Groom/Bride",
-		imgsrc: "static/images/bride.svg",
+		imgsrc: "static/home/grooms.jpg",
 		url: "/matrimony",
 	},
 	{
 		title: "Freelancing",
-		imgsrc: "static/images/freelance.svg",
+		imgsrc: "static/home/freelancer.jpg",
 		url: "/matrimony",
 	},
-	{ title: "Vendor", imgsrc: "static/images/vendor.svg", url: "/matrimony" },
+	{ title: "Vendor", imgsrc: "static/home/vendor.jpg", url: "/matrimony" },
 	{
 		title: "Seller",
-		imgsrc: "static/images/seller.svg",
+		imgsrc: "static/home/seller.jpg",
 		url: "/matrimony",
 	},
 	{
 		title: "Worker",
-		imgsrc: "static/images/worker.svg",
+		imgsrc: "static/home/worker.jpg",
+		url: "/matrimony",
+	},
+	{
+		title: "B2B",
+		imgsrc: "static/home/b2b.jpg",
 		url: "/matrimony",
 	},
 ];
@@ -70,21 +75,25 @@ export default function SquareCards() {
 
 	return (
 		<div className={classes.root}>
-			<Grid justify="center" container spacing={3}>
+			<Grid justify="center" container spacing={5}>
 				{tiers.map((tier, i) => (
 					<Link href={tier.url}>
-						<Grid key={i} item sm={4} xs={4} md>
+						<Grid key={i} item sm={4} xs={4} md 
+							>
 							<IconButton
 								variant="outlined"
 								color="secondary"
 								className={classes.standarsbtn}
 								aria-label={tier.title}
+								
 							>
-								<img src={tier.imgsrc} width="50%" />
+								<img src={tier.imgsrc} width="130%" style={{borderRadius:"10px"}}/>
 							</IconButton>
 							<br />
 							<MuiThemeProvider theme={theme}>
-								<Typography variant="caption" display="block" gutterBottom>
+								<Typography variant="caption" display="block" gutterBottom
+								
+								>
 									{tier.title}
 								</Typography>
 							</MuiThemeProvider>

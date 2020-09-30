@@ -22,14 +22,16 @@ import TwitterIcon from 'react-ionicons/lib/LogoTwitter';
 import InstagramIcon from 'react-ionicons/lib/LogoInstagram';
 import LinkedinIcon from 'react-ionicons/lib/LogoLinkedin';
 import { i18n, withTranslation } from '~/i18n';
-import logo from '~/static/images/logo.png';
+import logo from '~/static/home/main logo.jpg';
+import playstore from '~/static/home/playstore.png';
 import brand from '~/static/text/brand';
 import { useTextAlign } from '~/theme/common';
 import useStyles from './footer-style';
+import Divider from '@material-ui/core/Divider';
 /* eslint-disable */ 
 function Copyright() {
   return (
-    <Typography variant="body2" display="block" color="textSecondary">
+    <Typography variant="body2" display="block" color="textSecondary" style={{marginLeft:"4%",marginTop:"4%"}}>
       &copy;&nbsp;
       {brand.starter.footerText}
     </Typography>
@@ -39,16 +41,16 @@ function Copyright() {
 const footers = [
   {
     title: 'Company',
-    description: ['Team', 'History', 'Contact us', 'Locations'],
-    link: ['#team', '#history', '#contact-us', '#locations'],
+    description: ['Team', 'Location', 'Help & Support'],
+    link: ['#team', '#history', '#contact-us'],
   },
   {
-    title: 'Resources',
-    description: ['Resource', 'Resource name', 'Another resource', 'Final resource'],
+    title: 'Our Projects',
+    description: ['Get Franchise', 'Join (IIM) JOB', 'Get Rewards'],
     link: ['#resource', '#resource-name', '#another-resource', '#final-resource'],
   },
   {
-    title: 'Legal',
+    title: 'Disclaimer',
     description: ['Privacy policy', 'Terms of use'],
     link: ['#privacy-policy', '#terms-of-use'],
   },
@@ -88,18 +90,24 @@ function Footer(props) {
   // }
 
   return (
-    <Container maxWidth="lg" component="footer" className={classes.footer}>
-      <Grid container spacing={4}>
+   <Container maxWidth="lg" component="footer" className={classes.footer}
+   style={{borderTop:"0.5px Solid Black" , marginTop:"1%"}}
+   >
+     
+      <Grid container spacing={4} 
+    
+      >
         <Grid item xs={12} md={3}>
           <div className={classes.logo}>
-            <img src={logo} alt="logo" />
-            <Typography variant="h6" color="textPrimary">
-              {brand.starter.projectName}
-            </Typography>
+           
+            <img src={logo} alt="logo" align="center"/>
+           
+          
+           
           </div>
-          <Typography color="textPrimary" className={classes.footerDesc} gutterBottom>
-            {t('starter-landing:description_text')}
-          </Typography>
+          <center>
+          <img src={playstore} alt="Play Store" width="50%" align="center"/>
+          </center>
           {isDesktop && <Copyright />}
         </Grid>
         <Grid item xs={12} md={6}>
