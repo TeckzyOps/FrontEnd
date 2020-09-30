@@ -1,11 +1,11 @@
 const menu = [
 	"Portfolio",
-	"DashBoard",
 	"Testimonials",
 	"Get Offer",
 	"Trends",
 	"Appointment",
 	"Help/Support",
+	"Contact Us",
 ];
 
 export default menu;
