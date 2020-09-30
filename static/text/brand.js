@@ -1,9 +1,9 @@
 module.exports = {
   starter: {
-    name: 'Event Organizer',
+    name: 'Indian Shaadiwala',
     desc: 'Event Organizer - Organize Your Event On the Go!',
     prefix: 'Event_Organizer',
-    footerText: 'Event Organizer All Rights Reserved 2019',
+    footerText: 'Indianwala All Rights Reserved 2020',
     logoText: 'Event Organizer',
     projectName: 'Event Organizer',
     url: '',

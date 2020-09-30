@@ -26,7 +26,7 @@ const featureStyles = makeStyles(theme => ({
     },
     '& $icon': {
       fill: theme.palette.primary.main,
-      width: 100,
+      width: 300,
       height: 100
     }
   },
@@ -41,7 +41,7 @@ const featureStyles = makeStyles(theme => ({
       marginBottom: theme.spacing(3)
     },
     '& $text': {
-      fontSize: 22
+      fontSize: 29
     },
     '& $img': {
       position: 'relative',
