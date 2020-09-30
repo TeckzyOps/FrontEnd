@@ -41,11 +41,10 @@ const footerStyles = makeStyles(theme => ({
     textAlign: 'left',
     display: 'flex',
     alignItems: 'center',
-    marginBottom: theme.spacing(1),
+    marginBottom: theme.spacing(3),
     '& img': {
-      //filter: 'grayscale(1) contrast(0.5) brightness(1.5)',
-      width: 200,
-      marginLeft:45,
+      filter: 'grayscale(1) contrast(0.5) brightness(1.5)',
+      width: 48,
       marginRight: theme.spacing(),
     },
     '& h6': {

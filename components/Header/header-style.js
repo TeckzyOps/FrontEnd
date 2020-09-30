@@ -59,8 +59,7 @@ const headerStyles = makeStyles((theme) => ({
 			boxShadow: theme.shadows[2],
 			"& $logo": {
 				"& img": {
-					height: 48,
-					width: 60,
+					height: 32,
 				},
 			},
 			"& nav": {

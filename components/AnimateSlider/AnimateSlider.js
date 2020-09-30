@@ -55,6 +55,7 @@ function AnimateSlider(props) {
 								playsInline="playsinline"
 								muted="muted"
 								loop="loop"
+								autoPlay={true}
 								controls={true}
 								// onClick={handlePlay.bind(this)}
 								id={index.toString()}

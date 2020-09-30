@@ -69,9 +69,9 @@ function Landing(props) {
 							</Paper>
 						</Container>
 					</section>
-					{/* <section className={classes.pageSection}>
+					<section className={classes.pageSection}>
 						<Counter />
-					</section> */}
+					</section>
 					{/* <section className={classes.spaceTop} id="testimonials">
             <Testimonials />
           </section> */}
