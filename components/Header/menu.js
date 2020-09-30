@@ -1,10 +1,10 @@
 const menu = [
 	"Portfolio",
+	"DashBoard",
 	"Testimonials",
-	"Get Quotes",
 	"Get Offer",
-	"Matrimony",
-	"Contact US!",
+	"Trends",
+	"Appointment",
 	"Help/Support",
 ];
 

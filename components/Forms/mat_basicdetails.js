@@ -195,10 +195,7 @@ const Basicdetails = ({
 					}
 				}
 			}
-			if (matrimonyid) {
-				payload.append("metrimony_id", matrimonyid);
-			}
-
+			payload.append("metrimony_id", matrimonyid);
 			if (payload) {
 				let action = 0;
 				if (matrimonyid && matrimonyid > 0) {
@@ -528,6 +525,7 @@ const Basicdetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
+													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}

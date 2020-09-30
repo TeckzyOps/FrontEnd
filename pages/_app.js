@@ -161,7 +161,7 @@ class MyApp extends App {
 						<MuiThemeProvider theme={muiTheme}>
 							<CssBaseline />
 							<Backdrop
-								style={{ zIndex: 1600, color: "#fff", opacity: 0.5 }}
+								style={{ zIndex: 99, color: "#fff", opacity: 0.5 }}
 								open={Netloading}
 							/>
 							{Netloading && (
@@ -172,7 +172,7 @@ class MyApp extends App {
 										position: "fixed",
 										left: "50%",
 										top: "50%",
-										zIndex: 1600,
+										zIndex: 1000,
 										textAlign: "center",
 									}}
 									size={50}
@@ -186,7 +186,6 @@ class MyApp extends App {
 								showSpinner={false}
 							/>
 							<Snackbar
-								style={{ zIndex: 1600 }}
 								isOpen={this.state.showSnackbar}
 								message={this.state.snackbarError}
 								close={() => this.setState({ showSnackbar: false })}

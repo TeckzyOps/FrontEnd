@@ -12,7 +12,7 @@ import AnchorLink from "react-anchor-link-smooth-scroll";
 import Scrollspy from "react-scrollspy";
 import Settings from "./Settings";
 import MobileMenu from "./MobileMenu";
-import logo from "~/static/images/logo.png";
+import logo from "~/static/home/logo2.jpg";
 import "~/vendors/hamburger-menu.css";
 import useStyles from "./header-style";
 import { useAuth } from "../provider/Auth";
@@ -50,9 +50,8 @@ function Header(props) {
 		}
 	};
 	const classes = useStyles();
-	const { onToggleDark, onToggleDir } = props;
 	const theme = useTheme();
-
+	const { onToggleDark, onToggleDir } = props;
 	const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
 	const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 	useEffect(() => {

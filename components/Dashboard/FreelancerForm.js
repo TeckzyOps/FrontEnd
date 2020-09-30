@@ -1,54 +1,23 @@
 import React, { useState } from "react";
 import clsx from "clsx";
 import PropTypes from "prop-types";
-import {
-	lighten,
-	makeStyles,
-	createMuiTheme,
-	responsiveFontSizes,
-	MuiThemeProvider,
-} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { Formik, Field, Form, ErrorMessage } from "formik";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import ListItemText from "@material-ui/core/ListItemText";
-import Avatar from "@material-ui/core/Avatar";
 import { withTranslation } from "~/i18n";
-import { withRouter } from "react-router";
-import { useRouter } from "next/router";
 import Alert from "./../../components/alert/alert";
-import routerLink from "~/static/text/link";
+import InputLabel from "@material-ui/core/InputLabel";
+import Accordion from "@material-ui/core/Accordion";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import AccordionActions from "@material-ui/core/AccordionActions";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import MuiTextField from "@material-ui/core/TextField";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import UploadButton from "../Forms/reusable/UploadButton";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import DeleteIcon from "@material-ui/icons/Delete";
-import { state } from "~static/text/state";
-import { cities } from "~static/text/city";
-import {
-	gender,
-	education,
-	occupation,
-	idType,
-	religion,
-	maritialStatus,
-	caste,
-	experience,
-	countryList,
-	interest,
-	languages,
-} from "~static/text/profiledata";
+
 import {
 	fieldToTextField,
 	TextField,
@@ -57,7 +26,7 @@ import {
 	Select,
 	Switch,
 } from "formik-material-ui";
-import FolderIcon from "@material-ui/icons/Folder";
+
 import * as Yup from "yup";
 import {
 	Card,
@@ -67,7 +36,6 @@ import {
 	Divider,
 	Box,
 	Grid,
-	Link,
 	MenuItem,
 	Typography,
 	Chip,
@@ -76,87 +44,35 @@ import {
 	InputAdornment,
 	IconButton,
 } from "@material-ui/core";
-import { freelancerActions } from "../../_actions/freelancer.action";
-import LocalStorageService from "../../_services/LocalStorageService";
-const localStorageService = LocalStorageService.getService();
-let theme = createMuiTheme();
-theme = responsiveFontSizes(theme);
+
 const useStyles = makeStyles((theme) => ({
 	root: {
-		flexGrow: 1,
-		padding: theme.spacing(1),
+		display: "flex",
+		justifyContent: "center",
+		flexWrap: "wrap",
+		listStyle: "none",
+		padding: theme.spacing(0.5),
+		margin: 0,
 	},
-	demo: {
-		backgroundColor: theme.palette.background.paper,
+	chips: {
+		display: "flex",
+		flexWrap: "wrap",
 	},
-	title: {
-		margin: theme.spacing(4, 0, 2),
+
+	chip: {
+		margin: theme.spacing(0.5),
 	},
 }));
 const freelancerform = (props) => {
 	const { className, ...rest } = props;
 	const classes = useStyles();
-
 	const { t } = props;
-
-	const [docData, setDocData] = useState([]);
-	const [details, setDetails] = React.useState({});
-	const router = useRouter();
-	const [docSelected, setDocSelected] = useState(0);
-	const [freelancerData, setFreelancerData] = useState({
-		gst_file_path: null,
-		license_file_path: null,
-		certificate_file_path: null,
-		advertisement_file_path: null,
-		service_category: "",
-		sub_service: "",
-		bussiness_name: "",
-		total_experience: "",
-		bussineess_description: "",
-		min_service_price: "",
-		max_service_price: "",
-		address: "",
-		city: "",
-		state: "",
-		district: "",
-		service_area: "",
-		locality: "",
-		office_map_link: "",
-		office_number: "",
-		catalog_pdf_match: "",
-		offer_tagline: "",
-		shadiwala_offer_files: "",
-		commission_percent: "",
-		min_commission: "",
-		max_commission: "",
-	});
-
+	const [states, setStates] = useState([]);
+	const [district, setDistrict] = useState([]);
+	const [city, setCity] = useState([]);
 	const [profileUpdateSuccess, setProfileUpdateSuccess] = useState(false);
-	const id = props.router.query.id;
-	React.useEffect(() => {
-		setDetails(localStorageService.getUserDetails("Details"));
-		if (id) {
-			freelancerActions
-				.getFreelancer({ freelancer_id: id })
-				.then(function (response) {
-					console.log("ressss", response);
-
-					if (response.data.data.id) {
-						setFreelancerData(response.data.data);
-					}
-				})
-				.catch(function (error) {
-					console.error("errrrr ", error);
-				});
-		}
-	}, []);
-	const fileDropdown = {
-		Catalog: "catalog_pdf_path",
-		GST: "gst_file_path",
-		"Shaadiwala Offer": "shaadiwala_offer_file",
-		Advertisement: "advertisement_file_path",
-		License: "license_file_path",
-		Certificate: "certificate_file_path",
+	const uploader = (files) => {
+		console.log("Upload ", files);
 	};
 	function CustomTextField(props) {
 		const {
@@ -174,6 +90,50 @@ const freelancerform = (props) => {
 		return <MuiTextField {...fieldToTextField(props)} onChange={onChange} />;
 	}
 
+	const CustomSwitchInput = (props) => {
+		const {
+			form: { setFieldValue },
+			field: { name },
+			label,
+		} = props;
+		const onChange = React.useCallback(
+			(event) => {
+				const { value } = event.target;
+				setFieldValue(name, value ? value : "");
+				handleChange(event);
+			},
+			[setFieldValue, name]
+		);
+		return (
+			<FormControlLabel
+				value="end"
+				control={<Switch {...props} color="primary" onChange={onChange} />}
+				label={label}
+				labelPlacement="end"
+			/>
+		);
+	};
+	const CustomUpladInput = (props) => {
+		console.log(props);
+		const {
+			form: { setFieldValue },
+			field: { name },
+			label,
+			fileTypes,
+		} = props;
+		const onChange = React.useCallback(
+			(event) => {
+				const { value } = event.target;
+				setFieldValue(name, value ? value : "");
+				handleChange(event);
+			},
+			[setFieldValue, name]
+		);
+		return (
+			<UploadButton uploader={uploader} label={label} fileTypes={fileTypes} />
+		);
+	};
+
 	const handleChange = (e) => {
 		switch (e.target.name) {
 			case "state":
@@ -183,131 +143,63 @@ const freelancerform = (props) => {
 				profileActions;
 				setCity(cities[e.target.value]);
 				break;
+			// case "city":
+			// 	text = "How you like them apples?";
+			// 	break;
 		}
 	};
-	function deleteFile(doc, props) {
-		const docs = docData.filter((obj) => obj.document !== doc);
-		if (doc == "Advertisement") {
-			props.setFieldValue("want_advertisement", "0");
-		} else if (doc == "Shaadiwala Offer") {
-			props.setFieldValue("except_shaadiwala_offer", "0");
-		}
-		setDocData(docs);
-	}
 
-	// function submitManually(payload, setSubmitting, resetForm, setFieldError){
-	// 	if (payload) {
-	// 		freelancerActions
-	// 			.createFreelancer(payload)
-	// 			.then(function (response) {
-	// 				setSubmitting(false);
-	// 				console.log("ressss", response);
-	// 				if (response.data.data.id) {
-	// 					setProfileUpdateSuccess(() => true);
-	// 					resetForm();
-	// 				}
-	// 			})
-	// 			.catch(function (error) {
-	// 				setSubmitting(false);
-	// 				if (error.response && error.response.data.input_error) {
-	// 					Object.keys(error.response.data.input_error).forEach((k) => {
-	// 						setFieldError(k, error.response.data.input_error[k][0]);
-	// 					});
-	// 				}
-	// 				console.error("errrrr ", error);
-	// 			});
-	// 	}
-	// }
-	const _handleSubmit = ({ vals, setSubmitting, resetForm, setFieldError }) => {
-		let payload = new FormData();
-
-		for (var i in vals) {
-			if (Array.isArray(vals[i])) {
-				if (vals[i].length > 0) {
-					payload.append(i, JSON.stringify(vals[i]));
-				}
-			} else {
-				if (vals[i]) {
-					payload.append(i, vals[i]);
-				}
-			}
-		}
-		let want_advertisement = 0;
-		let except_shaadiwala_offer = 0;
-		// Object.keys(fileDropdown).forEach((dropdown) => {
-		// 	payload.append(dropdown, freelancerData[fileDropdown[dropdown]]);
-		// 	if (
-		// 		dropdown == "Advertisement" &&
-		// 		freelancerData[fileDropdown[dropdown]] != null
-		// 	) {
-		// 		want_advertisement = 1;
-		// 	}
-		// 	if (
-		// 		dropdown == "Shaadiwala Offer" &&
-		// 		freelancerData[fileDropdown[dropdown]] != null
-		// 	) {
-		// 		except_shaadiwala_offer = 1;
-		// 	}
-		// });
-
-		docData.forEach((data) => {
-			payload.set(fileDropdown[data.document], data.fileObject);
-			if (data.document == "Advertisement") {
-				want_advertisement = 1;
-			}
-			if (data.document == "Shaadiwala Offer") {
-				except_shaadiwala_offer = 1;
-			}
-		});
-
-		payload.append("want_advertisement", want_advertisement);
-		payload.append("except_shaadiwala_offer", except_shaadiwala_offer);
-		payload.delete("doc_type");
-		if (payload) {
-			freelancerActions
-				.createFreelancer(payload)
-				.then(function (response) {
-					setSubmitting(false);
-					console.log("ressss", response);
-					if (response.data.data.id) {
-						setProfileUpdateSuccess(() => true);
-						resetForm();
-					}
-				})
-				.catch(function (error) {
-					setSubmitting(false);
-					if (error.response && error.response.data.input_error) {
-						Object.keys(error.response.data.input_error).forEach((k) => {
-							setFieldError(k, error.response.data.input_error[k][0]);
-						});
-					}
-					console.error("errrrr ", error);
-				});
-		}
-	};
 	const _renderModal = () => {
 		const onClick = () => {
 			setProfileUpdateSuccess(() => false);
-			router.push(routerLink.starter.freelancerVids + "?id=" + id);
 		};
 
 		return (
 			<Alert
 				isOpen={profileUpdateSuccess}
 				handleSubmit={onClick}
-				title="Process Status"
-				text="Operation Completed successfully"
+				title="Password Update"
+				text="Your Profile Was Updated  successfully"
 				submitButtonText="Done"
 			/>
 		);
 	};
 
+	const initVals = {
+		gst_file_path: null,
+		license_file_path: null,
+		certificate_file_path: null,
+		advertisement_file_path: null,
+		service_category: "",
+		sub_service: "",
+		business_name: "",
+		total_experience: "",
+		business_description: "",
+		min_service_price: "",
+		max_service_price: "",
+		address: "",
+		city: "",
+		state: "",
+		district: "",
+		locality: "",
+		office_map_link: "",
+		office_number: "",
+		catalog_pdf_match: "",
+		offer_tagline: "",
+		except_shadiwala_offer: "",
+		shadiwala_offer_files: "",
+		want_advertisement: "",
+		comission_persent: "",
+		min_comission: "",
+		max_comission: "",
+	};
+
 	const profileSchema = Yup.object().shape({
 		service_category: Yup.string().required("Required"),
 		sub_service: Yup.string().required("Required"),
-		bussiness_name: Yup.string().required("Required"),
-		bussineess_description: Yup.string().required("Required"),
-		total_experience: Yup.number().required("Required"),
+		business_name: Yup.string().required("Required"),
+		business_description: Yup.string().required("Required"),
+		total_experience: Yup.string().required("Required"),
 		min_service_price: Yup.string().required("Required"),
 		max_service_price: Yup.string().required("Required"),
 		address: Yup.string().required("Required"),
@@ -315,34 +207,16 @@ const freelancerform = (props) => {
 		state: Yup.string().required("Required"),
 		district: Yup.string().required("Required"),
 		locality: Yup.string().required("Required"),
-		office_map_link: Yup.string().url().required("Required"),
-		office_number: Yup.number().required("Required"),
+		office_map_link: Yup.string().required("Required"),
+		office_number: Yup.string().required("Required"),
 		catalog_pdf_match: Yup.string(),
 		offer_tagline: Yup.string(),
-		shadiwala_offer_files: Yup.mixed()
-			.test("fileSize", "File Size is too large", (value) => {
-				if (value) {
-					return value.size <= 2000000;
-				} else {
-					return true;
-				}
-			})
-			.test(
-				"fileType",
-				"Unsupported File Format, Upload a JPEG,JPG or PNG file",
-				(value) => {
-					if (value) {
-						return ["image/png", "image/jpg", "image/jpeg"].includes(
-							value.type
-						);
-					} else {
-						return true;
-					}
-				}
-			),
-		commission_percent: Yup.string().required("Required"),
-		max_commission: Yup.string().required("Required"),
-		max_commission: Yup.string().required("Required"),
+		except_shadiwala_offer: Yup.string().required("Required"),
+		shadiwala_offer_files: Yup.string().required("Required"),
+		want_advertisement: Yup.string().required("Required"),
+		comission_persent: Yup.string().required("Required"),
+		min_comission: Yup.string().required("Required"),
+		max_comission: Yup.string().required("Required"),
 		advertisement_file_path: Yup.mixed()
 			.test("fileSize", "File Size is too large", (value) => {
 				if (value) {
@@ -353,12 +227,10 @@ const freelancerform = (props) => {
 			})
 			.test(
 				"fileType",
-				"Unsupported File Format, Upload a JPEG,JPG or PNG file",
+				"Unsupported File Format, Upload a PDF file",
 				(value) => {
 					if (value) {
-						return ["image/png", "image/jpg", "image/jpeg"].includes(
-							value.type
-						);
+						return ["application/pdf"].includes(value.type);
 					} else {
 						return true;
 					}
@@ -422,884 +294,608 @@ const freelancerform = (props) => {
 				}
 			),
 	});
-
-	function getFileLink(fileObject) {
-		let reader = new FileReader();
-
-		if (fileObject) {
-			reader.readAsDataURL(fileObject);
-			reader.onloadend = () => {
-				var anchor = document.createElement("a");
-				anchor.href = reader.result;
-				anchor.target = "_blank";
-
-				anchor.click();
-				window.open(reader.result, "_blank");
-			};
-		}
-	}
-	function search(nameKey, myArray) {
-		if (!nameKey || !myArray) {
-			return false;
-		}
-		for (var i = 0; i < myArray.length; i++) {
-			if (myArray[i].document === nameKey) {
-				return true;
-			}
-		}
-		return false;
-	}
-	const fileOnChange = (event, formprops, field) => {
-		if (search(formprops.values["doc_type"], docData)) {
-			return;
-		}
-		if (formprops.values["doc_type"] && event.currentTarget.files) {
-			if (formprops.values["doc_type"] == "Advertisement") {
-				formprops.setFieldValue("want_advertisement", "1");
-			} else if (formprops.values["doc_type"] == "Shaadiwala Offer") {
-				formprops.setFieldValue("except_shaadiwala_offer", "1");
-			}
-			setDocData(
-				docData.concat({
-					document: formprops.values["doc_type"],
-					name: event.currentTarget.files[0].name,
-					type: event.currentTarget.files[0].type,
-					size: (event.currentTarget.files[0].size / (1024 * 1024)).toFixed(2),
-					fileObject: event.currentTarget.files[0],
-				})
-			);
-		}
-	};
 	return (
-		<div {...rest} className={clsx(classes.root, className)}>
-			<Grid container spacing={1}>
-				<Grid item md={4} xs={12}>
-					<Card>
-						<CardContent>
-							<Typography gutterBottom variant="h6">
-								{details.login ? details.login.name : ""}
-							</Typography>
+		<Card {...rest} className={clsx(classes.root, className)}>
+			{/* <Button type="submit" color="primary" variant="outlined">
+				Go To Account Details
+			</Button> */}
+			<Formik
+				enableReinitialize
+				initialValues={initVals}
+				validationSchema={profileSchema}
+				onSubmit={(vals, { setSubmitting, resetForm, setFieldError }) =>
+					_handleSubmit({
+						vals,
+						setSubmitting,
+						resetForm,
+						setFieldError,
+					})
+				}
+			>
+				{(props) => {
+					const {
+						values,
+						touched,
+						errors,
+						handleBlur,
+						handleSubmit,
+						handleChange,
+						isValid,
+						isSubmitting,
+					} = props;
 
-							<Typography color="textPrimary" variant="body1">
-								{details.login ? details.login.mobile : ""}
-							</Typography>
-
-							<Typography color="textPrimary" variant="body1">
-								{details.login ? details.login.email : ""}
-							</Typography>
-
+					return (
+						<div>
+							<CardHeader
+								subheader="Freelancer Application Form"
+								title="Freelancer"
+							/>
 							<Divider />
-							<MuiThemeProvider theme={theme}>
-								<Typography variant="h6" className={classes.title}>
-									Uploaded Documents
-								</Typography>
-							</MuiThemeProvider>
-							<Divider />
+							<CardContent>
+								<Form autocomplete="off">
+									<Accordion className="mb-4">
+										<AccordionSummary
+											expandIcon={<ExpandMoreIcon />}
+											aria-controls="panel1c-content"
+											id="panel1c-header"
+										>
+											<Typography className={classes.heading}>
+												Account Details <CheckCircleIcon></CheckCircleIcon>
+											</Typography>
+										</AccordionSummary>
+										<AccordionDetails></AccordionDetails>
+									</Accordion>
+									<Accordion>
+										<AccordionSummary
+											expandIcon={<ExpandMoreIcon />}
+											aria-controls="panel1c-content"
+											id="panel1c-header"
+										>
+											<Typography className={classes.heading}>
+												Profile
+											</Typography>
+										</AccordionSummary>
+										<AccordionDetails>
+											<Grid container spacing={3}>
+												<Grid item md={12} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															component={TextField}
+															type="text"
+															name="business_name"
+															label="Business Name"
+															variant="standard"
+															helperText={
+																props.errors.hasOwnProperty("business_name") &&
+																props.errors["business_name"]
+															}
+															margin="dense"
+														/>
+													</Box>
+												</Grid>
 
-							<List dense={true}>
-								{Object.keys(fileDropdown).map((title, index) => {
-									if (freelancerData[fileDropdown[title]] != null) {
-										return (
-											<ListItem key={index}>
-												<ListItemAvatar>
-													<Avatar>
-														<FolderIcon />
-													</Avatar>
-												</ListItemAvatar>
+												<Grid item md={12} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															multiline={true}
+															type="text"
+															component={TextField}
+															name="business_description"
+															label="Business Description"
+															onChange={handleChange}
+															variant="standard"
+															helperText={
+																props.errors.hasOwnProperty(
+																	"business_description"
+																) && props.errors["business_description"]
+															}
+															margin="dense"
+															inputprops={{
+																inputComponent: TextareaAutosize,
+																rows: 3,
+															}}
+														/>
+													</Box>
+												</Grid>
 
-												<ListItemText
-													target="_blank"
-													href={freelancerData[fileDropdown[title]]}
-													primary={title}
-												/>
+												<Grid item md={12} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															component={TextField}
+															type="text"
+															name="offer_tagline"
+															label="Offer Tagline"
+															variant="standard"
+															helperText={
+																props.errors.hasOwnProperty("offer_tagline") &&
+																props.errors["offer_tagline"]
+															}
+															margin="dense"
+														/>
+													</Box>
+												</Grid>
 
-												<ListItemSecondaryAction>
-													<IconButton
-														edge="end"
-														aria-label="comments"
-														onClick={() =>
-															setFreelancerData({
-																...freelancerData,
-																[fileDropdown[title]]: null,
-															})
-														}
-													>
-														<DeleteIcon />
-													</IconButton>
-												</ListItemSecondaryAction>
-											</ListItem>
-										);
-									}
-									return null;
-								})}
-							</List>
-						</CardContent>
-						<Divider />
-						{id && (
-							<CardActions>
-								<Link
-									style={{ textDecoration: "none" }}
-									href={
-										routerLink.starter.freelancerVids +
-										"?id" +
-										props.router.query.id
-									}
-								>
-									<Button variant="text">
-										<MuiThemeProvider theme={theme}>
-											<Typography variant="button">Upload Videos</Typography>
-										</MuiThemeProvider>
-									</Button>
-								</Link>
-								<Link
-									style={{ textDecoration: "none" }}
-									href={
-										routerLink.starter.freelancerImg +
-										"?id" +
-										props.router.query.id
-									}
-								>
-									<Button variant="text">
-										<MuiThemeProvider theme={theme}>
-											<Typography variant="button">Upload Images</Typography>
-										</MuiThemeProvider>
-									</Button>
-								</Link>
-							</CardActions>
-						)}
-					</Card>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															type="text"
+															component={TextField}
+															name="total_experience"
+															label="Total Experince"
+															onChange={handleChange}
+															variant="standard"
+															margin="normal"
+														/>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															type="text"
+															component={TextField}
+															name="min_service_price"
+															label="Max Service Price"
+															onChange={handleChange}
+															variant="standard"
+															margin="normal"
+														/>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															type="text"
+															component={TextField}
+															name="max_service_price"
+															label="Min Service Price"
+															onChange={handleChange}
+															variant="standard"
+															margin="normal"
+														/>
+													</Box>
+												</Grid>
 
-					<Grid item md={4} xs={12}>
-						<div className={classes.demo}></div>
-					</Grid>
-				</Grid>
+												<Grid item md={12} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															multiline={true}
+															type="text"
+															component={TextField}
+															name="address"
+															label="Business Address"
+															onChange={handleChange}
+															variant="standard"
+															helperText={
+																props.errors.hasOwnProperty("address") &&
+																props.errors["address"]
+															}
+															margin="dense"
+															inputprops={{
+																inputComponent: TextareaAutosize,
+																rows: 3,
+															}}
+														/>
+													</Box>
+												</Grid>
 
-				<Grid item md={8} xs={12}>
-					<div>
-						<Formik
-							enableReinitialize
-							initialValues={freelancerData}
-							validationSchema={profileSchema}
-							onSubmit={(vals, { setSubmitting, resetForm, setFieldError }) =>
-								_handleSubmit({
-									vals,
-									setSubmitting,
-									resetForm,
-									setFieldError,
-								})
-							}
-						>
-							{(props) => {
-								const {
-									values,
-									touched,
-									errors,
-									handleBlur,
-									handleSubmit,
-									handleChange,
-									isValid,
-									isSubmitting,
-								} = props;
+												<Grid item md={12} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															type="text"
+															component={TextField}
+															name="office_map_link"
+															label="Map  Link"
+															onChange={handleChange}
+															variant="standard"
+															margin="normal"
+														/>
+													</Box>
+												</Grid>
 
-								return (
-									<Card>
-										<CardContent>
-											<Grid container spacing={1}>
-												<Grid item xs={12}>
-													<Typography
-														color="primary"
-														variant="h3"
-														align="center"
-														gutterBottom
-													>
-														Freelancer Application Form
-													</Typography>
+												<Grid item md={12} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															type="text"
+															component={TextField}
+															name="office_number"
+															label="Office Number"
+															onChange={handleChange}
+															variant="standard"
+															margin="normal"
+														/>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															type="text"
+															component={CustomSwitchInput}
+															name="catalog_pdf_match"
+															label="Catalog  Pdf"
+															onChange={handleChange}
+															variant="standard"
+															margin="normal"
+														></Field>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															type="text"
+															component={CustomSwitchInput}
+															name="except_shadiwala_offer"
+															label="Except ShadiWala  Offer"
+															onChange={handleChange}
+															variant="standard"
+															margin="normal"
+														></Field>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															type="text"
+															component={CustomSwitchInput}
+															name="want_advertisement"
+															label="Want Advertisement"
+															onChange={handleChange}
+															variant="standard"
+															margin="normal"
+														></Field>
+													</Box>
+												</Grid>
+
+												<Grid item md={6} xs={12}>
+													<Box margin={1}>
+														<Field
+															required
+															onChange={handleChange}
+															fullWidth
+															component={CustomTextField}
+															type="text"
+															name="service_category"
+															label="Services"
+															select
+															variant="standard"
+															helperText={
+																props.errors.hasOwnProperty("state") &&
+																props.errors["state"]
+															}
+															margin="normal"
+															InputLabelProps={{
+																shrink: true,
+															}}
+														>
+															{/* {states.map((option) => ( */}
+															<MenuItem key="1" value="1">
+																1
+															</MenuItem>
+															{/* ))} */}
+														</Field>
+													</Box>
+												</Grid>
+												<Grid item md={6} xs={12}>
+													<Box margin={1}>
+														<Field
+															required
+															onChange={handleChange}
+															fullWidth
+															component={CustomTextField}
+															type="text"
+															name="sub_service"
+															label="Sub Services"
+															select
+															variant="standard"
+															helperText={
+																props.errors.hasOwnProperty("state") &&
+																props.errors["state"]
+															}
+															margin="normal"
+															InputLabelProps={{
+																shrink: true,
+															}}
+														>
+															{/* {states.map((option) => ( */}
+															<MenuItem key="1" value="1">
+																2
+															</MenuItem>
+															{/* ))} */}
+														</Field>
+													</Box>
+												</Grid>
+
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															required
+															onChange={handleChange}
+															fullWidth
+															component={CustomTextField}
+															type="text"
+															name="state"
+															label="State"
+															select
+															variant="standard"
+															helperText={
+																props.errors.hasOwnProperty("state") &&
+																props.errors["state"]
+															}
+															margin="normal"
+															InputLabelProps={{
+																shrink: true,
+															}}
+														>
+															{states.map((option) => (
+																<MenuItem key={option} value={option}>
+																	{option}
+																</MenuItem>
+															))}
+														</Field>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															required
+															fullWidth
+															component={CustomTextField}
+															type="text"
+															name="district"
+															label="District"
+															select
+															variant="standard"
+															helperText={
+																props.errors.hasOwnProperty("district") &&
+																props.errors["district"]
+															}
+															margin="normal"
+															InputLabelProps={{
+																shrink: true,
+															}}
+														>
+															{district.map((option, index) => (
+																<MenuItem key={index} value={option}>
+																	{option}
+																</MenuItem>
+															))}
+														</Field>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															required
+															fullWidth
+															component={CustomTextField}
+															type="text"
+															name="city"
+															label="City"
+															select
+															variant="standard"
+															helperText={
+																props.errors.hasOwnProperty("city") &&
+																props.errors["city"]
+															}
+															margin="normal"
+															InputLabelProps={{
+																shrink: true,
+															}}
+														>
+															{city.map((option, index) => (
+																<MenuItem key={index} value={option}>
+																	{option}
+																</MenuItem>
+															))}
+														</Field>
+													</Box>
+												</Grid>
+
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															component={TextField}
+															type="text"
+															name="comission_persent"
+															label="Comission Persent"
+															variant="standard"
+															helperText={
+																props.errors.hasOwnProperty(
+																	"comission_persent"
+																) && props.errors["comission_persent"]
+															}
+															margin="dense"
+														/>
+													</Box>
+												</Grid>
+
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															component={TextField}
+															type="text"
+															name="min_comission"
+															label="Min Comission"
+															variant="standard"
+															helperText={
+																props.errors.hasOwnProperty("min_comission") &&
+																props.errors["min_comission"]
+															}
+															margin="dense"
+														/>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															component={TextField}
+															type="text"
+															name="max_comission"
+															label="Max Comission"
+															variant="standard"
+															helperText={
+																props.errors.hasOwnProperty("max_comission") &&
+																props.errors["max_comission"]
+															}
+															margin="dense"
+														/>
+													</Box>
+												</Grid>
+
+												{/* ID PROOOF FILE UPLOAD */}
+
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															type="text"
+															component={CustomUpladInput}
+															name="advertisement_file_path"
+															label="Advertisement File"
+															fileTypes={[".glb"]}
+															onChange={handleChange}
+															variant="standard"
+															margin="normal"
+														/>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															type="text"
+															component={CustomUpladInput}
+															name="gst_file_path"
+															label="GST File"
+															fileTypes={[".glb"]}
+															onChange={handleChange}
+															variant="standard"
+															margin="normal"
+														/>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															type="text"
+															component={CustomUpladInput}
+															name="license_file_path"
+															label="Lisence File"
+															fileTypes={[".glb"]}
+															onChange={handleChange}
+															variant="standard"
+															margin="normal"
+														/>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															type="text"
+															component={CustomUpladInput}
+															name="certificate_file_path"
+															label="Certificate File"
+															fileTypes={[".glb"]}
+															onChange={handleChange}
+															variant="standard"
+															margin="normal"
+														/>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															name="id_proof_path"
+															label="Upload Document"
+															className={
+																"form-check-input " +
+																(props.errors["id_proof_path"] &&
+																props.touched["id_proof_path"]
+																	? " is-invalid"
+																	: "")
+															}
+														>
+															{({ field, form, meta }) => (
+																<div>
+																	<input
+																		id={field.name}
+																		style={{ display: "none" }}
+																		name={field.name}
+																		type="file"
+																		onChange={(event) => {
+																			props.setFieldValue(
+																				field.name,
+																				event.currentTarget.files[0]
+																			);
+																		}}
+																	/>
+																	<label htmlFor={field.name}>
+																		<Button
+																			variant="contained"
+																			color="primary"
+																			component="span"
+																		>
+																			Upload
+																		</Button>
+																		{field.value && field.value.name}
+																	</label>
+																</div>
+															)}
+														</Field>
+														{props.errors.hasOwnProperty("id_proof_path") && (
+															<div style={{ color: "red" }} component="div">
+																{props.errors["id_proof_path"]}
+															</div>
+														)}
+													</Box>
 												</Grid>
 											</Grid>
 
 											<Divider />
-
-											<Form autocomplete="off">
-												<br></br>
-												<Grid container spacing={3}>
-													<Grid item xs={12}>
-														<Typography
-															align="center"
-															variant="h6"
-															gutterBottom
-														>
-															Tell us about the service you provide!
-														</Typography>
-													</Grid>
-													<Grid item md={4} xs={12}>
-														<Box margin={1}>
-															<Field
-																onChange={handleChange}
-																fullWidth
-																component={TextField}
-																type="text"
-																name="service_category"
-																label="Service Category"
-																select
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty(
-																		"service_category"
-																	) && props.errors["service_category"]
-																}
-																margin="normal"
-																InputLabelProps={{
-																	shrink: true,
-																}}
-															>
-																{gender.map((option, index) => (
-																	<MenuItem key={index} value={index + 1}>
-																		{option}
-																	</MenuItem>
-																))}
-															</Field>
-														</Box>
-													</Grid>
-													<Grid item md={4} xs={12}>
-														<Box margin={1}>
-															<Field
-																onChange={handleChange}
-																fullWidth
-																component={TextField}
-																type="text"
-																name="sub_service"
-																label="Sub Service"
-																select
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty("sub_service") &&
-																	props.errors["sub_service"]
-																}
-																margin="normal"
-																InputLabelProps={{
-																	shrink: true,
-																}}
-															>
-																{gender.map((option, index) => (
-																	<MenuItem key={index} value={index + 1}>
-																		{option}
-																	</MenuItem>
-																))}
-															</Field>
-														</Box>
-													</Grid>
-
-													<Grid item md={4} xs={12}>
-														<Box margin={1}>
-															<Field
-																onChange={handleChange}
-																fullWidth
-																component={TextField}
-																type="text"
-																name="service_area"
-																label="Service Area"
-																select
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty("service_area") &&
-																	props.errors["service_area"]
-																}
-																margin="normal"
-																InputLabelProps={{
-																	shrink: true,
-																}}
-															>
-																{gender.map((option, index) => (
-																	<MenuItem key={index} value={index + 1}>
-																		{option}
-																	</MenuItem>
-																))}
-															</Field>
-														</Box>
-													</Grid>
-													<Grid item xs={6}>
-														<Typography variant="body2" gutterBottom>
-															Service Price
-														</Typography>
-														<div style={{ marginBottom: 20 }}>
-															<div>
-																<Grid container spacing={2}>
-																	<Grid item xs={6}>
-																		<Field
-																			variant="outlined"
-																			fullWidth
-																			label="Minimum"
-																			component={TextField}
-																			onChange={handleChange}
-																			name="min_service_price"
-																			helperText={
-																				props.errors.hasOwnProperty(
-																					"min_service_price"
-																				) && props.errors["min_service_price"]
-																			}
-																			type="text"
-																			style={{ marginRight: 10 }}
-																		/>
-																	</Grid>
-																	<Grid item xs={6}>
-																		<Field
-																			variant="outlined"
-																			fullWidth
-																			label="Maximum"
-																			component={TextField}
-																			onChange={handleChange}
-																			type="text"
-																			name="max_service_price"
-																			helperText={
-																				props.errors.hasOwnProperty(
-																					"max_service_price"
-																				) && props.errors["max_service_price"]
-																			}
-																			style={{ marginRight: 10 }}
-																		/>
-																	</Grid>
-																</Grid>
-															</div>
-														</div>
-													</Grid>
-													<Grid item xs={12}>
-														<Typography
-															align="center"
-															variant="h6"
-															gutterBottom
-														>
-															Tell us about your bussiness!
-														</Typography>
-													</Grid>
-
-													<Grid item md={12} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																component={TextField}
-																onChange={handleChange}
-																type="text"
-																name="bussiness_name"
-																label="Business Name"
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty(
-																		"bussiness_name"
-																	) && props.errors["bussiness_name"]
-																}
-																margin="dense"
-															/>
-														</Box>
-													</Grid>
-
-													<Grid item md={12} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																multiline={true}
-																type="text"
-																component={TextField}
-																multiline
-																rows={4}
-																name="bussineess_description"
-																label="Business Description"
-																onChange={handleChange}
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty(
-																		"bussineess_description"
-																	) && props.errors["bussineess_description"]
-																}
-																margin="dense"
-																inputprops={{
-																	inputComponent: TextareaAutosize,
-																	rows: 3,
-																}}
-															/>
-														</Box>
-													</Grid>
-
-													<Grid item md={6} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																component={TextField}
-																onChange={handleChange}
-																type="text"
-																name="offer_tagline"
-																label="Offer Tagline"
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty(
-																		"offer_tagline"
-																	) && props.errors["offer_tagline"]
-																}
-																margin="dense"
-															/>
-														</Box>
-													</Grid>
-
-													<Grid item md={6} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																type="text"
-																component={TextField}
-																name="total_experience"
-																label="Total Experince"
-																onChange={handleChange}
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty(
-																		"offer_tagline"
-																	) && props.errors["offer_tagline"]
-																}
-																margin="dense"
-															/>
-														</Box>
-													</Grid>
-
-													<Grid item md={12} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																multiline={true}
-																type="text"
-																component={TextField}
-																name="address"
-																label="Business Address"
-																multiline
-																rows={4}
-																onChange={handleChange}
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty("address") &&
-																	props.errors["address"]
-																}
-																margin="dense"
-																inputprops={{
-																	inputComponent: TextareaAutosize,
-																	rows: 3,
-																}}
-															/>
-														</Box>
-													</Grid>
-
-													<Grid item md={6} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																type="text"
-																component={TextField}
-																name="office_map_link"
-																label="Map Link"
-																onChange={handleChange}
-																variant="outlined"
-																margin="normal"
-															/>
-														</Box>
-													</Grid>
-
-													<Grid item md={6} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																type="text"
-																component={TextField}
-																name="office_number"
-																label="Office Number"
-																onChange={handleChange}
-																variant="outlined"
-																margin="normal"
-															/>
-														</Box>
-													</Grid>
-
-													<Grid item md={4} xs={12}>
-														<Box margin={1}>
-															<Field
-																onChange={handleChange}
-																fullWidth
-																component={TextField}
-																type="text"
-																name="state"
-																label="State"
-																select
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty("state") &&
-																	props.errors["state"]
-																}
-																margin="normal"
-																InputLabelProps={{
-																	shrink: true,
-																}}
-															>
-																{Object.keys(state).map((option) => (
-																	<MenuItem key={option} value={option}>
-																		{option}
-																	</MenuItem>
-																))}
-															</Field>
-														</Box>
-													</Grid>
-													<Grid item md={4} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																component={TextField}
-																onChange={handleChange}
-																type="text"
-																name="district"
-																label="District"
-																select
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty("district") &&
-																	props.errors["district"]
-																}
-																margin="normal"
-																InputLabelProps={{
-																	shrink: true,
-																}}
-															>
-																{props.values["state"] &&
-																	state[props.values.state].map(
-																		(option, index) => (
-																			<MenuItem key={index} value={option}>
-																				{option}
-																			</MenuItem>
-																		)
-																	)}
-															</Field>
-														</Box>
-													</Grid>
-													<Grid item md={4} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																component={TextField}
-																onChange={handleChange}
-																type="text"
-																name="city"
-																label="City"
-																select
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty("city") &&
-																	props.errors["city"]
-																}
-																margin="normal"
-																InputLabelProps={{
-																	shrink: true,
-																}}
-															>
-																{props.values["district"] &&
-																	cities[props.values["district"]].map(
-																		(option, index) => (
-																			<MenuItem key={index} value={option}>
-																				{option}
-																			</MenuItem>
-																		)
-																	)}
-															</Field>
-														</Box>
-													</Grid>
-
-													<Grid item md={4} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																component={TextField}
-																onChange={handleChange}
-																type="text"
-																name="locality"
-																label="Locality"
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty("locality") &&
-																	props.errors["locality"]
-																}
-																margin="dense"
-															/>
-														</Box>
-													</Grid>
-
-													<Grid item md={4} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																component={TextField}
-																onChange={handleChange}
-																type="text"
-																name="commission_percent"
-																label="Comission Persent"
-																variant="outlined"
-																select
-																helperText={
-																	props.errors.hasOwnProperty(
-																		"commission_percent"
-																	) && props.errors["commission_percent"]
-																}
-																margin="dense"
-															>
-																{["10%", "15%", "20%"].map((option, index) => (
-																	<MenuItem key={index} value={index + 1}>
-																		{option}
-																	</MenuItem>
-																))}
-															</Field>
-														</Box>
-													</Grid>
-
-													<Grid item md={4} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																component={TextField}
-																onChange={handleChange}
-																type="text"
-																name="min_commission"
-																label="Min Comission"
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty(
-																		"min_commission"
-																	) && props.errors["min_commission"]
-																}
-																margin="dense"
-															/>
-														</Box>
-													</Grid>
-													<Grid item md={4} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																component={TextField}
-																onChange={handleChange}
-																type="text"
-																name="max_commission"
-																label="Max Comission"
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty(
-																		"max_commission"
-																	) && props.errors["max_commission"]
-																}
-																margin="dense"
-															/>
-														</Box>
-													</Grid>
-
-													<Grid item xs={12}>
-														<TableContainer component={Paper}>
-															<Grid
-																container
-																direction="row"
-																justify="flex-start"
-																alignItems="flex-end"
-															>
-																<Grid item xs={6}>
-																	<Box margin={1}>
-																		<Field
-																			onChange={handleChange}
-																			fullWidth
-																			component={TextField}
-																			type="text"
-																			name="doc_type"
-																			label="Choose Document To Upload"
-																			select
-																			variant="outlined"
-																			helperText={
-																				props.errors.hasOwnProperty(
-																					"doc_type"
-																				) && props.errors["doc_type"]
-																			}
-																			margin="normal"
-																			InputLabelProps={{
-																				shrink: true,
-																			}}
-																		>
-																			{[
-																				"",
-																				"Catalog",
-																				"GST",
-																				"Shaadiwala Offer",
-																				"Advertisement",
-																				"License",
-																				"Certificate",
-																			].map((option, index) => (
-																				<MenuItem key={index} value={option}>
-																					{option}
-																				</MenuItem>
-																			))}
-																		</Field>
-																	</Box>
-																</Grid>
-																<Grid item xs={6}>
-																	<Box margin={1}>
-																		<Field
-																			name="doc"
-																			margin="normal"
-																			label="Upload Document"
-																			className={
-																				"form-check-input " +
-																				(props.errors["document"] &&
-																				props.touched["document"]
-																					? " is-invalid"
-																					: "")
-																			}
-																		>
-																			{({ field, form, meta }) => (
-																				<div>
-																					<input
-																						id={field.name}
-																						onClick="this.value = null"
-																						style={{ display: "none" }}
-																						name={field.name}
-																						type="file"
-																						onChange={(event) =>
-																							fileOnChange(event, props, field)
-																						}
-																					/>
-																					<label htmlFor={field.name}>
-																						<Button
-																							disabled={
-																								form.values["doc_type"] ==
-																									null ||
-																								search(
-																									props.values["doc_type"],
-																									docData
-																								)
-																							}
-																							variant="contained"
-																							color="primary"
-																							component="span"
-																						>
-																							Choose
-																						</Button>
-																					</label>
-																				</div>
-																			)}
-																		</Field>
-																	</Box>
-																</Grid>
-															</Grid>
-															<Table
-																className={classes.table}
-																aria-label="simple table"
-															>
-																<TableHead>
-																	<TableRow>
-																		<TableCell>Document</TableCell>
-																		<TableCell align="right">
-																			File Name
-																		</TableCell>
-																		<TableCell align="right">
-																			File Size
-																		</TableCell>
-																		<TableCell align="right">
-																			File Type
-																		</TableCell>
-																		<TableCell align="right"></TableCell>
-																	</TableRow>
-																</TableHead>
-																<TableBody>
-																	{docData.map((row) => (
-																		<TableRow key={row.name}>
-																			<TableCell component="th" scope="row">
-																				{row.document}
-																			</TableCell>
-																			<TableCell
-																				onClick={() =>
-																					getFileLink(row.fileObject)
-																				}
-																				align="right"
-																			>
-																				{row.name}
-																			</TableCell>
-																			<TableCell align="right">
-																				{row.size}MB
-																			</TableCell>
-																			<TableCell align="right">
-																				{row.type}
-																			</TableCell>
-																			<TableCell align="right">
-																				<IconButton
-																					onClick={() =>
-																						deleteFile(row.document, props)
-																					}
-																				>
-																					<DeleteIcon />
-																				</IconButton>
-																			</TableCell>
-																		</TableRow>
-																	))}
-																	{Object.keys(fileDropdown).map((obj) => {
-																		if (
-																			props.errors.hasOwnProperty(
-																				fileDropdown[obj]
-																			)
-																		) {
-																			return (
-																				<TableRow>
-																					<TableCell style={{ color: "red" }}>
-																						Error [{obj}]
-																					</TableCell>
-																					<TableCell
-																						style={{ color: "red" }}
-																						align="left"
-																					>
-																						{props.errors[fileDropdown[obj]]}
-																					</TableCell>
-																				</TableRow>
-																			);
-																		}
-																	})}
-																</TableBody>
-															</Table>
-														</TableContainer>
-													</Grid>
-
-													<Grid item xs={12}>
-														<Divider />
-
-														<Grid container justify="right">
-															<Grid item xs={12}>
-																{!props.isSubmitting ? (
-																	<Button
-																		onClick={props.resetForm}
-																		size="small"
-																	>
-																		Reset To Default
-																	</Button>
-																) : (
-																	t("common:cant_revert")
-																)}
-																<Button
-																	disable={props.isSubmitting}
-																	type="submit"
-																	color="primary"
-																	variant="outlined"
-																>
-																	Save details
-																</Button>
-															</Grid>
-														</Grid>
-													</Grid>
-												</Grid>
-											</Form>
-										</CardContent>
-									</Card>
-								);
-							}}
-						</Formik>
-					</div>
-				</Grid>
-			</Grid>
-
+										</AccordionDetails>
+										<Divider />
+										<AccordionActions>
+											{!props.isSubmitting ? (
+												<Button onClick={props.resetForm} size="small">
+													Reset To Default
+												</Button>
+											) : (
+												t("common:cant_revert")
+											)}
+											<Button
+												disable={props.isSubmitting}
+												type="submit"
+												color="primary"
+												variant="outlined"
+											>
+												Save details
+											</Button>
+										</AccordionActions>
+									</Accordion>
+								</Form>
+							</CardContent>
+						</div>
+					);
+				}}
+			</Formik>
 			{_renderModal()}
-		</div>
+		</Card>
 	);
 };
 
@@ -1307,4 +903,4 @@ freelancerform.propTypes = {
 	className: PropTypes.string,
 };
 
-export default withRouter(withTranslation(["common"])(freelancerform));
+export default withTranslation(["common"])(freelancerform);

@@ -190,6 +190,7 @@ const Lifestyledetails = ({
 					}
 				}
 			}
+			payload.append("call_time", calltime);
 			payload.append("metrimony_id", matrimonyid);
 			if (payload && matrimonyid) {
 				matrimonyActions
@@ -290,12 +291,24 @@ const Lifestyledetails = ({
 						<div>
 							<CardHeader
 								subheader="The information can be edited"
-								title="Lifestyle Details"
+								title="Basic Details"
 							/>
 							<Divider />
 							<CardContent>
 								<Form>
 									<Grid container spacing={3}>
+										<Field
+											required
+											onChange={handleChange}
+											component={TextField}
+											type="hidden"
+											name="metrimony_id"
+											variant="standard"
+											helperText={
+												formprops.errors.hasOwnProperty("father_occupation") &&
+												formprops.errors["father_occupation"]
+											}
+										/>
 										<Grid item md={6} xs={12}>
 											<Box margin={1}>
 												<InputLabel shrink={true} htmlFor="Language Speak">
@@ -355,7 +368,7 @@ const Lifestyledetails = ({
 														formprops.errors.hasOwnProperty("diatery_habits") &&
 														formprops.errors["diatery_habits"]
 													}
-													margin="dense"
+													margin="normal"
 													InputLabelProps={{
 														shrink: true,
 													}}
@@ -384,7 +397,7 @@ const Lifestyledetails = ({
 														formprops.hasOwnProperty("drinking_habits") &&
 														formprops.errors["drinking_habits"]
 													}
-													margin="dense"
+													margin="normal"
 													InputLabelProps={{
 														shrink: true,
 													}}
@@ -413,7 +426,7 @@ const Lifestyledetails = ({
 														formprops.errors.hasOwnProperty("smoking_habits") &&
 														formprops.errors["smoking_habits"]
 													}
-													margin="dense"
+													margin="normal"
 													InputLabelProps={{
 														shrink: true,
 													}}
@@ -429,63 +442,36 @@ const Lifestyledetails = ({
 
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
-												<Field
-													onChange={handleChange}
-													fullWidth
-													component={TextField}
-													type="text"
-													name="house_own"
-													label="Do you Own a House?"
-													select
-													variant="standard"
-													helperText={
-														formprops.errors.hasOwnProperty("house_own") &&
-														formprops.errors["house_own"]
+												<FormControlLabel
+													control={
+														<Field
+															component={Switch}
+															type="checkbox"
+															name="house_own"
+														/>
 													}
-													margin="dense"
-													InputLabelProps={{
-														shrink: true,
-													}}
-												>
-													{["Yes", "No", "Looking For!"].map(
-														(option, index) => (
-															<MenuItem key={index} value={index + 1}>
-																{option}
-															</MenuItem>
-														)
-													)}
-												</Field>
+													label="Own A House ?"
+												/>
+												<ErrorMessage
+													style={{ color: "red" }}
+													name="house_own"
+												/>
 											</Box>
 										</Grid>
 
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
-												<Field
-													onChange={handleChange}
-													fullWidth
-													component={TextField}
-													type="text"
-													name="car_own"
-													label="Do you Own a Car?"
-													select
-													variant="standard"
-													helperText={
-														formprops.errors.hasOwnProperty("car_own") &&
-														formprops.errors["car_own"]
+												<FormControlLabel
+													control={
+														<Field
+															component={Switch}
+															type="checkbox"
+															name="car_own"
+														/>
 													}
-													margin="desnse"
-													InputLabelProps={{
-														shrink: true,
-													}}
-												>
-													{["Yes", "No", "Looking For!"].map(
-														(option, index) => (
-															<MenuItem key={index} value={index + 1}>
-																{option}
-															</MenuItem>
-														)
-													)}
-												</Field>
+													label="Own A Car ?"
+												/>
+												<ErrorMessage style={{ color: "red" }} name="car_own" />
 											</Box>
 										</Grid>
 
@@ -652,7 +638,7 @@ const Lifestyledetails = ({
 															"gaurdian_number"
 														) && formprops.errors["gaurdian_number"]
 													}
-													margin="dense"
+													margin="normal"
 													InputLabelProps={{
 														shrink: true,
 													}}
@@ -675,7 +661,7 @@ const Lifestyledetails = ({
 															"alternate_number"
 														) && formprops.errors["alternate_number"]
 													}
-													margin="dense"
+													margin="normal"
 													InputLabelProps={{
 														shrink: true,
 													}}
@@ -761,7 +747,7 @@ const Lifestyledetails = ({
 														formprops.errors.hasOwnProperty("disability") &&
 														formprops.errors["disability"]
 													}
-													margin="dense"
+													margin="normal"
 													InputLabelProps={{
 														shrink: true,
 													}}

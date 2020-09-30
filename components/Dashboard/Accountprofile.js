@@ -37,7 +37,12 @@ import {
 	Button,
 	LinearProgress,
 } from "@material-ui/core";
-
+import {
+	createMuiTheme,
+	responsiveFontSizes,
+	MuiThemeProvider,
+	makeStyles,
+} from "@material-ui/core/styles";
 import {
 	fieldToTextField,
 	TextField,
@@ -49,12 +54,7 @@ import {
 import { useTextAlign } from "~/theme/common";
 import { mpinForm } from "~/static/FormData/mpinForm";
 import { useAuth } from "../provider/Auth";
-import {
-	createMuiTheme,
-	responsiveFontSizes,
-	MuiThemeProvider,
-	makeStyles,
-} from "@material-ui/core/styles";
+
 let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
 
