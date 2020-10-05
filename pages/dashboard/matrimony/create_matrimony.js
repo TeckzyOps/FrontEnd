@@ -26,7 +26,7 @@ import { withRouter } from "react-router";
 import { useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { matrimonyActions } from "../../../_actions/matrimony.action";
-import Dashboard from "../../../components/Dashboard/DashboardWrap";
+import Header from "../../../components/Header";
 const localStorageService = LocalStorageService.getService();
 
 function getSteps() {
@@ -280,52 +280,54 @@ const Matrimony = (props) => {
 				<title>Dashboard &nbsp; - Matrimony</title>
 			</Head>
 
-			<Dashboard>
-				<div className={classes.root}>
-					<Grid container justifyContent="center" spacing={2}>
-						<Grid item xs={12}>
-							<Stepper activeStep={activeStep}>
-								{isMobile && (
-									<Step>
-										<StepButton onClick={handleStep(activeStep)}>
-											{steps[activeStep]}
-										</StepButton>
-									</Step>
-								)}
-								{isDesktop &&
-									steps.map((label, index) => {
-										const stepProps = {};
-										const labelProps = {};
+			<Header
+				onToggleDark={props.onToggleDark}
+				onToggleDir={props.onToggleDir}
+			/>
+			<div className={classes.root}>
+				<Grid container justifyContent="center" spacing={2}>
+					<Grid item xs={12}>
+						<Stepper activeStep={activeStep}>
+							{isMobile && (
+								<Step>
+									<StepButton onClick={handleStep(activeStep)}>
+										{steps[activeStep]}
+									</StepButton>
+								</Step>
+							)}
+							{isDesktop &&
+								steps.map((label, index) => {
+									const stepProps = {};
+									const labelProps = {};
 
-										return (
-											<Step key={label} {...stepProps}>
-												<StepButton onClick={handleStep(index)}>
-													{label}
-												</StepButton>
-											</Step>
-										);
-									})}
-							</Stepper>
-						</Grid>
-						<Grid item xs={12}>
-							<div>
-								{activeStep === steps.length ? (
-									<div>
-										<Typography className={classes.instructions}>
-											All steps completed - you&apos;re finished
-										</Typography>
-										<Button onClick={handleReset} className={classes.button}>
-											Reset
-										</Button>
-									</div>
-								) : (
-									<div>{getStepContent(activeStep)}</div>
-								)}
-							</div>
-						</Grid>
+									return (
+										<Step key={label} {...stepProps}>
+											<StepButton onClick={handleStep(index)}>
+												{label}
+											</StepButton>
+										</Step>
+									);
+								})}
+						</Stepper>
 					</Grid>
-				</div>
-			</Dashboard>
+					<Grid item xs={12}>
+						<div>
+							{activeStep === steps.length ? (
+								<div>
+									<Typography className={classes.instructions}>
+										All steps completed - you&apos;re finished
+									</Typography>
+									<Button onClick={handleReset} className={classes.button}>
+										Reset
+									</Button>
+								</div>
+							) : (
+								<div>{getStepContent(activeStep)}</div>
+							)}
+						</div>
+					</Grid>
+				</Grid>
+			</div>
 		</React.Fragment>
 	);
 };

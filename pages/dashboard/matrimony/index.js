@@ -48,7 +48,7 @@ import api, {
 	removeBearerToken,
 } from "../../../utils/httpClient";
 
-import Dashboard from "../../../components/Dashboard/DashboardWrap";
+import Header from "../../../components/Header";
 import { matrimonyActions } from "../../../_actions/matrimony.action";
 const localStorageService = LocalStorageService.getService();
 
@@ -247,509 +247,503 @@ const MatrimonySearch = (props) => {
 				<title>Dashboard &nbsp; - Login</title>
 			</Head>
 
-			<Dashboard>
-				<div className={classes.root}>
-					{payload.gender <= 0 && (
-						<Container maxWidth="sm">
-							<Grid
-								style={{ width: "100%", height: "100vh" }}
-								alignItems="center"
-								justify="space-evenly"
-								container
-								spacing={2}
-							>
-								<Grid item xs={12}>
-									<Typography variant="h4" gutterBottom>
-										Looking For ?
-									</Typography>
+			<Header
+				onToggleDark={props.onToggleDark}
+				onToggleDir={props.onToggleDir}
+			/>
+			<div className={classes.root}>
+				{payload.gender <= 0 && (
+					<Container maxWidth="sm">
+						<Grid
+							style={{ width: "100%", height: "100vh" }}
+							alignItems="center"
+							justify="space-evenly"
+							container
+							spacing={2}
+						>
+							<Grid item xs={12}>
+								<Typography variant="h4" gutterBottom>
+									Looking For ?
+								</Typography>
 
-									<Grid container spacing={2}>
-										{[
-											{
-												url: "/static/groom.png",
-												title: "Male",
-												width: "100%",
-												id: 1,
-											},
-											{
-												url: "/static/bride.png",
-												title: "Female",
-												width: "100%",
-												id: 2,
-											},
-											{
-												url: "/static/intersexual.png",
-												title: "Others",
-												width: "100%",
-												id: 3,
-											},
-										].map((image, index) => (
-											<Grid item md={4} xs={12}>
-												<ButtonBase
-													key={index}
-													focusRipple
-													id={image.id}
-													key={image.title}
-													onClick={handleGenderChange}
-													className={classes.image}
-													focusVisibleClassName={classes.focusVisible}
-													style={{
-														width: image.width,
-													}}
-												>
-													<span
-														className={classes.imageSrc}
-														style={{
-															backgroundImage: `url(${image.url})`,
-														}}
-													/>
-													<span className={classes.imageBackdrop} />
-													<span className={classes.imageButton}>
-														<Typography
-															component="span"
-															variant="subtitle1"
-															color="inherit"
-															className={classes.imageTitle}
-														>
-															{image.title}
-															<span className={classes.imageMarked} />
-														</Typography>
-													</span>
-												</ButtonBase>
-											</Grid>
-										))}
-									</Grid>
-									<br></br>
-									<Link href={routerLink.starter.matrimonyAds}>
-										<Button variant="outlined" color="secondary">
-											Post an AD
-										</Button>
-									</Link>
-								</Grid>
-							</Grid>
-						</Container>
-					)}
-					{payload.gender > 0 && (
-						<div>
-							<Grid justify="flex-end" alignItems="center" container>
-								<Grid item>
-									<FormControl className={classes.formControl}>
-										<Select
-											value={payload.gender}
-											displayEmpty
-											onChange={handleGenderChange}
-											inputProps={{ "aria-label": "Without label" }}
-										>
-											{["Male", "Female", "Others"].map((option, index) => (
-												<MenuItem key={index} value={index + 1}>
-													{option}
-												</MenuItem>
-											))}
-										</Select>
-									</FormControl>
-								</Grid>
-								<Grid item>
-									<FormControl className={classes.formControl}>
-										<Select
-											value=""
-											displayEmpty
-											onChange={handleSortChange}
-											inputProps={{ "aria-label": "Without label" }}
-										>
-											<MenuItem value="">
-												<em>Sort By</em>
-											</MenuItem>
-											{["Latest", "Oldest"].map((option, index) => (
-												<MenuItem key={index} value={option}>
-													{option}
-												</MenuItem>
-											))}
-										</Select>
-									</FormControl>
-								</Grid>
-								<Grid item>
-									<Button
-										variant="outlined"
-										onClick={handleFilterOpen}
-										color="secondary"
-									>
-										Filters
-									</Button>
-									&nbsp;
-									<Button
-										variant="outlined"
-										onClick={resetState}
-										color="secondary"
-									>
-										Reset
-									</Button>
-								</Grid>
-								<Grid item>
-									<Link href={routerLink.starter.matrimonyAds}>
-										<Button variant="outlined" color="secondary">
-											Post an AD
-										</Button>
-									</Link>
-								</Grid>
-							</Grid>
-							<br />
-							<Grid container spacing={4}>
-								<Grid item xs={12}></Grid>
-								{adList &&
-									adList.map((ad, index) => (
+								<Grid container spacing={2}>
+									{[
+										{
+											url: "/static/groom.png",
+											title: "Male",
+											width: "100%",
+											id: 1,
+										},
+										{
+											url: "/static/bride.png",
+											title: "Female",
+											width: "100%",
+											id: 2,
+										},
+										{
+											url: "/static/intersexual.png",
+											title: "Others",
+											width: "100%",
+											id: 3,
+										},
+									].map((image, index) => (
 										<Grid item md={4} xs={12}>
-											<Link
-												style={{ textDecoration: "none" }}
-												href={
-													routerLink.starter.matrimonyprofile + "?id=" + ad.id
-												}
+											<ButtonBase
+												key={index}
+												focusRipple
+												id={image.id}
+												key={image.title}
+												onClick={handleGenderChange}
+												className={classes.image}
+												focusVisibleClassName={classes.focusVisible}
+												style={{
+													width: image.width,
+												}}
 											>
-												<MatrimonyProfile ad={ad} />
-											</Link>
+												<span
+													className={classes.imageSrc}
+													style={{
+														backgroundImage: `url(${image.url})`,
+													}}
+												/>
+												<span className={classes.imageBackdrop} />
+												<span className={classes.imageButton}>
+													<Typography
+														component="span"
+														variant="subtitle1"
+														color="inherit"
+														className={classes.imageTitle}
+													>
+														{image.title}
+														<span className={classes.imageMarked} />
+													</Typography>
+												</span>
+											</ButtonBase>
 										</Grid>
 									))}
-							</Grid>
-							<Pagination
-								count={lastpage}
-								color="primary"
-								onChange={handlePageChange}
-							/>
-						</div>
-					)}
-
-					<Dialog
-						fullWidth={true}
-						open={filter}
-						scroll="paper"
-						onClose={() => setFilter(false)}
-						TransitionComponent={Transition}
-					>
-						<Grid container>
-							<Grid item xs={12}>
-								<DialogTitle onClose={() => setFilter(false)}>
-									Filters
-								</DialogTitle>
+								</Grid>
+								<br></br>
+								<Link href={routerLink.starter.matrimonyAds}>
+									<Button variant="outlined" color="secondary">
+										Post an AD
+									</Button>
+								</Link>
 							</Grid>
 						</Grid>
+					</Container>
+				)}
+				{payload.gender > 0 && (
+					<div>
+						<Grid justify="flex-end" alignItems="center" container>
+							<Grid item>
+								<FormControl className={classes.formControl}>
+									<Select
+										value={payload.gender}
+										displayEmpty
+										onChange={handleGenderChange}
+										inputProps={{ "aria-label": "Without label" }}
+									>
+										{["Male", "Female", "Others"].map((option, index) => (
+											<MenuItem key={index} value={index + 1}>
+												{option}
+											</MenuItem>
+										))}
+									</Select>
+								</FormControl>
+							</Grid>
+							<Grid item>
+								<FormControl className={classes.formControl}>
+									<Select
+										value=""
+										displayEmpty
+										onChange={handleSortChange}
+										inputProps={{ "aria-label": "Without label" }}
+									>
+										<MenuItem value="">
+											<em>Sort By</em>
+										</MenuItem>
+										{["Latest", "Oldest"].map((option, index) => (
+											<MenuItem key={index} value={option}>
+												{option}
+											</MenuItem>
+										))}
+									</Select>
+								</FormControl>
+							</Grid>
+							<Grid item>
+								<Button
+									variant="outlined"
+									onClick={handleFilterOpen}
+									color="secondary"
+								>
+									Filters
+								</Button>
+								&nbsp;
+								<Button
+									variant="outlined"
+									onClick={resetState}
+									color="secondary"
+								>
+									Reset
+								</Button>
+							</Grid>
+							<Grid item>
+								<Link href={routerLink.starter.matrimonyAds}>
+									<Button variant="outlined" color="secondary">
+										Post an AD
+									</Button>
+								</Link>
+							</Grid>
+						</Grid>
+						<br />
+						<Grid container spacing={4}>
+							<Grid item xs={12}></Grid>
+							{adList &&
+								adList.map((ad, index) => (
+									<Grid item md={4} xs={12}>
+										<Link
+											style={{ textDecoration: "none" }}
+											href={
+												routerLink.starter.matrimonyprofile + "?id=" + ad.id
+											}
+										>
+											<MatrimonyProfile ad={ad} />
+										</Link>
+									</Grid>
+								))}
+						</Grid>
+						<Pagination
+							count={lastpage}
+							color="primary"
+							onChange={handlePageChange}
+						/>
+					</div>
+				)}
 
-						<Formik
-							initialValues={payload}
-							validationSchema={Yup.object().shape({
-								agefrom: Yup.number().min(
-									18,
-									"Value should not be less than 18"
-								),
-								ageto: Yup.number().moreThan(
-									Yup.ref("agefrom"),
-									"Invalid Value"
-								),
-								heightfrom: Yup.number().min(
-									2,
-									"Value should not be less than 2"
-								),
-								heightto: Yup.number().moreThan(
-									Yup.ref("heightfrom"),
-									"Invalid Value"
-								),
-								religion: Yup.string(),
-								cast: Yup.string(),
-								mother_tongue: Yup.string(),
-								marital_status: Yup.string(),
-								weddingbudgetfrom: Yup.number().min(
-									1000,
-									"Value should not be less than 1000"
-								),
-								weddingbudgetto: Yup.number().moreThan(
-									Yup.ref("weddingbudgetfrom"),
-									"Invalid Value"
-								),
-							})}
-							onSubmit={(data, { setSubmitting }) => {
-								setSubmitting(true);
+				<Dialog
+					fullWidth={true}
+					open={filter}
+					scroll="paper"
+					onClose={() => setFilter(false)}
+					TransitionComponent={Transition}
+				>
+					<Grid container>
+						<Grid item xs={12}>
+							<DialogTitle onClose={() => setFilter(false)}>
+								Filters
+							</DialogTitle>
+						</Grid>
+					</Grid>
 
-								setPayload({ ...payload, ...data });
+					<Formik
+						initialValues={payload}
+						validationSchema={Yup.object().shape({
+							agefrom: Yup.number().min(18, "Value should not be less than 18"),
+							ageto: Yup.number().moreThan(Yup.ref("agefrom"), "Invalid Value"),
+							heightfrom: Yup.number().min(
+								2,
+								"Value should not be less than 2"
+							),
+							heightto: Yup.number().moreThan(
+								Yup.ref("heightfrom"),
+								"Invalid Value"
+							),
+							religion: Yup.string(),
+							cast: Yup.string(),
+							mother_tongue: Yup.string(),
+							marital_status: Yup.string(),
+							weddingbudgetfrom: Yup.number().min(
+								1000,
+								"Value should not be less than 1000"
+							),
+							weddingbudgetto: Yup.number().moreThan(
+								Yup.ref("weddingbudgetfrom"),
+								"Invalid Value"
+							),
+						})}
+						onSubmit={(data, { setSubmitting }) => {
+							setSubmitting(true);
 
-								setTimeout(() => {
-									console.log(data);
-									setSubmitting(false);
-									console.log("Filter Data " + payload);
-								}, 5000);
-							}}
-						>
-							{(props) => (
-								<Form autoComplete="off">
-									<DialogContent dividers>
-										<DialogContentText>
-											<Grid container>
-												<Grid item xs={12}></Grid>
-											</Grid>
-											<Grid container>
-												<Grid item xs={12}>
-													<Typography variant="body2" gutterBottom>
-														Age (in Years)
-													</Typography>
-													<div style={{ marginBottom: 20 }}>
-														<FieldArray name="Age">
-															<div>
-																<Grid container spacing={2}>
-																	<Grid item xs={6}>
-																		<Field
-																			variant="outlined"
-																			fullWidth
-																			label="From"
-																			component={TextField}
-																			name="agefrom"
-																			helperText={
-																				props.errors.hasOwnProperty(
-																					"agefrom"
-																				) && props.errors["agefrom"]
-																			}
-																			type="number"
-																			style={{ marginRight: 10 }}
-																		/>
-																	</Grid>
-																	<Grid item xs={6}>
-																		<Field
-																			variant="outlined"
-																			fullWidth
-																			label="To"
-																			component={TextField}
-																			name="ageto"
-																			helperText={
-																				props.errors.hasOwnProperty("ageto") &&
-																				props.errors["ageto"]
-																			}
-																			type="number"
-																			style={{ marginRight: 10 }}
-																		/>
-																	</Grid>
+							setPayload({ ...payload, ...data });
+
+							setTimeout(() => {
+								console.log(data);
+								setSubmitting(false);
+								console.log("Filter Data " + payload);
+							}, 5000);
+						}}
+					>
+						{(props) => (
+							<Form autoComplete="off">
+								<DialogContent dividers>
+									<DialogContentText>
+										<Grid container>
+											<Grid item xs={12}></Grid>
+										</Grid>
+										<Grid container>
+											<Grid item xs={12}>
+												<Typography variant="body2" gutterBottom>
+													Age (in Years)
+												</Typography>
+												<div style={{ marginBottom: 20 }}>
+													<FieldArray name="Age">
+														<div>
+															<Grid container spacing={2}>
+																<Grid item xs={6}>
+																	<Field
+																		variant="outlined"
+																		fullWidth
+																		label="From"
+																		component={TextField}
+																		name="agefrom"
+																		helperText={
+																			props.errors.hasOwnProperty("agefrom") &&
+																			props.errors["agefrom"]
+																		}
+																		type="number"
+																		style={{ marginRight: 10 }}
+																	/>
 																</Grid>
-															</div>
-														</FieldArray>
-													</div>
-												</Grid>
-											</Grid>
-
-											<Grid container>
-												<Grid item xs={12}>
-													<Typography variant="body2" gutterBottom>
-														Height
-													</Typography>
-													<div style={{ marginBottom: 20 }}>
-														<FieldArray name="height">
-															<div>
-																<Grid container spacing={2}>
-																	<Grid item xs={6}>
-																		<Field
-																			variant="outlined"
-																			fullWidth
-																			label="From"
-																			component={TextField}
-																			type="number"
-																			name="heightfrom"
-																			helperText={
-																				props.errors.hasOwnProperty(
-																					"heightfrom"
-																				) && props.errors["heightfrom"]
-																			}
-																			style={{ marginRight: 10 }}
-																		/>
-																	</Grid>
-																	<Grid item xs={6}>
-																		<Field
-																			variant="outlined"
-																			fullWidth
-																			label="To"
-																			component={TextField}
-																			name="heightto"
-																			helperText={
-																				props.errors.hasOwnProperty(
-																					"heightto"
-																				) && props.errors["heightto"]
-																			}
-																			type="number"
-																			style={{ marginRight: 10 }}
-																		/>
-																	</Grid>
+																<Grid item xs={6}>
+																	<Field
+																		variant="outlined"
+																		fullWidth
+																		label="To"
+																		component={TextField}
+																		name="ageto"
+																		helperText={
+																			props.errors.hasOwnProperty("ageto") &&
+																			props.errors["ageto"]
+																		}
+																		type="number"
+																		style={{ marginRight: 10 }}
+																	/>
 																</Grid>
-															</div>
-														</FieldArray>
-													</div>
-												</Grid>
+															</Grid>
+														</div>
+													</FieldArray>
+												</div>
 											</Grid>
+										</Grid>
 
-											<Grid container spacing={2}>
-												<Grid item xs={6}>
-													<div>
-														<Field
-															fullWidth
-															component={TextField}
-															select
-															name="religion"
-															label="Religion"
-															helperText={
-																props.errors.hasOwnProperty("religion") &&
-																props.errors["religion"]
-															}
-															margin="normal"
-															variant="outlined"
-														>
-															{religion.map((option, i) => (
-																<MenuItem key={i} value={option}>
-																	{option}
-																</MenuItem>
-															))}
-														</Field>
-													</div>
-												</Grid>
-												<Grid item xs={6}>
-													<div>
-														<Field
-															fullWidth
-															component={TextField}
-															select
-															name="cast"
-															label="Caste"
-															helperText={
-																props.errors.hasOwnProperty("cast") &&
-																props.errors["cast"]
-															}
-															margin="normal"
-															variant="outlined"
-														>
-															{caste.map((option, i) => (
-																<MenuItem key={i} value={option}>
-																	{option}
-																</MenuItem>
-															))}
-														</Field>
-													</div>
-												</Grid>
-											</Grid>
-
-											<Grid container spacing={2}>
-												<Grid item xs={6}>
-													<div style={{ marginBottom: 20 }}>
-														<Field
-															fullWidth
-															component={TextField}
-															select
-															name="marital_status"
-															label="Maritial Status"
-															helperText={
-																props.errors.hasOwnProperty("marital_status") &&
-																props.errors["marital_status"]
-															}
-															margin="normal"
-															variant="outlined"
-														>
-															{maritialStatus.map((option, i) => (
-																<MenuItem key={i} value={option}>
-																	{option}
-																</MenuItem>
-															))}
-														</Field>
-													</div>
-												</Grid>
-												<Grid item xs={6}>
-													<div style={{ marginBottom: 20 }}>
-														<Field
-															fullWidth
-															component={TextField}
-															select
-															name="mother_tongue"
-															label="Mother Tongue"
-															helperText={
-																props.errors.hasOwnProperty("mother_tongue") &&
-																props.errors["mother_tongue"]
-															}
-															margin="normal"
-															variant="outlined"
-														>
-															{languages.map((option, i) => (
-																<MenuItem key={i} value={option}>
-																	{option}
-																</MenuItem>
-															))}
-														</Field>
-													</div>
-												</Grid>
-											</Grid>
-
-											<Grid container>
-												<Grid item xs={12}>
-													<Typography variant="body2" gutterBottom>
-														Wedding Budget
-													</Typography>
-													<div style={{ marginBottom: 20 }}>
-														<FieldArray name="weddingBudget">
-															<div>
-																<Grid container spacing={2}>
-																	<Grid item xs={6}>
-																		<Field
-																			variant="outlined"
-																			fullWidth
-																			label="From"
-																			type="number"
-																			component={TextField}
-																			helperText={
-																				props.errors.hasOwnProperty(
-																					"weddingbudgetfrom"
-																				) && props.errors["weddingbudgetfrom"]
-																			}
-																			name="weddingbudgetfrom"
-																			style={{ marginRight: 10 }}
-																		/>
-																	</Grid>
-																	<Grid item xs={6}>
-																		<Field
-																			variant="outlined"
-																			fullWidth
-																			label="To"
-																			component={TextField}
-																			name="weddingbudgetto"
-																			helperText={
-																				props.errors.hasOwnProperty(
-																					"weddingbudgetto"
-																				) && props.errors["weddingbudgetto"]
-																			}
-																			type="number"
-																			style={{ marginRight: 10 }}
-																		/>
-																	</Grid>
+										<Grid container>
+											<Grid item xs={12}>
+												<Typography variant="body2" gutterBottom>
+													Height
+												</Typography>
+												<div style={{ marginBottom: 20 }}>
+													<FieldArray name="height">
+														<div>
+															<Grid container spacing={2}>
+																<Grid item xs={6}>
+																	<Field
+																		variant="outlined"
+																		fullWidth
+																		label="From"
+																		component={TextField}
+																		type="number"
+																		name="heightfrom"
+																		helperText={
+																			props.errors.hasOwnProperty(
+																				"heightfrom"
+																			) && props.errors["heightfrom"]
+																		}
+																		style={{ marginRight: 10 }}
+																	/>
 																</Grid>
-															</div>
-														</FieldArray>
-													</div>
-												</Grid>
+																<Grid item xs={6}>
+																	<Field
+																		variant="outlined"
+																		fullWidth
+																		label="To"
+																		component={TextField}
+																		name="heightto"
+																		helperText={
+																			props.errors.hasOwnProperty("heightto") &&
+																			props.errors["heightto"]
+																		}
+																		type="number"
+																		style={{ marginRight: 10 }}
+																	/>
+																</Grid>
+															</Grid>
+														</div>
+													</FieldArray>
+												</div>
 											</Grid>
-										</DialogContentText>
-									</DialogContent>
-									<DialogActions>
-										{/* <Button autoFocus onClick={handleFilterClose} color="primary">
+										</Grid>
+
+										<Grid container spacing={2}>
+											<Grid item xs={6}>
+												<div>
+													<Field
+														fullWidth
+														component={TextField}
+														select
+														name="religion"
+														label="Religion"
+														helperText={
+															props.errors.hasOwnProperty("religion") &&
+															props.errors["religion"]
+														}
+														margin="normal"
+														variant="outlined"
+													>
+														{religion.map((option, i) => (
+															<MenuItem key={i} value={option}>
+																{option}
+															</MenuItem>
+														))}
+													</Field>
+												</div>
+											</Grid>
+											<Grid item xs={6}>
+												<div>
+													<Field
+														fullWidth
+														component={TextField}
+														select
+														name="cast"
+														label="Caste"
+														helperText={
+															props.errors.hasOwnProperty("cast") &&
+															props.errors["cast"]
+														}
+														margin="normal"
+														variant="outlined"
+													>
+														{caste.map((option, i) => (
+															<MenuItem key={i} value={option}>
+																{option}
+															</MenuItem>
+														))}
+													</Field>
+												</div>
+											</Grid>
+										</Grid>
+
+										<Grid container spacing={2}>
+											<Grid item xs={6}>
+												<div style={{ marginBottom: 20 }}>
+													<Field
+														fullWidth
+														component={TextField}
+														select
+														name="marital_status"
+														label="Maritial Status"
+														helperText={
+															props.errors.hasOwnProperty("marital_status") &&
+															props.errors["marital_status"]
+														}
+														margin="normal"
+														variant="outlined"
+													>
+														{maritialStatus.map((option, i) => (
+															<MenuItem key={i} value={option}>
+																{option}
+															</MenuItem>
+														))}
+													</Field>
+												</div>
+											</Grid>
+											<Grid item xs={6}>
+												<div style={{ marginBottom: 20 }}>
+													<Field
+														fullWidth
+														component={TextField}
+														select
+														name="mother_tongue"
+														label="Mother Tongue"
+														helperText={
+															props.errors.hasOwnProperty("mother_tongue") &&
+															props.errors["mother_tongue"]
+														}
+														margin="normal"
+														variant="outlined"
+													>
+														{languages.map((option, i) => (
+															<MenuItem key={i} value={option}>
+																{option}
+															</MenuItem>
+														))}
+													</Field>
+												</div>
+											</Grid>
+										</Grid>
+
+										<Grid container>
+											<Grid item xs={12}>
+												<Typography variant="body2" gutterBottom>
+													Wedding Budget
+												</Typography>
+												<div style={{ marginBottom: 20 }}>
+													<FieldArray name="weddingBudget">
+														<div>
+															<Grid container spacing={2}>
+																<Grid item xs={6}>
+																	<Field
+																		variant="outlined"
+																		fullWidth
+																		label="From"
+																		type="number"
+																		component={TextField}
+																		helperText={
+																			props.errors.hasOwnProperty(
+																				"weddingbudgetfrom"
+																			) && props.errors["weddingbudgetfrom"]
+																		}
+																		name="weddingbudgetfrom"
+																		style={{ marginRight: 10 }}
+																	/>
+																</Grid>
+																<Grid item xs={6}>
+																	<Field
+																		variant="outlined"
+																		fullWidth
+																		label="To"
+																		component={TextField}
+																		name="weddingbudgetto"
+																		helperText={
+																			props.errors.hasOwnProperty(
+																				"weddingbudgetto"
+																			) && props.errors["weddingbudgetto"]
+																		}
+																		type="number"
+																		style={{ marginRight: 10 }}
+																	/>
+																</Grid>
+															</Grid>
+														</div>
+													</FieldArray>
+												</div>
+											</Grid>
+										</Grid>
+									</DialogContentText>
+								</DialogContent>
+								<DialogActions>
+									{/* <Button autoFocus onClick={handleFilterClose} color="primary">
 										Save changes
 									</Button> */}
-										<Button onClick={() => setFilter(false)} color="primary">
-											Cancel
+									<Button onClick={() => setFilter(false)} color="primary">
+										Cancel
+									</Button>
+									<div>
+										<Button
+											variant="contained"
+											color="primary"
+											size="large"
+											type="submit"
+											disabled={props.isSubmitting}
+										>
+											Apply Filters
 										</Button>
-										<div>
-											<Button
-												variant="contained"
-												color="primary"
-												size="large"
-												type="submit"
-												disabled={props.isSubmitting}
-											>
-												Apply Filters
-											</Button>
-										</div>
-									</DialogActions>
-								</Form>
-							)}
-						</Formik>
-					</Dialog>
-				</div>
-			</Dashboard>
+									</div>
+								</DialogActions>
+							</Form>
+						)}
+					</Formik>
+				</Dialog>
+			</div>
 		</React.Fragment>
 	);
 };

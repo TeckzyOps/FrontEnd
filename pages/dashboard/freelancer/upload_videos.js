@@ -16,7 +16,7 @@ import {
 	ButtonBase,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import Dashboard from "../../../components/Dashboard/DashboardWrap";
+import Header from "../../../components/Header";
 import Head from "next/head";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -190,214 +190,213 @@ const FreelancerVid = (props) => {
 			<Head>
 				<title>Freelancer &nbsp; - Upload Videos</title>
 			</Head>
-			<Dashboard>
-				<div className={classes.root}>
-					<CssBaseline />
+			<Header
+				onToggleDark={props.onToggleDark}
+				onToggleDir={props.onToggleDir}
+			/>
+			<div className={classes.root}>
+				<CssBaseline />
 
-					<main>
-						{/* Hero unit */}
-						<div className={classes.heroContent}>
-							<Container maxWidth="sm">
-								<div className={classes.heroButtons}>
-									<Grid container spacing={2} justify="flex-start">
-										<Grid item>
-											<Link
-												style={{ textDecoration: "none" }}
-												href={
-													routerLink.starter.freelancerDetails +
-													"?id=" +
-													props.router.query.id
-												}
-											>
-												<IconButton
-													color="primary"
-													disabled={props.router.query.id == null}
-												>
-													<ArrowBackIcon />
-												</IconButton>
-											</Link>
-										</Grid>
-										{remoteError && (
-											<Grid item>
-												<Typography
-													color="error"
-													variant="subtitle1"
-													component="h2"
-												>
-													Error : {remoteError}
-												</Typography>
-											</Grid>
-										)}
-									</Grid>
-									<Grid container spacing={2} justify="center">
-										<Grid container justify="center" alignItems="center">
-											<Grid item>
-												<TextField
-													type="text"
-													onChange={(e) => setVidTitle(e.target.value)}
-													variant="outlined"
-													fullWidth
-													label="Video Title"
-												/>
-											</Grid>
-										</Grid>
-										<Grid item>
-											<input
-												accept="video/*"
-												className={classes.input}
-												id="contained-button-file"
-												onChange={(event) => {
-													let reader = new FileReader();
-													let file = event.currentTarget.files[0];
-													var fileUrl = URL.createObjectURL(file);
-
-													if (file) {
-														setRemoteError("");
-														reader.readAsDataURL(file);
-														reader.onloadend = () => {
-															var blob = new Blob([reader.result], {
-																type: file.type,
-															});
-															var url = URL.createObjectURL(blob);
-															setVid({
-																src: url,
-																fileObj: file,
-																name: file.name,
-																type: file.type,
-																size: (file.size / (1024 * 1024)).toFixed(2),
-															});
-														};
-													}
-												}}
-												type="file"
-											/>
-											<label htmlFor="contained-button-file">
-												<Button
-													variant="contained"
-													color="primary"
-													component="span"
-												>
-													Choose Video
-												</Button>
-											</label>
-										</Grid>
-										<Grid item>
-											<Button
-												onClick={submitVieo}
-												disabled={vid.src == null}
-												variant="outlined"
-												color="primary"
-											>
-												Upload It!
-											</Button>
-										</Grid>
-										<Grid item xs={12}>
-											{vid.src && (
-												<table
-													style={{
-														borderCollapse: "collapse",
-														borderSpacing: 0,
-														width: "100%",
-													}}
-												>
-													<thead>
-														<tr>
-															<th>File Name</th>
-															<th>File Type</th>
-															<th>File Size</th>
-														</tr>
-													</thead>
-													<tbody>
-														<tr>
-															<td>{vid.name}</td>
-															<td>{vid.type}</td>
-															<td>{vid.size ? vid.size + "MB" : ""}</td>
-														</tr>
-													</tbody>
-												</table>
-											)}
-											<div></div>
-										</Grid>
-									</Grid>
-								</div>
-							</Container>
-						</div>
-						<br></br>
-						<Container className={classes.cardGrid} maxWidth="md">
-							{/* End hero unit */}
-							<Grid container spacing={2}>
-								{remoteData.map((card, index) => (
-									<Grid key={index} item md={6} xs={12}>
-										<ButtonBase
-											onClick={() => playselected(card.file_path, card.title)}
-											focusRipple
-											className={classes.image}
-											focusVisibleClassName={classes.focusVisible}
-											style={{
-												width: "300px",
-											}}
+				<main>
+					{/* Hero unit */}
+					<div className={classes.heroContent}>
+						<Container maxWidth="sm">
+							<div className={classes.heroButtons}>
+								<Grid container spacing={2} justify="flex-start">
+									<Grid item>
+										<Link
+											style={{ textDecoration: "none" }}
+											href={
+												routerLink.starter.freelancerDetails +
+												"?id=" +
+												props.router.query.id
+											}
 										>
-											<span className={classes.imageSrc}>
-												<video
-													width="100%"
-													src={card.file_path}
-													playsInline="playsinline"
-													muted="muted"
-													loop="loop"
-													autoPlay={false}
-													controls={false}
-												/>
-											</span>
-											<span className={classes.imageBackdrop} />
-											<span className={classes.imageButton}>
-												<Typography
-													component="span"
-													variant="subtitle1"
-													color="inherit"
-													className={classes.imageTitle}
-												>
-													{card.title}
-													<span className={classes.imageMarked} />
-												</Typography>
-											</span>
-										</ButtonBase>
+											<IconButton
+												color="primary"
+												disabled={props.router.query.id == null}
+											>
+												<ArrowBackIcon />
+											</IconButton>
+										</Link>
 									</Grid>
-								))}
-							</Grid>
+									{remoteError && (
+										<Grid item>
+											<Typography
+												color="error"
+												variant="subtitle1"
+												component="h2"
+											>
+												Error : {remoteError}
+											</Typography>
+										</Grid>
+									)}
+								</Grid>
+								<Grid container spacing={2} justify="center">
+									<Grid container justify="center" alignItems="center">
+										<Grid item>
+											<TextField
+												type="text"
+												onChange={(e) => setVidTitle(e.target.value)}
+												variant="outlined"
+												fullWidth
+												label="Video Title"
+											/>
+										</Grid>
+									</Grid>
+									<Grid item>
+										<input
+											accept="video/*"
+											className={classes.input}
+											id="contained-button-file"
+											onChange={(event) => {
+												let reader = new FileReader();
+												let file = event.currentTarget.files[0];
+												var fileUrl = URL.createObjectURL(file);
+
+												if (file) {
+													setRemoteError("");
+													reader.readAsDataURL(file);
+													reader.onloadend = () => {
+														var blob = new Blob([reader.result], {
+															type: file.type,
+														});
+														var url = URL.createObjectURL(blob);
+														setVid({
+															src: url,
+															fileObj: file,
+															name: file.name,
+															type: file.type,
+															size: (file.size / (1024 * 1024)).toFixed(2),
+														});
+													};
+												}
+											}}
+											type="file"
+										/>
+										<label htmlFor="contained-button-file">
+											<Button
+												variant="contained"
+												color="primary"
+												component="span"
+											>
+												Choose Video
+											</Button>
+										</label>
+									</Grid>
+									<Grid item>
+										<Button
+											onClick={submitVieo}
+											disabled={vid.src == null}
+											variant="outlined"
+											color="primary"
+										>
+											Upload It!
+										</Button>
+									</Grid>
+									<Grid item xs={12}>
+										{vid.src && (
+											<table
+												style={{
+													borderCollapse: "collapse",
+													borderSpacing: 0,
+													width: "100%",
+												}}
+											>
+												<thead>
+													<tr>
+														<th>File Name</th>
+														<th>File Type</th>
+														<th>File Size</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td>{vid.name}</td>
+														<td>{vid.type}</td>
+														<td>{vid.size ? vid.size + "MB" : ""}</td>
+													</tr>
+												</tbody>
+											</table>
+										)}
+										<div></div>
+									</Grid>
+								</Grid>
+							</div>
 						</Container>
-					</main>
-					<Dialog
-						fullScreen={fullScreen}
-						open={open}
-						onClose={() => setOpen(false)}
-						aria-labelledby={selectedVideo.title}
-					>
-						<DialogTitle
-							id={selectedVideo.title}
-							onClose={() => setOpen(false)}
+					</div>
+					<br></br>
+					<Container className={classes.cardGrid} maxWidth="md">
+						{/* End hero unit */}
+						<Grid container spacing={2}>
+							{remoteData.map((card, index) => (
+								<Grid key={index} item md={6} xs={12}>
+									<ButtonBase
+										onClick={() => playselected(card.file_path, card.title)}
+										focusRipple
+										className={classes.image}
+										focusVisibleClassName={classes.focusVisible}
+										style={{
+											width: "300px",
+										}}
+									>
+										<span className={classes.imageSrc}>
+											<video
+												width="100%"
+												src={card.file_path}
+												playsInline="playsinline"
+												muted="muted"
+												loop="loop"
+												autoPlay={false}
+												controls={false}
+											/>
+										</span>
+										<span className={classes.imageBackdrop} />
+										<span className={classes.imageButton}>
+											<Typography
+												component="span"
+												variant="subtitle1"
+												color="inherit"
+												className={classes.imageTitle}
+											>
+												{card.title}
+												<span className={classes.imageMarked} />
+											</Typography>
+										</span>
+									</ButtonBase>
+								</Grid>
+							))}
+						</Grid>
+					</Container>
+				</main>
+				<Dialog
+					fullScreen={fullScreen}
+					open={open}
+					onClose={() => setOpen(false)}
+					aria-labelledby={selectedVideo.title}
+				>
+					<DialogTitle id={selectedVideo.title} onClose={() => setOpen(false)}>
+						<Typography variant="h6">{selectedVideo.title}</Typography>
+						<IconButton
+							aria-label="close"
+							className={classes.closeButton}
+							onClick={() => setOpen(false)}
 						>
-							<Typography variant="h6">{selectedVideo.title}</Typography>
-							<IconButton
-								aria-label="close"
-								className={classes.closeButton}
-								onClick={() => setOpen(false)}
-							>
-								<CloseIcon />
-							</IconButton>
-						</DialogTitle>
-						<DialogContent>
-							<video
-								width="100%"
-								src={selectedVideo.src}
-								muted="muted"
-								loop="loop"
-								autoPlay={false}
-								controls={true}
-							/>
-						</DialogContent>
-					</Dialog>
-				</div>
-			</Dashboard>
+							<CloseIcon />
+						</IconButton>
+					</DialogTitle>
+					<DialogContent>
+						<video
+							width="100%"
+							src={selectedVideo.src}
+							muted="muted"
+							loop="loop"
+							autoPlay={false}
+							controls={true}
+						/>
+					</DialogContent>
+				</Dialog>
+			</div>
 		</Fragment>
 	);
 };
