@@ -8,7 +8,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import { Grid, CardContent, Card, Button, Divider } from "@material-ui/core";
 import Head from "next/head";
 import LocalStorageService from "../../../_services/LocalStorageService";
-import Dashboard from "../../../components/Dashboard/DashboardWrap";
+import Header from "../../../components/Header";
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
@@ -157,105 +157,108 @@ const details = (props) => {
 			<Head>
 				<title>Seller &nbsp; - Details</title>
 			</Head>
-			<Dashboard>
-				<div className={classes.root}>
-					<br></br>
-					<Grid container spacing={2} justify="flex-end">
-						<Grid item>
-							<Link
-								style={{ textDecoration: "none" }}
-								href={
-									routerLink.starter.sellernew + "?id=" + props.router.query.id
-								}
-							>
-								<Button
-									disabled={props.router.query.id == null}
-									variant="outlined"
-									color="primary"
-								>
-									Edit Details
-								</Button>
-							</Link>
-						</Grid>
-						<Grid item>
+			<Header
+				onToggleDark={props.onToggleDark}
+				onToggleDir={props.onToggleDir}
+			/>
+			<div className={classes.root}>
+				<br></br>
+				<Grid container spacing={2} justify="flex-end">
+					<Grid item>
+						<Link
+							style={{ textDecoration: "none" }}
+							href={
+								routerLink.starter.sellernew + "?id=" + props.router.query.id
+							}
+						>
 							<Button
 								disabled={props.router.query.id == null}
 								variant="outlined"
 								color="primary"
-								onClick={() => setBookingPopup(true)}
 							>
-								Booking Calendar
+								Edit Details
 							</Button>
-						</Grid>
+						</Link>
 					</Grid>
-					<Grid container spacing={3} justify="space-around">
-						<Grid
-							style={{ borderRight: "0.5px dashed grey", padding: "0.6em" }}
-							item
-							md={5}
-							xs={12}
+					<Grid item>
+						<Button
+							disabled={props.router.query.id == null}
+							variant="outlined"
+							color="primary"
+							onClick={() => setBookingPopup(true)}
 						>
-							{/* <Slider
+							Booking Calendar
+						</Button>
+					</Grid>
+				</Grid>
+				<Grid container spacing={3} justify="space-around">
+					<Grid
+						style={{ borderRight: "0.5px dashed grey", padding: "0.6em" }}
+						item
+						md={5}
+						xs={12}
+					>
+						{/* <Slider
 							image={details.pictures != null ? details.pictures : ""}
 						/> */}
-							<Grid container justify="center">
-								<Grid item>
-									{maxSteps <= 0 && (
-										<Typography
-											align="center"
-											component="h1"
-											variant="h6"
-											color="inherit"
-										>
-											Upload Some Images/Videos<br></br>to Showcase Here.
-										</Typography>
-									)}
-									{maxSteps > 0 && (
-										<div style={{ maxWidth: 400, flexGrow: 1 }}>
-											<img
-												className={classes.img}
-												src={images.length > 0 && images[activeStep].file_path}
-												alt={images.length > 0 && images[activeStep].file_path}
-											/>
-											<MobileStepper
-												steps={maxSteps}
-												position="static"
-												variant="text"
-												activeStep={activeStep}
-												nextButton={
-													<Button
-														size="small"
-														onClick={handleNext}
-														disabled={activeStep === maxSteps - 1}
-													>
-														Next
-														{theme.direction === "rtl" ? (
-															<KeyboardArrowLeft />
-														) : (
-															<KeyboardArrowRight />
-														)}
-													</Button>
-												}
-												backButton={
-													<Button
-														size="small"
-														onClick={handleBack}
-														disabled={activeStep === 0}
-													>
-														{theme.direction === "rtl" ? (
-															<KeyboardArrowRight />
-														) : (
-															<KeyboardArrowLeft />
-														)}
-														Back
-													</Button>
-												}
-											/>
-										</div>
-									)}
-								</Grid>
+						<Grid container justify="center">
+							<Grid item>
+								{maxSteps <= 0 && (
+									<Typography
+										align="center"
+										component="h1"
+										variant="h6"
+										color="inherit"
+									>
+										Upload Some Images/Videos<br></br>to Showcase Here.
+									</Typography>
+								)}
+								{maxSteps > 0 && (
+									<div style={{ maxWidth: 400, flexGrow: 1 }}>
+										<img
+											className={classes.img}
+											src={images.length > 0 && images[activeStep].file_path}
+											alt={images.length > 0 && images[activeStep].file_path}
+										/>
+										<MobileStepper
+											steps={maxSteps}
+											position="static"
+											variant="text"
+											activeStep={activeStep}
+											nextButton={
+												<Button
+													size="small"
+													onClick={handleNext}
+													disabled={activeStep === maxSteps - 1}
+												>
+													Next
+													{theme.direction === "rtl" ? (
+														<KeyboardArrowLeft />
+													) : (
+														<KeyboardArrowRight />
+													)}
+												</Button>
+											}
+											backButton={
+												<Button
+													size="small"
+													onClick={handleBack}
+													disabled={activeStep === 0}
+												>
+													{theme.direction === "rtl" ? (
+														<KeyboardArrowRight />
+													) : (
+														<KeyboardArrowLeft />
+													)}
+													Back
+												</Button>
+											}
+										/>
+									</div>
+								)}
+							</Grid>
 
-								{/* <Grid item xs={12}>
+							{/* <Grid item xs={12}>
 								<div className={classes.gridList_BG}>
 									<GridList className={classes.gridList} cols={3.5}>
 										{content.map((tile) => (
@@ -270,125 +273,117 @@ const details = (props) => {
 									</GridList>
 								</div>
 							</Grid> */}
-							</Grid>
-
-							<Grid style={{ paddingTop: "2%", textAlign: "center" }}>
-								<Link
-									style={{ textDecoration: "none" }}
-									href={routerLink.starter.sellerVids + "?id=" + details.id}
-								>
-									<Button
-										variant="contained"
-										color="primary"
-										size="large"
-										style={{ marginRight: "1%" }}
-									>
-										Upload Videos
-									</Button>
-								</Link>
-								<Link
-									style={{ textDecoration: "none" }}
-									href={routerLink.starter.sellerImg + "?id=" + details.id}
-								>
-									<Button
-										variant="contained"
-										color="primary"
-										size="large"
-										style={{ marginRight: "1%" }}
-									>
-										Upload Images
-									</Button>
-								</Link>
-							</Grid>
 						</Grid>
 
-						<Grid item lg={7} md={7} xl={7} xs={12}>
-							<TableContainer component={Paper}>
-								<Table className={classes.table} aria-label="seller_Details">
-									<TableBody>
-										<TableCell align="left">Service Category</TableCell>
-										<TableCell align="left">
-											{details.service_category}
-										</TableCell>
-									</TableBody>
-									<TableBody>
-										<TableCell align="left">Sub Service</TableCell>
-										<TableCell align="left">{details.sub_service}</TableCell>
-									</TableBody>
-									<TableBody>
-										<TableCell align="left">Business Name</TableCell>
-										<TableCell align="left">{details.bussiness_name}</TableCell>
-									</TableBody>
-									<TableBody>
-										<TableCell align="left">Service Area</TableCell>
-										<TableCell align="left">{details.service_area}</TableCell>
-									</TableBody>
-									<TableBody>
-										<TableCell align="left">Total Experience</TableCell>
-										<TableCell align="left">
-											{details.total_experience}
-										</TableCell>
-									</TableBody>
-									<TableBody>
-										<TableCell align="left">Business Description</TableCell>
-										<TableCell align="left">
-											{details.bussineess_description}
-										</TableCell>
-									</TableBody>
-									<TableBody>
-										<TableCell align="left">Min Service Price</TableCell>
-										<TableCell align="left">
-											{details.min_service_price}
-										</TableCell>
-									</TableBody>
-									<TableBody>
-										<TableCell align="left">Max Service Price</TableCell>
-										<TableCell align="left">
-											{details.max_service_price}
-										</TableCell>
-									</TableBody>
-									<TableBody>
-										<TableCell align="left">Address</TableCell>
-										<TableCell align="left">{details.address}</TableCell>
-									</TableBody>
-									<TableBody>
-										<TableCell align="left">City</TableCell>
-										<TableCell align="left">{details.city}</TableCell>
-									</TableBody>
-									<TableBody>
-										<TableCell align="left">District</TableCell>
-										<TableCell align="left">{details.district}</TableCell>
-									</TableBody>
-									<TableBody>
-										<TableCell align="left">State</TableCell>
-										<TableCell align="left">{details.state}</TableCell>
-									</TableBody>
-									<TableBody>
-										<TableCell align="left">Locality</TableCell>
-										<TableCell align="left">{details.locality}</TableCell>
-									</TableBody>
-									<TableBody>
-										<TableCell align="left">Office Map Link</TableCell>
-										<TableCell align="left">
-											{details.office_map_link}
-										</TableCell>
-									</TableBody>
-									<TableBody>
-										<TableCell align="left">Office Number</TableCell>
-										<TableCell align="left">{details.office_number}</TableCell>
-									</TableBody>
-									<TableBody>
-										<TableCell align="left">Catalog Pdf Path</TableCell>
-										<TableCell align="left">
-											{details.catalog_pdf_path}
-										</TableCell>
-									</TableBody>
-									<TableBody>
-										<TableCell align="left">Offer Tagline</TableCell>
-										<TableCell align="left">{details.offer_tagline}</TableCell>
-									</TableBody>
+						<Grid style={{ paddingTop: "2%", textAlign: "center" }}>
+							<Link
+								style={{ textDecoration: "none" }}
+								href={routerLink.starter.sellerVids + "?id=" + details.id}
+							>
+								<Button
+									variant="contained"
+									color="primary"
+									size="large"
+									style={{ marginRight: "1%" }}
+								>
+									Upload Videos
+								</Button>
+							</Link>
+							<Link
+								style={{ textDecoration: "none" }}
+								href={routerLink.starter.sellerImg + "?id=" + details.id}
+							>
+								<Button
+									variant="contained"
+									color="primary"
+									size="large"
+									style={{ marginRight: "1%" }}
+								>
+									Upload Images
+								</Button>
+							</Link>
+						</Grid>
+					</Grid>
 
-									{/* <TableBody>
+					<Grid item lg={7} md={7} xl={7} xs={12}>
+						<TableContainer component={Paper}>
+							<Table className={classes.table} aria-label="seller_Details">
+								<TableBody>
+									<TableCell align="left">Service Category</TableCell>
+									<TableCell align="left">{details.service_category}</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">Sub Service</TableCell>
+									<TableCell align="left">{details.sub_service}</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">Business Name</TableCell>
+									<TableCell align="left">{details.bussiness_name}</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">Service Area</TableCell>
+									<TableCell align="left">{details.service_area}</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">Total Experience</TableCell>
+									<TableCell align="left">{details.total_experience}</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">Business Description</TableCell>
+									<TableCell align="left">
+										{details.bussineess_description}
+									</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">Min Service Price</TableCell>
+									<TableCell align="left">
+										{details.min_service_price}
+									</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">Max Service Price</TableCell>
+									<TableCell align="left">
+										{details.max_service_price}
+									</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">Address</TableCell>
+									<TableCell align="left">{details.address}</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">City</TableCell>
+									<TableCell align="left">{details.city}</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">District</TableCell>
+									<TableCell align="left">{details.district}</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">State</TableCell>
+									<TableCell align="left">{details.state}</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">Locality</TableCell>
+									<TableCell align="left">{details.locality}</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">Office Map Link</TableCell>
+									<TableCell align="left">{details.office_map_link}</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">Office Number</TableCell>
+									<TableCell align="left">{details.office_number}</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">Catalog Pdf Path</TableCell>
+									<TableCell align="left">{details.catalog_pdf_path}</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">Offer Tagline</TableCell>
+									<TableCell align="left">{details.offer_tagline}</TableCell>
+								</TableBody>
+
+								{/* <TableBody>
 <TableCell align="left">Advertisement File</TableCell>
 <TableCell align="left">{details.advertisement_file_path}</TableCell>
 </TableBody>
@@ -404,55 +399,51 @@ const details = (props) => {
 <TableCell align="left">Certificate File</TableCell>
 <TableCell align="left">{details.certificate_file_path}</TableCell>
 </TableBody> */}
-									<TableBody>
-										<TableCell align="left">Commission Percent</TableCell>
-										<TableCell align="left">
-											{details.commission_percent}
-										</TableCell>
-									</TableBody>
-									<TableBody>
-										<TableCell align="left">Commission Percent</TableCell>
-										<TableCell align="left">
-											{details.commission_percent}
-										</TableCell>
-									</TableBody>
-									<TableBody>
-										<TableCell align="left">Min Commission</TableCell>
-										<TableCell align="left">{details.min_commission}</TableCell>
-									</TableBody>
-									<TableBody>
-										<TableCell align="left">Max Commission</TableCell>
-										<TableCell align="left">{details.max_commission}</TableCell>
-									</TableBody>
-								</Table>
-							</TableContainer>
-						</Grid>
+								<TableBody>
+									<TableCell align="left">Commission Percent</TableCell>
+									<TableCell align="left">
+										{details.commission_percent}
+									</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">Commission Percent</TableCell>
+									<TableCell align="left">
+										{details.commission_percent}
+									</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">Min Commission</TableCell>
+									<TableCell align="left">{details.min_commission}</TableCell>
+								</TableBody>
+								<TableBody>
+									<TableCell align="left">Max Commission</TableCell>
+									<TableCell align="left">{details.max_commission}</TableCell>
+								</TableBody>
+							</Table>
+						</TableContainer>
 					</Grid>
-					<Dialog
-						fullWidth
-						fullScreen={fullScreen}
-						maxWidth={"md"}
-						open={bookingPopup}
-						onClose={() => setBookingPopup(false)}
-						aria-labelledby="max-width-dialog-title"
-					>
-						<DialogTitle id="max-width-dialog-title">
-							Booking Calendar
-						</DialogTitle>
-						<DialogContent>
-							<BookingModule
-								apifor="seller"
-								booking_id={props.router.query.id}
-							/>
-						</DialogContent>
-						<DialogActions>
-							<Button onClick={() => setBookingPopup(false)} color="primary">
-								Close
-							</Button>
-						</DialogActions>
-					</Dialog>
-				</div>
-			</Dashboard>
+				</Grid>
+				<Dialog
+					fullWidth
+					fullScreen={fullScreen}
+					maxWidth={"md"}
+					open={bookingPopup}
+					onClose={() => setBookingPopup(false)}
+					aria-labelledby="max-width-dialog-title"
+				>
+					<DialogTitle id="max-width-dialog-title">
+						Booking Calendar
+					</DialogTitle>
+					<DialogContent>
+						<BookingModule apifor="seller" booking_id={props.router.query.id} />
+					</DialogContent>
+					<DialogActions>
+						<Button onClick={() => setBookingPopup(false)} color="primary">
+							Close
+						</Button>
+					</DialogActions>
+				</Dialog>
+			</div>
 		</React.Fragment>
 	);
 };

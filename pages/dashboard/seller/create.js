@@ -6,7 +6,7 @@ import routerLink from "~/static/text/link";
 import Link from "@material-ui/core/Link";
 import withAuth from "../../../components/Hoc/withAuth";
 import LocalStorageService from "../../../_services/LocalStorageService";
-import Dashboard from "../../../components/Dashboard/DashboardWrap";
+import Header from "../../../components/Header";
 const localStorageService = LocalStorageService.getService();
 import SellerForm from "../../../components/Dashboard/SellerForm";
 
@@ -22,11 +22,13 @@ const Seller = (props) => {
 			<Head>
 				<title>Seller &nbsp; - New Application</title>
 			</Head>
-			<Dashboard>
-				<div className={classes.root}>
-					<SellerForm {...props} />
-				</div>
-			</Dashboard>
+			<Header
+				onToggleDark={props.onToggleDark}
+				onToggleDir={props.onToggleDir}
+			/>
+			<div className={classes.root}>
+				<SellerForm {...props} />
+			</div>
 		</Fragment>
 	);
 };

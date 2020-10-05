@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import AppBar from "@material-ui/core/AppBar";
 import clsx from "clsx";
 import Cookies from "js-cookie";
-import Button from "@material-ui/core/Button";
+import { Button, Link, Badge } from "@material-ui/core/";
 import IconButton from "@material-ui/core/IconButton";
 import Container from "@material-ui/core/Container";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -16,7 +16,16 @@ import logo from "~/static/home/logo2.jpg";
 import "~/vendors/hamburger-menu.css";
 import useStyles from "./header-style";
 import { useAuth } from "../provider/Auth";
+import NotificationsIcon from "@material-ui/icons/Notifications";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import AddCircleOutlined from "@material-ui/icons/AddCircleOutlined";
+import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
+import routerLink from "~/static/text/link";
+
 import LocalStorageService from "../../_services/LocalStorageService";
+
+import MenuItem from "@material-ui/core/MenuItem";
+import Menu from "@material-ui/core/Menu";
 const localStorageService = LocalStorageService.getService();
 import navMenu from "./menu";
 
@@ -37,7 +46,7 @@ const LinkBtn = React.forwardRef(function LinkBtn(props, ref) {
 function Header(props) {
 	const [fixed, setFixed] = useState(false);
 	const { isAuthenticated, Details, logout } = useAuth();
-
+	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [details, setDetails] = useState({});
 	let flagFixed = false;
 	const handleScroll = () => {
@@ -54,12 +63,15 @@ function Header(props) {
 	const { onToggleDark, onToggleDir } = props;
 	const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
 	const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+	const isMenuOpen = Boolean(anchorEl);
 	useEffect(() => {
 		handleScroll();
 		setDetails(localStorageService.getUserDetails("Details"));
 		// window.addEventListener("scroll", handleScroll);
 	}, []);
-
+	const handleProfileMenuOpen = (event) => {
+		setAnchorEl(event.currentTarget);
+	};
 	const [menuList] = useState([
 		createData(navMenu[0], "#" + navMenu[0]),
 		createData(navMenu[1], "#" + navMenu[1]),
@@ -73,6 +85,37 @@ function Header(props) {
 	const handleOpenDrawer = () => {
 		setOpenDrawer(!openDrawer);
 	};
+	const menuId = "primary-search-account-menu";
+	const handleMenuClose = () => {
+		setAnchorEl(null);
+	};
+	const handleLogout = () => {
+		setAnchorEl(null);
+		handleMenuClose();
+		logout();
+	};
+	const renderMenu = (
+		<Menu
+			anchorEl={anchorEl}
+			anchorOrigin={{ vertical: "top", horizontal: "right" }}
+			id={menuId}
+			keepMounted
+			transformOrigin={{ vertical: "top", horizontal: "right" }}
+			open={isMenuOpen}
+			onClose={handleMenuClose}
+		>
+			<MenuItem>
+				<IconButton aria-label="show 11 new notifications" color="inherit">
+					<AccountBalanceWalletIcon />
+				</IconButton>
+			</MenuItem>
+			<Link href={routerLink.starter.profile}>
+				<MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+			</Link>{" "}
+			{/* <MenuItem onClick={handleMenuClose}> My account</MenuItem> */}
+			<MenuItem onClick={handleLogout}>Logout</MenuItem>
+		</Menu>
+	);
 	return (
 		<Fragment>
 			{isMobile && (
@@ -113,9 +156,9 @@ function Header(props) {
 								<Scrollspy items={navMenu} currentClassName="active">
 									{menuList.map((item) => (
 										<li key={item.id.toString()}>
-											<Button component={AnchorLink} href={item.url}>
-												{item.name}
-											</Button>
+											<Link href={item.url} style={{ textDecoration: "none" }}>
+												<Button color="primary">{item.name}</Button>
+											</Link>
 										</li>
 									))}
 									{/* <li>
@@ -129,18 +172,24 @@ function Header(props) {
 
 							{isAuthenticated ? (
 								<div>
-									<Button
-										variant="contained"
-										className="mr-2"
+									<IconButton color="primary">
+										<AddCircleOutlined color="primary" />
+									</IconButton>
+									<IconButton color="inherit">
+										<Badge badgeContent={4} color="primary">
+											<NotificationsIcon />
+										</Badge>
+									</IconButton>
+									<IconButton
+										edge="end"
+										aria-label="account of current user"
+										aria-controls={menuId}
+										aria-haspopup="true"
+										onClick={handleProfileMenuOpen}
 										color="primary"
-										href="/dashboard"
 									>
-										Hi, {details.login.name}
-									</Button>
-									&nbsp;
-									<Button variant="contained" color="primary" onClick={logout}>
-										Logout
-									</Button>
+										<AccountCircle />
+									</IconButton>
 								</div>
 							) : (
 								<div>
@@ -160,6 +209,7 @@ function Header(props) {
 					</div>
 				</Container>
 			</AppBar>
+			{renderMenu}
 		</Fragment>
 	);
 }

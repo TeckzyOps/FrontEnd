@@ -6,7 +6,7 @@ import routerLink from "~/static/text/link";
 import Link from "@material-ui/core/Link";
 import withAuth from "../../../components/Hoc/withAuth";
 import LocalStorageService from "../../../_services/LocalStorageService";
-import Dashboard from "../../../components/Dashboard/DashboardWrap";
+import Header from "../../../components/Header";
 const localStorageService = LocalStorageService.getService();
 import FreelancerForm from "../../../components/Dashboard/FreelancerForm";
 
@@ -22,11 +22,13 @@ const Freelancer = (props) => {
 			<Head>
 				<title>Dashboard &nbsp; - Login</title>
 			</Head>
-			<Dashboard>
-				<div className={classes.root}>
-					<FreelancerForm {...props} />
-				</div>
-			</Dashboard>
+			<Header
+				onToggleDark={props.onToggleDark}
+				onToggleDir={props.onToggleDir}
+			/>
+			<div className={classes.root}>
+				<FreelancerForm {...props} />
+			</div>
 		</Fragment>
 	);
 };

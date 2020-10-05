@@ -11,6 +11,7 @@ import Grid from "@material-ui/core/Grid";
 // import StarIcon from '@material-ui/icons/StarBorder';
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
+
 import {
 	createMuiTheme,
 	responsiveFontSizes,
@@ -19,36 +20,36 @@ import {
 } from "@material-ui/core/styles";
 import { useTextAlign } from "~/theme/common";
 import Link from "next/link";
-
+import links from "~/static/text/link.js";
+import worker from "~/static/images/worker.svg";
+import seller from "~/static/images/seller.svg";
+import vendor from "~/static/images/vendor.svg";
+import bride from "~/static/images/bride.svg";
+import freelance from "~/static/images/freelance.svg";
 let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
 
 const tiers = [
 	{
 		title: "Groom/Bride",
-		imgsrc: "static/home/grooms.jpg",
-		url: "/matrimony",
+		imgsrc: bride,
+		url: links.starter.matrimony,
 	},
 	{
 		title: "Freelancing",
-		imgsrc: "static/home/freelancer.jpg",
-		url: "/matrimony",
+		imgsrc: freelance,
+		url: links.starter.freelancer,
 	},
-	{ title: "Vendor", imgsrc: "static/home/vendor.jpg", url: "/matrimony" },
+	{ title: "Vendor", imgsrc: vendor, url: links.starter.vendor },
 	{
 		title: "Seller",
-		imgsrc: "static/home/seller.jpg",
-		url: "/matrimony",
+		imgsrc: seller,
+		url: links.starter.seller,
 	},
 	{
 		title: "Worker",
-		imgsrc: "static/home/worker.jpg",
-		url: "/matrimony",
-	},
-	{
-		title: "B2B",
-		imgsrc: "static/home/b2b.jpg",
-		url: "/matrimony",
+		imgsrc: worker,
+		url: links.starter.worker,
 	},
 ];
 
@@ -75,25 +76,21 @@ export default function SquareCards() {
 
 	return (
 		<div className={classes.root}>
-			<Grid justify="center" container spacing={5}>
+			<Grid justify="center" container spacing={3}>
 				{tiers.map((tier, i) => (
 					<Link href={tier.url}>
-						<Grid key={i} item sm={4} xs={4} md 
-							>
+						<Grid key={i} item sm={4} xs={4} md>
 							<IconButton
 								variant="outlined"
 								color="secondary"
 								className={classes.standarsbtn}
 								aria-label={tier.title}
-								
 							>
-								<img src={tier.imgsrc} width="130%" style={{borderRadius:"10px"}}/>
+								<img src={tier.imgsrc} width="50%" />
 							</IconButton>
 							<br />
 							<MuiThemeProvider theme={theme}>
-								<Typography variant="caption" display="block" gutterBottom
-								
-								>
+								<Typography variant="caption" display="block" gutterBottom>
 									{tier.title}
 								</Typography>
 							</MuiThemeProvider>

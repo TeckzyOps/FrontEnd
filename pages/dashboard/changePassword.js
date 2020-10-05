@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import DashboardWrapper from "../../components/Dashboard/DashboardWrapper";
+import Header from "../../components/Header";
 import Head from "next/head";
 import FormPasswordReset from "../../components/Forms/Dashboard/changePassword";
 import { makeStyles } from "@material-ui/core/styles";
@@ -24,7 +24,10 @@ const ChnagePassword = () => {
 			<Head>
 				<title>Chnage Password &nbsp;</title>
 			</Head>
-			<DashboardWrapper />
+			<Header
+				onToggleDark={props.onToggleDark}
+				onToggleDir={props.onToggleDir}
+			/>
 			<Grid
 				lg={6}
 				md={6}

@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Button } from "@material-ui/core";
-import Dashboard from "../../../components/Dashboard/DashboardWrap";
+import Header from "../../../components/Header";
 import Head from "next/head";
 import routerLink from "~/static/text/link";
 import Link from "@material-ui/core/Link";
@@ -22,11 +22,13 @@ const CreateWorker = (props) => {
 			<Head>
 				<title>Worker &nbsp; - New Application</title>
 			</Head>
-			<Dashboard>
-				<div className={classes.root}>
-					<WorkerForm />
-				</div>
-			</Dashboard>
+			<Header
+				onToggleDark={props.onToggleDark}
+				onToggleDir={props.onToggleDir}
+			/>
+			<div className={classes.root}>
+				<WorkerForm />
+			</div>
 		</Fragment>
 	);
 };

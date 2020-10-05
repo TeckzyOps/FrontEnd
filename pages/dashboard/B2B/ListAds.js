@@ -93,6 +93,7 @@ const useStyles = makeStyles((theme) => ({
 const index = (props) => {
 	const classes = useStyles();
 	const [adList, setadList] = React.useState([]);
+	const { onToggleDark, onToggleDir } = props;
 	const [bookingPopup, setBookingPopup] = React.useState(false);
 	React.useEffect(() => {
 		freelancerActions
