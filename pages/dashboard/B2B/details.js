@@ -120,7 +120,6 @@ const content = [
 const details = (props) => {
 	const classes = useStyles();
 	const [value, setValue] = React.useState(0);
-	const { onToggleDark, onToggleDir } = props;
 
 	const [bookingPopup, setBookingPopup] = React.useState(false);
 	const theme = useTheme();
