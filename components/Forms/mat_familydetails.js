@@ -86,7 +86,16 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const Familydetails = (props) => {
+const Familydetails = ({
+	initvalue,
+	matrimonyid,
+	backform,
+	nextform,
+	setfamilydetails,
+	familydetailsid,
+	setfamilydetailsid,
+	...props
+}) => {
 	const { className, ...rest } = props;
 	// const { loginDetails, user, updateUser } = useAuth();
 
@@ -118,9 +127,7 @@ const Familydetails = (props) => {
 	React.useEffect(() => {
 		// console.error(Object.keys(state));
 		setStates(Object.keys(state));
-		setDetails(localStorageService.getUserDetails("Details"));
 	}, []);
-	React.useEffect(() => {}, [details]);
 
 	const _handleModalClose = () => {
 		setProfileUpdateSuccess(() => true);
@@ -142,20 +149,6 @@ const Familydetails = (props) => {
 		);
 	};
 
-	const initVals = {
-		father_occupation: "",
-		mother_occupation: "",
-		brother_count: "",
-		brother_married_count: "",
-		sister_count: "",
-		sister_married_count: "",
-		family_income: "",
-		family_status: "",
-		country: "",
-		state: "",
-		district: "",
-		metrimony_id: props.MatrimonyID,
-	};
 	const _handleSubmit = ({ vals, setSubmitting, resetForm, setFieldError }) => {
 		let payload = new FormData();
 
@@ -165,11 +158,13 @@ const Familydetails = (props) => {
 					payload.append(i, JSON.stringify(vals[i]));
 				}
 			} else {
-				payload.append(i, vals[i]);
+				if (vals[i]) {
+					payload.append(i, vals[i]);
+				}
 			}
 		}
-		payload.append(metrimony_id, props.MatrimonyID);
-		if (payload && props.MatrimonyID) {
+		payload.append("metrimony_id", matrimonyid);
+		if (payload && matrimonyid) {
 			matrimonyActions
 				.UpdateFamilyDetails(payload)
 				.then(function (response) {
@@ -182,8 +177,9 @@ const Familydetails = (props) => {
 					}
 
 					if (response.data.data.id) {
-						setProfileUpdateSuccess(() => true);
-						props.nextForm();
+						setfamilydetailsid(response.data.data.id);
+						setfamilydetails(response.data.data);
+						nextform();
 					}
 				})
 				.catch(function (error) {
@@ -237,7 +233,7 @@ const Familydetails = (props) => {
 			</Button> */}
 			<Formik
 				enableReinitialize
-				initialValues={initVals}
+				initialValues={initvalue}
 				validationSchema={profileSchema}
 				onSubmit={(vals, { setSubmitting, resetForm, setFieldError }) =>
 					_handleSubmit({
@@ -248,7 +244,7 @@ const Familydetails = (props) => {
 					})
 				}
 			>
-				{(props) => {
+				{(formprops) => {
 					const {
 						values,
 						touched,
@@ -259,7 +255,7 @@ const Familydetails = (props) => {
 						isValid,
 						isSubmitting,
 						setFieldValue,
-					} = formprops;
+					} = props;
 
 					return (
 						<div>
@@ -269,7 +265,7 @@ const Familydetails = (props) => {
 							/>
 							<Divider />
 							<CardContent>
-								<Form autocomplete="off">
+								<Form>
 									<Grid container spacing={3}>
 										<Grid item md={4} xs={12}>
 											<Field
@@ -572,27 +568,37 @@ const Familydetails = (props) => {
 									</Grid>
 
 									<Divider />
-									<Grid
-										container
-										alignItems="flex-end"
-										justify="flex-end"
-										xs={12}
-									>
+									<Grid container alignItems="flex-end" justify="flex-end">
 										{!formprops.isSubmitting ? (
-											<Button onClick={formprops.resetForm} size="small">
-												Reset To Default
-											</Button>
+											<div>
+												<Button onClick={formprops.resetForm} size="small">
+													Reset To Default
+												</Button>
+												<Button onClick={backform} size="small">
+													Back
+												</Button>
+											</div>
 										) : (
 											t("common:cant_revert")
 										)}
-										<Button
-											disable={formprops.isSubmitting || props.MatrimonyID > 0}
-											type="submit"
-											color="primary"
-											variant="outlined"
-										>
-											Save details
-										</Button>
+										{familydetailsid && familydetailsid > 0 ? (
+											<Button
+												color="primary"
+												variant="outlined"
+												onClick={nextform}
+											>
+												Next
+											</Button>
+										) : (
+											<Button
+												disabled={formprops.isSubmitting || matrimonyid <= 0}
+												type="submit"
+												color="primary"
+												variant="outlined"
+											>
+												Save details
+											</Button>
+										)}
 									</Grid>
 								</Form>
 							</CardContent>

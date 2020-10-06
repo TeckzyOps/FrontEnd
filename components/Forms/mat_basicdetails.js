@@ -28,6 +28,8 @@ import {
 	occupation,
 	idType,
 	religion,
+	maritialStatus,
+	caste,
 	experience,
 	countryList,
 	interest,
@@ -86,15 +88,20 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const Basicdetails = (props) => {
+const Basicdetails = ({
+	initvalue,
+	setmatrimonyid,
+	matrimonyid,
+	setbasicdetails,
+	nextform,
+	...props
+}) => {
 	const { className, ...rest } = props;
 	// const { loginDetails, user, updateUser } = useAuth();
 
 	const classes = useStyles();
 	const { t } = props;
 
-	const [details, setDetails] = useState(props.prefilldata || {});
-	const [loginData, setloginData] = React.useState({});
 	const [states, setStates] = useState([]);
 	const [district, setDistrict] = useState([]);
 	const [city, setCity] = useState([]);
@@ -142,9 +149,7 @@ const Basicdetails = (props) => {
 	React.useEffect(() => {
 		// console.error(Object.keys(state));
 		setStates(Object.keys(state));
-		setDetails(localStorageService.getUserDetails("Details"));
 	}, []);
-	React.useEffect(() => {}, [details]);
 
 	const _handleModalClose = () => {
 		setProfileUpdateSuccess(() => true);
@@ -153,7 +158,6 @@ const Basicdetails = (props) => {
 	const _renderModal = () => {
 		const onClick = () => {
 			setProfileUpdateSuccess(() => false);
-			props.nextForm();
 		};
 
 		return (
@@ -167,33 +171,6 @@ const Basicdetails = (props) => {
 		);
 	};
 
-	const initVals = {
-		filled_by: "",
-		name: details.name ? details.name : "",
-		gender: details.gender ? details.gender : "",
-		dob_year: "",
-		height: "",
-		religion: details.religion ? details.religion : "",
-		cast: "",
-		mother_tongue: details.mother_tongue ? details.mother_tongue : "",
-		marital_status: "",
-		childrens: "",
-		childrens_living_status: "",
-		manglik_status: "",
-		country: "",
-		state: details.state ? details.state : "",
-		district: details.district ? details.district : "",
-		education:
-			details.education && Array.isArray(JSON.parse(details.education))
-				? JSON.parse(details.education)
-				: [],
-		proffesion: details.proffesion ? details.proffesion : "",
-		occupation: details.occupation ? details.occupation : "",
-		salary: "",
-		gotra: "",
-		living_with_parents_status: "",
-		wedding_budget: "",
-	};
 	const _handleSubmit = ({ vals, setSubmitting, resetForm, setFieldError }) => {
 		let payload = new FormData();
 
@@ -222,14 +199,15 @@ const Basicdetails = (props) => {
 					}
 
 					if (response.data.data.id) {
-						props.setMatrimonyID(response.data.data.id);
-						props.nextForm();
+						setmatrimonyid(response.data.data.id);
+						setbasicdetails(response.data.data);
+						nextform();
 						// setProfileUpdateSuccess(() => true);
 					}
 				})
 				.catch(function (error) {
 					setSubmitting(false);
-					if (error.response.data.input_error) {
+					if (error.response && error.response.data.input_error) {
 						Object.keys(error.response.data.input_error).forEach((k) => {
 							setFieldError(k, error.response.data.input_error[k][0]);
 						});
@@ -278,7 +256,7 @@ const Basicdetails = (props) => {
 			</Button> */}
 			<Formik
 				enableReinitialize
-				initialValues={initVals}
+				initialValues={initvalue}
 				validationSchema={profileSchema}
 				onSubmit={(vals, { setSubmitting, resetForm, setFieldError }) =>
 					_handleSubmit({
@@ -309,7 +287,7 @@ const Basicdetails = (props) => {
 							/>
 							<Divider />
 							<CardContent>
-								<Form autocomplete="off">
+								<Form autoComplete="off">
 									<Grid container spacing={3}>
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
@@ -483,7 +461,7 @@ const Basicdetails = (props) => {
 														shrink: true,
 													}}
 												>
-													{states.map((option, index) => (
+													{caste.map((option, index) => (
 														<MenuItem key={index} value={option}>
 															{option}
 														</MenuItem>
@@ -543,13 +521,11 @@ const Basicdetails = (props) => {
 														shrink: true,
 													}}
 												>
-													{["Single", "Divorced", "Awaiting Divorced"].map(
-														(option, index) => (
-															<MenuItem key={index} value={index + 1}>
-																{option}
-															</MenuItem>
-														)
-													)}
+													{maritialStatus.map((option, index) => (
+														<MenuItem key={index} value={index + 1}>
+															{option}
+														</MenuItem>
+													))}
 												</Field>
 											</Box>
 										</Grid>
@@ -579,10 +555,7 @@ const Basicdetails = (props) => {
 												></Field>
 											</Box>
 										</Grid>
-										{console.log(
-											null == props.values.marital_status,
-											props.values.marital_status < 1
-										)}
+
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
@@ -925,12 +898,7 @@ const Basicdetails = (props) => {
 									</Grid>
 
 									<Divider />
-									<Grid
-										container
-										alignItems="flex-end"
-										justify="flex-end"
-										xs={12}
-									>
+									<Grid container alignItems="flex-end" justify="flex-end">
 										{!props.isSubmitting ? (
 											<Button onClick={props.resetForm} size="small">
 												Reset To Default
@@ -938,14 +906,25 @@ const Basicdetails = (props) => {
 										) : (
 											t("common:cant_revert")
 										)}
-										<Button
-											disable={props.isSubmitting}
-											type="submit"
-											color="primary"
-											variant="outlined"
-										>
-											Save details
-										</Button>
+										{matrimonyid && matrimonyid > 0 ? (
+											<Button
+												disabled={props.isSubmitting}
+												color="primary"
+												variant="outlined"
+												onClick={nextform}
+											>
+												Next
+											</Button>
+										) : (
+											<Button
+												disabled={props.isSubmitting}
+												type="submit"
+												color="primary"
+												variant="outlined"
+											>
+												Save details
+											</Button>
+										)}
 									</Grid>
 								</Form>
 							</CardContent>

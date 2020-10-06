@@ -191,7 +191,7 @@ function Login(props) {
 					/>
 					<Grid justify="center" container spacing={3}>
 						<div>
-							<Grid item xs={12} className="my-4">
+							<Grid item xs={12}>
 								<Button
 									size="small"
 									className={classes.buttonLink}

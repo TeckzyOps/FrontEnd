@@ -101,7 +101,7 @@ function Register(props) {
 							? t("common:otp_sentto") + values.mobile
 							: t("common:register_or")}
 					</Typography>
-					{showOTP && <CheckCircleSharpIcon />}
+					{!showOTP && <CheckCircleSharpIcon />}
 				</div>
 				{/* OTP FORM---------------------------------------- */}
 				{showOTP && <Otpdialog username={values.mobile} />}
@@ -116,7 +116,7 @@ function Register(props) {
 
 						<Grid justify="center" container spacing={3}>
 							<div>
-								<Grid item xs={12} className="my-4">
+								<Grid item xs={12}>
 									<Button
 										size="small"
 										className={classes.buttonLink}

@@ -13,6 +13,11 @@ import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import routerLink from "~/static/text/link";
 import Link from "@material-ui/core/Link";
+import api, {
+	addBearerToken,
+	removeBearerToken,
+} from "../../../utils/httpClient";
+import { matrimonyActions } from "../../../_actions/matrimony.action";
 const localStorageService = LocalStorageService.getService();
 
 const useStyles = makeStyles((theme) => ({
@@ -29,11 +34,31 @@ const useStyles = makeStyles((theme) => ({
 		height: "100%",
 		maxWidth: 345,
 		flexDirection: "column",
+		
 	},
+	aHover :{
+		textDecoration:"none",
+	}
 }));
-const Matrimony = (props) => {
+const index = (props) => {
 	const classes = useStyles();
+	const [adList, setadList] = React.useState([]);
+	React.useEffect(() => {
+		console.log(routerLink);
+		matrimonyActions
+			.getMatrimonyAds()
+			.then(function (response) {
+				console.log("ressss", response);
 
+				if (Array.isArray(response.data.data)) {
+					setadList(response.data.data);
+				}
+			})
+			.catch(function (error) {
+				console.error("errrrr ", error);
+			});
+		console.error("dashboardprops--> ", adList);
+	}, []);
 	return (
 		<React.Fragment>
 			<Head>
@@ -41,13 +66,16 @@ const Matrimony = (props) => {
 			</Head>
 
 			<DashboardWrapper logindata={props.logindata} userdata={props.userdata} />
-			<div className={classes.root}>
+			<div className={classes.root} >
 				<Grid container spacing={4}>
 					<Grid item lg={4} md={6} xl={4} xs={12}>
-						<MatrimonyProfile></MatrimonyProfile>
-					</Grid>
-					<Grid item lg={4} md={6} xl={4} xs={12}>
 						<Card className={classes.addCard}>
+							<div>
+								<Typography variant="h6">Add More Profile</Typography>
+								<Typography variant="subtitle" component="h2">
+									Join You Frined
+								</Typography>
+							</div>
 							<div className={classes.col}>
 								<Fab
 									href={routerLink.starter.matrimonynew}
@@ -57,18 +85,23 @@ const Matrimony = (props) => {
 									<AddIcon />
 								</Fab>
 							</div>
-							<div>
-								<Typography variant="h6">Add More Profile</Typography>
-								<Typography variant="subtitle" component="h2">
-									Join You Frined
-								</Typography>
-							</div>
 						</Card>
 					</Grid>
+
+					{adList &&
+						adList.map((ad, index) => (
+							<Grid item lg={4} md={6} xl={4} xs={12}>
+								<Link
+									href={routerLink.starter.matrimonyprofile + "?id=" + ad.id}
+								>
+									<MatrimonyProfile ad={ad} />
+								</Link>
+							</Grid>
+						))}
 				</Grid>
 			</div>
 		</React.Fragment>
 	);
 };
 
-export default withAuth(Matrimony);
+export default withAuth(index);

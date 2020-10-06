@@ -8,7 +8,7 @@ import { withTranslation } from "~/i18n";
 import Alert from "../alert/alert";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
+import { InputLabel, Slider } from "@material-ui/core/";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -23,11 +23,13 @@ import LocalStorageService from "../../_services/LocalStorageService";
 const localStorageService = LocalStorageService.getService();
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import {
-	interest,
-	hobbies,
-	disability,
+	gender,
+	religion,
+	caste,
 	diatery_habits,
-	sports,
+	maritialStatus,
+	disability,
+	occupation,
 	languages,
 	OcassionallyBoolean,
 } from "~static/text/profiledata";
@@ -84,14 +86,13 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const Lifestyledetails = ({
+const DefaultPrefs = ({
 	initvalue,
 	matrimonyid,
-	nextform,
 	backform,
-	setlifetsyledetails,
-	lifetsyledetailsid,
-	setlifetsyledetailsid,
+	setdefaultdetails,
+	defaultdetailsid,
+	setdefaultdetailsid,
 	...props
 }) => {
 	const { className, ...rest } = props;
@@ -102,33 +103,27 @@ const Lifestyledetails = ({
 
 	const [details, setDetails] = useState(props.prefilldata || {});
 	const [loginData, setloginData] = React.useState({});
-	const [states, setStates] = useState([]);
-	const [district, setDistrict] = useState([]);
-	const [city, setCity] = useState([]);
 	const [profileUpdateSuccess, setProfileUpdateSuccess] = useState(false);
 	const profileSchema = Yup.object().shape({
 		metrimony_id: Yup.string().required("Required"),
-		language_speak: Yup.string().required("Required"),
-		diatery_habits: Yup.string().required("Required"),
-		disability: Yup.string().required("Required"),
-		family_income: Yup.string(),
+		gender: Yup.string().required("Required"),
+
+		age_from: Yup.string(),
+		age_to: Yup.string(),
+		height_from: Yup.string(),
+		height_to: Yup.string(),
+		marital_status: Yup.string(),
+		religion: Yup.string(),
+		cast: Yup.string(),
+		language_speak: Yup.string(),
+		wedding_budget_from: Yup.string(),
+		wedding_budget_to: Yup.string(),
+		proffesion: Yup.string(),
+		diatery_habits: Yup.string(),
 		drinking_habits: Yup.string(),
 		smoking_habits: Yup.string(),
-		house_own: Yup.string(),
-		car_own: Yup.string(),
-		hobbies: Yup.string(),
-		interest: Yup.string(),
-		sports: Yup.string(),
-		email: Yup.string().email(),
-		gaurdian_number: Yup.string().length(10, "Invalid Mobile Number"),
-		alternate_number: Yup.string().length(10, "Invalid Mobile Number"),
-		call_time: Yup.string(),
+		disability: Yup.string(),
 	});
-
-	React.useEffect(() => {
-		// console.error(Object.keys(state));
-		setStates(Object.keys(state));
-	}, []);
 
 	const _handleModalClose = () => {
 		setProfileUpdateSuccess(() => true);
@@ -168,7 +163,7 @@ const Lifestyledetails = ({
 		payload.append("metrimony_id", matrimonyid);
 		if (payload && matrimonyid) {
 			matrimonyActions
-				.UpdateFamilyDetails(payload)
+				.UpdateDefaultPrefs(payload)
 				.then(function (response) {
 					setSubmitting(false);
 					console.log("ressss", response);
@@ -179,9 +174,8 @@ const Lifestyledetails = ({
 					}
 
 					if (response.data.data.id) {
-						setlifetsyledetails(response.data.data);
-						setlifetsyledetailsid(response.data.data.id);
-						nextform();
+						setdefaultdetails(response.data.data);
+						setdefaultdetailsid(response.data.data.id);
 					}
 				})
 				.catch(function (error) {
@@ -261,8 +255,8 @@ const Lifestyledetails = ({
 					return (
 						<div>
 							<CardHeader
-								subheader="The information can be edited"
-								title="Basic Details"
+								subheader="We will Suggest People to you on the basis of these preferences"
+								title="Search Preferences"
 							/>
 							<Divider />
 							<CardContent>
@@ -280,13 +274,211 @@ const Lifestyledetails = ({
 												formprops.errors["father_occupation"]
 											}
 										/>
+										<Grid item md={4} xs={12}>
+											<Box margin={1}>
+												<Field
+													required
+													onChange={handleChange}
+													fullWidth
+													component={TextField}
+													type="text"
+													name="gender"
+													label="Gender"
+													select
+													variant="standard"
+													helperText={
+														formprops.errors.hasOwnProperty("gender") &&
+														formprops.errors["gender"]
+													}
+													margin="normal"
+													InputLabelProps={{
+														shrink: true,
+													}}
+												>
+													{gender.map((option, index) => (
+														<MenuItem key={index} value={index + 1}>
+															{option}
+														</MenuItem>
+													))}
+												</Field>
+											</Box>
+										</Grid>
+
+										<Grid item md={4} xs={12}>
+											<InputLabel shrink={true}>Birth Year</InputLabel>
+											<Grid container spacing={2}>
+												<Grid item xs={6}>
+													<Field
+														label="From:"
+														type="text"
+														name="age_from"
+														label="From"
+														variant="standard"
+														helperText={
+															formprops.errors.hasOwnProperty("age_from") &&
+															formprops.errors["age_from"]
+														}
+														className={classes.textField}
+														InputLabelProps={{
+															shrink: true,
+														}}
+													/>
+													&nbsp;-&nbsp;
+													<Field
+														label="To:"
+														type="text"
+														name="age_to"
+														label="To"
+														variant="standard"
+														helperText={
+															formprops.errors.hasOwnProperty("age_to") &&
+															formprops.errors["age_to"]
+														}
+														className={classes.textField}
+														InputLabelProps={{
+															shrink: true,
+														}}
+													/>
+												</Grid>
+											</Grid>
+										</Grid>
+
+										<Grid item md={4} xs={12}>
+											<InputLabel shrink={true}>Height</InputLabel>
+											<Grid container spacing={2}>
+												<Grid item xs={6}>
+													<Field
+														label="From:"
+														type="text"
+														name="height_from"
+														label="From"
+														variant="standard"
+														helperText={
+															formprops.errors.hasOwnProperty("height_from") &&
+															formprops.errors["height_from"]
+														}
+														className={classes.textField}
+														InputLabelProps={{
+															shrink: true,
+														}}
+													/>
+													&nbsp;-&nbsp;
+													<Field
+														label="To:"
+														type="text"
+														name="height_to"
+														label="To"
+														variant="standard"
+														helperText={
+															formprops.errors.hasOwnProperty("height_to") &&
+															formprops.errors["height_to"]
+														}
+														className={classes.textField}
+														InputLabelProps={{
+															shrink: true,
+														}}
+													/>
+												</Grid>
+											</Grid>
+										</Grid>
+
+										<Grid item md={4} xs={12}>
+											<Box margin={1}>
+												<Field
+													onChange={handleChange}
+													fullWidth
+													component={TextField}
+													type="text"
+													name="marital_status"
+													label="Marital Status"
+													select
+													variant="standard"
+													helperText={
+														formprops.errors.hasOwnProperty("marital_status") &&
+														formprops.errors["marital_status"]
+													}
+													margin="normal"
+													InputLabelProps={{
+														shrink: true,
+													}}
+												>
+													{maritialStatus.map((option, index) => (
+														<MenuItem key={index} value={index + 1}>
+															{option}
+														</MenuItem>
+													))}
+												</Field>
+											</Box>
+										</Grid>
+
+										<Grid item md={6} xs={12}>
+											<Box margin={1}>
+												<InputLabel shrink={true} htmlFor="Religion">
+													Religion
+												</InputLabel>
+												<Field
+													fullWidth
+													component={Select}
+													type="text"
+													name="religion"
+													select
+													onChange={handleChange}
+													variant="standard"
+													helperText={
+														formprops.errors.hasOwnProperty("religion") &&
+														formprops.errors["religion"]
+													}
+													margin="dense"
+													InputLabelProps={{
+														shrink: true,
+													}}
+												>
+													{religion.map((option, index) => (
+														<MenuItem key={index} value={option}>
+															{option}
+														</MenuItem>
+													))}
+												</Field>
+											</Box>
+										</Grid>
+
+										<Grid item md={6} xs={12}>
+											<Box margin={1}>
+												<InputLabel shrink={true} htmlFor="Cast">
+													Cast
+												</InputLabel>
+												<Field
+													fullWidth
+													component={Select}
+													type="text"
+													name="cast"
+													select
+													onChange={handleChange}
+													variant="standard"
+													helperText={
+														formprops.errors.hasOwnProperty("cast") &&
+														formprops.errors["cast"]
+													}
+													margin="dense"
+													InputLabelProps={{
+														shrink: true,
+													}}
+												>
+													{caste.map((option, index) => (
+														<MenuItem key={index} value={option}>
+															{option}
+														</MenuItem>
+													))}
+												</Field>
+											</Box>
+										</Grid>
+
 										<Grid item md={6} xs={12}>
 											<Box margin={1}>
 												<InputLabel shrink={true} htmlFor="Language Speak">
 													Language Speak
 												</InputLabel>
 												<Field
-													required
 													fullWidth
 													component={Select}
 													type="text"
@@ -324,9 +516,78 @@ const Lifestyledetails = ({
 										</Grid>
 
 										<Grid item md={4} xs={12}>
+											<InputLabel shrink={true}>Wedding Budget</InputLabel>
+											<Grid container spacing={2}>
+												<Grid item xs={6}>
+													<Field
+														label="From:"
+														type="text"
+														name="wedding_budget_from"
+														label="From"
+														variant="standard"
+														helperText={
+															formprops.errors.hasOwnProperty(
+																"wedding_budget_from"
+															) && formprops.errors["wedding_budget_from"]
+														}
+														className={classes.textField}
+														InputLabelProps={{
+															shrink: true,
+														}}
+													/>
+													&nbsp;-&nbsp;
+													<Field
+														label="To:"
+														type="text"
+														name="wedding_budget_to"
+														label="To"
+														variant="standard"
+														helperText={
+															formprops.errors.hasOwnProperty(
+																"wedding_budget_to"
+															) && formprops.errors["wedding_budget_to"]
+														}
+														className={classes.textField}
+														InputLabelProps={{
+															shrink: true,
+														}}
+													/>
+												</Grid>
+											</Grid>
+										</Grid>
+
+										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
+													onChange={handleChange}
+													fullWidth
+													component={TextField}
+													type="text"
+													name="proffesion"
+													label="Proffesion"
+													select
+													variant="standard"
+													helperText={
+														formprops.errors.hasOwnProperty("proffesion") &&
+														formprops.errors["proffesion"]
+													}
+													margin="normal"
+													InputLabelProps={{
+														shrink: true,
+													}}
+												>
+													{occupation.map((option, index) => (
+														<MenuItem key={index} value={option}>
+															{option}
+														</MenuItem>
+													))}
+												</Field>
+											</Box>
+										</Grid>
+
+										<Grid item md={4} xs={12}>
+											<Box margin={1}>
+												<Field
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -365,8 +626,9 @@ const Lifestyledetails = ({
 													select
 													variant="standard"
 													helperText={
-														formprops.hasOwnProperty("drinking_habits") &&
-														formprops.errors["drinking_habits"]
+														formprops.errors.hasOwnProperty(
+															"drinking_habits"
+														) && formprops.errors["drinking_habits"]
 													}
 													margin="normal"
 													InputLabelProps={{
@@ -374,7 +636,7 @@ const Lifestyledetails = ({
 													}}
 												>
 													{OcassionallyBoolean.map((option, index) => (
-														<MenuItem key={index} value={index + 1}>
+														<MenuItem key={index} value={option}>
 															{option}
 														</MenuItem>
 													))}
@@ -403,265 +665,12 @@ const Lifestyledetails = ({
 													}}
 												>
 													{OcassionallyBoolean.map((option, index) => (
-														<MenuItem key={index} value={index + 1}>
-															{option}
-														</MenuItem>
-													))}
-												</Field>
-											</Box>
-										</Grid>
-
-										<Grid item md={4} xs={12}>
-											<Box margin={1}>
-												<FormControlLabel
-													control={
-														<Field
-															component={Switch}
-															type="checkbox"
-															name="house_own"
-														/>
-													}
-													label="Own A House ?"
-												/>
-											</Box>
-										</Grid>
-
-										<Grid item md={4} xs={12}>
-											<Box margin={1}>
-												<FormControlLabel
-													control={
-														<Field
-															component={Switch}
-															type="checkbox"
-															name="car_own"
-														/>
-													}
-													label="Own A Car ?"
-												/>
-											</Box>
-										</Grid>
-
-										<Grid item md={6} xs={12}>
-											<Box margin={1}>
-												<InputLabel shrink={true} htmlFor="Hobbies">
-													Hobbies
-												</InputLabel>
-												<Field
-													fullWidth
-													component={Select}
-													type="text"
-													name="hobbies"
-													multiple={true}
-													onChange={handleChange}
-													variant="standard"
-													helperText={
-														formprops.errors.hasOwnProperty("hobbies") &&
-														formprops.errors["hobbies"]
-													}
-													margin="dense"
-													InputLabelProps={{
-														shrink: true,
-													}}
-													renderValue={(selected) => (
-														<div className={classes.chips}>
-															{selected.map((value) => (
-																<Chip
-																	key={value}
-																	label={value}
-																	className={classes.chip}
-																/>
-															))}
-														</div>
-													)}
-												>
-													{hobbies.map((option, index) => (
 														<MenuItem key={index} value={option}>
 															{option}
 														</MenuItem>
 													))}
 												</Field>
 											</Box>
-										</Grid>
-
-										<Grid item md={6} xs={12}>
-											<Box margin={1}>
-												<InputLabel shrink={true} htmlFor="Interest">
-													Interest
-												</InputLabel>
-												<Field
-													fullWidth
-													component={Select}
-													type="text"
-													name="interest"
-													multiple={true}
-													onChange={handleChange}
-													variant="standard"
-													helperText={
-														formprops.errors.hasOwnProperty("interest") &&
-														formprops.errors["interest"]
-													}
-													margin="dense"
-													InputLabelProps={{
-														shrink: true,
-													}}
-													renderValue={(selected) => (
-														<div className={classes.chips}>
-															{selected.map((value) => (
-																<Chip
-																	key={value}
-																	label={value}
-																	className={classes.chip}
-																/>
-															))}
-														</div>
-													)}
-												>
-													{interest.map((option, index) => (
-														<MenuItem key={index} value={option}>
-															{option}
-														</MenuItem>
-													))}
-												</Field>
-											</Box>
-										</Grid>
-
-										<Grid item md={6} xs={12}>
-											<Box margin={1}>
-												<InputLabel shrink={true} htmlFor="Sports">
-													Sports
-												</InputLabel>
-												<Field
-													fullWidth
-													component={Select}
-													type="text"
-													name="sports"
-													multiple={true}
-													onChange={handleChange}
-													variant="standard"
-													helperText={
-														formprops.errors.hasOwnProperty("sports") &&
-														formprops.errors["sports"]
-													}
-													margin="dense"
-													InputLabelProps={{
-														shrink: true,
-													}}
-													renderValue={(selected) => (
-														<div className={classes.chips}>
-															{selected.map((value) => (
-																<Chip
-																	key={value}
-																	label={value}
-																	className={classes.chip}
-																/>
-															))}
-														</div>
-													)}
-												>
-													{sports.map((option, index) => (
-														<MenuItem key={index} value={option}>
-															{option}
-														</MenuItem>
-													))}
-												</Field>
-											</Box>
-										</Grid>
-
-										<Grid item md={4} xs={12}>
-											<Box margin={1}>
-												<Field
-													onChange={handleChange}
-													fullWidth
-													component={TextField}
-													type="text"
-													name="email"
-													label="Email"
-													variant="standard"
-													helperText={
-														formprops.errors.hasOwnProperty("email") &&
-														formprops.errors["email"]
-													}
-													margin="normal"
-													InputLabelProps={{
-														shrink: true,
-													}}
-												></Field>
-											</Box>
-										</Grid>
-
-										<Grid item md={4} xs={12}>
-											<Box margin={1}>
-												<Field
-													onChange={handleChange}
-													fullWidth
-													component={TextField}
-													type="text"
-													name="gaurdian_number"
-													label="Gaurdian Number"
-													variant="standard"
-													helperText={
-														formprops.errors.hasOwnProperty(
-															"gaurdian_number"
-														) && formprops.errors["gaurdian_number"]
-													}
-													margin="normal"
-													InputLabelProps={{
-														shrink: true,
-													}}
-												></Field>
-											</Box>
-										</Grid>
-
-										<Grid item md={4} xs={12}>
-											<Box margin={1}>
-												<Field
-													onChange={handleChange}
-													fullWidth
-													component={TextField}
-													type="text"
-													name="alternate_number"
-													label="Alternate Number"
-													variant="standard"
-													helperText={
-														formprops.errors.hasOwnProperty(
-															"alternate_number"
-														) && formprops.errors["alternate_number"]
-													}
-													margin="normal"
-													InputLabelProps={{
-														shrink: true,
-													}}
-												></Field>
-											</Box>
-										</Grid>
-
-										<Grid item md={4} xs={12}>
-											<InputLabel shrink={true}>Call Timings</InputLabel>
-											<Grid container spacing={2}>
-												<Grid item xs={6}>
-													<Field
-														label="From:"
-														type="time"
-														name="callTimeFrom"
-														label="From"
-														className={classes.textField}
-														InputLabelProps={{
-															shrink: true,
-														}}
-													/>
-													&nbsp;-&nbsp;
-													<Field
-														label="To:"
-														type="time"
-														name="callTimeTo"
-														label="To"
-														className={classes.textField}
-														InputLabelProps={{
-															shrink: true,
-														}}
-													/>
-												</Grid>
-											</Grid>
 										</Grid>
 
 										<Grid item md={4} xs={12}>
@@ -708,7 +717,7 @@ const Lifestyledetails = ({
 										) : (
 											t("common:cant_revert")
 										)}
-										{lifetsyledetailsid && lifetsyledetailsid > 0 ? (
+										{defaultdetailsid && defaultdetailsid > 0 ? (
 											<Button
 												color="primary"
 												variant="outlined"
@@ -738,8 +747,8 @@ const Lifestyledetails = ({
 	);
 };
 
-Lifestyledetails.propTypes = {
+DefaultPrefs.propTypes = {
 	className: PropTypes.string,
 };
 
-export default withTranslation(["common"])(Lifestyledetails);
+export default withTranslation(["common"])(DefaultPrefs);

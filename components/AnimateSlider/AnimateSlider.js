@@ -36,10 +36,11 @@ function AnimateSlider(props) {
 	const classes = useStyles();
 	const { t } = props;
 	return (
-		<div className={classes.heroContent}>
-			<Slider className="slider-wrapper">
+		<div className={classes.heroContent} >
+			<Slider className="slider-wrapper" >
 				{content.map((item, index) => (
 					<div
+						
 						key={index.toString()}
 						className="slider-content"
 						// style={{
