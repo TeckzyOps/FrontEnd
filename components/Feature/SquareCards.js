@@ -11,6 +11,7 @@ import Grid from "@material-ui/core/Grid";
 // import StarIcon from '@material-ui/icons/StarBorder';
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
+
 import {
 	createMuiTheme,
 	responsiveFontSizes,
@@ -18,11 +19,22 @@ import {
 	makeStyles,
 } from "@material-ui/core/styles";
 import { useTextAlign } from "~/theme/common";
+<<<<<<< HEAD
 
+=======
+import Link from "next/link";
+import links from "~/static/text/link.js";
+import worker from "~/static/images/worker.svg";
+import seller from "~/static/images/seller.svg";
+import vendor from "~/static/images/vendor.svg";
+import bride from "~/static/images/bride.svg";
+import freelance from "~/static/images/freelance.svg";
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
 
 const tiers = [
+<<<<<<< HEAD
 	{ title: "Groom/Bride", imgsrc: "static/images/bride.svg" },
 	{ title: "Freelancing", imgsrc: "static/images/freelance.svg" },
 	{ title: "Vendor", imgsrc: "static/images/vendor.svg" },
@@ -33,6 +45,28 @@ const tiers = [
 	{
 		title: "Worker",
 		imgsrc: "static/images/worker.svg",
+=======
+	{
+		title: "Groom/Bride",
+		imgsrc: bride,
+		url: links.starter.matrimony,
+	},
+	{
+		title: "Freelancing",
+		imgsrc: freelance,
+		url: links.starter.freelancer,
+	},
+	{ title: "Vendor", imgsrc: vendor, url: links.starter.vendor },
+	{
+		title: "Seller",
+		imgsrc: seller,
+		url: links.starter.seller,
+	},
+	{
+		title: "Worker",
+		imgsrc: worker,
+		url: links.starter.worker,
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 	},
 ];
 

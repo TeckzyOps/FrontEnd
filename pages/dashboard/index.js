@@ -1,143 +1,108 @@
-import React, { Fragment } from "react";
+import React from "react";
+import PropTypes from "prop-types";
+import CssBaseline from "@material-ui/core/CssBaseline";
 import clsx from "clsx";
-
-import DashboardWrapper from "../../components/Dashboard/DashboardWrapper";
-import Dashboard from "../../components/Dashboard/DashboardWrap";
 import Head from "next/head";
+import Hidden from "@material-ui/core/Hidden";
 import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import ButtonBase from "@material-ui/core/ButtonBase";
-import Chip from "@material-ui/core/Chip";
-import IconButton from "@material-ui/core/IconButton";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import Revenue from "./../../components/StatCard/Revenue";
-import withAuth from "../../components/Hoc/withAuth";
-import LocalStorageService from "../../_services/LocalStorageService";
+import Container from "@material-ui/core/Container";
+import Header from "../../components/Header";
+import TopSlider from "../../components/AnimateSlider";
+import Feature from "../../components/Feature";
+import Counter from "../../components/Counter";
 
-const localStorageService = LocalStorageService.getService();
+import { Paper } from "@material-ui/core";
+import Footer from "../../components/Footer";
+import brand from "~static/text/brand";
+import PageNav from "../../components/PageNav";
+import service from "../../utils/ApiService";
+import Notification from "../../components/Notification";
+import Subscribe from "../../components/Subscribe";
+import Pricing from "../../components/Pricing";
 
-import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-// import Rating from "@material-ui/lab/Rating";
-
+const sectionMargin = (margin) => margin * 2;
 const useStyles = makeStyles((theme) => ({
-	root: {
-		flexGrow: 1,
-	},
-	paper: {
-		//background: 'linear-gradient(5deg, #edb600 30%, #FF8E53 90%)',
-		padding: theme.spacing(3),
-		margin: "center",
-		maxWidth: 600,
-		minHeight: 150,
-	},
-	img: {
-		//background: 'linear-gradient(45deg, #F5FB8B 30%, #F5FB8B 90%)',
-		margin: "auto",
-		width: 128,
-		height: 128,
-	},
-	image: {
-		// background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+	mainWrap: {
 		position: "relative",
-		margin: "center",
-		display: "flex",
-		width: 128,
-		height: 128,
+		width: "100%",
+		overflow: "hidden",
 	},
-	avatar: {
-		margin: "auto",
-		display: "block",
-		maxWidth: "100%",
-		maxHeight: "100%",
+	spaceBottom: {
+		marginBottom: sectionMargin(theme.spacing(2)),
 	},
-
-	gridbox: {
-		position: "relative",
-		margin: "center",
+	spaceTop: {
+		paddingTop: sectionMargin(theme.spacing(0)),
 	},
-	paper: {
-		padding: theme.spacing(2),
-		display: "flex",
-		overflow: "auto",
-		flexDirection: "column",
-	},
-	fixedHeight: {
-		height: 240,
-	},
-
-	resumo: {
-		//background: "linear-gradient(45deg, #5DA6AF 30%, #FF8E53 90%)",
-		width: "400px",
-		height: "100px",
-		padding: "2px",
-		display: "flex",
-	},
-	rating: {
-		//background: 'linear-gradient(45deg, #0bb654 30%, #0bb654 90%)',
-		position: "relative",
-		left: "4px",
-		display: "flex",
-		padding: "5px",
-		//container justify="center" spacing={spacing}
-	},
-
-	hashtag: {
-		margin: "2px",
-		padding: "1px",
-	},
-
-	favorite: {
-		height: "50px",
-	},
-
-	agenda: {
-		maxWidth: "80px",
-		fontFamily: "arial",
-		fontSize: "12px",
+	containerWrap: {
+		marginTop: "11vh",
 	},
 }));
-function UserDashBoard(props) {
-	const classes = useStyles();
-	const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-	const [value /*setValue*/] = React.useState(1);
-	React.useEffect(() => {
-		console.error("dashboardprops--> ", props);
-	}, []);
+function UserDashboard(props) {
+	const classes = useStyles();
+	const { onToggleDark, onToggleDir } = props;
+	console.log(service);
 	return (
-		<Fragment>
+		<React.Fragment>
 			<Head>
-				<title>Dashboard &nbsp;</title>
+				<title>
+					{brand.starter.name}
+					&nbsp; - Home Page
+				</title>
 			</Head>
-			{/* <DashboardWrapper /> */}
-			<Dashboard>
-				<Grid container spacing={3}>
-					Chart
-					<Grid item xs={12} md={4} lg={4}>
-						<Paper className={fixedHeightPaper}>
-							<Revenue />
-						</Paper>
-					</Grid>
-					<Grid item xs={12} md={4} lg={4}>
-						<Paper className={fixedHeightPaper}>
-							<Revenue />
-						</Paper>
-					</Grid>
-				</Grid>
-			</Dashboard>
-		</Fragment>
+			<CssBaseline />
+			<section id="home" />
+			<div className={classes.mainWrap}>
+				<Header onToggleDark={onToggleDark} onToggleDir={onToggleDir} />
+				<main className={clsx(classes.spaceTop)}>
+					<section className={classes.containerWrap}>
+						<Container fixed>
+							<TopSlider />
+						</Container>
+					</section>
+					<section className={clsx(classes.spaceTop, "my-5")} id="feature">
+						<Container fixed>
+							<Paper elevation={0}>
+								<Feature />
+							</Paper>
+						</Container>
+					</section>
+					<section className={classes.pageSection}>
+						<Counter />
+					</section>
+					{/* <section className={classes.spaceTop} id="testimonials">
+            <Testimonials />
+          </section> */}
+					{/* <section className={classes.spaceTop} id="pricing">
+						<Pricing />
+					</section> */}
+					{/* <section className={clsx(classes.spaceTop, classes.spaceBottom)} id="blog">
+            <Blog />
+          </section> */}
+					<br />
+					{/* <section id="subscribe">
+						<Subscribe />
+					</section> */}
+				</main>
+				<Hidden mdDown>
+					<PageNav />
+				</Hidden>
+				<Footer toggleDir={onToggleDir} />
+				{/* <Hidden mdDown>
+					<Notification />
+				</Hidden> */}
+			</div>
+		</React.Fragment>
 	);
 }
-UserDashBoard.getInitialProps = async (ctx) => {
-	// const isBrowser = () => typeof window !== "undefined";
-	// return {
-	// 	logindata:
-	// 		typeof window !== "undefined"
-	// 			? ctx.req.headers.cookie.loginDetails
-	// 			: JSON.parse(LocalStorageService.getValue("loginDetails")),
-	// };
+
+UserDashboard.getInitialProps = async () => ({
+	namespacesRequired: ["common"],
+});
+
+UserDashboard.propTypes = {
+	onToggleDark: PropTypes.func.isRequired,
+	onToggleDir: PropTypes.func.isRequired,
 };
-export default withAuth(UserDashBoard);
+
+export default UserDashboard;

@@ -16,9 +16,10 @@ import Link from "@material-ui/core/Link";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import NotificationsIcon from "@material-ui/icons/Notifications";
+import AccountCircle from "@material-ui/icons/AccountCircle";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
-import AccountCircle from "@material-ui/icons/AccountCircle";
+
 import MoreIcon from "@material-ui/icons/MoreVert";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
@@ -77,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
 		}),
 	},
 	menuButton: {
-		marginRight: 36,
+		marginRight: 20,
 	},
 	menuButtonHidden: {
 		display: "none",
@@ -123,12 +124,11 @@ const useStyles = makeStyles((theme) => ({
 		display: "flex",
 		flexDirection: "column",
 		flexGrow: 1,
-		height: "100vh",
 		overflow: "auto",
 	},
 	container: {
-		paddingTop: theme.spacing(4),
-		paddingBottom: theme.spacing(4),
+		paddingTop: theme.spacing(2),
+		paddingBottom: theme.spacing(2),
 	},
 	paper: {
 		padding: theme.spacing(2),
@@ -150,13 +150,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Dashboard(props) {
-	const [loginData, setloginData] = React.useState({});
+	const [details, setDetails] = React.useState({});
 	const [anchorEl, setAnchorEl] = React.useState(null);
 
 	React.useEffect(() => {
-		if (localStorageService.getValue("loginDetails")) {
-			setloginData(JSON.parse(LocalStorageService.getValue("loginDetails")));
+		if (!localStorageService.getUserDetails("Details")) {
 		}
+		setDetails(localStorageService.getUserDetails("Details"));
 	}, []);
 	const [values, setValues] = React.useState({
 		error: "",
@@ -167,11 +167,12 @@ export default function Dashboard(props) {
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
 	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+	const isMenuOpen = Boolean(anchorEl);
 	const handleProfileMenuOpen = (event) => {
 		setAnchorEl(event.currentTarget);
 	};
 	const classes = useStyles();
-	const [open, setOpen] = React.useState(true);
+	const [open, setOpen] = React.useState(false);
 	const handleDrawerOpen = () => {
 		setOpen(true);
 	};
@@ -197,7 +198,23 @@ export default function Dashboard(props) {
 	const handleDrawerClose = () => {
 		setOpen(false);
 	};
-
+	const renderMenu = (
+		<Menu
+			anchorEl={anchorEl}
+			anchorOrigin={{ vertical: "top", horizontal: "right" }}
+			id={menuId}
+			keepMounted
+			transformOrigin={{ vertical: "top", horizontal: "right" }}
+			open={isMenuOpen}
+			onClose={handleMenuClose}
+		>
+			<Link href={routerLink.starter.profile}>
+				<MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+			</Link>{" "}
+			{/* <MenuItem onClick={handleMenuClose}> My account</MenuItem> */}
+			<MenuItem onClick={handleLogout}>Logout</MenuItem>
+		</Menu>
+	);
 	const renderMobileMenu = (
 		<Menu
 			anchorEl={mobileMoreAnchorEl}
@@ -264,7 +281,7 @@ export default function Dashboard(props) {
 						noWrap
 						className={classes.title}
 					>
-						Welcome {loginData.name}
+						Welcome, {details.login ? details.login.name : ""}
 					</Typography>
 					<div className={classes.sectionDesktop}>
 						{/* <IconButton
@@ -293,8 +310,18 @@ export default function Dashboard(props) {
 							<NotificationsIcon />
 						</Badge>
 					</IconButton>
+					<IconButton
+						edge="end"
+						aria-label="account of current user"
+						aria-controls={menuId}
+						aria-haspopup="true"
+						onClick={handleProfileMenuOpen}
+						color="inherit"
+					>
+						<AccountCircle />
+					</IconButton>
 
-					<div className={classes.sectionMobile}>
+					{/* <div className={classes.sectionMobile}>
 						<IconButton
 							aria-label="show more"
 							aria-controls={mobileMenuId}
@@ -304,10 +331,11 @@ export default function Dashboard(props) {
 						>
 							<MoreIcon />
 						</IconButton>
-					</div>
+					</div> */}
 				</Toolbar>
 			</AppBar>
-			{renderMobileMenu}
+
+			{renderMenu}
 			<Drawer
 				variant="permanent"
 				classes={{

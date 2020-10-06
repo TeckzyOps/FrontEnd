@@ -23,8 +23,15 @@ import DefaultPrefs from "../../../components/Forms/mat_defaultpreferences";
 import StepButton from "@material-ui/core/StepButton";
 import Button from "@material-ui/core/Button";
 import { withRouter } from "react-router";
+<<<<<<< HEAD
 import { matrimonyActions } from "../../../_actions/matrimony.action";
 
+=======
+import { useTheme } from "@material-ui/core/styles";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { matrimonyActions } from "../../../_actions/matrimony.action";
+import Header from "../../../components/Header";
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 const localStorageService = LocalStorageService.getService();
 
 function getSteps() {
@@ -33,13 +40,15 @@ function getSteps() {
 		"Family Details",
 		"LifeStyle Details",
 		"Default Preferences",
+<<<<<<< HEAD
 		"Image Upload",
+=======
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 	];
 }
 
 const useStyles = makeStyles((theme) => ({
 	root: {
-		padding: theme.spacing(4),
 		"& > *": {
 			margin: theme.spacing(1),
 		},
@@ -59,6 +68,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 const Matrimony = (props) => {
 	const classes = useStyles();
+	const theme = useTheme();
+	const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
+	const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 	const [activeStep, setActiveStep] = React.useState(0);
 	const [details, setDetails] = React.useState({});
 	const [matrimony_id, setMatrimonyId] = React.useState(0);
@@ -150,6 +162,10 @@ const Matrimony = (props) => {
 				.then(function (response) {
 					if (response.data.data.id) {
 						setbasicdetails(response.data.data);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 						setMatrimonyId(response.data.data.id);
 					}
 				})
@@ -200,6 +216,7 @@ const Matrimony = (props) => {
 	7;
 	function getStepContent(step) {
 		switch (step) {
+<<<<<<< HEAD
 			case 4:
 				return (
 					<MatrimonyImageUpload
@@ -208,6 +225,16 @@ const Matrimony = (props) => {
 						initvalue={basicdetails}
 					/>
 				);
+=======
+			// case 4:
+			// 	return (
+			// 		<MatrimonyImageUpload
+			// 			nextform={handleNext}
+			// 			matrimonyid={matrimony_id}
+			// 			initvalue={basicdetails}
+			// 		/>
+			// 	);
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 			case 0:
 				return (
 					<Basicdetails
@@ -276,32 +303,39 @@ const Matrimony = (props) => {
 				<title>Dashboard &nbsp; - Matrimony</title>
 			</Head>
 
-			<DashboardWrapper logindata={props.logindata} userdata={props.userdata} />
+			<Header
+				onToggleDark={props.onToggleDark}
+				onToggleDir={props.onToggleDir}
+			/>
 			<div className={classes.root}>
-				<Stepper activeStep={activeStep}>
-					{steps.map((label, index) => {
-						const stepProps = {};
-						const labelProps = {};
+				<Grid container justifyContent="center" spacing={2}>
+					<Grid item xs={12}>
+						<Stepper activeStep={activeStep}>
+							{isMobile && (
+								<Step>
+									<StepButton onClick={handleStep(activeStep)}>
+										{steps[activeStep]}
+									</StepButton>
+								</Step>
+							)}
+							{isDesktop &&
+								steps.map((label, index) => {
+									const stepProps = {};
+									const labelProps = {};
 
-						return (
-							<Step key={label} {...stepProps}>
-								<StepButton onClick={handleStep(index)}>{label}</StepButton>
-							</Step>
-						);
-					})}
-				</Stepper>
-				<div>
-					{activeStep === steps.length ? (
+									return (
+										<Step key={label} {...stepProps}>
+											<StepButton onClick={handleStep(index)}>
+												{label}
+											</StepButton>
+										</Step>
+									);
+								})}
+						</Stepper>
+					</Grid>
+					<Grid item xs={12}>
 						<div>
-							<Typography className={classes.instructions}>
-								All steps completed - you&apos;re finished
-							</Typography>
-							<Button onClick={handleReset} className={classes.button}>
-								Reset
-							</Button>
-						</div>
-					) : (
-						<div>
+<<<<<<< HEAD
 							{getStepContent(activeStep)}
 
 							<div>
@@ -321,24 +355,23 @@ const Matrimony = (props) => {
 									{activeStep === steps.length - 1 ? "Finish" : "Next"}
 								</Button>
 							</div>
+=======
+							{activeStep === steps.length ? (
+								<div>
+									<Typography className={classes.instructions}>
+										All steps completed - you&apos;re finished
+									</Typography>
+									<Button onClick={handleReset} className={classes.button}>
+										Reset
+									</Button>
+								</div>
+							) : (
+								<div>{getStepContent(activeStep)}</div>
+							)}
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 						</div>
-					)}
-				</div>
-				{/* <Grid container spacing={2}>
-					<Paper className={classes.paper}>
-						<Grid container spacing={2}>
-							<Grid item md={12} xs={12}>
-								<Basicdetails />
-							</Grid>
-							<Grid item md={12} xs={12}>
-								<Lifestyledetails />
-							</Grid>
-							<Grid item md={12} xs={12}>
-								<Familydetails />
-							</Grid>
-						</Grid>
-					</Paper>
-				</Grid> */}
+					</Grid>
+				</Grid>
 			</div>
 		</React.Fragment>
 	);

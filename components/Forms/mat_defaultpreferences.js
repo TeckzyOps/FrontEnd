@@ -147,6 +147,7 @@ const DefaultPrefs = ({
 
 	const _handleSubmit = ({ vals, setSubmitting, resetForm, setFieldError }) => {
 		let payload = new FormData();
+<<<<<<< HEAD
 		let calltime = vals["callTimeFrom"] + " - " + vals["callTimeTo"];
 		for (var i in vals) {
 			if (Array.isArray(vals[i])) {
@@ -187,6 +188,60 @@ const DefaultPrefs = ({
 					}
 					console.error("errrrr ", error);
 				});
+=======
+		let proceed = false;
+		let valKeyArr = Object.keys(vals);
+		for (var i = 0; i < valKeyArr.length; i++) {
+			if (initvalue[valKeyArr[i]] != vals[valKeyArr[i]]) {
+				proceed = true;
+				break;
+			}
+		}
+		if (proceed) {
+			let calltime = vals["callTimeFrom"] + " - " + vals["callTimeTo"];
+			for (var i in vals) {
+				if (Array.isArray(vals[i])) {
+					if (vals[i].length > 0) {
+						payload.append(i, JSON.stringify(vals[i]));
+					}
+				} else {
+					if (vals[i] && (i != "callTimeFrom" || i != "callTimeTo")) {
+						payload.append(i, vals[i]);
+					}
+				}
+			}
+			payload.append("call_time", calltime);
+			payload.append("metrimony_id", matrimonyid);
+			if (payload && matrimonyid) {
+				matrimonyActions
+					.UpdateDefaultPrefs(payload)
+					.then(function (response) {
+						setSubmitting(false);
+						console.log("ressss", response);
+						if (response.data.input_error) {
+							Object.keys(response.data.input_error).forEach((k) => {
+								setFieldError(k, result[k][0]);
+							});
+						}
+
+						if (response.data.data.id) {
+							setdefaultdetails(response.data.data);
+							setdefaultdetailsid(response.data.data.id);
+						}
+					})
+					.catch(function (error) {
+						setSubmitting(false);
+						if (error.response && error.response.data.input_error) {
+							Object.keys(error.response.data.input_error).forEach((k) => {
+								setFieldError(k, error.response.data.input_error[k][0]);
+							});
+						}
+						console.error("errrrr ", error);
+					});
+			}
+		} else {
+			nextform();
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 		}
 	};
 
@@ -717,6 +772,7 @@ const DefaultPrefs = ({
 										) : (
 											t("common:cant_revert")
 										)}
+<<<<<<< HEAD
 										{defaultdetailsid && defaultdetailsid > 0 ? (
 											<Button
 												color="primary"
@@ -735,6 +791,16 @@ const DefaultPrefs = ({
 												Save details
 											</Button>
 										)}
+=======
+										<Button
+											disabled={formprops.isSubmitting}
+											type="submit"
+											color="primary"
+											variant="outlined"
+										>
+											Save details
+										</Button>
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 									</Grid>
 								</Form>
 							</CardContent>

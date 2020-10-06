@@ -22,6 +22,10 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Switch from "@material-ui/core/Switch";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+<<<<<<< HEAD
+=======
+import profile from "~/static/profile.png";
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 import {
 	gender,
 	education,
@@ -56,7 +60,12 @@ const useStyles = makeStyles((theme) => ({
 		flex: "1 0 auto",
 	},
 	cover: {
+<<<<<<< HEAD
 		width: 151,
+=======
+		width: 250,
+		height: 200,
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 	},
 	controls: {
 		display: "flex",
@@ -137,9 +146,13 @@ const MatrimonyProfile = (props) => {
 	};
 	const [expanded, setExpanded] = React.useState(false);
 	React.useEffect(() => {
+<<<<<<< HEAD
 		setdata(props.ad, function () {
 			console.error("matrimonyprofile_props--> ", data);
 		});
+=======
+		setdata(props.ad);
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 	}, []);
 	const handleExpandClick = () => {
 		setExpanded(!expanded);
@@ -169,6 +182,7 @@ const MatrimonyProfile = (props) => {
 								</MuiThemeProvider>
 							</Grid>
 						))}
+<<<<<<< HEAD
 						{/* <Grid item sm={12}>
 							<List
 								component="nav"
@@ -213,6 +227,8 @@ const MatrimonyProfile = (props) => {
 								</ListItem>
 							</List>
 						</Grid> */}
+=======
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 					</Grid>
 				</CardContent>
 				<div className={classes.controls}>
@@ -239,9 +255,16 @@ const MatrimonyProfile = (props) => {
 			</div>
 			<CardMedia
 				className={classes.cover}
+<<<<<<< HEAD
 				image={Object.values(data.pictures.path).forEach((dp) => {
 					return dp != null ? dp : "";
 				})}
+=======
+				image={data.pictures.path.one || profile}
+				// image={Object.values(data.pictures.path).forEach((dp) => {
+				// 	return dp != null ? dp : "";
+				// })}
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 				title={data.name}
 			/>
 		</Card>

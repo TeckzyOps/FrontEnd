@@ -151,6 +151,7 @@ const Familydetails = ({
 
 	const _handleSubmit = ({ vals, setSubmitting, resetForm, setFieldError }) => {
 		let payload = new FormData();
+<<<<<<< HEAD
 
 		for (var i in vals) {
 			if (Array.isArray(vals[i])) {
@@ -180,17 +181,60 @@ const Familydetails = ({
 						setfamilydetailsid(response.data.data.id);
 						setfamilydetails(response.data.data);
 						nextform();
+=======
+		let proceed = false;
+		let valKeyArr = Object.keys(vals);
+		for (var i = 0; i < valKeyArr.length; i++) {
+			if (initvalue[valKeyArr[i]] != vals[valKeyArr[i]]) {
+				proceed = true;
+				break;
+			}
+		}
+
+		if (proceed) {
+			for (var i in vals) {
+				if (Array.isArray(vals[i])) {
+					if (vals[i].length > 0) {
+						payload.append(i, JSON.stringify(vals[i]));
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 					}
-				})
-				.catch(function (error) {
-					setSubmitting(false);
-					if (error.response.data.input_error) {
-						Object.keys(error.response.data.input_error).forEach((k) => {
-							setFieldError(k, error.response.data.input_error[k][0]);
-						});
+				} else {
+					if (vals[i]) {
+						payload.append(i, vals[i]);
 					}
-					console.error("errrrr ", error);
-				});
+				}
+			}
+			payload.append("metrimony_id", matrimonyid);
+			if (payload && matrimonyid) {
+				matrimonyActions
+					.UpdateFamilyDetails(payload)
+					.then(function (response) {
+						setSubmitting(false);
+						console.log("ressss", response);
+						if (response.data.input_error) {
+							Object.keys(response.data.input_error).forEach((k) => {
+								setFieldError(k, response.data.input_error[k][0]);
+							});
+						}
+
+						if (response.data.data.id) {
+							setfamilydetailsid(response.data.data.id);
+							setfamilydetails(response.data.data);
+							nextform();
+						}
+					})
+					.catch(function (error) {
+						setSubmitting(false);
+						if (error.response.data.input_error) {
+							Object.keys(error.response.data.input_error).forEach((k) => {
+								setFieldError(k, error.response.data.input_error[k][0]);
+							});
+						}
+						console.error("errrrr ", error);
+					});
+			}
+		} else {
+			nextform();
 		}
 	};
 
@@ -261,27 +305,13 @@ const Familydetails = ({
 						<div>
 							<CardHeader
 								subheader="The information can be edited"
-								title="Basic Details"
+								title="Family Details"
 							/>
 							<Divider />
 							<CardContent>
 								<Form>
 									<Grid container spacing={3}>
 										<Grid item md={4} xs={12}>
-											<Field
-												required
-												onChange={handleChange}
-												component={TextField}
-												type="hidden"
-												name="metrimony_id"
-												label="Matrimony ID"
-												variant="standard"
-												helperText={
-													formprops.errors.hasOwnProperty(
-														"father_occupation"
-													) && formprops.errors["father_occupation"]
-												}
-											/>
 											<Box margin={1}>
 												<Field
 													required
@@ -581,6 +611,7 @@ const Familydetails = ({
 										) : (
 											t("common:cant_revert")
 										)}
+<<<<<<< HEAD
 										{familydetailsid && familydetailsid > 0 ? (
 											<Button
 												color="primary"
@@ -599,6 +630,16 @@ const Familydetails = ({
 												Save details
 											</Button>
 										)}
+=======
+										<Button
+											disabled={formprops.isSubmitting}
+											type="submit"
+											color="primary"
+											variant="outlined"
+										>
+											Save details
+										</Button>
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 									</Grid>
 								</Form>
 							</CardContent>

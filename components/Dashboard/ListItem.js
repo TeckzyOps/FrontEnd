@@ -4,11 +4,16 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import DashboardIcon from "@material-ui/icons/Dashboard";
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import AccountCircle from "@material-ui/icons/AccountCircle";
 import PeopleIcon from "@material-ui/icons/People";
 import BarChartIcon from "@material-ui/icons/BarChart";
 // import Link from "next/link";
 import routerLink from "~/static/text/link";
+import worker from "~/static/images/worker.svg";
+import seller from "~/static/images/seller.svg";
+import vendor from "~/static/images/vendor.svg";
+import couple from "~/static/couple.svg";
+import outsourcing from "~/static/outsourcing.svg";
 import Link from "@material-ui/core/Link";
 
 import LayersIcon from "@material-ui/icons/Layers";
@@ -25,29 +30,30 @@ export const mainListItems = (
 			</ListItemIcon>
 			<ListItemText primary="Dashboard" />
 		</ListItem>
-		<ListItem component={Link} href={routerLink.starter.profile} button>
-			<ListItemIcon>
-				<ShoppingCartIcon />
-			</ListItemIcon>
-			<ListItemText primary="Order" />
-		</ListItem>
 		<ListItem component={Link} href={routerLink.starter.matrimony} button>
 			<ListItemIcon>
 				<PeopleIcon />
 			</ListItemIcon>
 			<ListItemText primary="Matrimony" />
 		</ListItem>
-		<ListItem component={Link} href={routerLink.starter.profile} button>
+
+		<ListItem component={Link} href={routerLink.starter.freelancer} button>
 			<ListItemIcon>
-				<BarChartIcon />
+				<AssignmentIcon />
 			</ListItemIcon>
-			<ListItemText primary="Reports" />
+			<ListItemText primary="Freelancer" />
 		</ListItem>
 		<ListItem component={Link} href={routerLink.starter.profile} button>
 			<ListItemIcon>
+<<<<<<< HEAD
 				<SettingsIcon />
 			</ListItemIcon>
 			<ListItemText primary="Setting" />
+=======
+				<AccountCircle />
+			</ListItemIcon>
+			<ListItemText primary="Profile" />
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 		</ListItem>
 	</div>
 );
@@ -55,23 +61,29 @@ export const mainListItems = (
 export const secondaryListItems = (
 	<div>
 		<ListSubheader inset>Services</ListSubheader>
-		<ListItem button>
+		<ListItem component={Link} href={routerLink.starter.worker} button>
 			<ListItemIcon>
 				<HelpIcon />
 			</ListItemIcon>
-			<ListItemText primary="Support" />
+			<ListItemText primary="Workers" />
 		</ListItem>
-		<ListItem button>
+		<ListItem component={Link} href={routerLink.starter.vendor} button>
 			<ListItemIcon>
 				<StoreIcon />
 			</ListItemIcon>
 			<ListItemText primary="Vendors" />
 		</ListItem>
-		<ListItem button>
+		<ListItem component={Link} href={routerLink.starter.seller} button>
 			<ListItemIcon>
-				<AssignmentIcon />
+				<StoreIcon />
 			</ListItemIcon>
-			<ListItemText primary="Year-end sale" />
+			<ListItemText primary="Seller" />
+		</ListItem>
+		<ListItem component={Link} href={routerLink.starter.b2b} button>
+			<ListItemIcon>
+				<StoreIcon />
+			</ListItemIcon>
+			<ListItemText primary="B2B" />
 		</ListItem>
 	</div>
 );

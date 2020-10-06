@@ -50,6 +50,10 @@ import {
 	Select,
 	Switch,
 } from "formik-material-ui";
+<<<<<<< HEAD
+=======
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 import { useTextAlign } from "~/theme/common";
 import { mpinForm } from "~/static/FormData/mpinForm";
 import { useAuth } from "../provider/Auth";
@@ -96,6 +100,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
+<<<<<<< HEAD
 const MatrimonyImageUpload = (props) => {
 	const { t, className, ...rest } = props;
 	const [dp, setDP] = React.useState({
@@ -112,6 +117,26 @@ const MatrimonyImageUpload = (props) => {
 		file6: null,
 		imagePreviewUrl6: null,
 	});
+=======
+const MatrimonyImageUpload = ({ matrimonyID, images, ...props }) => {
+	const { t, className, ...rest } = props;
+	const [dp, setDP] = React.useState({
+		file1: (images && images[0]) || null,
+		imagePreviewUrl1: (images && images[0]) || null,
+		file2: (images && images[1]) || null,
+		imagePreviewUrl2: (images && images[1]) || null,
+		file3: (images && images[2]) || null,
+		imagePreviewUrl3: (images && images[2]) || null,
+		file4: (images && images[3]) || null,
+		imagePreviewUrl4: (images && images[3]) || null,
+		file5: (images && images[4]) || null,
+		imagePreviewUrl5: (images && images[4]) || null,
+		file6: (images && images[5]) || null,
+		imagePreviewUrl6: (images && images[5]) || null,
+	});
+
+	const [upload, setUpload] = React.useState({});
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 	const [avatar, setAvatar] = React.useState("");
 	const [uploadProgress, updateUploadProgress] = React.useState(0);
 	const [loading, setLoading] = React.useState(false);
@@ -125,6 +150,7 @@ const MatrimonyImageUpload = (props) => {
 
 	const classes = useStyles();
 
+<<<<<<< HEAD
 	const _handledpSubmit = ({ vals, setSubmitting, setFieldError }) => {
 		let payload = new FormData();
 		let pics = [];
@@ -137,6 +163,15 @@ const MatrimonyImageUpload = (props) => {
 		payload.append("pictures", pics);
 		payload.append("metrimony_id", 1);
 		if (payload) {
+=======
+	const _handledpSubmit = (index, val, setSubmitting, setFieldError) => {
+		let payload = new FormData();
+		let key = ["one", "two", "three", "four", "five", "six"];
+		payload.append("pictures", val);
+		payload.append("access_key", key[index]);
+		payload.append("metrimony_id", matrimonyID);
+		if (payload && matrimonyID) {
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 			matrimonyActions
 				.uploadMatrimonyImage(payload, (ev) => {
 					const progress = (ev.loaded / ev.total) * 100;
@@ -145,6 +180,12 @@ const MatrimonyImageUpload = (props) => {
 				.then(function (response) {
 					setSubmitting(false);
 					console.log("ressss", response);
+<<<<<<< HEAD
+=======
+					if (response.data.data.id) {
+						setUpload({ ...upload, ["" + index]: "true" });
+					}
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 					if (response.data.input_error) {
 						Object.keys(response.data.input_error).forEach((k) => {
 							setFieldError(k, result[k][0]);
@@ -153,9 +194,19 @@ const MatrimonyImageUpload = (props) => {
 				})
 				.catch(function (error) {
 					setSubmitting(false);
+<<<<<<< HEAD
 					console.error("errrrr ", error);
 				});
 			console.log(payload);
+=======
+					if (error.response && error.response.data.input_error) {
+						Object.keys(error.response.data.input_error).forEach((k) => {
+							setFieldError(k, error.response.data.input_error[k][0]);
+						});
+					}
+					console.error("errrrr ", error);
+				});
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 		}
 	};
 
@@ -309,7 +360,10 @@ const MatrimonyImageUpload = (props) => {
 							})
 						}
 						render={(props) => {
+<<<<<<< HEAD
 							console.error(props.errors);
+=======
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 							const {
 								values,
 								touched,
@@ -403,6 +457,7 @@ const MatrimonyImageUpload = (props) => {
 															</div>
 														)}
 													</Box>
+<<<<<<< HEAD
 												</Grid>
 											))}
 											{/* <Grid item md={4} xs={12}>
@@ -821,6 +876,47 @@ const MatrimonyImageUpload = (props) => {
 									</DialogContent>
 									<DialogActions>
 										{isSubmitting && t("common:cant_revert")}
+=======
+													<Button
+														variant="contained"
+														color="primary"
+														size="large"
+														disabled={
+															props.values["image_" + (index + 1)] == null ||
+															isSubmitting ||
+															upload[index + 1] == "true"
+														}
+														onClick={() =>
+															_handledpSubmit(
+																index,
+																props.values["image_" + (index + 1)],
+																props.setSubmitting,
+																props.setFieldError
+															)
+														}
+													>
+														{upload["" + (index + 1)] == "true"
+															? "Upload Successful"
+															: "Upload"}
+													</Button>
+													{upload["" + (index + 1)] == "true" && (
+														<IconButton>
+															<CheckCircleIcon />
+														</IconButton>
+													)}
+													{isSubmitting && (
+														<CircularProgress
+															variant="static"
+															className={classes.Progress}
+														/>
+													)}
+												</Grid>
+											))}
+										</Grid>
+									</DialogContent>
+									<DialogActions>
+										{/* {isSubmitting && t("common:cant_revert")}
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 										<div className={classes.wrapper}>
 											<Button
 												disabled={isSubmitting}
@@ -836,7 +932,11 @@ const MatrimonyImageUpload = (props) => {
 													className={classes.Progress}
 												/>
 											)}
+<<<<<<< HEAD
 										</div>
+=======
+										</div> */}
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 									</DialogActions>
 								</Form>
 							);
@@ -860,8 +960,11 @@ const MatrimonyImageUpload = (props) => {
 	);
 };
 
+<<<<<<< HEAD
 MatrimonyImageUpload.propTypes = {
 	className: PropTypes.string,
 };
 
+=======
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 export default withTranslation(["common"])(MatrimonyImageUpload);

@@ -105,6 +105,7 @@ const Basicdetails = ({
 	const [states, setStates] = useState([]);
 	const [district, setDistrict] = useState([]);
 	const [city, setCity] = useState([]);
+	const [formAction, setFormAction] = useState(0);
 	const [profileUpdateSuccess, setProfileUpdateSuccess] = useState(false);
 	const profileSchema = Yup.object().shape({
 		filled_by: Yup.string().required("Required"),
@@ -173,30 +174,22 @@ const Basicdetails = ({
 
 	const _handleSubmit = ({ vals, setSubmitting, resetForm, setFieldError }) => {
 		let payload = new FormData();
-
-		for (var i in vals) {
-			if (Array.isArray(vals[i])) {
-				if (vals[i].length > 0) {
-					payload.append(i, JSON.stringify(vals[i]));
-				}
-			} else {
-				if (vals[i]) {
-					payload.append(i, vals[i]);
-				}
+		let proceed = false;
+		let valKeyArr = Object.keys(vals);
+		for (var i = 0; i < valKeyArr.length; i++) {
+			if (initvalue[valKeyArr[i]] != vals[valKeyArr[i]]) {
+				proceed = true;
+				break;
 			}
 		}
 
-		if (payload) {
-			matrimonyActions
-				.createMatrimony(payload)
-				.then(function (response) {
-					setSubmitting(false);
-					console.log("ressss", response);
-					if (response.data.input_error) {
-						Object.keys(response.data.input_error).forEach((k) => {
-							setFieldError(k, response.data.input_error[k][0]);
-						});
+		if (proceed) {
+			for (var i in vals) {
+				if (Array.isArray(vals[i])) {
+					if (vals[i].length > 0) {
+						payload.append(i, JSON.stringify(vals[i]));
 					}
+<<<<<<< HEAD
 
 					if (response.data.data.id) {
 						setmatrimonyid(response.data.data.id);
@@ -211,9 +204,54 @@ const Basicdetails = ({
 						Object.keys(error.response.data.input_error).forEach((k) => {
 							setFieldError(k, error.response.data.input_error[k][0]);
 						});
+=======
+				} else {
+					if (vals[i]) {
+						payload.append(i, vals[i]);
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 					}
-					console.error("errrrr ", error);
-				});
+				}
+			}
+			if (matrimonyid) {
+				payload.append("metrimony_id", matrimonyid);
+			}
+
+			if (payload) {
+				let action = 0;
+				if (matrimonyid && matrimonyid > 0) {
+					action = 1;
+				}
+
+				matrimonyActions
+					.createMatrimony(payload, action)
+					.then(function (response) {
+						setSubmitting(false);
+						console.log("ressss", response);
+						if (response.data.input_error) {
+							Object.keys(response.data.input_error).forEach((k) => {
+								setFieldError(k, response.data.input_error[k][0]);
+							});
+						}
+
+						if (response.data.data.id) {
+							setmatrimonyid(response.data.data.id);
+							setbasicdetails(response.data.data);
+							nextform();
+							// setProfileUpdateSuccess(() => true);
+						}
+					})
+					.catch(function (error) {
+						setSubmitting(false);
+						if (error.response && error.response.data.input_error) {
+							Object.keys(error.response.data.input_error).forEach((k) => {
+								setFieldError(k, error.response.data.input_error[k][0]);
+							});
+						}
+						console.error("errrrr ", error);
+					});
+			}
+		} else {
+			nextform();
 		}
 	};
 
@@ -249,6 +287,31 @@ const Basicdetails = ({
 		return <MuiTextField {...fieldToTextField(props)} onChange={onChange} />;
 	}
 
+	const initialValues = {
+		filled_by: "",
+		name: "",
+		gender: "",
+		dob_year: "",
+		height: "",
+		religion: "",
+		cast: "",
+		mother_tongue: "",
+		marital_status: "",
+		childrens: "",
+		childrens_living_status: "",
+		manglik_status: "",
+		country: "",
+		state: "",
+		district: "",
+		education: "",
+		proffesion: "",
+		occupation: "",
+		salary: "",
+		gotra: "",
+		living_with_parents_status: "",
+		wedding_budget: "",
+	};
+
 	return (
 		<Card {...rest} className={clsx(classes.root, className)}>
 			{/* <Button type="submit" color="primary" variant="outlined">
@@ -257,6 +320,18 @@ const Basicdetails = ({
 			<Formik
 				enableReinitialize
 				initialValues={initvalue}
+<<<<<<< HEAD
+=======
+				// initialValues={Object.keys(initvalue).reduce(function (state, obj) {
+				// 	try {
+				// 		state[obj] = JSON.parse(initvalue[obj]);
+				// 	} catch (e) {
+				// 		state[obj] = initvalue[obj];
+				// 	}
+
+				// 	return state;
+				// }, {})}
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 				validationSchema={profileSchema}
 				onSubmit={(vals, { setSubmitting, resetForm, setFieldError }) =>
 					_handleSubmit({
@@ -473,7 +548,6 @@ const Basicdetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -707,7 +781,7 @@ const Basicdetails = ({
 											</Box>
 										</Grid>
 
-										<Grid item md={6} xs={12}>
+										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
 													required
@@ -738,7 +812,7 @@ const Basicdetails = ({
 											</Box>
 										</Grid>
 
-										<Grid item md={6} xs={12}>
+										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
 													required
@@ -906,6 +980,7 @@ const Basicdetails = ({
 										) : (
 											t("common:cant_revert")
 										)}
+<<<<<<< HEAD
 										{matrimonyid && matrimonyid > 0 ? (
 											<Button
 												disabled={props.isSubmitting}
@@ -925,6 +1000,17 @@ const Basicdetails = ({
 												Save details
 											</Button>
 										)}
+=======
+
+										<Button
+											disabled={props.isSubmitting}
+											type="submit"
+											color="primary"
+											variant="outlined"
+										>
+											Save details
+										</Button>
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 									</Grid>
 								</Form>
 							</CardContent>

@@ -8,9 +8,18 @@ export const matrimonyActions = {
 	getBasicDetails,
 	getDefaultPrefs,
 	getFamilyDetails,
+<<<<<<< HEAD
 	getLifeStyleDetails,
 	getMatrimonyAds,
 	uploadMatrimonyImage,
+=======
+	editMatrimony,
+	getLifeStyleDetails,
+	getMatrimonyAds,
+	UpdateDefaultPrefs,
+	uploadMatrimonyImage,
+	search,
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 };
 
 function uploadMatrimonyImage(payload) {
@@ -18,8 +27,19 @@ function uploadMatrimonyImage(payload) {
 	return Service.post(apiEndpoint, payload);
 }
 
+<<<<<<< HEAD
 function createMatrimony(payload) {
 	let apiEndpoint = "createMetrimonyId";
+=======
+function createMatrimony(payload, action) {
+	return action == 0
+		? Service.post("createMetrimonyId", payload)
+		: Service.post("editMetrimonyId", payload);
+}
+
+function editMatrimony(payload) {
+	let apiEndpoint = "editMetrimonyId";
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 	return Service.post(apiEndpoint, payload);
 }
 
@@ -30,6 +50,7 @@ function UpdateFamilyDetails(payload) {
 
 function UpdateLifeStyleDetails(payload) {
 	let apiEndpoint = "createUpdateMetrimonyLifeStyle";
+<<<<<<< HEAD
 
 	return Service.post(apiEndpoint, payload);
 }
@@ -38,6 +59,16 @@ function UpdateDefaultPrefs(payload) {
 
 	return Service.post(apiEndpoint, payload);
 }
+=======
+
+	return Service.post(apiEndpoint, payload);
+}
+function UpdateDefaultPrefs(payload) {
+	let apiEndpoint = "createUpdateMetrimonyDefaultSetting";
+
+	return Service.post(apiEndpoint, payload);
+}
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 
 function getDefaultPrefs(payload) {
 	let apiEndpoint = "createUpdateMetrimonyDefaultSetting";
@@ -76,6 +107,12 @@ function getCity(districtid) {
 	let payload = {
 		district_id: districtid,
 	};
+
+	return Service.get(apiEndpoint, payload);
+}
+
+function search(payload) {
+	let apiEndpoint = "metrimonyFilters";
 
 	return Service.get(apiEndpoint, payload);
 }

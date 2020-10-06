@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import { Formik, Field, Form, ErrorMessage, FieldArray } from "formik";
 import Spinner from "../Spinner/spinner";
 import { withTranslation } from "~/i18n";
 import Alert from "../alert/alert";
@@ -99,7 +99,8 @@ const Lifestyledetails = ({
 
 	const classes = useStyles();
 	const { t } = props;
-
+	const digitsOnly = (value) =>
+		/^([0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(value);
 	const [details, setDetails] = useState(props.prefilldata || {});
 	const [loginData, setloginData] = React.useState({});
 	const [states, setStates] = useState([]);
@@ -122,7 +123,26 @@ const Lifestyledetails = ({
 		email: Yup.string().email(),
 		gaurdian_number: Yup.string().length(10, "Invalid Mobile Number"),
 		alternate_number: Yup.string().length(10, "Invalid Mobile Number"),
+<<<<<<< HEAD
 		call_time: Yup.string(),
+=======
+		callTimeFrom: Yup.string()
+			.max(5, "Too Much Characters")
+			.required("Required")
+			.test(
+				"Time Format",
+				"Invalid Time,Please input time in 24-hour format",
+				digitsOnly
+			),
+		callTimeTo: Yup.string()
+			.max(5, "Too Much Characters")
+			.required("Required")
+			.test(
+				"Time Format",
+				"Invalid Time,Please input time in 24-hour format",
+				digitsOnly
+			),
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 	});
 
 	React.useEffect(() => {
@@ -153,6 +173,7 @@ const Lifestyledetails = ({
 	const _handleSubmit = ({ vals, setSubmitting, resetForm, setFieldError }) => {
 		let payload = new FormData();
 		let calltime = vals["callTimeFrom"] + " - " + vals["callTimeTo"];
+<<<<<<< HEAD
 		for (var i in vals) {
 			if (Array.isArray(vals[i])) {
 				if (vals[i].length > 0) {
@@ -182,17 +203,60 @@ const Lifestyledetails = ({
 						setlifetsyledetails(response.data.data);
 						setlifetsyledetailsid(response.data.data.id);
 						nextform();
+=======
+		let proceed = false;
+		let valKeyArr = Object.keys(vals);
+		for (var i = 0; i < valKeyArr.length; i++) {
+			if (initvalue[valKeyArr[i]] != vals[valKeyArr[i]]) {
+				proceed = true;
+				break;
+			}
+		}
+
+		if (proceed) {
+			for (var i in vals) {
+				if (Array.isArray(vals[i])) {
+					if (vals[i].length > 0) {
+						payload.append(i, JSON.stringify(vals[i]));
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 					}
-				})
-				.catch(function (error) {
-					setSubmitting(false);
-					if (error.response.data.input_error) {
-						Object.keys(error.response.data.input_error).forEach((k) => {
-							setFieldError(k, result[k][0]);
-						});
+				} else {
+					if (vals[i] && (i != "callTimeFrom" || i != "callTimeTo")) {
+						payload.append(i, vals[i]);
 					}
-					console.error("errrrr ", error);
-				});
+				}
+			}
+			payload.append("metrimony_id", matrimonyid);
+			if (payload && matrimonyid) {
+				matrimonyActions
+					.UpdateLifeStyleDetails(payload)
+					.then(function (response) {
+						setSubmitting(false);
+						console.log("ressss", response);
+						if (response.data.input_error) {
+							Object.keys(response.data.input_error).forEach((k) => {
+								setFieldError(k, result[k][0]);
+							});
+						}
+
+						if (response.data.data.id) {
+							setlifetsyledetails(response.data.data);
+							setlifetsyledetailsid(response.data.data.id);
+							nextform();
+						}
+					})
+					.catch(function (error) {
+						setSubmitting(false);
+						if (error.response && error.response.data.input_error) {
+							Object.keys(error.response.data.input_error).forEach((k) => {
+								setFieldError(k, error.response.data.input_error[k][0]);
+							});
+						}
+						console.error("errrrr ", error);
+					});
+			}
+		} else {
+			nextform();
 		}
 	};
 
@@ -262,12 +326,13 @@ const Lifestyledetails = ({
 						<div>
 							<CardHeader
 								subheader="The information can be edited"
-								title="Basic Details"
+								title="Lifestyle Details"
 							/>
 							<Divider />
 							<CardContent>
 								<Form>
 									<Grid container spacing={3}>
+<<<<<<< HEAD
 										<Field
 											required
 											onChange={handleChange}
@@ -280,6 +345,8 @@ const Lifestyledetails = ({
 												formprops.errors["father_occupation"]
 											}
 										/>
+=======
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 										<Grid item md={6} xs={12}>
 											<Box margin={1}>
 												<InputLabel shrink={true} htmlFor="Language Speak">
@@ -310,6 +377,7 @@ const Lifestyledetails = ({
 																	label={value}
 																	className={classes.chip}
 																/>
+<<<<<<< HEAD
 															))}
 														</div>
 													)}
@@ -470,11 +538,17 @@ const Lifestyledetails = ({
 																	label={value}
 																	className={classes.chip}
 																/>
+=======
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 															))}
 														</div>
 													)}
 												>
+<<<<<<< HEAD
 													{hobbies.map((option, index) => (
+=======
+													{languages.map((option, index) => (
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 														<MenuItem key={index} value={option}>
 															{option}
 														</MenuItem>
@@ -483,22 +557,188 @@ const Lifestyledetails = ({
 											</Box>
 										</Grid>
 
+<<<<<<< HEAD
 										<Grid item md={6} xs={12}>
 											<Box margin={1}>
 												<InputLabel shrink={true} htmlFor="Interest">
 													Interest
+=======
+										<Grid item md={4} xs={12}>
+											<Box margin={1}>
+												<Field
+													required
+													onChange={handleChange}
+													fullWidth
+													component={TextField}
+													type="text"
+													name="diatery_habits"
+													label="Diatery Habits"
+													select
+													variant="standard"
+													helperText={
+														formprops.errors.hasOwnProperty("diatery_habits") &&
+														formprops.errors["diatery_habits"]
+													}
+													margin="dense"
+													InputLabelProps={{
+														shrink: true,
+													}}
+												>
+													{diatery_habits.map((option, index) => (
+														<MenuItem key={index} value={option}>
+															{option}
+														</MenuItem>
+													))}
+												</Field>
+											</Box>
+										</Grid>
+
+										<Grid item md={4} xs={12}>
+											<Box margin={1}>
+												<Field
+													onChange={handleChange}
+													fullWidth
+													component={TextField}
+													type="text"
+													name="drinking_habits"
+													label="Drinking Habits"
+													select
+													variant="standard"
+													helperText={
+														formprops.hasOwnProperty("drinking_habits") &&
+														formprops.errors["drinking_habits"]
+													}
+													margin="dense"
+													InputLabelProps={{
+														shrink: true,
+													}}
+												>
+													{OcassionallyBoolean.map((option, index) => (
+														<MenuItem key={index} value={index + 1}>
+															{option}
+														</MenuItem>
+													))}
+												</Field>
+											</Box>
+										</Grid>
+
+										<Grid item md={4} xs={12}>
+											<Box margin={1}>
+												<Field
+													onChange={handleChange}
+													fullWidth
+													component={TextField}
+													type="text"
+													name="smoking_habits"
+													label="Smoking Habits"
+													select
+													variant="standard"
+													helperText={
+														formprops.errors.hasOwnProperty("smoking_habits") &&
+														formprops.errors["smoking_habits"]
+													}
+													margin="dense"
+													InputLabelProps={{
+														shrink: true,
+													}}
+												>
+													{OcassionallyBoolean.map((option, index) => (
+														<MenuItem key={index} value={index + 1}>
+															{option}
+														</MenuItem>
+													))}
+												</Field>
+											</Box>
+										</Grid>
+
+										<Grid item md={4} xs={12}>
+											<Box margin={1}>
+												<Field
+													onChange={handleChange}
+													fullWidth
+													component={TextField}
+													type="text"
+													name="house_own"
+													label="Do you Own a House?"
+													select
+													variant="standard"
+													helperText={
+														formprops.errors.hasOwnProperty("house_own") &&
+														formprops.errors["house_own"]
+													}
+													margin="dense"
+													InputLabelProps={{
+														shrink: true,
+													}}
+												>
+													{["Yes", "No", "Looking For!"].map(
+														(option, index) => (
+															<MenuItem key={index} value={index + 1}>
+																{option}
+															</MenuItem>
+														)
+													)}
+												</Field>
+											</Box>
+										</Grid>
+
+										<Grid item md={4} xs={12}>
+											<Box margin={1}>
+												<Field
+													onChange={handleChange}
+													fullWidth
+													component={TextField}
+													type="text"
+													name="car_own"
+													label="Do you Own a Car?"
+													select
+													variant="standard"
+													helperText={
+														formprops.errors.hasOwnProperty("car_own") &&
+														formprops.errors["car_own"]
+													}
+													margin="desnse"
+													InputLabelProps={{
+														shrink: true,
+													}}
+												>
+													{["Yes", "No", "Looking For!"].map(
+														(option, index) => (
+															<MenuItem key={index} value={index + 1}>
+																{option}
+															</MenuItem>
+														)
+													)}
+												</Field>
+											</Box>
+										</Grid>
+
+										<Grid item md={6} xs={12}>
+											<Box margin={1}>
+												<InputLabel shrink={true} htmlFor="Hobbies">
+													Hobbies
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 												</InputLabel>
 												<Field
 													fullWidth
 													component={Select}
 													type="text"
+<<<<<<< HEAD
 													name="interest"
+=======
+													name="hobbies"
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 													multiple={true}
 													onChange={handleChange}
 													variant="standard"
 													helperText={
+<<<<<<< HEAD
 														formprops.errors.hasOwnProperty("interest") &&
 														formprops.errors["interest"]
+=======
+														formprops.errors.hasOwnProperty("hobbies") &&
+														formprops.errors["hobbies"]
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 													}
 													margin="dense"
 													InputLabelProps={{
@@ -516,6 +756,68 @@ const Lifestyledetails = ({
 														</div>
 													)}
 												>
+<<<<<<< HEAD
+													{interest.map((option, index) => (
+=======
+													{hobbies.map((option, index) => (
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
+														<MenuItem key={index} value={option}>
+															{option}
+														</MenuItem>
+													))}
+												</Field>
+											</Box>
+										</Grid>
+
+										<Grid item md={6} xs={12}>
+											<Box margin={1}>
+<<<<<<< HEAD
+												<InputLabel shrink={true} htmlFor="Sports">
+													Sports
+=======
+												<InputLabel shrink={true} htmlFor="Interest">
+													Interest
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
+												</InputLabel>
+												<Field
+													fullWidth
+													component={Select}
+													type="text"
+<<<<<<< HEAD
+													name="sports"
+=======
+													name="interest"
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
+													multiple={true}
+													onChange={handleChange}
+													variant="standard"
+													helperText={
+<<<<<<< HEAD
+														formprops.errors.hasOwnProperty("sports") &&
+														formprops.errors["sports"]
+=======
+														formprops.errors.hasOwnProperty("interest") &&
+														formprops.errors["interest"]
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
+													}
+													margin="dense"
+													InputLabelProps={{
+														shrink: true,
+													}}
+													renderValue={(selected) => (
+														<div className={classes.chips}>
+															{selected.map((value) => (
+																<Chip
+																	key={value}
+																	label={value}
+																	className={classes.chip}
+																/>
+															))}
+														</div>
+													)}
+												>
+<<<<<<< HEAD
+=======
 													{interest.map((option, index) => (
 														<MenuItem key={index} value={option}>
 															{option}
@@ -558,6 +860,7 @@ const Lifestyledetails = ({
 														</div>
 													)}
 												>
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 													{sports.map((option, index) => (
 														<MenuItem key={index} value={option}>
 															{option}
@@ -604,7 +907,11 @@ const Lifestyledetails = ({
 															"gaurdian_number"
 														) && formprops.errors["gaurdian_number"]
 													}
+<<<<<<< HEAD
 													margin="normal"
+=======
+													margin="dense"
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 													InputLabelProps={{
 														shrink: true,
 													}}
@@ -627,13 +934,18 @@ const Lifestyledetails = ({
 															"alternate_number"
 														) && formprops.errors["alternate_number"]
 													}
+<<<<<<< HEAD
 													margin="normal"
+=======
+													margin="dense"
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 													InputLabelProps={{
 														shrink: true,
 													}}
 												></Field>
 											</Box>
 										</Grid>
+<<<<<<< HEAD
 
 										<Grid item md={4} xs={12}>
 											<InputLabel shrink={true}>Call Timings</InputLabel>
@@ -662,6 +974,70 @@ const Lifestyledetails = ({
 													/>
 												</Grid>
 											</Grid>
+=======
+										<Grid item xs={6}>
+											<Typography variant="body2" gutterBottom>
+												Call Timings
+											</Typography>
+											<div style={{ marginBottom: 20 }}>
+												<div>
+													<Grid container spacing={2}>
+														<Grid item xs={6}>
+															<Field
+																variant="outlined"
+																fullWidth
+																label="From"
+																onKeyPress={(e) => {
+																	if (
+																		e.keyCode != 8 &&
+																		(formprops.values[e.target.name] === 2 ||
+																			formprops.values[e.target.name] === 5)
+																	) {
+																		formprops.setFieldValue(
+																			e.target.name,
+																			(formprops.values[e.target.name] += ":")
+																		);
+																	}
+																	//collapse double colons
+																	formprops.setFieldValue(
+																		e.target.name,
+																		formprops.values[e.target.name].replace(
+																			/:+/g,
+																			":"
+																		)
+																	);
+																}}
+																component={TextField}
+																type="text"
+																name="callTimeFrom"
+																helperText={
+																	formprops.errors.hasOwnProperty(
+																		"callTimeFrom"
+																	) && formprops.errors["callTimeFrom"]
+																}
+																style={{ marginRight: 10 }}
+															/>
+														</Grid>
+														<Grid item xs={6}>
+															<Field
+																variant="outlined"
+																fullWidth
+																label="To"
+																component={TextField}
+																name="callTimeTo"
+																helperText={
+																	formprops.errors.hasOwnProperty(
+																		"callTimeTo"
+																	) && formprops.errors["callTimeTo"]
+																}
+																type="text"
+																style={{ marginRight: 10 }}
+															/>
+														</Grid>
+													</Grid>
+												</div>
+											</div>
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 										</Grid>
 
 										<Grid item md={4} xs={12}>
@@ -679,7 +1055,11 @@ const Lifestyledetails = ({
 														formprops.errors.hasOwnProperty("disability") &&
 														formprops.errors["disability"]
 													}
+<<<<<<< HEAD
 													margin="normal"
+=======
+													margin="dense"
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 													InputLabelProps={{
 														shrink: true,
 													}}
@@ -708,6 +1088,7 @@ const Lifestyledetails = ({
 										) : (
 											t("common:cant_revert")
 										)}
+<<<<<<< HEAD
 										{lifetsyledetailsid && lifetsyledetailsid > 0 ? (
 											<Button
 												color="primary"
@@ -726,6 +1107,16 @@ const Lifestyledetails = ({
 												Save details
 											</Button>
 										)}
+=======
+										<Button
+											disabled={formprops.isSubmitting}
+											type="submit"
+											color="primary"
+											variant="outlined"
+										>
+											Save details
+										</Button>
+>>>>>>> 2eb69cad9f98587f8f61f10b85e899630956e00b
 									</Grid>
 								</Form>
 							</CardContent>
