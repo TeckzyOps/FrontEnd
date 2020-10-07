@@ -14,11 +14,13 @@ import Settings from "./Settings";
 import MobileMenu from "./MobileMenu";
 import logo from "~/static/home/navbarLogo.jpg";
 import "~/vendors/hamburger-menu.css";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import useStyles from "./header-style";
 import { useAuth } from "../provider/Auth";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
+import LocationCityIcon from "@material-ui/icons/LocationCity";
 import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
 import routerLink from "~/static/text/link";
 
@@ -48,6 +50,7 @@ function Header(props) {
 	const { logout } = useAuth();
 	const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 	const [anchorEl, setAnchorEl] = React.useState(null);
+	const [LocationanchorEl, setLocationanchorEl] = React.useState(null);
 	const [details, setDetails] = useState({});
 	let flagFixed = false;
 	const handleScroll = () => {
@@ -65,6 +68,7 @@ function Header(props) {
 	const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
 	const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 	const isMenuOpen = Boolean(anchorEl);
+	const isLocationMenuOpen = Boolean(LocationanchorEl);
 	useEffect(() => {
 		handleScroll();
 		if (localStorageService.getAccessToken()) {
@@ -75,6 +79,9 @@ function Header(props) {
 	}, []);
 	const handleProfileMenuOpen = (event) => {
 		setAnchorEl(event.currentTarget);
+	};
+	const handleLocationMenuOpen = (event) => {
+		setLocationanchorEl(event.currentTarget);
 	};
 	const [menuList] = useState([
 		createData(navMenu[0], "#" + navMenu[0]),
@@ -90,14 +97,36 @@ function Header(props) {
 		setOpenDrawer(!openDrawer);
 	};
 	const menuId = "primary-search-account-menu";
+	const LocationmenuId = "primary-Location-menu";
 	const handleMenuClose = () => {
 		setAnchorEl(null);
+		setLocationanchorEl(null);
 	};
 	const handleLogout = () => {
 		setAnchorEl(null);
 		handleMenuClose();
 		logout();
 	};
+
+	const renderLocationMenu = (
+		<Menu
+			anchorEl={LocationanchorEl}
+			anchorOrigin={{ vertical: "top", horizontal: "right" }}
+			id={LocationmenuId}
+			keepMounted
+			transformOrigin={{ vertical: "top", horizontal: "right" }}
+			open={isLocationMenuOpen}
+			onClose={handleMenuClose}
+		>
+			<Link>
+				<MenuItem onClick={handleMenuClose}>Mumbai</MenuItem>
+			</Link>
+			<Link>
+				<MenuItem onClick={handleMenuClose}>Lucknow</MenuItem>
+			</Link>
+		</Menu>
+	);
+
 	const renderMenu = (
 		<Menu
 			anchorEl={anchorEl}
@@ -174,8 +203,19 @@ function Header(props) {
 
 							{isAuthenticated ? (
 								<div>
+									<IconButton
+										aria-controls={LocationmenuId}
+										aria-haspopup="true"
+										onClick={handleLocationMenuOpen}
+										color="primary"
+									>
+										<LocationCityIcon color="primary" />
+									</IconButton>
 									<IconButton color="primary">
 										<PersonAddIcon color="primary" />
+									</IconButton>
+									<IconButton color="primary">
+										<ShoppingCartIcon color="primary" />
 									</IconButton>
 									<IconButton color="inherit">
 										<Badge badgeContent={4} color="primary">
@@ -212,6 +252,7 @@ function Header(props) {
 				</Container>
 			</AppBar>
 			{renderMenu}
+			{renderLocationMenu}
 		</Fragment>
 	);
 }
