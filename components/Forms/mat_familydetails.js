@@ -112,10 +112,20 @@ const Familydetails = ({
 		metrimony_id: Yup.string().required("Required"),
 		father_occupation: Yup.string().required("Required"),
 		mother_occupation: Yup.string().required("Required"),
-		brother_count: Yup.string().required("Required"),
-		brother_married_count: Yup.string().required("Required"),
-		sister_count: Yup.string().required("Required"),
-		sister_married_count: Yup.string().required("Required"),
+		brother_count: Yup.string().required("Required").nullable(),
+		brother_married_count: Yup.string().when(
+			"brother_count",
+			(brother_count, schema) => {
+				return brother_count >= 1 ? schema.required("Required") : schema;
+			}
+		),
+		sister_count: Yup.string().required("Required").nullable(),
+		sister_married_count: Yup.string().when(
+			"sister_count",
+			(sister_count, schema) => {
+				return sister_count >= 1 ? schema.required("Required") : schema;
+			}
+		),
 		family_status: Yup.string().required("Required"),
 		country: Yup.string().required("Required"),
 		state: Yup.string().required("Required"),
@@ -282,7 +292,6 @@ const Familydetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -306,7 +315,6 @@ const Familydetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -330,7 +338,6 @@ const Familydetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -353,7 +360,6 @@ const Familydetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -381,7 +387,6 @@ const Familydetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -404,7 +409,6 @@ const Familydetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -454,7 +458,6 @@ const Familydetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -477,7 +480,6 @@ const Familydetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -507,7 +509,6 @@ const Familydetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={CustomTextField}
@@ -537,7 +538,6 @@ const Familydetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}

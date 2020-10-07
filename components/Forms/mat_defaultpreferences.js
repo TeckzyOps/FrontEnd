@@ -275,7 +275,6 @@ const DefaultPrefs = ({
 								<Form>
 									<Grid container spacing={3}>
 										<Field
-											required
 											onChange={handleChange}
 											component={TextField}
 											type="hidden"
@@ -289,7 +288,6 @@ const DefaultPrefs = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}

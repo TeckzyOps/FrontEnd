@@ -70,7 +70,7 @@ const index = (props) => {
 							<div>
 								<Typography variant="h6">Add More Profile</Typography>
 								<Typography variant="subtitle" component="h2">
-									Join You Frined
+									Join You Friend
 								</Typography>
 							</div>
 							<div className={classes.col}>

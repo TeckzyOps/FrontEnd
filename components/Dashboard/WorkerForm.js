@@ -113,7 +113,7 @@ const workerform = (props) => {
 	});
 
 	const [profileUpdateSuccess, setProfileUpdateSuccess] = useState(false);
-
+	const id = props.router.query.id;
 	React.useEffect(() => {
 		if (props.router.query.id) {
 			workerActions
@@ -211,6 +211,9 @@ const workerform = (props) => {
 		payload.append("want_advertisement", want_advertisement);
 		payload.append("except_shaadiwala_offer", except_shaadiwala_offer);
 		payload.delete("doc_type");
+		if (id) {
+			payload.append("freelancer_id", id);
+		}
 		if (payload) {
 			workerActions
 				.createWorker(payload)
@@ -249,7 +252,18 @@ const workerform = (props) => {
 			/>
 		);
 	};
-
+	function validURL(str) {
+		var pattern = new RegExp(
+			"^(https?:\\/\\/)?" + // protocol
+				"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+				"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+				"(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+				"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+				"(\\#[-a-z\\d_]*)?$",
+			"i"
+		); // fragment locator
+		return !!pattern.test(str);
+	}
 	const profileSchema = Yup.object().shape({
 		service_category: Yup.string().required("Required"),
 		sub_service: Yup.string().required("Required"),
@@ -267,41 +281,49 @@ const workerform = (props) => {
 		google_location: Yup.string(),
 		work_prefer: Yup.string().required("Required"),
 		noc_file_path: Yup.mixed()
-			.test("fileSize", "File Size is too large", (value) => {
-				if (value) {
-					return value.size <= 2000000;
-				} else {
-					return true;
+			.test("filevalid", "Remote File Error", (value) => {
+				if (null != value && !validURL(value)) {
+					return false;
 				}
+				return true;
+			})
+			.test("fileSize", "File Size is too large", (value) => {
+				if (null != value && value.size) {
+					return value.size <= 2000000;
+				}
+				return true;
 			})
 			.test(
 				"fileType",
 				"Unsupported File Format, Upload a PDF file",
 				(value) => {
-					if (value) {
+					if (null != value && value.type) {
 						return ["application/pdf"].includes(value.type);
-					} else {
-						return true;
 					}
+					return true;
 				}
 			),
 		license_file_path: Yup.mixed()
-			.test("fileSize", "File Size is too large", (value) => {
-				if (value) {
-					return value.size <= 2000000;
-				} else {
-					return true;
+			.test("filevalid", "Remote File Error", (value) => {
+				if (null != value && !validURL(value)) {
+					return false;
 				}
+				return true;
+			})
+			.test("fileSize", "File Size is too large", (value) => {
+				if (null != value && value.size) {
+					return value.size <= 2000000;
+				}
+				return true;
 			})
 			.test(
 				"fileType",
 				"Unsupported File Format, Upload a PDF file",
 				(value) => {
-					if (value) {
+					if (null != value && value.type) {
 						return ["application/pdf"].includes(value.type);
-					} else {
-						return true;
 					}
+					return true;
 				}
 			),
 	});

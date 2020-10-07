@@ -264,6 +264,9 @@ const vendorform = (props) => {
 		payload.append("want_advertisement", want_advertisement);
 		payload.append("except_shaadiwala_offer", except_shaadiwala_offer);
 		payload.delete("doc_type");
+		if (id) {
+			payload.append("freelancer_id", id);
+		}
 		if (payload) {
 			vendorActions
 				.createVendor(payload)
@@ -321,24 +324,28 @@ const vendorform = (props) => {
 		catalog_pdf_match: Yup.string(),
 		offer_tagline: Yup.string(),
 		shadiwala_offer_files: Yup.mixed()
-			.test("fileSize", "File Size is too large", (value) => {
-				if (value) {
-					return value.size <= 2000000;
-				} else {
-					return true;
+			.test("filevalid", "Remote File Error", (value) => {
+				if (null != value && !validURL(value)) {
+					return false;
 				}
+				return true;
+			})
+			.test("fileSize", "File Size is too large", (value) => {
+				if (null != value && value.size) {
+					return value.size <= 2000000;
+				}
+				return true;
 			})
 			.test(
 				"fileType",
 				"Unsupported File Format, Upload a JPEG,JPG or PNG file",
 				(value) => {
-					if (value) {
+					if (null != value && value.type) {
 						return ["image/png", "image/jpg", "image/jpeg"].includes(
 							value.type
 						);
-					} else {
-						return true;
 					}
+					return true;
 				}
 			),
 		commission_percent: Yup.string().required("Required"),
@@ -346,80 +353,97 @@ const vendorform = (props) => {
 		max_commission: Yup.string().required("Required"),
 		advertisement_file_path: Yup.mixed()
 			.test("fileSize", "File Size is too large", (value) => {
-				if (value) {
+				if (null != value && value.size) {
 					return value.size <= 2000000;
-				} else {
-					return true;
 				}
+				return true;
 			})
 			.test(
 				"fileType",
 				"Unsupported File Format, Upload a JPEG,JPG or PNG file",
 				(value) => {
-					if (value) {
+					if (null != value && value.type) {
 						return ["image/png", "image/jpg", "image/jpeg"].includes(
 							value.type
 						);
-					} else {
-						return true;
 					}
-				}
-			),
-		gst_file_path: Yup.mixed()
-			.test("fileSize", "File Size is too large", (value) => {
-				if (value) {
-					return value.size <= 2000000;
-				} else {
 					return true;
 				}
+			)
+			.test("filevalid", "Remote File Error", (value) => {
+				if (null != value && !validURL(value)) {
+					return false;
+				}
+				return true;
+			}),
+		gst_file_path: Yup.mixed()
+			.test("filevalid", "Remote File Error", (value) => {
+				if (null != value && !validURL(value)) {
+					return false;
+				}
+				return true;
+			})
+			.test("fileSize", "File Size is too large", (value) => {
+				if (null != value && value.size) {
+					return value.size <= 2000000;
+				}
+				return true;
 			})
 			.test(
 				"fileType",
 				"Unsupported File Format, Upload a PDF file",
 				(value) => {
-					if (value) {
+					if (null != value && value.type) {
 						return ["application/pdf"].includes(value.type);
-					} else {
-						return true;
 					}
+					return true;
 				}
 			),
 		license_file_path: Yup.mixed()
-			.test("fileSize", "File Size is too large", (value) => {
-				if (value) {
-					return value.size <= 2000000;
-				} else {
-					return true;
+			.test("filevalid", "Remote File Error", (value) => {
+				if (null != value && !validURL(value)) {
+					return false;
 				}
+				return true;
+			})
+			.test("fileSize", "File Size is too large", (value) => {
+				if (null != value && value.size) {
+					return value.size <= 2000000;
+				}
+				return true;
 			})
 			.test(
 				"fileType",
 				"Unsupported File Format, Upload a PDF file",
 				(value) => {
-					if (value) {
+					if (null != value && value.type) {
 						return ["application/pdf"].includes(value.type);
-					} else {
-						return true;
 					}
+					return true;
 				}
 			),
 		certificate_file_path: Yup.mixed()
-			.test("fileSize", "File Size is too large", (value) => {
-				if (value) {
-					return value.size <= 2000000;
-				} else {
-					return true;
+
+			.test("filevalid", "Remote File Error", (value) => {
+				if (null != value && !validURL(value)) {
+					return false;
 				}
+				return true;
+			})
+			.test("fileSize", "File Size is too large", (value) => {
+				if (null != value && value.size) {
+					return value.size <= 2000000;
+				}
+				return true;
 			})
 			.test(
 				"fileType",
 				"Unsupported File Format, Upload a PDF file",
 				(value) => {
-					if (value) {
+					if (null != value && value.type) {
 						return ["application/pdf"].includes(value.type);
-					} else {
-						return true;
 					}
+					return true;
 				}
 			),
 	});

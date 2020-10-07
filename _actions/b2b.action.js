@@ -12,7 +12,7 @@ export const b2bActions = {
 
 function createB2b(payload) {
 	let apiEndpoint = "";
-	if (payload.b2b_id) {
+	if (payload.get("b2b_id")) {
 		apiEndpoint = "editB2bId";
 	} else {
 		apiEndpoint = "createB2bId";
