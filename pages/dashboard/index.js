@@ -60,13 +60,13 @@ function UserDashboard(props) {
 							<TopSlider />
 						</Container>
 					</section>
-					<section className={clsx(classes.spaceTop, "my-5")} id="feature">
-						<Container fixed>
-							<Paper elevation={0}>
-								<Feature />
-							</Paper>
-						</Container>
-					</section>
+
+					<Container fixed>
+						<Paper elevation={0}>
+							<Feature />
+						</Paper>
+					</Container>
+
 					{/* <section className={classes.pageSection}>
 						<Counter />
 					</section> */}
