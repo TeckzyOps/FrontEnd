@@ -678,7 +678,7 @@ export const cities = {
 		"Nayabazar",
 	],
 	"New Delhi, Central, South West and South": ["New Delhi Municipal Council"],
-	"North Goa ": [
+	"North Goa": [
 		"Aldona",
 		"Bambolim",
 		"Bandora",

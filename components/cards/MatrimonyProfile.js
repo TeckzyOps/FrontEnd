@@ -46,9 +46,7 @@ import {
 let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
 const useStyles = makeStyles((theme) => ({
-	root: {
-		display: "flex",
-	},
+	root: { paddingTop: "11vh", display: "flex" },
 	details: {
 		display: "flex",
 		flexDirection: "column",

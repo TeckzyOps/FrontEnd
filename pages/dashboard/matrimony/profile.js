@@ -114,10 +114,7 @@ function a11yPropsMob(index) {
 	};
 }
 const useStyles = makeStyles((theme) => ({
-	root: {
-		display: "flex",
-		flexGrow: 1,
-	},
+	root: { paddingTop: "11vh", display: "flex", flexGrow: 1 },
 	card: {
 		minWidth: 275,
 	},

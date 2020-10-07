@@ -21,7 +21,10 @@ import service from "./../utils/ApiService";
 import Notification from "../components/Notification";
 import Subscribe from "../components/Subscribe";
 import Pricing from "../components/Pricing";
-
+import routerLink from "~/static/text/link";
+import { useRouter } from "next/router";
+import LocalStorageService from "../_services/LocalStorageService";
+const localStorageService = LocalStorageService.getService();
 const sectionMargin = (margin) => margin * 2;
 const useStyles = makeStyles((theme) => ({
 	mainWrap: {
@@ -43,7 +46,13 @@ const useStyles = makeStyles((theme) => ({
 function Landing(props) {
 	const classes = useStyles();
 	const { onToggleDark, onToggleDir } = props;
-	console.log(service);
+	const router = useRouter();
+	React.useEffect(() => {
+		if (localStorageService.getAccessToken()) {
+			router.push(routerLink.starter.dashboard);
+		}
+	}, []);
+
 	return (
 		<React.Fragment>
 			<Head>
@@ -62,13 +71,13 @@ function Landing(props) {
 							<TopSlider />
 						</Container>
 					</section>
-					<section className={clsx(classes.spaceTop, "my-5")} id="feature">
-						<Container fixed>
-							<Paper elevation={0}>
-								<Feature />
-							</Paper>
-						</Container>
-					</section>
+
+					<Container fixed>
+						<Paper elevation={0}>
+							<Feature />
+						</Paper>
+					</Container>
+
 					{/* <section className={classes.pageSection}>
 						<Counter />
 					</section> */}
@@ -98,9 +107,28 @@ function Landing(props) {
 	);
 }
 
-Landing.getInitialProps = async () => ({
-	namespacesRequired: ["common"],
-});
+Landing.getInitialProps = (ctx) => {
+	let token = null;
+	if (typeof localStorage !== "undefined") {
+		token = localStorage.getItem("token");
+	} else if (ctx.req) {
+		token = ctx.req.headers.cookie.token;
+	}
+
+	if (token) {
+		if (ctx.res) {
+			// Seems to be the version used by zeit
+			ctx.res.writeHead(302, {
+				Location: routerLink.starter.dashboard,
+				// Add the content-type for SEO considerations
+				"Content-Type": "text/html; charset=utf-8",
+			});
+			ctx.res.end();
+		}
+	}
+
+	return { namespacesRequired: ["common"] };
+};
 
 Landing.propTypes = {
 	onToggleDark: PropTypes.func.isRequired,

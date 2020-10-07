@@ -11,7 +11,6 @@ import Grid from "@material-ui/core/Grid";
 // import StarIcon from '@material-ui/icons/StarBorder';
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
-
 import {
 	createMuiTheme,
 	responsiveFontSizes,
@@ -20,36 +19,46 @@ import {
 } from "@material-ui/core/styles";
 import { useTextAlign } from "~/theme/common";
 import Link from "next/link";
-import links from "~/static/text/link.js";
-import worker from "~/static/images/worker.svg";
-import seller from "~/static/images/seller.svg";
-import vendor from "~/static/images/vendor.svg";
-import bride from "~/static/images/bride.svg";
-import freelance from "~/static/images/freelance.svg";
+import routerLink from "~/static/text/link";
+import worker from "~/static/home/worker.jpg";
+import seller from "~/static/home/seller.jpg";
+import vendor from "~/static/home/vendor.jpg";
+import grooms from "~/static/home/grooms.jpg";
+import freelance from "~/static/home/freelancer.jpg";
+import b2b from "~/static/home/b2b.jpg";
 let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
 
 const tiers = [
 	{
 		title: "Groom/Bride",
-		imgsrc: bride,
-		url: links.starter.matrimony,
+		imgsrc: grooms,
+		url: routerLink.starter.matrimony,
 	},
 	{
 		title: "Freelancing",
 		imgsrc: freelance,
-		url: links.starter.freelancer,
+		url: routerLink.starter.freelancer,
 	},
-	{ title: "Vendor", imgsrc: vendor, url: links.starter.vendor },
+	{
+		title: "Vendor",
+		imgsrc: vendor,
+		url: routerLink.starter.vendor,
+	},
 	{
 		title: "Seller",
 		imgsrc: seller,
-		url: links.starter.seller,
+		url: routerLink.starter.seller,
 	},
 	{
 		title: "Worker",
 		imgsrc: worker,
-		url: links.starter.worker,
+		url: routerLink.starter.worker,
+	},
+	{
+		title: "B2B Market",
+		imgsrc: b2b,
+		url: routerLink.starter.b2b,
 	},
 ];
 
@@ -76,17 +85,23 @@ export default function SquareCards() {
 
 	return (
 		<div className={classes.root}>
-			<Grid justify="center" container spacing={3}>
+			<Grid justify="center" container spacing={5}>
 				{tiers.map((tier, i) => (
-					<Link href={tier.url}>
-						<Grid key={i} item sm={4} xs={4} md>
+					<Grid key={i} item sm={4} xs={4} md>
+						<div>
 							<IconButton
+								style={{ textDecoration: "none" }}
+								href={tier.url}
 								variant="outlined"
 								color="secondary"
 								className={classes.standarsbtn}
 								aria-label={tier.title}
 							>
-								<img src={tier.imgsrc} width="50%" />
+								<img
+									src={tier.imgsrc}
+									width="130%"
+									style={{ borderRadius: "10px" }}
+								/>
 							</IconButton>
 							<br />
 							<MuiThemeProvider theme={theme}>
@@ -94,8 +109,8 @@ export default function SquareCards() {
 									{tier.title}
 								</Typography>
 							</MuiThemeProvider>
-						</Grid>
-					</Link>
+						</div>
+					</Grid>
 				))}
 			</Grid>
 		</div>

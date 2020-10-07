@@ -222,13 +222,15 @@ const freelancerform = (props) => {
 		let payload = new FormData();
 
 		for (var i in vals) {
-			if (Array.isArray(vals[i])) {
-				if (vals[i].length > 0) {
-					payload.append(i, JSON.stringify(vals[i]));
-				}
-			} else {
-				if (vals[i]) {
-					payload.append(i, vals[i]);
+			if (!Object.values(fileDropdown).includes(i)) {
+				if (Array.isArray(vals[i])) {
+					if (vals[i].length > 0) {
+						payload.append(i, JSON.stringify(vals[i]));
+					}
+				} else {
+					if (vals[i]) {
+						payload.append(i, vals[i]);
+					}
 				}
 			}
 		}
@@ -263,6 +265,9 @@ const freelancerform = (props) => {
 		payload.append("want_advertisement", want_advertisement);
 		payload.append("except_shaadiwala_offer", except_shaadiwala_offer);
 		payload.delete("doc_type");
+		if (id) {
+			payload.append("freelancer_id", id);
+		}
 		if (payload) {
 			freelancerActions
 				.createFreelancer(payload)
@@ -301,7 +306,18 @@ const freelancerform = (props) => {
 			/>
 		);
 	};
-
+	function validURL(str) {
+		var pattern = new RegExp(
+			"^(https?:\\/\\/)?" + // protocol
+				"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+				"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+				"(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+				"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+				"(\\#[-a-z\\d_]*)?$",
+			"i"
+		); // fragment locator
+		return !!pattern.test(str);
+	}
 	const profileSchema = Yup.object().shape({
 		service_category: Yup.string().required("Required"),
 		sub_service: Yup.string().required("Required"),
@@ -321,22 +337,26 @@ const freelancerform = (props) => {
 		offer_tagline: Yup.string(),
 		shadiwala_offer_files: Yup.mixed()
 			.test("fileSize", "File Size is too large", (value) => {
-				if (value) {
+				if (validURL(value) || null == value) {
+					return true;
+				} else if (value) {
 					return value.size <= 2000000;
 				} else {
-					return true;
+					return false;
 				}
 			})
 			.test(
 				"fileType",
 				"Unsupported File Format, Upload a JPEG,JPG or PNG file",
 				(value) => {
-					if (value) {
+					if (validURL(value) || null == value) {
+						return true;
+					} else if (value) {
 						return ["image/png", "image/jpg", "image/jpeg"].includes(
 							value.type
 						);
 					} else {
-						return true;
+						return false;
 					}
 				}
 			),
@@ -345,79 +365,95 @@ const freelancerform = (props) => {
 		max_commission: Yup.string().required("Required"),
 		advertisement_file_path: Yup.mixed()
 			.test("fileSize", "File Size is too large", (value) => {
-				if (value) {
+				if (validURL(value) || null == value) {
+					return true;
+				} else if (value) {
 					return value.size <= 2000000;
 				} else {
-					return true;
+					return false;
 				}
 			})
 			.test(
 				"fileType",
 				"Unsupported File Format, Upload a JPEG,JPG or PNG file",
 				(value) => {
-					if (value) {
+					if (validURL(value) || null == value) {
+						return true;
+					} else if (value) {
 						return ["image/png", "image/jpg", "image/jpeg"].includes(
 							value.type
 						);
 					} else {
-						return true;
+						return false;
 					}
 				}
 			),
 		gst_file_path: Yup.mixed()
 			.test("fileSize", "File Size is too large", (value) => {
-				if (value) {
+				if (validURL(value) || null == value) {
+					return true;
+				} else if (value) {
 					return value.size <= 2000000;
 				} else {
-					return true;
+					return false;
 				}
 			})
 			.test(
 				"fileType",
 				"Unsupported File Format, Upload a PDF file",
 				(value) => {
-					if (value) {
+					if (validURL(value) || null == value) {
+						return true;
+					} else if (value) {
 						return ["application/pdf"].includes(value.type);
 					} else {
-						return true;
+						return false;
 					}
 				}
 			),
 		license_file_path: Yup.mixed()
 			.test("fileSize", "File Size is too large", (value) => {
-				if (value) {
+				if (validURL(value) || null == value) {
+					return true;
+				} else if (value) {
 					return value.size <= 2000000;
 				} else {
-					return true;
+					return false;
 				}
 			})
 			.test(
 				"fileType",
 				"Unsupported File Format, Upload a PDF file",
 				(value) => {
-					if (value) {
+					if (validURL(value) || null == value) {
+						return true;
+					} else if (value) {
 						return ["application/pdf"].includes(value.type);
 					} else {
-						return true;
+						return false;
 					}
 				}
 			),
 		certificate_file_path: Yup.mixed()
 			.test("fileSize", "File Size is too large", (value) => {
-				if (value) {
+				if (validURL(value) || null == value) {
+					return true;
+				} else if (value) {
 					return value.size <= 2000000;
 				} else {
-					return true;
+					return false;
 				}
 			})
 			.test(
 				"fileType",
 				"Unsupported File Format, Upload a PDF file",
 				(value) => {
-					if (value) {
+					if (validURL(value) || null == value) {
+						return true;
+					} else if (value) {
 						return ["application/pdf"].includes(value.type);
 					} else {
-						return true;
+						return false;
 					}
 				}
 			),

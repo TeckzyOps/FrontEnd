@@ -13,9 +13,7 @@ const localStorageService = LocalStorageService.getService();
 
 import { profileActions } from "../../_actions/profile.action";
 const useStyles = makeStyles((theme) => ({
-	root: {
-		padding: theme.spacing(4),
-	},
+	root: { paddingTop: "11vh" },
 }));
 
 const Account = (props) => {

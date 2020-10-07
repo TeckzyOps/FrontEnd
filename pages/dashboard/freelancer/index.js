@@ -36,8 +36,9 @@ import {
 
 let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
+const sectionMargin = (margin) => margin * 2;
 const useStyles = makeStyles((theme) => ({
-	root: {},
+	root: { paddingTop: "11vh" },
 
 	card: {
 		maxWidth: 300,
@@ -66,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
 	subheading: {
 		lineHeight: 1.8,
 	},
+
 	avatar: {
 		display: "inline-block",
 		border: "2px solid white",
@@ -101,6 +103,7 @@ const index = (props) => {
 				onToggleDark={props.onToggleDark}
 				onToggleDir={props.onToggleDir}
 			/>
+
 			<div className={classes.root}>
 				<Grid alignContent="center" container spacing={2}>
 					<Grid item md={3} xs={12}>

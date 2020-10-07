@@ -263,6 +263,9 @@ const sellerform = (props) => {
 		payload.append("want_advertisement", want_advertisement);
 		payload.append("except_shaadiwala_offer", except_shaadiwala_offer);
 		payload.delete("doc_type");
+		if (id) {
+			payload.append("seller_id", id);
+		}
 		if (payload) {
 			sellerActions
 				.createSeller(payload)

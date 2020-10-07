@@ -190,7 +190,7 @@ const styles = makeStyles((theme) => ({
 			zIndex: 10,
 		},
 		"& img": {
-			width: 64,
+			width: 100,
 			marginRight: theme.spacing(),
 		},
 		"& p, span": {

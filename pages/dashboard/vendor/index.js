@@ -37,7 +37,7 @@ import {
 let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
 const useStyles = makeStyles((theme) => ({
-	root: {},
+	root: { paddingTop: "11vh" },
 
 	card: {
 		maxWidth: 300,

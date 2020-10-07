@@ -42,9 +42,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 const useStyles = makeStyles((theme) => ({
-	root: {
-		flexGrow: 1,
-	},
+	root: { paddingTop: "11vh", flexGrow: 1 },
 	card: {
 		minWidth: 275,
 	},
