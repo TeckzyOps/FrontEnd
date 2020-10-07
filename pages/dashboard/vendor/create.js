@@ -11,7 +11,7 @@ const localStorageService = LocalStorageService.getService();
 import VendorForm from "../../../components/Dashboard/VendorForm";
 
 const useStyles = makeStyles((theme) => ({
-	root: {},
+	root: { paddingTop: "11vh" },
 }));
 
 const Vendor = (props) => {

@@ -12,13 +12,13 @@ import AnchorLink from "react-anchor-link-smooth-scroll";
 import Scrollspy from "react-scrollspy";
 import Settings from "./Settings";
 import MobileMenu from "./MobileMenu";
-import logo from "~/static/home/logo2.jpg";
+import logo from "~/static/home/navbarLogo.jpg";
 import "~/vendors/hamburger-menu.css";
 import useStyles from "./header-style";
 import { useAuth } from "../provider/Auth";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import AddCircleOutlined from "@material-ui/icons/AddCircleOutlined";
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
 import routerLink from "~/static/text/link";
 
@@ -45,7 +45,8 @@ const LinkBtn = React.forwardRef(function LinkBtn(props, ref) {
 
 function Header(props) {
 	const [fixed, setFixed] = useState(false);
-	const { isAuthenticated, Details, logout } = useAuth();
+	const { logout } = useAuth();
+	const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [details, setDetails] = useState({});
 	let flagFixed = false;
@@ -66,6 +67,9 @@ function Header(props) {
 	const isMenuOpen = Boolean(anchorEl);
 	useEffect(() => {
 		handleScroll();
+		if (localStorageService.getAccessToken()) {
+			setIsAuthenticated(true);
+		}
 		setDetails(localStorageService.getUserDetails("Details"));
 		// window.addEventListener("scroll", handleScroll);
 	}, []);
@@ -104,15 +108,13 @@ function Header(props) {
 			open={isMenuOpen}
 			onClose={handleMenuClose}
 		>
-			<MenuItem>
-				<IconButton aria-label="show 11 new notifications" color="inherit">
-					<AccountBalanceWalletIcon />
-				</IconButton>
-			</MenuItem>
+			<Link href={routerLink.starter.profile}>
+				<MenuItem onClick={handleMenuClose}>Wallet</MenuItem>
+			</Link>
 			<Link href={routerLink.starter.profile}>
 				<MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-			</Link>{" "}
-			{/* <MenuItem onClick={handleMenuClose}> My account</MenuItem> */}
+			</Link>
+
 			<MenuItem onClick={handleLogout}>Logout</MenuItem>
 		</Menu>
 	);
@@ -147,10 +149,10 @@ function Header(props) {
 									</span>
 								</IconButton>
 							)}
-							<div className={classes.logo}>
-								<AnchorLink href="#home">
-									<img src={logo} alt="logo" />
-								</AnchorLink>
+							<div>
+								<Link style={{ textDecoration: "none" }} href="/">
+									<img src={logo} width="100px" alt="logo" />
+								</Link>
 							</div>
 							{isDesktop && (
 								<Scrollspy items={navMenu} currentClassName="active">
@@ -173,7 +175,7 @@ function Header(props) {
 							{isAuthenticated ? (
 								<div>
 									<IconButton color="primary">
-										<AddCircleOutlined color="primary" />
+										<PersonAddIcon color="primary" />
 									</IconButton>
 									<IconButton color="inherit">
 										<Badge badgeContent={4} color="primary">

@@ -53,9 +53,7 @@ import { matrimonyActions } from "../../../_actions/matrimony.action";
 const localStorageService = LocalStorageService.getService();
 
 const useStyles = makeStyles((theme) => ({
-	root: {
-		flexGrow: 1,
-	},
+	root: { paddingTop: "11vh", flexGrow: 1 },
 	appBar: {
 		position: "relative",
 	},
@@ -142,7 +140,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const MatrimonySearch = (props) => {
 	const classes = useStyles();
 	const [adList, setadList] = React.useState([]);
-	const [filter, setFilter] = React.useState(false);
+	const [filter, setFilter] = React.useState(true);
 	const [page, setPage] = React.useState(1);
 	const [lastpage, setLastPage] = React.useState(1);
 	const [query, setQuery] = React.useState({});
@@ -177,6 +175,42 @@ const MatrimonySearch = (props) => {
 		});
 	};
 	React.useEffect(() => {
+		let obj = {};
+		Object.keys(payload).forEach((K) => {
+			let key = "filter[" + K + "]";
+
+			if (payload[K].length > 0 || payload[K] > 0) {
+				obj[key] = payload[K];
+			}
+		});
+		if (Object.values(obj).length > 0) {
+			matrimonyActions
+				.search(obj)
+				.then(function (response) {
+					setFilter(false);
+					console.log("ressss", response);
+
+					if (Array.isArray(response.data.data.data)) {
+						setadList(response.data.data.data);
+						setPage(response.data.data.current_page + 1);
+						setLastPage(response.data.data.last_page);
+					}
+				})
+				.catch(function (error) {
+					setFilter(false);
+					console.error("errrrr ", error);
+				});
+		}
+	}, [payload]);
+
+	const handleFilterOpen = () => {
+		setFilter(true);
+	};
+
+	const handleFilterClose = () => {
+		setFilter(false);
+	};
+	const handlePageChange = (event, value) => {
 		setFilter(false);
 		let obj = {};
 		Object.keys(payload).forEach((K) => {
@@ -186,6 +220,7 @@ const MatrimonySearch = (props) => {
 				obj[key] = payload[K];
 			}
 		});
+		obj.page = value;
 		if (Object.values(obj).length > 0) {
 			matrimonyActions
 				.search(obj)
@@ -202,30 +237,6 @@ const MatrimonySearch = (props) => {
 					console.error("errrrr ", error);
 				});
 		}
-	}, [payload]);
-
-	const handleFilterOpen = () => {
-		setFilter(true);
-	};
-
-	const handleFilterClose = () => {
-		setFilter(false);
-	};
-	const handlePageChange = (event, value) => {
-		matrimonyActions
-			.search({ page: value })
-			.then(function (response) {
-				console.log("ressss", response);
-
-				if (Array.isArray(response.data.data.data)) {
-					setadList(response.data.data.data);
-					setPage(response.data.data.current_page + 1);
-					setLastPage(response.data.data.last_page);
-				}
-			})
-			.catch(function (error) {
-				console.error("errrrr ", error);
-			});
 	};
 
 	const handleSortChange = (event) => {
@@ -328,6 +339,13 @@ const MatrimonySearch = (props) => {
 										Post an AD
 									</Button>
 								</Link>
+								<Button
+									variant="outlined"
+									onClick={handleFilterOpen}
+									color="secondary"
+								>
+									Filters
+								</Button>
 							</Grid>
 						</Grid>
 					</Container>

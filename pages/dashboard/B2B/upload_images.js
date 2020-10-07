@@ -35,9 +35,7 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 const useStyles = makeStyles((theme) => ({
-	root: {
-		padding: theme.spacing(4),
-	},
+	root: { paddingTop: "11vh", padding: theme.spacing(4) },
 	icon: {
 		marginRight: theme.spacing(2),
 	},

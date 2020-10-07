@@ -29,13 +29,17 @@ const LocalStorageService = (function () {
 		}
 	}
 	function _getAccessToken() {
-		return localStorage.getItem("token");
+		let cookieToken = Cookies.get("token");
+		if (!cookieToken) {
+			cookieToken = localStorage.getItem("token");
+		}
+		return cookieToken;
 	}
 	function _getRefreshToken() {
 		return localStorage.getItem("refresh_token");
 	}
 	function _clearToken() {
-		localStorage.removeItem("access_token");
+		localStorage.removeItem("token");
 	}
 
 	function _removeKey(key) {

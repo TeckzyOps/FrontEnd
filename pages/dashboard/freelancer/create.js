@@ -11,7 +11,7 @@ const localStorageService = LocalStorageService.getService();
 import FreelancerForm from "../../../components/Dashboard/FreelancerForm";
 
 const useStyles = makeStyles((theme) => ({
-	root: {},
+	root: { paddingTop: "11vh" },
 }));
 
 const Freelancer = (props) => {

@@ -22,7 +22,8 @@ const localStorageService = LocalStorageService.getService();
 
 const useStyles = makeStyles((theme) => ({
 	root: {
-		padding: theme.spacing(4),
+		paddingTop: "11vh",
+
 		"& > *": {
 			margin: theme.spacing(1),
 		},

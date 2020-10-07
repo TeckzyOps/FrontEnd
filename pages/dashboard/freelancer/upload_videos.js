@@ -34,9 +34,7 @@ import { freelancerActions } from "../../../_actions/freelancer.action";
 import { withRouter } from "react-router";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 const useStyles = makeStyles((theme) => ({
-	root: {
-		padding: theme.spacing(4),
-	},
+	root: { paddingTop: "11vh" },
 	icon: {
 		marginRight: theme.spacing(2),
 	},

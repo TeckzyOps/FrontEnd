@@ -97,6 +97,7 @@ const headerStyles = makeStyles((theme) => ({
 		"& img": {
 			transition: "all 0.3s ease",
 			minWidth: "100%",
+			width: 100,
 			height: 78,
 		},
 	},

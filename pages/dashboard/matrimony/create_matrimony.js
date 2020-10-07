@@ -40,6 +40,7 @@ function getSteps() {
 
 const useStyles = makeStyles((theme) => ({
 	root: {
+		paddingTop: "11vh",
 		"& > *": {
 			margin: theme.spacing(1),
 		},

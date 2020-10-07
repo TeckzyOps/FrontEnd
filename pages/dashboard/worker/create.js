@@ -11,7 +11,7 @@ const localStorageService = LocalStorageService.getService();
 import WorkerForm from "../../../components/Dashboard/WorkerForm";
 
 const useStyles = makeStyles((theme) => ({
-	root: {},
+	root: { paddingTop: "11vh" },
 }));
 
 const CreateWorker = (props) => {

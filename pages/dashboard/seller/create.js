@@ -11,7 +11,7 @@ const localStorageService = LocalStorageService.getService();
 import SellerForm from "../../../components/Dashboard/SellerForm";
 
 const useStyles = makeStyles((theme) => ({
-	root: {},
+	root: { paddingTop: "11vh" },
 }));
 
 const Seller = (props) => {

@@ -43,6 +43,7 @@ let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
 const useStyles = makeStyles((theme) => ({
 	root: {
+		paddingTop: "11vh",
 		padding: theme.spacing(1),
 		"& > *": {
 			margin: theme.spacing(1),

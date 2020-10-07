@@ -11,7 +11,7 @@ const localStorageService = LocalStorageService.getService();
 import B2bForm from "../../../components/Dashboard/B2bForm";
 
 const useStyles = makeStyles((theme) => ({
-	root: {},
+	root: { paddingTop: "11vh" },
 }));
 
 const create = (props) => {

@@ -34,9 +34,7 @@ import { b2bActions } from "../../../_actions/b2b.action";
 import { withRouter } from "react-router";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 const useStyles = makeStyles((theme) => ({
-	root: {
-		padding: theme.spacing(4),
-	},
+	root: { paddingTop: "11vh" },
 	icon: {
 		marginRight: theme.spacing(2),
 	},
@@ -191,7 +189,10 @@ const b2bVid = (props) => {
 			<Head>
 				<title>B2B &nbsp; - Upload Videos</title>
 			</Head>
-			<Header onToggleDark={props.onToggleDark} onToggleDir={props.onToggleDir} />
+			<Header
+				onToggleDark={props.onToggleDark}
+				onToggleDir={props.onToggleDir}
+			/>
 			<div className={classes.root}>
 				<CssBaseline />
 
