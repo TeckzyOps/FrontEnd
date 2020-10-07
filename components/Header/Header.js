@@ -45,7 +45,8 @@ const LinkBtn = React.forwardRef(function LinkBtn(props, ref) {
 
 function Header(props) {
 	const [fixed, setFixed] = useState(false);
-	const { isAuthenticated, Details, logout } = useAuth();
+	const { logout } = useAuth();
+	const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [details, setDetails] = useState({});
 	let flagFixed = false;
@@ -66,6 +67,9 @@ function Header(props) {
 	const isMenuOpen = Boolean(anchorEl);
 	useEffect(() => {
 		handleScroll();
+		if (localStorageService.getAccessToken()) {
+			setIsAuthenticated(true);
+		}
 		setDetails(localStorageService.getUserDetails("Details"));
 		// window.addEventListener("scroll", handleScroll);
 	}, []);

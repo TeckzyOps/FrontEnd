@@ -10,7 +10,7 @@ import Grid from "@material-ui/core/Grid";
 import HomeIcon from "react-ionicons/lib/IosHomeOutline";
 import brand from "~/static/text/brand";
 import routerLink from "~/static/text/link";
-import logo from "~/static/home/logo2.jpg";
+import logo from "~/static/home/navbarLogo.jpg";
 import useStyles from "./form-style";
 
 function AuthFrame(props) {
@@ -43,9 +43,9 @@ function AuthFrame(props) {
 									<div className={classes.greeting}>
 										<div className={classes.logo}>
 											<img src={logo} alt="logo" />
-											<Typography gutterBottom variant="h5">
+											{/* <Typography gutterBottom variant="h5">
 												{brand.starter.projectName}
-											</Typography>
+											</Typography> */}
 										</div>
 										<Typography gutterBottom variant="h4">
 											{title}

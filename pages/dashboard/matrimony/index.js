@@ -175,7 +175,6 @@ const MatrimonySearch = (props) => {
 		});
 	};
 	React.useEffect(() => {
-		setFilter(false);
 		let obj = {};
 		Object.keys(payload).forEach((K) => {
 			let key = "filter[" + K + "]";
@@ -188,6 +187,7 @@ const MatrimonySearch = (props) => {
 			matrimonyActions
 				.search(obj)
 				.then(function (response) {
+					setFilter(false);
 					console.log("ressss", response);
 
 					if (Array.isArray(response.data.data.data)) {
@@ -197,6 +197,7 @@ const MatrimonySearch = (props) => {
 					}
 				})
 				.catch(function (error) {
+					setFilter(false);
 					console.error("errrrr ", error);
 				});
 		}
@@ -338,6 +339,13 @@ const MatrimonySearch = (props) => {
 										Post an AD
 									</Button>
 								</Link>
+								<Button
+									variant="outlined"
+									onClick={handleFilterOpen}
+									color="secondary"
+								>
+									Filters
+								</Button>
 							</Grid>
 						</Grid>
 					</Container>
