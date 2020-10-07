@@ -12,7 +12,7 @@ export const sellerActions = {
 
 function createSeller(payload) {
 	let apiEndpoint = "";
-	if (payload.seller_id) {
+	if (payload.get("seller_id")) {
 		apiEndpoint = "editSellerId";
 	} else {
 		apiEndpoint = "createSellerId";

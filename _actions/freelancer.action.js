@@ -12,7 +12,7 @@ export const freelancerActions = {
 
 function createFreelancer(payload) {
 	let apiEndpoint = "";
-	if (payload.freelancer_id) {
+	if (payload.get("freelancer_id")) {
 		apiEndpoint = "editFreelancerId";
 	} else {
 		apiEndpoint = "createFreelancerId";

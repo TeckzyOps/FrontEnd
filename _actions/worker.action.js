@@ -12,7 +12,7 @@ export const workerActions = {
 
 function createWorker(payload) {
 	let apiEndpoint = "";
-	if (payload.Worker_id) {
+	if (payload.get("worker_id")) {
 		apiEndpoint = "editWorkerId";
 	} else {
 		apiEndpoint = "createWorkerId";

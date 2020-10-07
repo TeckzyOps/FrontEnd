@@ -12,7 +12,7 @@ export const vendorActions = {
 
 function createVendor(payload) {
 	let apiEndpoint = "";
-	if (payload.Vendor_id) {
+	if (payload.get("vendor_id")) {
 		apiEndpoint = "editVendorId";
 	} else {
 		apiEndpoint = "createVendorId";

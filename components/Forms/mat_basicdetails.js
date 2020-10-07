@@ -132,9 +132,11 @@ const Basicdetails = ({
 		salary: Yup.number().required("Required"),
 		living_with_parents_status: Yup.string().required("Required"),
 		wedding_budget: Yup.number().required("Required"),
-		childrens: Yup.string().when("marital_status", (marital_status, schema) => {
-			return marital_status >= 2 ? schema.required("Required") : schema;
-		}), // check if required
+		childrens: Yup.string()
+			.when("marital_status", (marital_status, schema) => {
+				return marital_status >= 2 ? schema.required("Required") : schema;
+			})
+			.nullable(), // check if required
 		childrens_living_status: Yup.string().when(
 			"childrens",
 			(childrens, schema) => {
@@ -347,7 +349,6 @@ const Basicdetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -370,7 +371,6 @@ const Basicdetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -393,7 +393,6 @@ const Basicdetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -445,7 +444,6 @@ const Basicdetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -468,7 +466,6 @@ const Basicdetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -498,7 +495,6 @@ const Basicdetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -557,7 +553,6 @@ const Basicdetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -674,7 +669,6 @@ const Basicdetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -704,7 +698,6 @@ const Basicdetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={CustomTextField}
@@ -734,7 +727,6 @@ const Basicdetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -764,7 +756,6 @@ const Basicdetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													fullWidth
 													component={TextField}
 													type="text"
@@ -795,7 +786,6 @@ const Basicdetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -854,7 +844,6 @@ const Basicdetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -899,7 +888,6 @@ const Basicdetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
@@ -930,7 +918,6 @@ const Basicdetails = ({
 										<Grid item md={4} xs={12}>
 											<Box margin={1}>
 												<Field
-													required
 													onChange={handleChange}
 													fullWidth
 													component={TextField}
