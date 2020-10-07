@@ -9,7 +9,7 @@ import CardContent from "@material-ui/core/CardContent";
 // import CardHeader from '@material-ui/core/CardHeader';
 import Grid from "@material-ui/core/Grid";
 // import StarIcon from '@material-ui/icons/StarBorder';
-import Typography from "@material-ui/core/Typography";
+import { Typography, Box } from "@material-ui/core/";
 import Container from "@material-ui/core/Container";
 import {
 	createMuiTheme,
@@ -106,7 +106,9 @@ export default function SquareCards() {
 							<br />
 							<MuiThemeProvider theme={theme}>
 								<Typography variant="caption" display="block" gutterBottom>
-									{tier.title}
+									<Box fontWeight="fontWeightBold" m={1}>
+										{tier.title}
+									</Box>
 								</Typography>
 							</MuiThemeProvider>
 						</div>
