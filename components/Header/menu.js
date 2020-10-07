@@ -1,11 +1,3 @@
-const menu = [
-	"Portfolio",
-	"Testimonials",
-	"Get Offer",
-	"Trends",
-	"Appointment",
-	"Help/Support",
-	"Contact Us",
-];
+const menu = ["Home", "Trends", "Alert", "Get Offer", "Appointment"];
 
 export default menu;

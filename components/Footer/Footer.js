@@ -25,6 +25,7 @@ import FacebookIcon from "react-ionicons/lib/LogoFacebook";
 import TwitterIcon from "react-ionicons/lib/LogoTwitter";
 import InstagramIcon from "react-ionicons/lib/LogoInstagram";
 import LinkedinIcon from "react-ionicons/lib/LogoLinkedin";
+import YoutubeIcon from "react-ionicons/lib/LogoYoutube";
 import { i18n, withTranslation } from "~/i18n";
 import logo from "~/static/home/mainlogo.jpg";
 import playstore from "~/static/home/playstore.png";
@@ -62,7 +63,14 @@ const footers = [
 	},
 	{
 		title: "Our Projects",
-		description: ["Indian Shaadiwala", "Coming Soon", "Coming Soon"],
+		description: [
+			"Indian Shaadiwala",
+			"Coming Soon",
+			"Coming Soon",
+			"Coming Soon",
+			"Coming Soon",
+			"Coming Soon",
+		],
 		link: ["#"],
 	},
 	{
@@ -239,6 +247,13 @@ function Footer(props) {
 							size="small"
 						>
 							<LinkedinIcon fontSize="64px" />
+						</IconButton>
+						<IconButton
+							aria-label="YoutubeIcon"
+							className={classes.margin}
+							size="small"
+						>
+							<YoutubeIcon fontSize="64px" />
 						</IconButton>
 					</div>
 					{/* <Select

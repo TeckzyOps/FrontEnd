@@ -276,7 +276,6 @@ const MatrimonySearch = (props) => {
 								<Typography variant="h4" gutterBottom>
 									Looking For ?
 								</Typography>
-
 								<Grid container spacing={2}>
 									{[
 										{
@@ -339,6 +338,7 @@ const MatrimonySearch = (props) => {
 										Post an AD
 									</Button>
 								</Link>
+								&nbsp;
 								<Button
 									variant="outlined"
 									onClick={handleFilterOpen}
