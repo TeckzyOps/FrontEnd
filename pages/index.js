@@ -22,6 +22,7 @@ import Notification from "../components/Notification";
 import Subscribe from "../components/Subscribe";
 import Pricing from "../components/Pricing";
 import routerLink from "~/static/text/link";
+import Router from "next/router";
 import { useRouter } from "next/router";
 import LocalStorageService from "../_services/LocalStorageService";
 const localStorageService = LocalStorageService.getService();
@@ -47,11 +48,11 @@ function Landing(props) {
 	const classes = useStyles();
 	const { onToggleDark, onToggleDir } = props;
 	const router = useRouter();
-	React.useEffect(() => {
-		if (localStorageService.getAccessToken()) {
-			router.push(routerLink.starter.dashboard);
-		}
-	}, []);
+	// React.useEffect(() => {
+	// 	if (localStorageService.getAccessToken()) {
+	// 		router.push(routerLink.starter.dashboard);
+	// 	}
+	// }, []);
 
 	return (
 		<React.Fragment>
@@ -107,32 +108,41 @@ function Landing(props) {
 	);
 }
 
-Landing.getInitialProps = (ctx) => {
-	let token = null;
-	if (typeof localStorage !== "undefined") {
-		token = localStorage.getItem("token");
-	} else if (ctx.req) {
-		token = ctx.req.headers.cookie.token;
-	}
-
-	if (token) {
-		if (ctx.res) {
-			// Seems to be the version used by zeit
-			ctx.res.writeHead(302, {
-				Location: routerLink.starter.dashboard,
-				// Add the content-type for SEO considerations
-				"Content-Type": "text/html; charset=utf-8",
-			});
-			ctx.res.end();
-		}
-	}
-
-	return { namespacesRequired: ["common"] };
-};
-
 Landing.propTypes = {
 	onToggleDark: PropTypes.func.isRequired,
 	onToggleDir: PropTypes.func.isRequired,
 };
+const redirectToDashboard = (res) => {
+	if (res) {
+		res.writeHead(302, { Location: routerLink.starter.dashboard });
+		res.end();
+		res.finished = true;
+	} else {
+		Router.push(routerLink.starter.dashboard);
+	}
+};
+const getCookieFromReq = (req, cookieKey) => {
+	const cookie = req.headers.cookie
+		.split(";")
+		.find((c) => c.trim().startsWith(`${cookieKey}=`));
 
+	if (!cookie) return undefined;
+	return cookie.split("=")[1];
+};
+
+Landing.getInitialProps = ({ req, res }) => {
+	const ISSERVER = typeof window === "undefined";
+	let token = null;
+
+	if (!ISSERVER) {
+		token = localStorage.getItem("token");
+	} else {
+		token = getCookieFromReq(req, "token");
+	}
+	console.log(token);
+	if (token) {
+		redirectToDashboard(res);
+	}
+	return { namespacesRequired: ["common"] };
+};
 export default Landing;

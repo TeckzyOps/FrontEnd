@@ -12,11 +12,6 @@ import "react-animated-slider/build/horizontal.css";
 import { withTranslation } from "~/i18n";
 import "~/vendors/animate-slider.css";
 import imgAPI from "~/static/images/imgAPI";
-
-import AwesomeSlider from "react-awesome-slider";
-import CoreStyles from "react-awesome-slider/src/core/styles.scss";
-import AnimationStyles from "react-awesome-slider/src/styled/fold-out-animation/fold-out-animation.scss";
-
 const content = [
 	{
 		url: "https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4",

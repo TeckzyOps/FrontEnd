@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Router from "next/router";
 import withAuth from "../../../components/Hoc/withAuth";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Typography } from "@material-ui/core";
@@ -472,5 +473,38 @@ const details = (props) => {
 		</React.Fragment>
 	);
 };
+const redirectToLogin = (res) => {
+	if (res) {
+		res.writeHead(302, { Location: "/login" });
+		res.end();
+		res.finished = true;
+	} else {
+		Router.push("/login");
+	}
+};
+const getCookieFromReq = (req, cookieKey) => {
+	const cookie = req.headers.cookie
+		.split(";")
+		.find((c) => c.trim().startsWith(`${cookieKey}=`));
 
-export default withRouter(withAuth(details));
+	if (!cookie) return undefined;
+	return cookie.split("=")[1];
+};
+
+details.getInitialProps = ({ req, res }) => {
+	const ISSERVER = typeof window === "undefined";
+	let token = null;
+
+	if (!ISSERVER) {
+		token = localStorage.getItem("token");
+	} else {
+		token = getCookieFromReq(req, "token");
+	}
+
+	if (token == null) {
+		console.log("GOING TO REDIRECT");
+		redirectToLogin(res);
+	}
+	return {};
+};
+export default withRouter(details);

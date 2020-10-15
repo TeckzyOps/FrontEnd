@@ -2,7 +2,8 @@ import React from "react";
 import withAuth from "../../../components/Hoc/withAuth";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { Formik, Field, Form, useField, FieldArray } from "formik";
-
+import Router from "next/router";
+import cookies from "js-cookie";
 import * as Yup from "yup";
 import {
 	gender,
@@ -765,5 +766,38 @@ const MatrimonySearch = (props) => {
 		</React.Fragment>
 	);
 };
+const redirectToLogin = (res) => {
+	if (res) {
+		res.writeHead(302, { Location: "/login" });
+		res.end();
+		res.finished = true;
+	} else {
+		Router.push("/login");
+	}
+};
+const getCookieFromReq = (req, cookieKey) => {
+	const cookie = req.headers.cookie
+		.split(";")
+		.find((c) => c.trim().startsWith(`${cookieKey}=`));
 
-export default withAuth(MatrimonySearch);
+	if (!cookie) return undefined;
+	return cookie.split("=")[1];
+};
+
+MatrimonySearch.getInitialProps = ({ req, res }) => {
+	const ISSERVER = typeof window === "undefined";
+	let token = null;
+
+	if (!ISSERVER) {
+		token = localStorage.getItem("token");
+	} else {
+		token = getCookieFromReq(req, "token");
+	}
+
+	if (token == null) {
+		console.log("GOING TO REDIRECT");
+		redirectToLogin(res);
+	}
+	return {};
+};
+export default MatrimonySearch;

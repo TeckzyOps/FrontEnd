@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import Router from "next/router";
 import { Grid, Button } from "@material-ui/core";
 import Head from "next/head";
 import routerLink from "~/static/text/link";
@@ -32,4 +33,40 @@ const Vendor = (props) => {
 		</Fragment>
 	);
 };
+
+const redirectToLogin = (res) => {
+	if (res) {
+		res.writeHead(302, { Location: "/login" });
+		res.end();
+		res.finished = true;
+	} else {
+		Router.push("/login");
+	}
+};
+const getCookieFromReq = (req, cookieKey) => {
+	const cookie = req.headers.cookie
+		.split(";")
+		.find((c) => c.trim().startsWith(`${cookieKey}=`));
+
+	if (!cookie) return undefined;
+	return cookie.split("=")[1];
+};
+
+Vendor.getInitialProps = ({ req, res }) => {
+	const ISSERVER = typeof window === "undefined";
+	let token = null;
+
+	if (!ISSERVER) {
+		token = localStorage.getItem("token");
+	} else {
+		token = getCookieFromReq(req, "token");
+	}
+
+	if (token == null) {
+		console.log("GOING TO REDIRECT");
+		redirectToLogin(res);
+	}
+	return {};
+};
+
 export default Vendor;

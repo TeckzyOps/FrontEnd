@@ -309,7 +309,7 @@ const Lifestyledetails = ({
 													name="language_speak"
 													multiple={true}
 													onChange={handleChange}
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("language_speak") &&
 														formprops.errors["language_speak"]
@@ -350,7 +350,7 @@ const Lifestyledetails = ({
 													name="diatery_habits"
 													label="Diatery Habits"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("diatery_habits") &&
 														formprops.errors["diatery_habits"]
@@ -379,7 +379,7 @@ const Lifestyledetails = ({
 													name="drinking_habits"
 													label="Drinking Habits"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.hasOwnProperty("drinking_habits") &&
 														formprops.errors["drinking_habits"]
@@ -408,7 +408,7 @@ const Lifestyledetails = ({
 													name="smoking_habits"
 													label="Smoking Habits"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("smoking_habits") &&
 														formprops.errors["smoking_habits"]
@@ -437,7 +437,7 @@ const Lifestyledetails = ({
 													name="house_own"
 													label="Do you Own a House?"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("house_own") &&
 														formprops.errors["house_own"]
@@ -468,7 +468,7 @@ const Lifestyledetails = ({
 													name="car_own"
 													label="Do you Own a Car?"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("car_own") &&
 														formprops.errors["car_own"]
@@ -501,7 +501,7 @@ const Lifestyledetails = ({
 													name="hobbies"
 													multiple={true}
 													onChange={handleChange}
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("hobbies") &&
 														formprops.errors["hobbies"]
@@ -543,7 +543,7 @@ const Lifestyledetails = ({
 													name="interest"
 													multiple={true}
 													onChange={handleChange}
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("interest") &&
 														formprops.errors["interest"]
@@ -585,7 +585,7 @@ const Lifestyledetails = ({
 													name="sports"
 													multiple={true}
 													onChange={handleChange}
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("sports") &&
 														formprops.errors["sports"]
@@ -624,7 +624,7 @@ const Lifestyledetails = ({
 													type="text"
 													name="email"
 													label="Email"
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("email") &&
 														formprops.errors["email"]
@@ -646,7 +646,7 @@ const Lifestyledetails = ({
 													type="text"
 													name="gaurdian_number"
 													label="Gaurdian Number"
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty(
 															"gaurdian_number"
@@ -669,7 +669,7 @@ const Lifestyledetails = ({
 													type="text"
 													name="alternate_number"
 													label="Alternate Number"
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty(
 															"alternate_number"
@@ -756,7 +756,7 @@ const Lifestyledetails = ({
 													name="disability"
 													label="Disability"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("disability") &&
 														formprops.errors["disability"]

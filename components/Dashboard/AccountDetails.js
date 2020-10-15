@@ -17,8 +17,13 @@ import { profileActions } from "../../_actions/profile.action";
 import LocalStorageService from "../../_services/LocalStorageService";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import { cookieActions } from "../Hoc/cookies";
+import routeLink from "~/static/text/link";
+import { useRouter } from "next/router";
 import { useAuth } from "../provider/Auth";
 const localStorageService = LocalStorageService.getService();
+import { userActions } from "../../_actions/user.actions";
+import Cookies from "js-cookie";
+
 import {
 	fieldToTextField,
 	TextField,
@@ -49,10 +54,12 @@ const useStyles = makeStyles(() => ({
 const AccountDetails = (props) => {
 	const { className, ...rest } = props;
 	const { postsetLoginData } = useAuth();
-
+	const router = useRouter();
 	const classes = useStyles();
 	const { t } = props;
 
+	const [MessagePopup, setMessagePopup] = useState(false);
+	const [Message, setMessage] = useState("");
 	const [details, setDetails] = useState({});
 	const [profileUpdateSuccess, setProfileUpdateSuccess] = useState(false);
 	const [editUsername, setEditUsername] = useState(false);
@@ -71,6 +78,31 @@ const AccountDetails = (props) => {
 		// });
 	}, []);
 
+	const _renderModal = (ele) => {
+		if (ele == "EmailVerify") {
+			setMessage(
+				"Logging You Out, Please use your Email to login to get it Verified!"
+			);
+			setMessagePopup(() => true);
+		}
+		const onClick = () => {
+			setMessagePopup(() => false);
+			// window.location.reload(false);
+			if (ele == "EmailVerify") {
+				logout();
+			}
+		};
+
+		return (
+			<Alert
+				isOpen={MessagePopup}
+				handleSubmit={onClick}
+				title="Process Status"
+				text={Message}
+				submitButtonText="Ok."
+			/>
+		);
+	};
 	const _handlesubmitkey = (event) => {
 		setpassword(event.target.value);
 	};
@@ -79,26 +111,37 @@ const AccountDetails = (props) => {
 		setProfileUpdateSuccess(() => true);
 	};
 
-	const _renderModal = () => {
-		const onClick = () => {
-			setProfileUpdateSuccess(() => false);
-		};
-
-		return (
-			<Alert
-				isOpen={profileUpdateSuccess}
-				handleSubmit={onClick}
-				title="Password Update"
-				text="Your Profile Was Updated  successfully"
-				submitButtonText="Done"
-			/>
-		);
-	};
-
 	const handleChange = (event) => {
 		console.log(event);
 	};
 
+	const logout = () => {
+		// Cookies.remove("token");
+		// Cookies.remove("Details");
+		// localStorage && localStorageService.clearToken();
+		// localStorage && localStorageService.removeValue("Details");
+		// window.location.reload(false);
+		userActions
+			.logout()
+			.then(function (response) {
+				console.log("ressss", response);
+				Cookies.remove("token");
+				Cookies.remove("Details");
+				localStorage && localStorageService.clearToken();
+				localStorage && localStorageService.removeValue("Details");
+
+				router.push(routerLink.starter.login);
+			})
+			.catch(function (error) {
+				if (error.response) {
+					if (error.response.data.message) {
+						// setValues({ ...values, ["error"]: error.response.data.message });
+					}
+				}
+
+				console.error("errrrr ", error);
+			});
+	};
 	const _handleSubmit = ({ vals, setSubmitting, resetForm }) => {
 		console.log(details);
 		let payload = {};
@@ -121,7 +164,8 @@ const AccountDetails = (props) => {
 				.updateLogin(payload)
 				.then(function (response) {
 					if (response.data.id) {
-						setProfileUpdateSuccess(() => true);
+						setMessage("Operation Completed Succesfully!");
+						setMessagePopup(() => true);
 						postsetLoginData(response.data);
 						setDetails({ ...details, ["login"]: response.data });
 					}
@@ -144,15 +188,17 @@ const AccountDetails = (props) => {
 
 	const profileSchema = Yup.object().shape({
 		name: Yup.string().min(2, "Too Short!").max(50, "Too Long!"),
-		mobile: Yup.string().length(10, "Too Short!"),
+		mobile: Yup.string().length(10, "Mobile should be of 10 digits"),
 		email: Yup.string().email("Invalid email"),
 		password: Yup.string().min(4, "Too Short!").required("Required"),
+		mpin: Yup.string().length(4, "M-PIN should be of 4 digits"),
 	});
 	const initVals = {
 		name: (details.login && details.login.name) || "",
 		mobile: (details.login && details.login.mobile) || "",
 		email: (details.login && details.login.email) || "",
 		password: "",
+		mpin: "",
 	};
 	return (
 		<Card {...rest} className={clsx(classes.root, className)}>
@@ -193,6 +239,7 @@ const AccountDetails = (props) => {
 												type="text"
 												component={TextField}
 												label="Full Name"
+												variant="outlined"
 												name="name"
 												placeholder="Full Name"
 											/>
@@ -206,6 +253,7 @@ const AccountDetails = (props) => {
 												component={TextField}
 												label="Email"
 												name="email"
+												variant="outlined"
 												placeholder="Email"
 												InputProps={{
 													endAdornment: (
@@ -237,6 +285,13 @@ const AccountDetails = (props) => {
 												}}
 											/>
 										</Box>
+										<Button
+											onClick={() => _renderModal("EmailVerify")}
+											variant="standard"
+											color="primary"
+										>
+											Verify Email!
+										</Button>
 									</Grid>
 									<Grid item md={6} xs={12}>
 										<Box margin={1}>
@@ -246,6 +301,7 @@ const AccountDetails = (props) => {
 												component={TextField}
 												label="Mobile"
 												name="mobile"
+												variant="outlined"
 												placeholder="Enter Mobile"
 												InputProps={{
 													endAdornment: (
@@ -277,24 +333,30 @@ const AccountDetails = (props) => {
 											/>
 										</Box>
 									</Grid>
-									<Grid item md={12} xs={12}>
+									<Grid item md={6} xs={12}>
+										<Box margin={1}>
+											<Field
+												fullWidth
+												type="text"
+												component={TextField}
+												label="Generate/Update Transaction PIN (4 Digit)"
+												name="mpin"
+												variant="outlined"
+												placeholder="Enter 4-Digit M-PIN"
+											/>
+										</Box>
+									</Grid>
+									<Grid item md={6} xs={12}>
 										<Box margin={1}>
 											<Field
 												fullWidth
 												required
 												type="password"
+												variant="outlined"
 												component={TextField}
-												label={
-													details.login && details.login.mpin
-														? "M-PIN"
-														: "Password"
-												}
+												label={"Password"}
 												name="password"
-												placeholder={
-													details.login && details.login.mpin
-														? "Enter M-PIN"
-														: "Enter Password"
-												}
+												placeholder="Enter Password"
 											/>
 										</Box>
 									</Grid>

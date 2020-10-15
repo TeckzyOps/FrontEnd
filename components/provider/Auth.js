@@ -1,10 +1,10 @@
 import { createContext, useContext, useState, useEffect } from "react";
 
-import Cookies from "js-cookie";
 import api, { addBearerToken, removeBearerToken } from "../../utils/httpClient";
 import axios from "../../utils/httpClient";
 import { profileActions } from "../../_actions/profile.action";
 import { userActions } from "../../_actions/user.actions";
+import Cookies from "js-cookie";
 import Router from "next/router";
 import routerLink from "~/static/text/link";
 import LocalStorageService from "../../_services/LocalStorageService";

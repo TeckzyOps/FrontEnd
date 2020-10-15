@@ -7,6 +7,7 @@ import Head from "next/head";
 import AccountProfile from "../../components/Dashboard/Accountprofile";
 import AccountDetails from "../../components/Dashboard/AccountDetails";
 import ProfileForm from "../../components/Dashboard/ProfileForm";
+import KYCForm from "../../components/Dashboard/ProfileKYC_form";
 import withAuth from "../../components/Hoc/withAuth";
 import LocalStorageService from "../../_services/LocalStorageService";
 const localStorageService = LocalStorageService.getService();
@@ -22,7 +23,7 @@ const Account = (props) => {
 	return (
 		<Fragment>
 			<Head>
-				<title>Dashboard &nbsp; - Login</title>
+				<title>Dashboard &nbsp; - Profile</title>
 			</Head>
 			<Header
 				onToggleDark={props.onToggleDark}
@@ -45,6 +46,9 @@ const Account = (props) => {
 								logindata={props.logindata}
 								userdata={props.userdata}
 							/>
+							<br />
+							<br />
+							<KYCForm />
 						</div>
 					</Grid>
 				</Grid>
@@ -64,4 +68,40 @@ const Account = (props) => {
 // 				: JSON.parse(LocalStorageService.getValue("userDetails")),
 // 	};
 // };
-export default withAuth(Account);
+
+const redirectToLogin = (res) => {
+	if (res) {
+		res.writeHead(302, { Location: "/login" });
+		res.end();
+		res.finished = true;
+	} else {
+		Router.push("/login");
+	}
+};
+const getCookieFromReq = (req, cookieKey) => {
+	const cookie = req.headers.cookie
+		.split(";")
+		.find((c) => c.trim().startsWith(`${cookieKey}=`));
+
+	if (!cookie) return undefined;
+	return cookie.split("=")[1];
+};
+
+Account.getInitialProps = ({ req, res }) => {
+	const ISSERVER = typeof window === "undefined";
+	let token = null;
+
+	if (!ISSERVER) {
+		token = localStorage.getItem("token");
+	} else {
+		token = getCookieFromReq(req, "token");
+	}
+
+	if (token == null) {
+		console.log("GOING TO REDIRECT");
+		redirectToLogin(res);
+	}
+	return {};
+};
+
+export default Account;

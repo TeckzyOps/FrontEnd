@@ -84,16 +84,15 @@ const useStyles = makeStyles((theme) => ({
 		flexShrink: 0,
 		flexGrow: 0,
 	},
-
+	large: {
+		width: theme.spacing(7),
+		height: theme.spacing(7),
+	},
 	progress: {
 		marginTop: theme.spacing(2),
 	},
 	uploadButton: {
 		marginRight: theme.spacing(2),
-	},
-	large: {
-		width: theme.spacing(7),
-		height: theme.spacing(7),
 	},
 }));
 
@@ -104,11 +103,12 @@ const AccountProfile = (props) => {
 		file: null,
 		imagePreviewUrl: null,
 	});
-	const [avatar, setAvatar] = React.useState("");
+
 	const [openmpin, setmpinOpen] = React.useState(false);
 	const [uploadProgress, updateUploadProgress] = React.useState(0);
 	const [loading, setLoading] = React.useState(false);
 	const [opeDPDialog, setOpeDPDialog] = React.useState(false);
+	const [avatar, setAvatar] = React.useState("");
 	const [editDetails, seteditDetails] = React.useState({
 		email: false,
 		mobile: false,
@@ -128,9 +128,12 @@ const AccountProfile = (props) => {
 	React.useEffect(() => {
 		const token = Cookies.get("token");
 		setDetails(localStorageService.getUserDetails("Details"));
-		setAvatar(
-			localStorageService.getUserDetails("Details").profile.data.image_path
-		);
+		let img = localStorageService.getUserDetails("Details").profile.data
+			.image_path;
+		if (img) {
+			setAvatar(img);
+		}
+
 		// if (loginDet) {
 		// 	setUser({
 		// 		name: details.login.name, //JSON.parse(LocalStorageService.getValue("userdata"))["name"],

@@ -298,7 +298,7 @@ const Familydetails = ({
 													type="text"
 													name="father_occupation"
 													label="Father Occupation"
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty(
 															"father_occupation"
@@ -321,7 +321,7 @@ const Familydetails = ({
 													type="text"
 													name="mother_occupation"
 													label="Mother Occupation"
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty(
 															"mother_occupation"
@@ -344,7 +344,7 @@ const Familydetails = ({
 													type="number"
 													name="brother_count"
 													label="Numbers Of Brother's"
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("brother_count") &&
 														formprops.errors["brother_count"]
@@ -370,7 +370,7 @@ const Familydetails = ({
 													type="number"
 													name="brother_married_count"
 													label="Numbers Of Married Brother's"
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty(
 															"brother_married_count"
@@ -393,7 +393,7 @@ const Familydetails = ({
 													type="number"
 													name="sister_count"
 													label="Number Of Sisters"
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("sister_count") &&
 														formprops.errors["sister_count"]
@@ -419,7 +419,7 @@ const Familydetails = ({
 													type="number"
 													name="sister_married_count"
 													label="Numbers Of Married Sister's"
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty(
 															"sister_married_count"
@@ -442,7 +442,7 @@ const Familydetails = ({
 													type="text"
 													name="family_income"
 													label="Family Income (In Lpa)"
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("family_income") &&
 														formprops.errors["family_income"]
@@ -464,7 +464,7 @@ const Familydetails = ({
 													type="text"
 													name="family_status"
 													label="Family Status"
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("family_status") &&
 														formprops.errors["family_status"]
@@ -487,7 +487,7 @@ const Familydetails = ({
 													name="country"
 													label="Country"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("country") &&
 														formprops.errors["country"]
@@ -516,7 +516,7 @@ const Familydetails = ({
 													name="state"
 													label="State"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("state") &&
 														formprops.errors["state"]
@@ -545,7 +545,7 @@ const Familydetails = ({
 													name="district"
 													label="District"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("district") &&
 														formprops.errors["district"]
@@ -555,11 +555,14 @@ const Familydetails = ({
 														shrink: true,
 													}}
 												>
-													{district.map((option, index) => (
-														<MenuItem key={index} value={option}>
-															{option}
-														</MenuItem>
-													))}
+													{formprops.values.state &&
+														state[formprops.values.state].map(
+															(option, index) => (
+																<MenuItem key={index} value={option}>
+																	{option}
+																</MenuItem>
+															)
+														)}
 												</Field>
 											</Box>
 										</Grid>
