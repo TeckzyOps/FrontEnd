@@ -279,7 +279,7 @@ const DefaultPrefs = ({
 											component={TextField}
 											type="hidden"
 											name="metrimony_id"
-											variant="standard"
+											variant="outlined"
 											helperText={
 												formprops.errors.hasOwnProperty("father_occupation") &&
 												formprops.errors["father_occupation"]
@@ -295,7 +295,7 @@ const DefaultPrefs = ({
 													name="gender"
 													label="Gender"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("gender") &&
 														formprops.errors["gender"]
@@ -323,7 +323,7 @@ const DefaultPrefs = ({
 														type="text"
 														name="age_from"
 														label="From"
-														variant="standard"
+														variant="outlined"
 														helperText={
 															formprops.errors.hasOwnProperty("age_from") &&
 															formprops.errors["age_from"]
@@ -339,7 +339,7 @@ const DefaultPrefs = ({
 														type="text"
 														name="age_to"
 														label="To"
-														variant="standard"
+														variant="outlined"
 														helperText={
 															formprops.errors.hasOwnProperty("age_to") &&
 															formprops.errors["age_to"]
@@ -362,7 +362,7 @@ const DefaultPrefs = ({
 														type="text"
 														name="height_from"
 														label="From"
-														variant="standard"
+														variant="outlined"
 														helperText={
 															formprops.errors.hasOwnProperty("height_from") &&
 															formprops.errors["height_from"]
@@ -378,7 +378,7 @@ const DefaultPrefs = ({
 														type="text"
 														name="height_to"
 														label="To"
-														variant="standard"
+														variant="outlined"
 														helperText={
 															formprops.errors.hasOwnProperty("height_to") &&
 															formprops.errors["height_to"]
@@ -402,7 +402,7 @@ const DefaultPrefs = ({
 													name="marital_status"
 													label="Marital Status"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("marital_status") &&
 														formprops.errors["marital_status"]
@@ -433,7 +433,7 @@ const DefaultPrefs = ({
 													name="religion"
 													select
 													onChange={handleChange}
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("religion") &&
 														formprops.errors["religion"]
@@ -464,7 +464,7 @@ const DefaultPrefs = ({
 													name="cast"
 													select
 													onChange={handleChange}
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("cast") &&
 														formprops.errors["cast"]
@@ -495,7 +495,7 @@ const DefaultPrefs = ({
 													name="language_speak"
 													multiple={true}
 													onChange={handleChange}
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("language_speak") &&
 														formprops.errors["language_speak"]
@@ -534,7 +534,7 @@ const DefaultPrefs = ({
 														type="text"
 														name="wedding_budget_from"
 														label="From"
-														variant="standard"
+														variant="outlined"
 														helperText={
 															formprops.errors.hasOwnProperty(
 																"wedding_budget_from"
@@ -551,7 +551,7 @@ const DefaultPrefs = ({
 														type="text"
 														name="wedding_budget_to"
 														label="To"
-														variant="standard"
+														variant="outlined"
 														helperText={
 															formprops.errors.hasOwnProperty(
 																"wedding_budget_to"
@@ -576,7 +576,7 @@ const DefaultPrefs = ({
 													name="proffesion"
 													label="Proffesion"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("proffesion") &&
 														formprops.errors["proffesion"]
@@ -605,7 +605,7 @@ const DefaultPrefs = ({
 													name="diatery_habits"
 													label="Diatery Habits"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("diatery_habits") &&
 														formprops.errors["diatery_habits"]
@@ -634,7 +634,7 @@ const DefaultPrefs = ({
 													name="drinking_habits"
 													label="Drinking Habits"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty(
 															"drinking_habits"
@@ -664,7 +664,7 @@ const DefaultPrefs = ({
 													name="smoking_habits"
 													label="Smoking Habits"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("smoking_habits") &&
 														formprops.errors["smoking_habits"]
@@ -693,7 +693,7 @@ const DefaultPrefs = ({
 													name="disability"
 													label="Disability"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														formprops.errors.hasOwnProperty("disability") &&
 														formprops.errors["disability"]

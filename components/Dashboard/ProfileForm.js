@@ -21,6 +21,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import { profileActions } from "../../_actions/profile.action";
 import LocalStorageService from "../../_services/LocalStorageService";
 const localStorageService = LocalStorageService.getService();
+import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import {
 	gender,
@@ -34,7 +35,10 @@ import {
 } from "~static/text/profiledata";
 import { state } from "~static/text/state";
 import { cities } from "~static/text/city";
-
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 // import { useAuth } from "../provider/Auth";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import {
@@ -45,15 +49,17 @@ import {
 	Select,
 	Switch,
 } from "formik-material-ui";
-
+import { useAuth } from "../provider/Auth";
 import {
 	Card,
 	CardHeader,
 	CardContent,
 	CardActions,
 	Divider,
+	Avatar,
 	Box,
 	Grid,
+	Dialog,
 	MenuItem,
 	Typography,
 	Chip,
@@ -82,6 +88,17 @@ const useStyles = makeStyles((theme) => ({
 	chip: {
 		margin: theme.spacing(0.5),
 	},
+	avatar: {
+		marginLeft: "auto",
+		height: 110,
+		width: 100,
+		flexShrink: 0,
+		flexGrow: 0,
+	},
+	large: {
+		width: theme.spacing(7),
+		height: theme.spacing(7),
+	},
 }));
 
 const ProfileForm = (props) => {
@@ -90,7 +107,13 @@ const ProfileForm = (props) => {
 
 	const classes = useStyles();
 	const { t } = props;
-
+	const [dp, setDP] = React.useState({
+		file: null,
+		imagePreviewUrl: null,
+	});
+	const [avatar, setAvatar] = React.useState("");
+	const [opeDPDialog, setOpeDPDialog] = React.useState(false);
+	const { postloginsetToken, postsetLoginData, postsetUserData } = useAuth();
 	const [details, setDetails] = useState({});
 	const [loginData, setloginData] = React.useState({});
 	const [states, setStates] = useState([]);
@@ -134,6 +157,27 @@ const ProfileForm = (props) => {
 		// console.error(Object.keys(state));
 		setStates(Object.keys(state));
 		setDetails(localStorageService.getUserDetails("Details"));
+		profileActions
+			.getUserProfileDetails()
+			.then(function (response) {
+				if (response.data) {
+					postsetUserData(response.data);
+				}
+			})
+			.catch(function (error) {
+				console.error("errrrr ", error);
+			});
+		profileActions
+			.getLoginDetails()
+			.then(function (response) {
+				console.log("ress--->", response);
+				if (response.data) {
+					postsetLoginData(response.data.data);
+				}
+			})
+			.catch(function (error) {
+				console.error("errrrr ", error);
+			});
 	}, []);
 	React.useEffect(() => {
 		if (details.profile && details.profile.data.state) {
@@ -242,6 +286,46 @@ const ProfileForm = (props) => {
 		id_proof_path: null,
 		password: "",
 	};
+	const _handledpSubmit = ({ vals, setSubmitting, setFieldError }) => {
+		let payload = new FormData();
+		payload.append("image_path", vals["image_path"]);
+		payload.append("login_id", details.login["id"].toString());
+		payload.append("password", vals.password);
+
+		if (details.login && details.login.mpin) {
+			payload.append("mpin", vals.password);
+			payload.delete("password");
+		}
+		if (payload) {
+			profileActions
+				.setUserProfileDetails(payload)
+				.then(function (response) {
+					setSubmitting(false);
+					console.log("ressss", response);
+					if (response.data.input_error) {
+						Object.keys(response.data.input_error).forEach((k) => {
+							setFieldError(k, result[k][0]);
+						});
+					} else if (!response.data.custom_error) {
+						setOpeDPDialog(!opeDPDialog);
+					}
+					if (response.data.id) {
+						setDetails({
+							...details,
+							["profile"]: {
+								...details.profile,
+								["image_path"]: response.data.image_path,
+							},
+						});
+					}
+				})
+				.catch(function (error) {
+					setSubmitting(false);
+					console.error("errrrr ", error);
+				});
+			console.log(payload);
+		}
+	};
 	const _handleSubmit = ({ vals, setSubmitting, setFieldError }) => {
 		let payload = new FormData();
 		vals["id_proof_path"] &&
@@ -297,6 +381,17 @@ const ProfileForm = (props) => {
 					}
 				});
 		}
+	};
+
+	const showPreloadImage = () => {
+		let comp = null;
+
+		if (dp.file) {
+			comp = <img src={dp.imagePreviewUrl} width="200px" alt="..." />;
+		} else {
+			comp = <AddPhotoAlternateIcon color="primary" style={{ fontSize: 60 }} />;
+		}
+		return comp;
 	};
 
 	const handleChange = (e) => {
@@ -383,166 +478,125 @@ const ProfileForm = (props) => {
 										</AccordionSummary>
 										<AccordionDetails>
 											<Grid container spacing={3}>
-												<Grid item md={4} xs={12}>
-													<Box margin={1}>
-														<Field
-															required
-															onChange={handleChange}
-															fullWidth
-															component={CustomTextField}
-															type="text"
-															name="state"
-															label="State"
-															select
-															variant="standard"
-															helperText={
-																props.errors.hasOwnProperty("state") &&
-																props.errors["state"]
-															}
-															margin="normal"
-															InputLabelProps={{
-																shrink: true,
-															}}
+												<Grid container spacing={2}>
+													<Grid item xs={12} sm container>
+														<Grid item md={6} xs={12}>
+															<Box margin={1}>
+																<Field
+																	fullWidth
+																	component={TextField}
+																	type="text"
+																	name="gender"
+																	label="Gender"
+																	select
+																	variant="outlined"
+																	value={gender}
+																	helperText={
+																		props.errors.hasOwnProperty("gender") &&
+																		props.errors["gender"]
+																	}
+																	margin="dense"
+																	InputLabelProps={{
+																		shrink: true,
+																	}}
+																>
+																	{gender.map((option, index) => (
+																		<MenuItem key={index} value={index + 1}>
+																			{option}
+																		</MenuItem>
+																	))}
+																</Field>
+															</Box>
+														</Grid>
+														<Grid item md={6} xs={12}>
+															<Box margin={1}>
+																<Field
+																	fullWidth
+																	type="date"
+																	variant="outlined"
+																	component={TextField}
+																	label="Date of birth"
+																	helperText={
+																		props.errors.hasOwnProperty("dob") &&
+																		props.errors["dob"]
+																	}
+																	name="dob"
+																	onChange={handleChange}
+																	placeholder="Date of Birth"
+																	margin="dense"
+																/>
+															</Box>
+														</Grid>
+
+														<Grid item md={6} xs={12}>
+															<Box margin={1}>
+																<Field
+																	fullWidth
+																	component={TextField}
+																	type="text"
+																	name="religion"
+																	label="Religion"
+																	select
+																	value={religion}
+																	variant="outlined"
+																	helperText={
+																		props.errors.hasOwnProperty("religion") &&
+																		props.errors["religion"]
+																	}
+																	margin="dense"
+																	InputLabelProps={{
+																		shrink: true,
+																	}}
+																>
+																	{religion.map((option, index) => (
+																		<MenuItem key={index} value={option}>
+																			{option}
+																		</MenuItem>
+																	))}
+																</Field>
+															</Box>
+														</Grid>
+														<Grid item md={6} xs={12}>
+															<Box margin={1}>
+																<Field
+																	fullWidth
+																	component={TextField}
+																	type="text"
+																	disabled={true}
+																	name="nationality"
+																	label="Nationality"
+																	defaultValue="Indian (Default)"
+																	variant="outlined"
+																	helperText={
+																		props.errors.hasOwnProperty("religion") &&
+																		props.errors["religion"]
+																	}
+																	margin="dense"
+																/>
+															</Box>
+														</Grid>
+													</Grid>
+													<Grid item>
+														<IconButton
+															onClick={() => setOpeDPDialog(!opeDPDialog)}
+															color="primary"
+															component="span"
 														>
-															{states.map((option) => (
-																<MenuItem key={option} value={option}>
-																	{option}
-																</MenuItem>
-															))}
-														</Field>
-													</Box>
-												</Grid>
-												<Grid item md={4} xs={12}>
-													<Box margin={1}>
-														<Field
-															required
-															fullWidth
-															component={CustomTextField}
-															type="text"
-															name="district"
-															label="District"
-															select
-															variant="standard"
-															helperText={
-																props.errors.hasOwnProperty("district") &&
-																props.errors["district"]
-															}
-															margin="normal"
-															InputLabelProps={{
-																shrink: true,
-															}}
-														>
-															{district.map((option, index) => (
-																<MenuItem key={index} value={option}>
-																	{option}
-																</MenuItem>
-															))}
-														</Field>
-													</Box>
-												</Grid>
-												<Grid item md={4} xs={12}>
-													<Box margin={1}>
-														<Field
-															required
-															fullWidth
-															component={CustomTextField}
-															type="text"
-															name="city"
-															label="City"
-															select
-															variant="standard"
-															helperText={
-																props.errors.hasOwnProperty("city") &&
-																props.errors["city"]
-															}
-															margin="normal"
-															InputLabelProps={{
-																shrink: true,
-															}}
-														>
-															{city.map((option, index) => (
-																<MenuItem key={index} value={option}>
-																	{option}
-																</MenuItem>
-															))}
-														</Field>
-													</Box>
-												</Grid>
-												<Grid item md={6} xs={12}>
-													<Box margin={1}>
-														<Field
-															required
-															fullWidth
-															component={TextField}
-															type="text"
-															name="gender"
-															label="Gender"
-															select
-															variant="standard"
-															value={gender}
-															helperText={
-																props.errors.hasOwnProperty("gender") &&
-																props.errors["gender"]
-															}
-															margin="dense"
-															InputLabelProps={{
-																shrink: true,
-															}}
-														>
-															{gender.map((option, index) => (
-																<MenuItem key={index} value={index + 1}>
-																	{option}
-																</MenuItem>
-															))}
-														</Field>
-													</Box>
-												</Grid>
-												<Grid item md={6} xs={12}>
-													<Field
-														required
-														fullWidth
-														type="date"
-														component={TextField}
-														label=""
-														helperText={
-															props.errors.hasOwnProperty("dob") &&
-															props.errors["dob"]
-														}
-														name="dob"
-														onChange={handleChange}
-														placeholder="Date of Birth"
-														margin="dense"
-													/>
+															<Avatar
+																key={avatar}
+																src={avatar}
+																className={classes.large}
+																style={{
+																	width: "100px",
+																	height: "100px",
+																}}
+															>
+																{!avatar && showPreloadImage()}
+															</Avatar>
+														</IconButton>
+													</Grid>
 												</Grid>
 
-												<Grid item md={6} xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															component={TextField}
-															type="text"
-															name="religion"
-															label="Religion"
-															select
-															value={religion}
-															variant="standard"
-															helperText={
-																props.errors.hasOwnProperty("religion") &&
-																props.errors["religion"]
-															}
-															margin="dense"
-															InputLabelProps={{
-																shrink: true,
-															}}
-														>
-															{religion.map((option, index) => (
-																<MenuItem key={index} value={option}>
-																	{option}
-																</MenuItem>
-															))}
-														</Field>
-													</Box>
-												</Grid>
 												<Grid item md={6} xs={12}>
 													<Box margin={1}>
 														<Field
@@ -554,7 +608,7 @@ const ProfileForm = (props) => {
 															label="Mother Tongue"
 															select
 															onChange={handleChange}
-															variant="standard"
+															variant="outlined"
 															helperText={
 																props.errors.hasOwnProperty("mother_tongue") &&
 																props.errors["mother_tongue"]
@@ -573,10 +627,10 @@ const ProfileForm = (props) => {
 													</Box>
 												</Grid>
 												<Grid item md={6} xs={12}>
+													<InputLabel shrink={true} htmlFor="language_speak">
+														Language I Speak
+													</InputLabel>
 													<Box margin={1}>
-														<InputLabel shrink={true} htmlFor="language_speak">
-															Language Speak
-														</InputLabel>
 														<Field
 															required
 															fullWidth
@@ -585,7 +639,7 @@ const ProfileForm = (props) => {
 															name="language_speak"
 															multiple={true}
 															onChange={handleChange}
-															variant="standard"
+															variant="outlined"
 															helperText={
 																props.errors.hasOwnProperty("language_speak") &&
 																props.errors["language_speak"]
@@ -616,7 +670,7 @@ const ProfileForm = (props) => {
 												</Grid>
 												<Grid item md={6} xs={12}>
 													<Box margin={1}>
-														<InputLabel shrink={true} htmlFor="language_speak">
+														<InputLabel shrink={true} htmlFor="education">
 															Education
 														</InputLabel>
 														<Field
@@ -628,7 +682,7 @@ const ProfileForm = (props) => {
 															select
 															multiple={true}
 															onChange={handleChange}
-															variant="standard"
+															variant="outlined"
 															helperText={
 																props.errors.hasOwnProperty("education") &&
 																props.errors["education"]
@@ -659,7 +713,7 @@ const ProfileForm = (props) => {
 												</Grid>
 												<Grid item md={6} xs={12}>
 													<Box margin={1}>
-														<InputLabel shrink={true} htmlFor="language_speak">
+														<InputLabel shrink={true} htmlFor="experience">
 															Experience
 														</InputLabel>
 														<Field
@@ -667,11 +721,11 @@ const ProfileForm = (props) => {
 															component={Select}
 															type="text"
 															name="experience"
-															label="Experience"
+															label="Experience/Knowledge"
 															select
 															multiple={true}
 															onChange={handleChange}
-															variant="standard"
+															variant="outlined"
 															helperText={
 																props.errors.hasOwnProperty("experience") &&
 																props.errors["experience"]
@@ -700,10 +754,10 @@ const ProfileForm = (props) => {
 														</Field>
 													</Box>
 												</Grid>
-												<Grid item md={12} xs={12}>
+												<Grid item md={6} xs={12}>
 													<Box margin={1}>
-														<InputLabel shrink={true} htmlFor="language_speak">
-															Interests
+														<InputLabel shrink={true} htmlFor="interest">
+															Interests/Hobbies
 														</InputLabel>
 														<Field
 															fullWidth
@@ -717,7 +771,7 @@ const ProfileForm = (props) => {
 															select
 															multiple={true}
 															onChange={handleChange}
-															variant="standard"
+															variant="outlined"
 															// helperText="Enter Language Speak"
 															margin="dense"
 															InputLabelProps={{
@@ -746,13 +800,16 @@ const ProfileForm = (props) => {
 
 												<Grid item md={6} xs={12}>
 													<Box margin={1}>
+														<InputLabel shrink={true} htmlFor="profession">
+															Profession
+														</InputLabel>
 														<Field
 															fullWidth
 															component={TextField}
 															type="text"
 															name="profession"
 															label="Profession"
-															variant="standard"
+															variant="outlined"
 															helperText={
 																props.errors.hasOwnProperty("profession") &&
 																props.errors["profession"]
@@ -769,7 +826,7 @@ const ProfileForm = (props) => {
 															type="text"
 															name="profession_details"
 															label="Profession Details"
-															variant="standard"
+															variant="outlined"
 															helperText={
 																props.errors.hasOwnProperty(
 																	"profession_details"
@@ -779,7 +836,7 @@ const ProfileForm = (props) => {
 														/>
 													</Box>
 												</Grid>
-												<Grid item md={4} xs={12}>
+												<Grid item md={6} xs={12}>
 													<Box margin={1}>
 														<Field
 															fullWidth
@@ -789,7 +846,7 @@ const ProfileForm = (props) => {
 															label="Occupation"
 															select
 															onChange={handleChange}
-															variant="standard"
+															variant="outlined"
 															helperText={
 																props.errors.hasOwnProperty("id_proof_type") &&
 																props.errors["id_proof_type"]
@@ -804,17 +861,18 @@ const ProfileForm = (props) => {
 														</Field>
 													</Box>
 												</Grid>
-												<Grid item md={6} xs={12}>
+												<Grid item xs={12}>
 													<Box margin={1}>
 														<Field
 															fullWidth
-															multiline={true}
+															multiline
+															rows={4}
 															type="text"
 															component={TextField}
 															name="current_address"
 															label="Present Address"
 															onChange={handleChange}
-															variant="standard"
+															variant="outlined"
 															helperText={
 																props.errors.hasOwnProperty(
 																	"current_address"
@@ -828,6 +886,91 @@ const ProfileForm = (props) => {
 														/>
 													</Box>
 												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															required
+															onChange={handleChange}
+															fullWidth
+															component={CustomTextField}
+															type="text"
+															name="state"
+															label="State"
+															select
+															variant="outlined"
+															helperText={
+																props.errors.hasOwnProperty("state") &&
+																props.errors["state"]
+															}
+															margin="normal"
+															InputLabelProps={{
+																shrink: true,
+															}}
+														>
+															{states.map((option) => (
+																<MenuItem key={option} value={option}>
+																	{option}
+																</MenuItem>
+															))}
+														</Field>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															required
+															fullWidth
+															component={CustomTextField}
+															type="text"
+															name="district"
+															label="District"
+															select
+															variant="outlined"
+															helperText={
+																props.errors.hasOwnProperty("district") &&
+																props.errors["district"]
+															}
+															margin="normal"
+															InputLabelProps={{
+																shrink: true,
+															}}
+														>
+															{district.map((option, index) => (
+																<MenuItem key={index} value={option}>
+																	{option}
+																</MenuItem>
+															))}
+														</Field>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															required
+															fullWidth
+															component={CustomTextField}
+															type="text"
+															name="city"
+															label="City"
+															select
+															variant="outlined"
+															helperText={
+																props.errors.hasOwnProperty("city") &&
+																props.errors["city"]
+															}
+															margin="normal"
+															InputLabelProps={{
+																shrink: true,
+															}}
+														>
+															{city.map((option, index) => (
+																<MenuItem key={index} value={option}>
+																	{option}
+																</MenuItem>
+															))}
+														</Field>
+													</Box>
+												</Grid>
 												<Grid item md={6} xs={12}>
 													<Box margin={1}>
 														<Field
@@ -838,7 +981,7 @@ const ProfileForm = (props) => {
 															name="area"
 															label="Area"
 															onChange={handleChange}
-															variant="standard"
+															variant="outlined"
 															helperText={
 																props.errors.hasOwnProperty("area") &&
 																props.errors["area"]
@@ -859,7 +1002,7 @@ const ProfileForm = (props) => {
 															label="ID Proof Type"
 															select
 															onChange={handleChange}
-															variant="standard"
+															variant="outlined"
 															helperText={
 																props.errors.hasOwnProperty("id_proof_type") &&
 																props.errors["id_proof_type"]
@@ -883,7 +1026,7 @@ const ProfileForm = (props) => {
 															name="id_proof_number"
 															label="Identity Number"
 															onChange={handleChange}
-															variant="standard"
+															variant="outlined"
 															margin="normal"
 														/>
 													</Box>
@@ -941,6 +1084,7 @@ const ProfileForm = (props) => {
 															required
 															fullWidth
 															type="password"
+															variant="outlined"
 															component={TextField}
 															label={
 																details.login && details.login.mpin
@@ -986,6 +1130,181 @@ const ProfileForm = (props) => {
 				}}
 			</Formik>
 			{_renderModal()}
+			<Dialog open={opeDPDialog} aria-labelledby="responsive-dialog-title">
+				<DialogTitle id="responsive-dialog-title">
+					{"Upload Profile Image?"}
+				</DialogTitle>
+
+				<Formik
+					enableReinitialize
+					initialValues={{ image_path: null, password: "" }}
+					validationSchema={Yup.object().shape({
+						password: Yup.string().required("Required"),
+						image_path: Yup.mixed()
+							.test(
+								"fileSize",
+								"File Size is too large",
+								(value) => value.size <= 2000000
+							)
+							.test(
+								"fileType",
+								"Only [png,jpg,jpeg] File Formats Accepted",
+								(value) =>
+									["image/png", "image/jpg", "image/jpeg"].includes(value.type)
+							)
+							.required("Required"),
+					})}
+					onSubmit={(vals, { setSubmitting, setFieldError }) =>
+						_handledpSubmit({
+							vals,
+							setSubmitting,
+							setFieldError,
+						})
+					}
+					render={(props) => {
+						console.error(props.errors);
+						const {
+							values,
+							touched,
+							errors,
+							handleBlur,
+							handleSubmit,
+							handleChange,
+							isValid,
+							isSubmitting,
+						} = props;
+						return (
+							<Form>
+								<DialogContent>
+									<Grid container justify="center">
+										<Grid item xs={12}>
+											<Box margin={1}>
+												<Field
+													name="image_path"
+													label=""
+													className={
+														"form-check-input " +
+														(props.errors["profiledp"] &&
+														props.touched["profiledp"]
+															? " is-invalid"
+															: "")
+													}
+												>
+													{({ field, form, meta }) => (
+														<div>
+															<input
+																style={{ display: "none" }}
+																id={field.name}
+																name={field.name}
+																type="file"
+																onChange={(event) => {
+																	props.setFieldValue(
+																		field.name,
+																		event.currentTarget.files[0]
+																	);
+																	let reader = new FileReader();
+																	let file = event.target.files[0];
+																	if (file) {
+																		reader.onloadend = () => {
+																			setDP({
+																				file: file,
+																				imagePreviewUrl: reader.result,
+																			});
+																		};
+																		reader.readAsDataURL(file);
+																	}
+																}}
+															/>
+															<label
+																style={{
+																	display: "flex",
+																	justifyContent: "center",
+																}}
+																htmlFor={field.name}
+															>
+																<IconButton color="primary" component="span">
+																	<Avatar
+																		className={classes.large}
+																		style={{
+																			width: "100%",
+																			height: "100%",
+																		}}
+																	>
+																		{!avatar && showPreloadImage()}
+																	</Avatar>
+																</IconButton>
+															</label>
+														</div>
+													)}
+												</Field>
+												{props.errors.hasOwnProperty("profiledp") && (
+													<div style={{ color: "red" }} component="div">
+														{props.errors["profiledp"]}
+													</div>
+												)}
+											</Box>
+										</Grid>
+										<Grid item md={12} xs={12}>
+											<Box margin={1}>
+												<Field
+													fullWidth
+													required
+													type="password"
+													component={TextField}
+													label={
+														details.login && details.login.mpin
+															? "M-PIN"
+															: "Password"
+													}
+													name="password"
+													placeholder={
+														details.login && details.login.mpin
+															? "Enter M-PIN"
+															: "Enter Password"
+													}
+												/>
+											</Box>
+										</Grid>
+									</Grid>
+								</DialogContent>
+								<DialogActions>
+									{!isSubmitting ? (
+										<Button
+											autoFocus
+											onClick={() => {
+												setDP({ file: null });
+												showPreloadImage();
+												setOpeDPDialog(!opeDPDialog);
+											}}
+											color="primary"
+										>
+											Cancel
+										</Button>
+									) : (
+										t("common:cant_revert")
+									)}
+									<div className={classes.wrapper}>
+										<Button
+											disabled={isSubmitting}
+											type="submit"
+											color="primary"
+											autoFocus
+										>
+											Upload
+										</Button>
+										{/* {isSubmitting && (
+											<CircularProgress
+												variant="static"
+												className={classes.Progress}
+											/>
+										)} */}
+									</div>
+								</DialogActions>
+							</Form>
+						);
+					}}
+				/>
+			</Dialog>
 		</Card>
 	);
 };

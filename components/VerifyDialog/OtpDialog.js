@@ -9,6 +9,7 @@ import { Grid, Button } from "@material-ui/core";
 import PropTypes from "prop-types";
 import FormContainer from "../Forms/FormContainer";
 import { userVerificationForm } from "../../static/FormData/userVerificationForm";
+import Alert from "./../../components/alert/alert";
 
 function otpdialog(props) {
 	const OTP_TIMER = 15;
@@ -16,6 +17,8 @@ function otpdialog(props) {
 	const router = useRouter();
 	let btnRef = React.useRef();
 	const { t } = props;
+	const [MessagePopup, setMessagePopup] = useState(false);
+	const [Message, setMessage] = useState("");
 	const [counter, setCounter] = useState(OTP_TIMER);
 	const [values, setValues] = useState({
 		username: props.username,
@@ -40,21 +43,43 @@ function otpdialog(props) {
 				.sendOTP(values.username)
 				.then(function (response) {
 					console.log("ressss", response);
-					setValues({
-						...values,
-						["otpStatus"]: "OTP Sent to Mobile: " + values.mobile,
-					});
-					setValues({
-						...values,
-						["otp"]: response.data.otp,
-					});
+					if (response.status == 201) {
+						setValues({
+							...values,
+							["otpStatus"]: "OTP Sent to Mobile: " + values.mobile,
+						});
+						setValues({
+							...values,
+							["otp"]: response.data.otp,
+						});
+					} else {
+						setMessage("Something Went Wrong!");
+						setMessagePopup(true);
+					}
 				})
 				.catch(function (error) {
 					console.error(error);
+					setMessage("Something Went Wrong!");
+					setMessagePopup(true);
 				});
 		}
 	};
+	const _renderModal = () => {
+		const onClick = () => {
+			setMessagePopup(() => false);
+			window.location.reload(false);
+		};
 
+		return (
+			<Alert
+				isOpen={MessagePopup}
+				handleSubmit={onClick}
+				title="Process Status"
+				text={Message}
+				submitButtonText="Ok."
+			/>
+		);
+	};
 	const handleChange = (name) => (event) => {
 		setValues({ ...values, [name]: event.target.value });
 	};
@@ -90,6 +115,8 @@ function otpdialog(props) {
 				})
 				.catch(function (error) {
 					console.error(error);
+					setMessage("Something Went Wrong!");
+					setMessagePopup(true);
 				});
 		}
 	};
@@ -157,6 +184,7 @@ function otpdialog(props) {
 					</Button>
 				</div>
 			</ValidatorForm> */}
+			{_renderModal()}
 		</div>
 	);
 }

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Router from "next/router";
 import withAuth from "../../../components/Hoc/withAuth";
 import { makeStyles } from "@material-ui/core/styles";
 import Dialog from "@material-ui/core/Dialog";
@@ -20,7 +21,6 @@ import GridListTile from "@material-ui/core/GridListTile";
 import IconButton from "@material-ui/core/IconButton";
 import { Fab, useMediaQuery, Tab, Tabs } from "@material-ui/core/";
 import { useTheme } from "@material-ui/core/styles";
-import { useLocation, BrowserRouter as Router } from "react-router-dom";
 import api, {
 	addBearerToken,
 	removeBearerToken,
@@ -683,4 +683,38 @@ const profile = (props) => {
 	);
 };
 
-export default withRouter(withAuth(profile));
+const redirectToLogin = (res) => {
+	if (res) {
+		res.writeHead(302, { Location: "/login" });
+		res.end();
+		res.finished = true;
+	} else {
+		Router.push("/login");
+	}
+};
+const getCookieFromReq = (req, cookieKey) => {
+	const cookie = req.headers.cookie
+		.split(";")
+		.find((c) => c.trim().startsWith(`${cookieKey}=`));
+
+	if (!cookie) return undefined;
+	return cookie.split("=")[1];
+};
+
+profile.getInitialProps = ({ req, res }) => {
+	const ISSERVER = typeof window === "undefined";
+	let token = null;
+
+	if (!ISSERVER) {
+		token = localStorage.getItem("token");
+	} else {
+		token = getCookieFromReq(req, "token");
+	}
+
+	if (token == null) {
+		console.log("GOING TO REDIRECT");
+		redirectToLogin(res);
+	}
+	return {};
+};
+export default withRouter(profile);

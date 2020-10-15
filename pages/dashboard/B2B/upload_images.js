@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import Router from "next/router";
 import { makeStyles } from "@material-ui/core/styles";
 import {
 	Grid,
@@ -380,4 +381,40 @@ const b2bVid = (props) => {
 		</Fragment>
 	);
 };
+
+const redirectToLogin = (res) => {
+	if (res) {
+		res.writeHead(302, { Location: "/login" });
+		res.end();
+		res.finished = true;
+	} else {
+		Router.push("/login");
+	}
+};
+const getCookieFromReq = (req, cookieKey) => {
+	const cookie = req.headers.cookie
+		.split(";")
+		.find((c) => c.trim().startsWith(`${cookieKey}=`));
+
+	if (!cookie) return undefined;
+	return cookie.split("=")[1];
+};
+
+b2bVid.getInitialProps = ({ req, res }) => {
+	const ISSERVER = typeof window === "undefined";
+	let token = null;
+
+	if (!ISSERVER) {
+		token = localStorage.getItem("token");
+	} else {
+		token = getCookieFromReq(req, "token");
+	}
+
+	if (token == null) {
+		console.log("GOING TO REDIRECT");
+		redirectToLogin(res);
+	}
+	return {};
+};
+
 export default withRouter(b2bVid);

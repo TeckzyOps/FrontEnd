@@ -1,4 +1,5 @@
 import React from "react";
+import Router from "next/router";
 import withAuth from "../../../components/Hoc/withAuth";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
@@ -28,6 +29,19 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { matrimonyActions } from "../../../_actions/matrimony.action";
 import Header from "../../../components/Header";
 const localStorageService = LocalStorageService.getService();
+import {
+	gender,
+	education,
+	occupation,
+	idType,
+	religion,
+	maritialStatus,
+	caste,
+	experience,
+	countryList,
+	interest,
+	languages,
+} from "~static/text/profiledata";
 
 function getSteps() {
 	return [
@@ -69,6 +83,56 @@ const Matrimony = (props) => {
 	const [familydetails_id, setfamilydetailsId] = React.useState(0);
 	const [lifetsyledetails_id, setlifetsyledetailsId] = React.useState(0);
 	const [defaultdetails_id, setdefaultdetailsId] = React.useState(0);
+
+	const autofillFunc = () => {
+		let details = localStorageService.getUserDetails("Details");
+		setDetails(details.profile.data);
+
+		// Object.keys(basicdetails).forEach((k) => {
+		// 	console.error(k);
+		// 	if (details.login.hasOwnProperty(k)) {
+		// 		if (details.login[k]) {
+		// 			setbasicdetails({ ...basicdetails, [k]: details.login[k] });
+		// 		}
+		// 	} else if (details.profile.data.hasOwnProperty(k)) {
+		// 		console.error(details.profile.data.hasOwnProperty(k));
+		// 		console.error(details.profile.data[k]);
+		// 		if (details.profile.data[k]) {
+		// 			setbasicdetails({ ...basicdetails, [k]: details.profile.data[k] });
+		// 		}
+		// 	}
+		// });
+	};
+	React.useEffect(() => {
+		// console.error(Object.keys(state));
+		setbasicdetails({
+			filled_by: "",
+			name: details.name ? details.name : "",
+			gender: details.gender ? details.gender : "",
+			dob_year: "",
+			height: "",
+			religion: details.religion ? details.religion : "",
+			cast: "",
+			mother_tongue: details.mother_tongue ? details.mother_tongue : "",
+			marital_status: "",
+			childrens: "",
+			childrens_living_status: "",
+			manglik_status: "",
+			country: "",
+			state: details.state ? details.state : "",
+			district: details.district ? details.district : "",
+			education:
+				details.education && Array.isArray(JSON.parse(details.education))
+					? JSON.parse(details.education)
+					: "",
+			proffesion: details.proffesion ? details.proffesion : "",
+			occupation: details.occupation ? details.occupation : "",
+			salary: "",
+			gotra: "",
+			living_with_parents_status: "",
+			wedding_budget: "",
+		});
+	}, [details]);
 	const [basicdetails, setbasicdetails] = React.useState({
 		filled_by: "",
 		name: details.name ? details.name : "",
@@ -323,7 +387,18 @@ const Matrimony = (props) => {
 									</Button>
 								</div>
 							) : (
-								<div>{getStepContent(activeStep)}</div>
+								<div>
+									{activeStep == 0 && (
+										<Button
+											onClick={autofillFunc}
+											color="primary"
+											variant="outlined"
+										>
+											Autofill
+										</Button>
+									)}
+									{getStepContent(activeStep)}
+								</div>
 							)}
 						</div>
 					</Grid>
@@ -332,5 +407,38 @@ const Matrimony = (props) => {
 		</React.Fragment>
 	);
 };
+const redirectToLogin = (res) => {
+	if (res) {
+		res.writeHead(302, { Location: "/login" });
+		res.end();
+		res.finished = true;
+	} else {
+		Router.push("/login");
+	}
+};
+const getCookieFromReq = (req, cookieKey) => {
+	const cookie = req.headers.cookie
+		.split(";")
+		.find((c) => c.trim().startsWith(`${cookieKey}=`));
 
-export default withRouter(withAuth(Matrimony));
+	if (!cookie) return undefined;
+	return cookie.split("=")[1];
+};
+
+Matrimony.getInitialProps = ({ req, res }) => {
+	const ISSERVER = typeof window === "undefined";
+	let token = null;
+
+	if (!ISSERVER) {
+		token = localStorage.getItem("token");
+	} else {
+		token = getCookieFromReq(req, "token");
+	}
+
+	if (token == null) {
+		console.log("GOING TO REDIRECT");
+		redirectToLogin(res);
+	}
+	return {};
+};
+export default withRouter(Matrimony);

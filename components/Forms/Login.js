@@ -139,11 +139,10 @@ function Login(props) {
 			title={t("common:login_title")}
 			subtitle={t("common:login_subtitle")}
 		>
-			<div className={classes.separator}>
-				<Typography>
-					{showOTP ? t("common:otp_sentto") + values.username : ""}
-				</Typography>
-			</div>
+			<Typography>
+				{showOTP ? t("common:otp_sentto") + values.username : ""}
+			</Typography>
+			<div className={classes.separator}></div>
 			{showOTP && (
 				<Otpdialog doClose={closeOTPDialog} username={values.username} />
 			)}

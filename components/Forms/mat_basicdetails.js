@@ -355,7 +355,7 @@ const Basicdetails = ({
 													type="text"
 													name="filled_by"
 													label="Filled By"
-													variant="standard"
+													variant="outlined"
 													helperText={
 														props.errors.hasOwnProperty("filled_by") &&
 														props.errors["filled_by"]
@@ -377,7 +377,7 @@ const Basicdetails = ({
 													type="text"
 													name="name"
 													label="Candidate Name"
-													variant="standard"
+													variant="outlined"
 													helperText={
 														props.errors.hasOwnProperty("name") &&
 														props.errors["name"]
@@ -400,7 +400,7 @@ const Basicdetails = ({
 													name="gender"
 													label="Gender"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														props.errors.hasOwnProperty("gender") &&
 														props.errors["gender"]
@@ -428,7 +428,7 @@ const Basicdetails = ({
 													type="text"
 													name="dob_year"
 													label="Birth Year"
-													variant="standard"
+													variant="outlined"
 													helperText={
 														props.errors.hasOwnProperty("dob_year") &&
 														props.errors["dob_year"]
@@ -450,7 +450,7 @@ const Basicdetails = ({
 													type="text"
 													name="height"
 													label="Height"
-													variant="standard"
+													variant="outlined"
 													helperText={
 														props.errors.hasOwnProperty("height") &&
 														props.errors["height"]
@@ -473,7 +473,7 @@ const Basicdetails = ({
 													name="religion"
 													label="Religion"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														props.errors.hasOwnProperty("religion") &&
 														props.errors["religion"]
@@ -502,7 +502,7 @@ const Basicdetails = ({
 													name="cast"
 													label="Cast"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														props.errors.hasOwnProperty("cast") &&
 														props.errors["cast"]
@@ -530,7 +530,7 @@ const Basicdetails = ({
 													type="text"
 													name="mother_tongue"
 													label="Mother Tongue"
-													variant="standard"
+													variant="outlined"
 													select
 													helperText={
 														props.errors.hasOwnProperty("mother_tongue") &&
@@ -560,7 +560,7 @@ const Basicdetails = ({
 													name="marital_status"
 													label="Marital Status"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														props.errors.hasOwnProperty("marital_status") &&
 														props.errors["marital_status"]
@@ -592,7 +592,7 @@ const Basicdetails = ({
 													type="number"
 													name="childrens"
 													label="Number Of Childrens"
-													variant="standard"
+													variant="outlined"
 													helperText={
 														props.errors.hasOwnProperty("childrens") &&
 														props.errors["childrens"]
@@ -618,7 +618,7 @@ const Basicdetails = ({
 													type="text"
 													name="childrens_living_status"
 													label="Number Of Married Childrens"
-													variant="standard"
+													variant="outlined"
 													helperText={
 														props.errors.hasOwnProperty(
 															"childrens_living_status"
@@ -653,7 +653,7 @@ const Basicdetails = ({
 															type="text"
 															name="manglik_status"
 															label="Manglik Status"
-															variant="standard"
+															variant="outlined"
 															helperText={
 																props.errors.hasOwnProperty("manglik_status") &&
 																props.errors["manglik_status"]
@@ -676,7 +676,7 @@ const Basicdetails = ({
 													name="country"
 													label="Current Residence Of"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														props.errors.hasOwnProperty("country") &&
 														props.errors["country"]
@@ -705,7 +705,7 @@ const Basicdetails = ({
 													name="state"
 													label="State"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														props.errors.hasOwnProperty("state") &&
 														props.errors["state"]
@@ -734,7 +734,7 @@ const Basicdetails = ({
 													name="district"
 													label="District"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														props.errors.hasOwnProperty("district") &&
 														props.errors["district"]
@@ -744,11 +744,12 @@ const Basicdetails = ({
 														shrink: true,
 													}}
 												>
-													{district.map((option, index) => (
-														<MenuItem key={index} value={option}>
-															{option}
-														</MenuItem>
-													))}
+													{props.values.state &&
+														state[props.values.state].map((option, index) => (
+															<MenuItem key={index} value={option}>
+																{option}
+															</MenuItem>
+														))}
 												</Field>
 											</Box>
 										</Grid>
@@ -764,7 +765,7 @@ const Basicdetails = ({
 													label="Education"
 													select
 													onChange={handleChange}
-													variant="standard"
+													variant="outlined"
 													helperText={
 														props.errors.hasOwnProperty("education") &&
 														props.errors["education"]
@@ -793,7 +794,7 @@ const Basicdetails = ({
 													name="proffesion"
 													label="Proffesion"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														props.errors.hasOwnProperty("proffesion") &&
 														props.errors["proffesion"]
@@ -822,7 +823,7 @@ const Basicdetails = ({
 													name="occupation"
 													label="Occupation"
 													select
-													variant="standard"
+													variant="outlined"
 													helperText={
 														props.errors.hasOwnProperty("occupation") &&
 														props.errors["occupation"]
@@ -850,7 +851,7 @@ const Basicdetails = ({
 													type="text"
 													name="salary"
 													label="Salary"
-													variant="standard"
+													variant="outlined"
 													helperText={
 														props.errors.hasOwnProperty("salary") &&
 														props.errors["salary"]
@@ -872,7 +873,7 @@ const Basicdetails = ({
 													type="text"
 													name="gotra"
 													label="Gotra"
-													variant="standard"
+													variant="outlined"
 													helperText={
 														props.errors.hasOwnProperty("gotra") &&
 														props.errors["gotra"]
@@ -895,7 +896,7 @@ const Basicdetails = ({
 													select
 													name="living_with_parents_status"
 													label="Living With Parrents Or Not ?"
-													variant="standard"
+													variant="outlined"
 													helperText={
 														props.errors.hasOwnProperty(
 															"living_with_parents_status"
@@ -924,7 +925,7 @@ const Basicdetails = ({
 													type="text"
 													name="wedding_budget"
 													label="Wedding Budget"
-													variant="standard"
+													variant="outlined"
 													helperText={
 														props.errors.hasOwnProperty("wedding_budget") &&
 														props.errors["wedding_budget"]

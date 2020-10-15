@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
+
 import Icon from "@material-ui/core/Icon";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
@@ -17,6 +18,7 @@ import useStyles from "./form-style";
 import FormContainer from "./FormContainer";
 import { userActions } from "../../_actions/user.actions";
 import Timer from "../timer/Timer";
+import { useRouter } from "next/router";
 import {
 	forgetPasswordForm,
 	otp,
@@ -34,6 +36,7 @@ let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
 let otpval = "";
 function ForgotPassword(props) {
+	const router = useRouter();
 	const classes = useStyles();
 	const { t } = props;
 	const OTP_TIMER = 15;
@@ -48,14 +51,20 @@ function ForgotPassword(props) {
 	const changeOTPBtnState = () => {
 		setCounter(!counter);
 	};
+
+	React.useEffect(() => {
+		if (forgetPasswordForm.length > 2) {
+			reqOtp(values);
+		}
+	}, [formschema]);
 	const reqOtp = (values) => {
 		if (values.username) {
 			userActions
 				.sendOTP(values.username)
 				.then(function (response) {
-					if (forgetPasswordForm.length < 2) {
-						setformschema(forgetPasswordForm.push(otp, newPassword));
-					}
+					// if (forgetPasswordForm.length < 2) {
+					// 	setformschema(forgetPasswordForm.push(otp, newPassword));
+					// }
 				})
 				.catch(function (error) {
 					console.error(error);
@@ -64,16 +73,21 @@ function ForgotPassword(props) {
 	};
 
 	const handleSubmit = (vals) => {
+		console.log(forgetPasswordForm.length);
 		if (forgetPasswordForm.length < 2) {
 			setValues({ ...values, ["username"]: vals.username });
-			reqOtp(values);
-		}
-		if (forgetPasswordForm.length > 2) {
-			if (values.username && values.otp && values.password) {
+			if (forgetPasswordForm.length < 2) {
+				setformschema(forgetPasswordForm.push(otp, newPassword));
+			}
+		} else {
+			if (vals.username && vals.otp && vals.password) {
 				userActions
-					.forgetPassword(values.username, values.otp, values.password)
+					.forgetPassword(vals.username, vals.otp, vals.password)
 					.then(function (response) {
 						console.log("ressss", response);
+						if (response.status == 201) {
+							router.push("/login");
+						}
 					})
 					.catch(function (error) {
 						console.error(error.response);
