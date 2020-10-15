@@ -26,7 +26,6 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 
 import BookingModule from "../../../components/GenericPopup/BookingModule";
-import { useLocation, BrowserRouter as Router } from "react-router-dom";
 import api, {
 	addBearerToken,
 	removeBearerToken,
