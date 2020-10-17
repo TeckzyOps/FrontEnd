@@ -435,5 +435,4 @@ b2bVid.getInitialProps = ({ req, res }) => {
 	}
 	return {};
 };
-export default index;
 export default withRouter(b2bVid);

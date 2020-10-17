@@ -26,7 +26,6 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 
 import BookingModule from "../../../components/GenericPopup/BookingModule";
-import Router from "next/router";
 import api, {
 	addBearerToken,
 	removeBearerToken,
