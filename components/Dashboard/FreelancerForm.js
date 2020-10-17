@@ -581,7 +581,7 @@ const freelancerform = (props) => {
 									style={{ textDecoration: "none" }}
 									href={
 										routerLink.starter.freelancerVids +
-										"?id" +
+										"?id=" +
 										props.router.query.id
 									}
 								>
@@ -595,7 +595,7 @@ const freelancerform = (props) => {
 									style={{ textDecoration: "none" }}
 									href={
 										routerLink.starter.freelancerImg +
-										"?id" +
+										"?id=" +
 										props.router.query.id
 									}
 								>

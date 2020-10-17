@@ -125,7 +125,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const FreelancerVid = (props) => {
+const FreelancerImg = (props) => {
 	const classes = useStyles();
 	const [img, setImg] = React.useState({});
 	const [remoteData, setRemoteData] = React.useState([]);
@@ -410,9 +410,8 @@ freelancerVid.getInitialProps = ({ req, res }) => {
 	}
 
 	if (token == null) {
-		console.log("GOING TO REDIRECT");
 		redirectToLogin(res);
 	}
 	return {};
 };
-export default FreelancerVid;
+export default withRouter(FreelancerImg);

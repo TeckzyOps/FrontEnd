@@ -434,4 +434,4 @@ FreelancerVid.getInitialProps = ({ req, res }) => {
 	}
 	return {};
 };
-export default FreelancerVid;
+export default withRouter(FreelancerVid);
