@@ -74,11 +74,6 @@ import * as Yup from "yup";
 const useStyles = makeStyles((theme) => ({
 	root: {
 		display: "flex",
-		justifyContent: "center",
-		flexWrap: "wrap",
-		listStyle: "none",
-		padding: theme.spacing(0.5),
-		margin: 0,
 	},
 	chips: {
 		display: "flex",
@@ -107,12 +102,7 @@ const ProfileForm = (props) => {
 
 	const classes = useStyles();
 	const { t } = props;
-	const [dp, setDP] = React.useState({
-		file: null,
-		imagePreviewUrl: null,
-	});
-	const [avatar, setAvatar] = React.useState("");
-	const [opeDPDialog, setOpeDPDialog] = React.useState(false);
+
 	const { postloginsetToken, postsetLoginData, postsetUserData } = useAuth();
 	const [details, setDetails] = useState({});
 	const [loginData, setloginData] = React.useState({});
@@ -154,7 +144,6 @@ const ProfileForm = (props) => {
 	});
 
 	React.useEffect(() => {
-		// console.error(Object.keys(state));
 		setStates(Object.keys(state));
 		setDetails(localStorageService.getUserDetails("Details"));
 		profileActions
@@ -209,123 +198,75 @@ const ProfileForm = (props) => {
 	};
 
 	const initVals = {
-		gender:
-			details.profile && details.profile.data.gender
-				? details.profile.data.gender
-				: "",
-		dob:
-			details.profile && details.profile.data.dob
-				? details.profile.data.dob
-				: "",
-		religion:
-			details.profile && details.profile.data.religion
-				? details.profile.data.religion
-				: "",
-		mother_tongue:
-			details.profile && details.profile.data.mother_tongue
-				? details.profile.data.mother_tongue
-				: "",
-		profession:
-			details.profile && details.profile.data.profession
-				? details.profile.data.profession
-				: "",
-		profession_details:
-			details.profile && details.profile.data.profession_details
-				? details.profile.data.profession_details
-				: "",
-		occupation:
-			details.profile && details.profile.data.occupation
-				? details.profile.data.occupation
-				: "",
-		language_speak:
-			details.profile &&
-			details.profile.data.language_speak &&
-			Array.isArray(JSON.parse(details.profile.data.language_speak))
-				? JSON.parse(details.profile.data.language_speak)
-				: [],
-		interest:
-			details.profile &&
-			details.profile.data.interest &&
-			Array.isArray(JSON.parse(details.profile.data.interest))
-				? JSON.parse(details.profile.data.interest)
-				: [],
-		education:
-			details.profile &&
-			details.profile.data.education &&
-			Array.isArray(JSON.parse(details.profile.data.education))
-				? JSON.parse(details.profile.data.education)
-				: [],
-		experience:
-			details.profile &&
-			details.profile.data.experience &&
-			Array.isArray(JSON.parse(details.profile.data.experience))
-				? JSON.parse(details.profile.data.experience)
-				: [],
-		current_address:
-			details.profile && details.profile.data.current_address
-				? details.profile.data.current_address
-				: "",
-		area:
-			details.profile && details.profile.data.area
-				? details.profile.data.area
-				: "",
-		city:
-			details.profile && details.profile.data.city
-				? details.profile.data.city
-				: "",
-		district:
-			details.profile && details.profile.data.district
-				? details.profile.data.district
-				: "",
-		state:
-			details.profile && details.profile.data.state
-				? details.profile.data.state
-				: "",
+		gender: props.getNested(details, "profile", "data", "gender")
+			? props.getNested(details, "profile", "data", "gender")
+			: "",
+		dob: props.getNested(details, "profile", "data", "dob")
+			? props.getNested(details, "profile", "data", "dob")
+			: "",
+		religion: props.getNested(details, "profile", "data", "religion")
+			? details.profile.data.religion
+			: "",
+		mother_tongue: props.getNested(details, "profile", "data", "mother_tongue")
+			? details.profile.data.mother_tongue
+			: "",
+		profession: props.getNested(details, "profile", "data", "profession")
+			? details.profile.data.profession
+			: "",
+		profession_details: props.getNested(
+			details,
+			"profile",
+			"data",
+			"profession_details"
+		)
+			? details.profile.data.profession_details
+			: "",
+		occupation: props.getNested(details, "profile", "data", "occupation")
+			? details.profile.data.occupation
+			: "",
+		language_speak: props.getNested(
+			details,
+			"profile",
+			"data",
+			"language_speak"
+		)
+			? JSON.parse(details.profile.data.language_speak)
+			: [],
+		interest: props.getNested(details, "profile", "data", "interest")
+			? JSON.parse(details.profile.data.interest)
+			: [],
+		education: props.getNested(details, "profile", "data", "education")
+			? JSON.parse(details.profile.data.education)
+			: [],
+		experience: props.getNested(details, "profile", "data", "experience")
+			? JSON.parse(props.getNested(details, "profile", "data", "experience"))
+			: [],
+		current_address: props.getNested(
+			details,
+			"profile",
+			"data",
+			"current_address"
+		)
+			? details.profile.data.current_address
+			: "",
+		area: props.getNested(details, "profile", "data", "area")
+			? details.profile.data.area
+			: "",
+		city: props.getNested(details, "profile", "data", "city")
+			? details.profile.data.city
+			: "",
+		district: props.getNested(details, "profile", "data", "district")
+			? details.profile.data.district
+			: "",
+		state: props.getNested(details, "profile", "data", "state")
+			? details.profile.data.state
+			: "",
 		id_proof_type: "",
 		id_proof_number: "",
 		id_proof_path: null,
 		password: "",
 	};
-	const _handledpSubmit = ({ vals, setSubmitting, setFieldError }) => {
-		let payload = new FormData();
-		payload.append("image_path", vals["image_path"]);
-		payload.append("login_id", details.login["id"].toString());
-		payload.append("password", vals.password);
 
-		if (details.login && details.login.mpin) {
-			payload.append("mpin", vals.password);
-			payload.delete("password");
-		}
-		if (payload) {
-			profileActions
-				.setUserProfileDetails(payload)
-				.then(function (response) {
-					setSubmitting(false);
-					console.log("ressss", response);
-					if (response.data.input_error) {
-						Object.keys(response.data.input_error).forEach((k) => {
-							setFieldError(k, result[k][0]);
-						});
-					} else if (!response.data.custom_error) {
-						setOpeDPDialog(!opeDPDialog);
-					}
-					if (response.data.id) {
-						setDetails({
-							...details,
-							["profile"]: {
-								...details.profile,
-								["image_path"]: response.data.image_path,
-							},
-						});
-					}
-				})
-				.catch(function (error) {
-					setSubmitting(false);
-					console.error("errrrr ", error);
-				});
-			console.log(payload);
-		}
-	};
 	const _handleSubmit = ({ vals, setSubmitting, setFieldError }) => {
 		let payload = new FormData();
 		vals["id_proof_path"] &&
@@ -381,17 +322,6 @@ const ProfileForm = (props) => {
 					}
 				});
 		}
-	};
-
-	const showPreloadImage = () => {
-		let comp = null;
-
-		if (dp.file) {
-			comp = <img src={dp.imagePreviewUrl} width="200px" alt="..." />;
-		} else {
-			comp = <AddPhotoAlternateIcon color="primary" style={{ fontSize: 60 }} />;
-		}
-		return comp;
 	};
 
 	const handleChange = (e) => {
@@ -478,125 +408,6 @@ const ProfileForm = (props) => {
 										</AccordionSummary>
 										<AccordionDetails>
 											<Grid container spacing={3}>
-												<Grid container spacing={2}>
-													<Grid item xs={12} sm container>
-														<Grid item md={6} xs={12}>
-															<Box margin={1}>
-																<Field
-																	fullWidth
-																	component={TextField}
-																	type="text"
-																	name="gender"
-																	label="Gender"
-																	select
-																	variant="outlined"
-																	value={gender}
-																	helperText={
-																		props.errors.hasOwnProperty("gender") &&
-																		props.errors["gender"]
-																	}
-																	margin="dense"
-																	InputLabelProps={{
-																		shrink: true,
-																	}}
-																>
-																	{gender.map((option, index) => (
-																		<MenuItem key={index} value={index + 1}>
-																			{option}
-																		</MenuItem>
-																	))}
-																</Field>
-															</Box>
-														</Grid>
-														<Grid item md={6} xs={12}>
-															<Box margin={1}>
-																<Field
-																	fullWidth
-																	type="date"
-																	variant="outlined"
-																	component={TextField}
-																	label="Date of birth"
-																	helperText={
-																		props.errors.hasOwnProperty("dob") &&
-																		props.errors["dob"]
-																	}
-																	name="dob"
-																	onChange={handleChange}
-																	placeholder="Date of Birth"
-																	margin="dense"
-																/>
-															</Box>
-														</Grid>
-
-														<Grid item md={6} xs={12}>
-															<Box margin={1}>
-																<Field
-																	fullWidth
-																	component={TextField}
-																	type="text"
-																	name="religion"
-																	label="Religion"
-																	select
-																	value={religion}
-																	variant="outlined"
-																	helperText={
-																		props.errors.hasOwnProperty("religion") &&
-																		props.errors["religion"]
-																	}
-																	margin="dense"
-																	InputLabelProps={{
-																		shrink: true,
-																	}}
-																>
-																	{religion.map((option, index) => (
-																		<MenuItem key={index} value={option}>
-																			{option}
-																		</MenuItem>
-																	))}
-																</Field>
-															</Box>
-														</Grid>
-														<Grid item md={6} xs={12}>
-															<Box margin={1}>
-																<Field
-																	fullWidth
-																	component={TextField}
-																	type="text"
-																	disabled={true}
-																	name="nationality"
-																	label="Nationality"
-																	defaultValue="Indian (Default)"
-																	variant="outlined"
-																	helperText={
-																		props.errors.hasOwnProperty("religion") &&
-																		props.errors["religion"]
-																	}
-																	margin="dense"
-																/>
-															</Box>
-														</Grid>
-													</Grid>
-													<Grid item>
-														<IconButton
-															onClick={() => setOpeDPDialog(!opeDPDialog)}
-															color="primary"
-															component="span"
-														>
-															<Avatar
-																key={avatar}
-																src={avatar}
-																className={classes.large}
-																style={{
-																	width: "100px",
-																	height: "100px",
-																}}
-															>
-																{!avatar && showPreloadImage()}
-															</Avatar>
-														</IconButton>
-													</Grid>
-												</Grid>
-
 												<Grid item md={6} xs={12}>
 													<Box margin={1}>
 														<Field
@@ -1130,181 +941,6 @@ const ProfileForm = (props) => {
 				}}
 			</Formik>
 			{_renderModal()}
-			<Dialog open={opeDPDialog} aria-labelledby="responsive-dialog-title">
-				<DialogTitle id="responsive-dialog-title">
-					{"Upload Profile Image?"}
-				</DialogTitle>
-
-				<Formik
-					enableReinitialize
-					initialValues={{ image_path: null, password: "" }}
-					validationSchema={Yup.object().shape({
-						password: Yup.string().required("Required"),
-						image_path: Yup.mixed()
-							.test(
-								"fileSize",
-								"File Size is too large",
-								(value) => value.size <= 2000000
-							)
-							.test(
-								"fileType",
-								"Only [png,jpg,jpeg] File Formats Accepted",
-								(value) =>
-									["image/png", "image/jpg", "image/jpeg"].includes(value.type)
-							)
-							.required("Required"),
-					})}
-					onSubmit={(vals, { setSubmitting, setFieldError }) =>
-						_handledpSubmit({
-							vals,
-							setSubmitting,
-							setFieldError,
-						})
-					}
-					render={(props) => {
-						console.error(props.errors);
-						const {
-							values,
-							touched,
-							errors,
-							handleBlur,
-							handleSubmit,
-							handleChange,
-							isValid,
-							isSubmitting,
-						} = props;
-						return (
-							<Form>
-								<DialogContent>
-									<Grid container justify="center">
-										<Grid item xs={12}>
-											<Box margin={1}>
-												<Field
-													name="image_path"
-													label=""
-													className={
-														"form-check-input " +
-														(props.errors["profiledp"] &&
-														props.touched["profiledp"]
-															? " is-invalid"
-															: "")
-													}
-												>
-													{({ field, form, meta }) => (
-														<div>
-															<input
-																style={{ display: "none" }}
-																id={field.name}
-																name={field.name}
-																type="file"
-																onChange={(event) => {
-																	props.setFieldValue(
-																		field.name,
-																		event.currentTarget.files[0]
-																	);
-																	let reader = new FileReader();
-																	let file = event.target.files[0];
-																	if (file) {
-																		reader.onloadend = () => {
-																			setDP({
-																				file: file,
-																				imagePreviewUrl: reader.result,
-																			});
-																		};
-																		reader.readAsDataURL(file);
-																	}
-																}}
-															/>
-															<label
-																style={{
-																	display: "flex",
-																	justifyContent: "center",
-																}}
-																htmlFor={field.name}
-															>
-																<IconButton color="primary" component="span">
-																	<Avatar
-																		className={classes.large}
-																		style={{
-																			width: "100%",
-																			height: "100%",
-																		}}
-																	>
-																		{!avatar && showPreloadImage()}
-																	</Avatar>
-																</IconButton>
-															</label>
-														</div>
-													)}
-												</Field>
-												{props.errors.hasOwnProperty("profiledp") && (
-													<div style={{ color: "red" }} component="div">
-														{props.errors["profiledp"]}
-													</div>
-												)}
-											</Box>
-										</Grid>
-										<Grid item md={12} xs={12}>
-											<Box margin={1}>
-												<Field
-													fullWidth
-													required
-													type="password"
-													component={TextField}
-													label={
-														details.login && details.login.mpin
-															? "M-PIN"
-															: "Password"
-													}
-													name="password"
-													placeholder={
-														details.login && details.login.mpin
-															? "Enter M-PIN"
-															: "Enter Password"
-													}
-												/>
-											</Box>
-										</Grid>
-									</Grid>
-								</DialogContent>
-								<DialogActions>
-									{!isSubmitting ? (
-										<Button
-											autoFocus
-											onClick={() => {
-												setDP({ file: null });
-												showPreloadImage();
-												setOpeDPDialog(!opeDPDialog);
-											}}
-											color="primary"
-										>
-											Cancel
-										</Button>
-									) : (
-										t("common:cant_revert")
-									)}
-									<div className={classes.wrapper}>
-										<Button
-											disabled={isSubmitting}
-											type="submit"
-											color="primary"
-											autoFocus
-										>
-											Upload
-										</Button>
-										{/* {isSubmitting && (
-											<CircularProgress
-												variant="static"
-												className={classes.Progress}
-											/>
-										)} */}
-									</div>
-								</DialogActions>
-							</Form>
-						);
-					}}
-				/>
-			</Dialog>
 		</Card>
 	);
 };

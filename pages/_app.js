@@ -148,6 +148,9 @@ class MyApp extends App {
 			},
 		});
 	};
+	getNested = (obj, ...args) => {
+		return args.reduce((obj, level) => obj && obj[level], obj);
+	};
 
 	render() {
 		const { theme, loading, Netloading } = this.state;
@@ -194,9 +197,9 @@ class MyApp extends App {
 							<div id="main-wrap">
 								<PageTransition timeout={300} classNames="page-fade-transition">
 									<Component
-										{...pageProps}
 										onToggleDark={this.toggleDarkTheme}
 										onToggleDir={this.toggleDirection}
+										getNested={this.getNested}
 										key={router.route}
 									/>
 								</PageTransition>
