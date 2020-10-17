@@ -32,24 +32,25 @@ const Account = (props) => {
 			/>
 			<div className={classes.root}>
 				<Grid container spacing={4}>
-					<Grid item lg={4} md={6} xl={4} xs={12}>
+					{/* <Grid item lg={4} md={6} xl={4} xs={12}>
 						<AccountProfile
 							logindata={props.logindata}
 							userdata={props.userdata}
 						/>
-					</Grid>
-					<Grid item lg={8} md={6} xl={8} xs={12}>
+					</Grid> */}
+					<Grid item xs={12}>
 						<div>
-							<AccountDetails />
+							<AccountDetails {...props} />
 							<br />
 							<br />
 							<ProfileForm
+								{...props}
 								logindata={props.logindata}
 								userdata={props.userdata}
 							/>
 							<br />
 							<br />
-							<KYCForm />
+							<KYCForm {...props} />
 						</div>
 					</Grid>
 				</Grid>

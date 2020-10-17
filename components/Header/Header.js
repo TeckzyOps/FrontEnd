@@ -234,13 +234,17 @@ function Header(props) {
 								</div>
 							) : (
 								<div>
-									<Button variant="contained" color="primary" href="/login">
-										Login
-									</Button>
+									<Link style={{ textDecoration: "none" }} href="/login">
+										<Button variant="contained" color="primary">
+											Login
+										</Button>
+									</Link>
 									&nbsp;
-									<Button variant="contained" color="primary" href="/register">
-										Register
-									</Button>
+									<Link style={{ textDecoration: "none" }} href="/register">
+										<Button variant="contained" color="primary">
+											Register
+										</Button>
+									</Link>
 								</div>
 							)}
 

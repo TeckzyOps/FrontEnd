@@ -73,7 +73,6 @@ import * as Yup from "yup";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
-		padding: theme.spacing(0.5),
 		margin: 0,
 	},
 	chips: {
@@ -433,7 +432,7 @@ const ProfileForm = (props) => {
 											</Typography>
 										</Grid>
 
-										<Grid item md={4} xs={12}>
+										<Grid item md={6} xs={12}>
 											<Box margin={1}>
 												<Field
 													fullWidth
@@ -458,67 +457,71 @@ const ProfileForm = (props) => {
 												</Field>
 											</Box>
 										</Grid>
-										<Grid item md={4} xs={12}>
-											<Box margin={1}>
-												<Field
-													fullWidth
-													type="text"
-													component={TextField}
-													name="id_proof_number"
-													label="Last 4-Digit of KYC Document"
-													onChange={handleChange}
-													variant="outlined"
-													margin="dense"
-												/>
-											</Box>
-										</Grid>
-										<Grid item md={4} xs={12}>
-											<Box margin={1}>
-												<Field
-													name="id_proof_path"
-													label="Upload Document"
-													className={
-														"form-check-input " +
-														(props.errors["id_proof_path"] &&
-														props.touched["id_proof_path"]
-															? " is-invalid"
-															: "")
-													}
-												>
-													{({ field, form, meta }) => (
-														<div>
-															<input
-																id={field.name}
-																style={{ display: "none" }}
-																name={field.name}
-																type="file"
-																onChange={(event) => {
-																	props.setFieldValue(
-																		field.name,
-																		event.currentTarget.files[0]
-																	);
-																}}
-															/>
-															<label htmlFor={field.name}>
-																<Button
-																	variant="contained"
-																	color="primary"
-																	component="span"
-																>
-																	Upload
-																</Button>
-																{field.value && field.value.name}
-															</label>
+										<Grid item md={6} container alignItems="flex-end" xs={12}>
+											<Grid item md={6} xs={12}>
+												<Box margin={1}>
+													<Field
+														fullWidth
+														type="text"
+														component={TextField}
+														name="id_proof_number"
+														label="Last 4-Digit of KYC Document"
+														onChange={handleChange}
+														variant="outlined"
+														margin="dense"
+													/>
+												</Box>
+											</Grid>
+											<Grid item md={6} xs={12}>
+												<Box margin={1}>
+													<Field
+														margin="dense"
+														name="id_proof_path"
+														label="Upload Document"
+														className={
+															"form-check-input " +
+															(props.errors["id_proof_path"] &&
+															props.touched["id_proof_path"]
+																? " is-invalid"
+																: "")
+														}
+													>
+														{({ field, form, meta }) => (
+															<div>
+																<input
+																	id={field.name}
+																	style={{ display: "none" }}
+																	name={field.name}
+																	type="file"
+																	onChange={(event) => {
+																		props.setFieldValue(
+																			field.name,
+																			event.currentTarget.files[0]
+																		);
+																	}}
+																/>
+																<label htmlFor={field.name}>
+																	<Button
+																		variant="contained"
+																		color="primary"
+																		component="span"
+																	>
+																		Upload
+																	</Button>
+																	{field.value && field.value.name}
+																</label>
+															</div>
+														)}
+													</Field>
+													{props.errors.hasOwnProperty("id_proof_path") && (
+														<div style={{ color: "red" }} component="div">
+															{props.errors["id_proof_path"]}
 														</div>
 													)}
-												</Field>
-												{props.errors.hasOwnProperty("id_proof_path") && (
-													<div style={{ color: "red" }} component="div">
-														{props.errors["id_proof_path"]}
-													</div>
-												)}
-											</Box>
+												</Box>
+											</Grid>
 										</Grid>
+										<Grid item md={4} xs={12}></Grid>
 										<Grid container justify="center" xs={12}>
 											<Typography variant="h5" component="h5">
 												KYC Verify by IWS Advisor

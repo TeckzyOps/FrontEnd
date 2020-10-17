@@ -399,7 +399,7 @@ const getCookieFromReq = (req, cookieKey) => {
 	return cookie.split("=")[1];
 };
 
-freelancerVid.getInitialProps = ({ req, res }) => {
+FreelancerImg.getInitialProps = ({ req, res }) => {
 	const ISSERVER = typeof window === "undefined";
 	let token = null;
 

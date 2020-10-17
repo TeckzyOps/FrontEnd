@@ -140,16 +140,23 @@ function Footer(props) {
 			style={{ borderTop: "0.5px Solid Black", marginTop: "1%" }}
 		>
 			<Grid container spacing={4}>
-				<Grid item xs={12} md={3}>
+				<Grid
+					item
+					xs={12}
+					justify="center"
+					alignItems="center"
+					container
+					md={4}
+				>
 					<div className={classes.logo}>
-						<img src={logo} alt="logo" align="center" />
+						<img src={logo} alt="logo" width="50%" />
 					</div>
 					<center>
-						<img src={playstore} alt="Play Store" width="50%" align="center" />
+						<img src={playstore} alt="Play Store" width="50%" />
 					</center>
 					{isDesktop && <Copyright />}
 				</Grid>
-				<Grid item xs={12} md={6}>
+				<Grid item xs={12} md={8}>
 					<Grid container spacing={4} justify="space-evenly">
 						{footers.map((footer, i) => (
 							<Grid item xs={12} md={3} key={i} className={classes.siteMapItem}>

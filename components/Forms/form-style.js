@@ -148,8 +148,8 @@ const styles = makeStyles((theme) => ({
 		marginTop: 20,
 		marginLeft: 20,
 		zIndex: 20,
-		[theme.breakpoints.down("md")]: {
-			display: "none",
+		[theme.breakpoints.down("sm")]: {
+			position: "relative",
 		},
 		"& svg": {
 			width: 32,
