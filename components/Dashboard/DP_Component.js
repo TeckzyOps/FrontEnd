@@ -7,8 +7,7 @@ import Spinner from "../Spinner/spinner";
 import { withTranslation } from "~/i18n";
 import Alert from "./../alert/alert";
 import EditIcon from "@material-ui/icons/Edit";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
+import PersonIcon from "@material-ui/icons/Person";
 import Tooltip from "@material-ui/core/Tooltip";
 import { profileActions } from "../../_actions/profile.action";
 import LocalStorageService from "../../_services/LocalStorageService";
@@ -136,7 +135,7 @@ const dpcomponent = (props) => {
 		if (dp.file) {
 			comp = <img src={dp.imagePreviewUrl} width="200px" alt="..." />;
 		} else {
-			comp = <AddPhotoAlternateIcon color="primary" style={{ fontSize: 60 }} />;
+			comp = <PersonIcon color="primary" style={{ fontSize: 60 }} />;
 		}
 		return comp;
 	};
@@ -161,7 +160,11 @@ const dpcomponent = (props) => {
 				</Avatar>
 			</IconButton>
 
-			<Dialog open={opeDPDialog} aria-labelledby="responsive-dialog-title">
+			<Dialog
+				maxWidth="md"
+				open={opeDPDialog}
+				aria-labelledby="responsive-dialog-title"
+			>
 				<DialogTitle id="responsive-dialog-title">
 					{"Upload Profile Image?"}
 				</DialogTitle>
@@ -255,10 +258,15 @@ const dpcomponent = (props) => {
 															>
 																<IconButton color="primary" component="span">
 																	<Avatar
+																		src={
+																			props.values[field.name]
+																				? dp.imagePreviewUrl
+																				: avatar
+																		}
 																		className={classes.large}
 																		style={{
-																			width: "100%",
-																			height: "100%",
+																			width: "200px",
+																			height: "200px",
 																		}}
 																	>
 																		{!avatar && showPreloadImage()}

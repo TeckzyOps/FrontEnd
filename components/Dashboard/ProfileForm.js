@@ -50,6 +50,7 @@ import {
 	Switch,
 } from "formik-material-ui";
 import { useAuth } from "../provider/Auth";
+import Cookies from "js-cookie";
 import {
 	Card,
 	CardHeader,
@@ -159,7 +160,6 @@ const ProfileForm = (props) => {
 		profileActions
 			.getLoginDetails()
 			.then(function (response) {
-				console.log("ress--->", response);
 				if (response.data) {
 					postsetLoginData(response.data.data);
 				}
@@ -191,7 +191,7 @@ const ProfileForm = (props) => {
 				isOpen={profileUpdateSuccess}
 				handleSubmit={onClick}
 				title="Password Update"
-				text="Your Profile Was Updated  successfully"
+				text="Your Profile Was Updated Successfully"
 				submitButtonText="Done"
 			/>
 		);
@@ -267,7 +267,7 @@ const ProfileForm = (props) => {
 		password: "",
 	};
 
-	const _handleSubmit = ({ vals, setSubmitting, setFieldError }) => {
+	const _handleSubmit = ({ vals, setSubmitting, resetForm, setFieldError }) => {
 		let payload = new FormData();
 		vals["id_proof_path"] &&
 			payload.append("id_proof_path", vals["id_proof_path"]);
@@ -305,17 +305,19 @@ const ProfileForm = (props) => {
 						});
 					}
 
-					if (response.data.id) {
+					if (response.data.data.id) {
 						setDetails({ ...details, ["profile"]: response.data });
 						let det = localStorageService.getUserDetails("Details");
 						det["profile"] = response.data;
 						Cookies.set("Details", JSON.stringify(det));
+						setProfileUpdateSuccess(true);
 						localStorageService.setValue("Details", JSON.stringify(det));
+						resetForm();
 					}
 				})
 				.catch(function (error) {
 					console.error("errrrr ", error);
-					if (error.response.data.input_error) {
+					if (props.getNested(error, "response", "data", "input_error")) {
 						Object.keys(error.response.data.input_error).forEach((k) => {
 							setFieldError(k, result[k][0]);
 						});
@@ -703,7 +705,7 @@ const ProfileForm = (props) => {
 															required
 															onChange={handleChange}
 															fullWidth
-															component={CustomTextField}
+															component={TextField}
 															type="text"
 															name="state"
 															label="State"
@@ -718,7 +720,7 @@ const ProfileForm = (props) => {
 																shrink: true,
 															}}
 														>
-															{states.map((option) => (
+															{Object.keys(state).map((option) => (
 																<MenuItem key={option} value={option}>
 																	{option}
 																</MenuItem>
@@ -731,7 +733,7 @@ const ProfileForm = (props) => {
 														<Field
 															required
 															fullWidth
-															component={CustomTextField}
+															component={TextField}
 															type="text"
 															name="district"
 															label="District"
@@ -746,11 +748,14 @@ const ProfileForm = (props) => {
 																shrink: true,
 															}}
 														>
-															{district.map((option, index) => (
-																<MenuItem key={index} value={option}>
-																	{option}
-																</MenuItem>
-															))}
+															{props.values.state &&
+																state[props.values.state].map(
+																	(option, index) => (
+																		<MenuItem key={index} value={option}>
+																			{option}
+																		</MenuItem>
+																	)
+																)}
 														</Field>
 													</Box>
 												</Grid>
@@ -759,7 +764,7 @@ const ProfileForm = (props) => {
 														<Field
 															required
 															fullWidth
-															component={CustomTextField}
+															component={TextField}
 															type="text"
 															name="city"
 															label="City"
@@ -774,15 +779,18 @@ const ProfileForm = (props) => {
 																shrink: true,
 															}}
 														>
-															{city.map((option, index) => (
-																<MenuItem key={index} value={option}>
-																	{option}
-																</MenuItem>
-															))}
+															{props.values.district &&
+																cities[props.values.district].map(
+																	(option, index) => (
+																		<MenuItem key={index} value={option}>
+																			{option}
+																		</MenuItem>
+																	)
+																)}
 														</Field>
 													</Box>
 												</Grid>
-												<Grid item md={6} xs={12}>
+												<Grid item xs={12}>
 													<Box margin={1}>
 														<Field
 															fullWidth
@@ -791,6 +799,7 @@ const ProfileForm = (props) => {
 															component={TextField}
 															name="area"
 															label="Area"
+															rows={4}
 															onChange={handleChange}
 															variant="outlined"
 															helperText={

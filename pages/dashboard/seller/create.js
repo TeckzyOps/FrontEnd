@@ -52,7 +52,6 @@ const getCookieFromReq = (req, cookieKey) => {
 };
 
 Seller.getInitialProps = ({ req, res }) => {
-
 	const ISSERVER = typeof window === "undefined";
 	let token = null;
 
