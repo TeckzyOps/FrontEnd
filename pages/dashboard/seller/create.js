@@ -51,7 +51,7 @@ const getCookieFromReq = (req, cookieKey) => {
 	return cookie.split("=")[1];
 };
 
-selker.getInitialProps = ({ req, res }) => {
+seller.getInitialProps = ({ req, res }) => {
 	const ISSERVER = typeof window === "undefined";
 	let token = null;
 
