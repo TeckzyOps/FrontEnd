@@ -153,14 +153,6 @@ const ProfileForm = (props) => {
 		setStates(Object.keys(state));
 		setDetails(localStorageService.getUserDetails("Details"));
 	}, []);
-	React.useEffect(() => {
-		if (details.profile && details.profile.data.state) {
-			setDistrict(state[details.profile.data.state]);
-		}
-		if (details.profile && details.profile.data.district) {
-			setCity(cities[details.profile.data.district]);
-		}
-	}, [details]);
 
 	const _handleModalClose = () => {
 		setProfileUpdateSuccess(() => true);
@@ -345,187 +337,205 @@ const ProfileForm = (props) => {
 						<div>
 							<CardHeader
 								subheader="The information can be edited"
-								title="KYC Form"
+								title="Only Use In Member KYC"
 							/>
 							<Divider />
 							<CardContent>
 								<Form autocomplete="off">
-									<Grid container spacing={3}>
-										<Grid container justify="center" xs={12}>
-											<Typography variant="h5" component="h5">
-												KYC Document of Member
-											</Typography>
-										</Grid>
-
-										<Grid item md={6} xs={12}>
-											<Box margin={1}>
-												<Field
-													fullWidth
-													type="text"
-													component={TextField}
-													name="id_proof_type"
-													label="Select Document"
-													select
-													onChange={handleChange}
-													variant="outlined"
-													helperText={
-														props.errors.hasOwnProperty("id_proof_type") &&
-														props.errors["id_proof_type"]
-													}
-													margin="dense"
-												>
-													{idType.map((option, index) => (
-														<MenuItem key={index} value={option}>
-															{option}
-														</MenuItem>
-													))}
-												</Field>
-											</Box>
-										</Grid>
-										<Grid item md={6} container alignItems="flex-end" xs={12}>
-											<Grid item md={6} xs={12}>
-												<Box margin={1}>
-													<Field
-														fullWidth
-														type="text"
-														component={TextField}
-														name="id_proof_number"
-														label="Last 4-Digit of KYC Document"
-														onChange={handleChange}
-														variant="outlined"
-														margin="dense"
-													/>
-												</Box>
-											</Grid>
-											<Grid item md={6} xs={12}>
-												<Box margin={1}>
-													<Field
-														margin="dense"
-														name="id_proof_path"
-														label="Upload Document"
-														className={
-															"form-check-input " +
-															(props.errors["id_proof_path"] &&
-															props.touched["id_proof_path"]
-																? " is-invalid"
-																: "")
-														}
-													>
-														{({ field, form, meta }) => (
-															<div>
-																<input
-																	id={field.name}
-																	style={{ display: "none" }}
-																	name={field.name}
-																	type="file"
-																	onChange={(event) => {
-																		props.setFieldValue(
-																			field.name,
-																			event.currentTarget.files[0]
-																		);
-																	}}
-																/>
-																<label htmlFor={field.name}>
-																	<Button
-																		variant="contained"
-																		color="primary"
-																		component="span"
-																	>
-																		Upload
-																	</Button>
-																	{field.value && field.value.name}
-																</label>
-															</div>
-														)}
-													</Field>
-													{props.errors.hasOwnProperty("id_proof_path") && (
-														<div style={{ color: "red" }} component="div">
-															{props.errors["id_proof_path"]}
-														</div>
-													)}
-												</Box>
-											</Grid>
-										</Grid>
-										<Grid item md={4} xs={12}></Grid>
-										<Grid container justify="center" xs={12}>
-											<Typography variant="h5" component="h5">
-												KYC Verify by IWS Advisor
-											</Typography>
-										</Grid>
-
-										<Grid item md={4} xs={12}>
-											<Box margin={1}>
-												<Field
-													fullWidth
-													type="text"
-													component={TextField}
-													name="id_proof_number"
-													label="Fill ID Number"
-													onChange={handleChange}
-													variant="outlined"
-													margin="dense"
-												/>
-											</Box>
-										</Grid>
-										<Grid item md={4} xs={12}>
-											<Box margin={1}>
-												Send OTP on Registered Mobile No.
-												<Button variant="outlined" color="primary">
-													Send
-												</Button>
-											</Box>
-										</Grid>
-										<Grid item md={4} xs={12}>
-											<Box margin={1}>
-												<Field
-													fullWidth
-													type="text"
-													component={TextField}
-													name="id_proof_number"
-													label="Enter OTP"
-													onChange={handleChange}
-													variant="outlined"
-													margin="dense"
-												/>
-											</Box>
-										</Grid>
-									</Grid>
-
-									<Divider />
-									<Grid xs={12}>
-										<ul>
-											<li>
-												<Typography variant="body1" component="body1">
-													Note: You are in automatic agreement with this privacy
-													policy.
-												</Typography>
-											</li>
-											<li>
-												<Typography variant="body2" component="body2">
-													Get Extra Reward Point On KYC Recharge Offer
-												</Typography>
-											</li>
-										</ul>
-
-										<br></br>
-									</Grid>
-									<Grid container justify="flex-end">
-										{!props.isSubmitting ? (
-											<Button onClick={props.resetForm} size="small">
-												Reset To Default
-											</Button>
-										) : (
-											t("common:cant_revert")
-										)}
-										<Button
-											disable={props.isSubmitting}
-											type="submit"
-											color="primary"
-											variant="outlined"
+									<Accordion>
+										<AccordionSummary
+											expandIcon={<ExpandMoreIcon />}
+											aria-controls="panel1c-content"
+											id="panel1c-header"
 										>
-											Save details
-										</Button>
-									</Grid>
+											<Typography className={classes.heading}>
+												Click To Expand This Section
+											</Typography>
+										</AccordionSummary>
+										<AccordionDetails>
+											<Grid container spacing={3}>
+												<Grid container justify="center" xs={12}>
+													<Typography variant="h5" component="h5">
+														KYC Document of Member
+													</Typography>
+												</Grid>
+												<Grid item md={6} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															type="text"
+															component={TextField}
+															name="id_proof_type"
+															label="Select Document"
+															select
+															onChange={handleChange}
+															variant="outlined"
+															helperText={
+																props.errors.hasOwnProperty("id_proof_type") &&
+																props.errors["id_proof_type"]
+															}
+															margin="dense"
+														>
+															{idType.map((option, index) => (
+																<MenuItem key={index} value={option}>
+																	{option}
+																</MenuItem>
+															))}
+														</Field>
+													</Box>
+												</Grid>
+												<Grid
+													item
+													md={6}
+													container
+													alignItems="flex-end"
+													xs={12}
+												>
+													<Grid item md={6} xs={12}>
+														<Box margin={1}>
+															<Field
+																fullWidth
+																type="text"
+																component={TextField}
+																name="id_proof_number"
+																label="Last 4-Digit of KYC Document"
+																onChange={handleChange}
+																variant="outlined"
+																margin="dense"
+															/>
+														</Box>
+													</Grid>
+													<Grid item md={6} xs={12}>
+														<Box margin={1}>
+															<Field
+																margin="dense"
+																name="id_proof_path"
+																label="Upload Document"
+																className={
+																	"form-check-input " +
+																	(props.errors["id_proof_path"] &&
+																	props.touched["id_proof_path"]
+																		? " is-invalid"
+																		: "")
+																}
+															>
+																{({ field, form, meta }) => (
+																	<div>
+																		<input
+																			id={field.name}
+																			style={{ display: "none" }}
+																			name={field.name}
+																			type="file"
+																			onChange={(event) => {
+																				props.setFieldValue(
+																					field.name,
+																					event.currentTarget.files[0]
+																				);
+																			}}
+																		/>
+																		<label htmlFor={field.name}>
+																			<Button
+																				variant="contained"
+																				color="primary"
+																				component="span"
+																			>
+																				Upload
+																			</Button>
+																			{field.value && field.value.name}
+																		</label>
+																	</div>
+																)}
+															</Field>
+															{props.errors.hasOwnProperty("id_proof_path") && (
+																<div style={{ color: "red" }} component="div">
+																	{props.errors["id_proof_path"]}
+																</div>
+															)}
+														</Box>
+													</Grid>
+												</Grid>
+												<Grid container justify="center" xs={12}>
+													<Typography variant="h5" component="h5">
+														KYC Verify by IWS Advisor
+													</Typography>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															type="text"
+															component={TextField}
+															name="id_proof_number"
+															label="Fill ID Number"
+															onChange={handleChange}
+															variant="outlined"
+															margin="dense"
+														/>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														Send OTP on Registered Mobile No.
+														<Button variant="outlined" color="primary">
+															Send
+														</Button>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															type="text"
+															component={TextField}
+															name="id_proof_number"
+															label="Enter OTP"
+															onChange={handleChange}
+															variant="outlined"
+															margin="dense"
+														/>
+													</Box>
+												</Grid>
+												<Divider />
+												<Grid item xs={12}>
+													<ul>
+														<li>
+															<Typography variant="body1" component="body1">
+																Note: You are in automatic agreement with this
+																privacy policy.
+															</Typography>
+														</li>
+														<li>
+															<Typography variant="body2" component="body2">
+																Get Extra Reward Point On KYC Recharge Offer
+															</Typography>
+														</li>
+													</ul>
+
+													<br></br>
+												</Grid>
+											</Grid>
+										</AccordionDetails>
+										<Divider />
+										<AccordionActions>
+											<Grid container justify="flex-end">
+												{!props.isSubmitting ? (
+													<Button onClick={props.resetForm} size="small">
+														Reset To Default
+													</Button>
+												) : (
+													t("common:cant_revert")
+												)}
+												<Button
+													disable={props.isSubmitting}
+													type="submit"
+													color="primary"
+													variant="outlined"
+												>
+													Save details
+												</Button>
+											</Grid>
+										</AccordionActions>
+									</Accordion>
 								</Form>
 							</CardContent>
 						</div>

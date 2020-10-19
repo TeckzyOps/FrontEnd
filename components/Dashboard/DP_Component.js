@@ -88,6 +88,7 @@ const dpcomponent = (props) => {
 		console.log("dpcomponent", props);
 		if (props.img) {
 			setAvatar(props.img);
+			setDP({ ...dp, ["imagePreviewUrl"]: props.img });
 		}
 
 		// if (loginDet) {
@@ -132,7 +133,7 @@ const dpcomponent = (props) => {
 	const showPreloadImage = () => {
 		let comp = null;
 
-		if (dp.file) {
+		if (dp.imagePreviewUrl) {
 			comp = <img src={dp.imagePreviewUrl} width="200px" alt="..." />;
 		} else {
 			comp = <PersonIcon color="primary" style={{ fontSize: 60 }} />;
@@ -149,14 +150,13 @@ const dpcomponent = (props) => {
 			>
 				<Avatar
 					key={avatar}
-					src={avatar}
 					className={classes.large}
 					style={{
 						width: "100px",
 						height: "100px",
 					}}
 				>
-					{!avatar && showPreloadImage()}
+					{showPreloadImage()}
 				</Avatar>
 			</IconButton>
 
