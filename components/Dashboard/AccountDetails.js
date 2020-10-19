@@ -4,6 +4,11 @@ import { withTranslation } from "~/i18n";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/styles";
 import { Formik, Field, Form, ErrorMessage } from "formik";
+import Accordion from "@material-ui/core/Accordion";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import AccordionActions from "@material-ui/core/AccordionActions";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Spinner from "../Spinner/spinner";
 import Alert from "./../alert/alert";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -43,7 +48,9 @@ import {
 	Box,
 	Grid,
 	Button,
+	MenuItem,
 	InputAdornment,
+	Typography,
 	IconButton,
 } from "@material-ui/core";
 import * as Yup from "yup";
@@ -241,7 +248,8 @@ const AccountDetails = (compprops) => {
 							resetForm,
 						})
 					}
-					render={(props) => {
+				>
+					{(props) => {
 						const {
 							touched,
 							errors,
@@ -252,205 +260,258 @@ const AccountDetails = (compprops) => {
 							isSubmitting,
 						} = props;
 						return (
-							<Form>
+							<div>
 								<CardHeader
 									subheader="The information can be edited"
-									title="Account Details"
+									title="Account Details Of Member"
 								/>
 								<Divider />
 								<CardContent>
-									<Grid container spacing={3}>
-										<Grid container justify="center" spacing={2}>
-											<Grid item>
-												{compprops.getNested(
-													details,
-													"profile",
-													"data",
-													"image_path"
-												) && (
-													<DP_Component
-														userid={compprops.getNested(details, "login", "id")}
-														img={compprops.getNested(
-															details,
-															"profile",
-															"data",
-															"image_path"
-														)}
-													/>
-												)}
-											</Grid>
-											<Grid item xs={12} sm container>
-												<Grid item md={12} xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															type="text"
-															component={TextField}
-															label="Full Name"
-															variant="outlined"
-															name="name"
-															placeholder="Full Name"
-														/>
-													</Box>
+									<Form>
+										<Accordion>
+											<AccordionSummary
+												expandIcon={<ExpandMoreIcon />}
+												aria-controls="panel1c-content"
+												id="panel1c-header"
+											>
+												<Typography className={classes.heading}>
+													Click To Expand This Section
+												</Typography>
+											</AccordionSummary>
+											<AccordionDetails>
+												<Grid container spacing={3}>
+													<Grid container justify="center" spacing={2}>
+														<Grid item>
+															{compprops.getNested(
+																details,
+																"profile",
+																"data",
+																"image_path"
+															) && (
+																<DP_Component
+																	userid={compprops.getNested(
+																		details,
+																		"login",
+																		"id"
+																	)}
+																	img={compprops.getNested(
+																		details,
+																		"profile",
+																		"data",
+																		"image_path"
+																	)}
+																/>
+															)}
+														</Grid>
+														<Grid item xs={12} sm container>
+															<Grid item md={6} xs={12}>
+																<Box margin={1}>
+																	<Field
+																		fullWidth
+																		type="text"
+																		component={TextField}
+																		label="Full Name"
+																		variant="outlined"
+																		name="name"
+																		placeholder="Full Name"
+																	/>
+																</Box>
+															</Grid>
+															<Grid item md={6} xs={12}>
+																<Box margin={1}>
+																	<Field
+																		fullWidth
+																		type="text"
+																		component={TextField}
+																		label="Email"
+																		name="email"
+																		variant="outlined"
+																		placeholder="Email"
+																		InputProps={{
+																			endAdornment: (
+																				<InputAdornment position="end">
+																					<Tooltip
+																						className={classes.removeHover}
+																						title={
+																							details.login &&
+																							details.login.email
+																								? details.login
+																										.email_verified_at
+																									? "Verified"
+																									: "E-Mail ID Not Verified!"
+																								: "Add An E-Mail ID!"
+																						}
+																					>
+																						<IconButton aria-label="toggle phone">
+																							{!(
+																								details.login &&
+																								details.login.email_verified_at
+																							) ? (
+																								<div>
+																									<ErrorOutlineIcon color="primary" />
+																									<Button
+																										size="small"
+																										onClick={() =>
+																											setverifyUsername(
+																												props.values.email
+																											)
+																										}
+																										variant="outlined"
+																										color="primary"
+																									>
+																										Verify!
+																									</Button>
+																								</div>
+																							) : (
+																								<CheckCircleIcon
+																									style={{ color: "green" }}
+																								/>
+																							)}
+																						</IconButton>
+																					</Tooltip>
+																				</InputAdornment>
+																			),
+																		}}
+																	/>
+																</Box>
+															</Grid>
+															<Grid item md={6} xs={12}>
+																<Box margin={1}>
+																	<Field
+																		fullWidth
+																		type="text"
+																		component={TextField}
+																		label="Mobile"
+																		name="mobile"
+																		variant="outlined"
+																		placeholder="Enter Mobile"
+																		InputProps={{
+																			endAdornment: (
+																				<InputAdornment position="end">
+																					<Tooltip
+																						title={
+																							details.login &&
+																							details.login.mobile_verified_at
+																								? "Verified"
+																								: "Mobile Not Verified!"
+																						}
+																					>
+																						<IconButton aria-label="toggle phone">
+																							{!(
+																								details.login &&
+																								details.login.mobile_verified_at
+																							) ? (
+																								<div>
+																									<ErrorOutlineIcon color="primary" />
+																									<Button
+																										size="small"
+																										onClick={() =>
+																											setverifyUsername(
+																												props.values.mobile
+																											)
+																										}
+																										variant="outlined"
+																										color="primary"
+																									>
+																										Verify!
+																									</Button>
+																								</div>
+																							) : (
+																								<CheckCircleIcon
+																									style={{ color: "green" }}
+																								/>
+																							)}
+																						</IconButton>
+																					</Tooltip>
+																				</InputAdornment>
+																			),
+																		}}
+																	/>
+																</Box>
+															</Grid>
+															<Grid item md={6} xs={12}>
+																<Box margin={1}>
+																	<Field
+																		fullWidth
+																		component={TextField}
+																		type="text"
+																		name="nationality"
+																		label="Nationality"
+																		select
+																		disabled={true}
+																		onChange={handleChange}
+																		variant="outlined"
+																		defaultValue="Indian (Default)"
+																		helperText={
+																			props.errors.hasOwnProperty(
+																				"nationality"
+																			) && props.errors["nationality"]
+																		}
+																		InputLabelProps={{
+																			shrink: true,
+																		}}
+																	>
+																		{["Indian (Default)"].map(
+																			(option, index) => (
+																				<MenuItem key={index} value={option}>
+																					{option}
+																				</MenuItem>
+																			)
+																		)}
+																	</Field>
+																</Box>
+															</Grid>
+															<Grid item md={6} xs={12}>
+																<Box margin={1}>
+																	<Field
+																		fullWidth
+																		type="text"
+																		component={TextField}
+																		label="Generate/Update MPIN (4 Digit)"
+																		name="mpin"
+																		variant="outlined"
+																		placeholder="Enter 4-Digit M-PIN"
+																	/>
+																</Box>
+															</Grid>
+															<Grid item md={6} xs={12}>
+																<Box margin={1}>
+																	<Field
+																		fullWidth
+																		type="password"
+																		variant="outlined"
+																		component={TextField}
+																		label="Password"
+																		name="password"
+																		placeholder="Enter Password"
+																	/>
+																</Box>
+															</Grid>
+														</Grid>
+													</Grid>
 												</Grid>
-												<Grid item md={6} xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															type="text"
-															component={TextField}
-															label="Email"
-															name="email"
-															variant="outlined"
-															placeholder="Email"
-															InputProps={{
-																endAdornment: (
-																	<InputAdornment position="end">
-																		<Tooltip
-																			className={classes.removeHover}
-																			title={
-																				details.login && details.login.email
-																					? details.login.email_verified_at
-																						? "Verified"
-																						: "E-Mail ID Not Verified!"
-																					: "Add An E-Mail ID!"
-																			}
-																		>
-																			<IconButton aria-label="toggle phone">
-																				{!(
-																					details.login &&
-																					details.login.email_verified_at
-																				) ? (
-																					<div>
-																						<ErrorOutlineIcon color="primary" />
-																						<Button
-																							size="small"
-																							onClick={() =>
-																								setverifyUsername(
-																									props.values.email
-																								)
-																							}
-																							variant="outlined"
-																							color="primary"
-																						>
-																							Verify!
-																						</Button>
-																					</div>
-																				) : (
-																					<CheckCircleIcon
-																						style={{ color: "green" }}
-																					/>
-																				)}
-																			</IconButton>
-																		</Tooltip>
-																	</InputAdornment>
-																),
-															}}
-														/>
-													</Box>
-												</Grid>
-												<Grid item md={6} xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															type="text"
-															component={TextField}
-															label="Mobile"
-															name="mobile"
-															variant="outlined"
-															placeholder="Enter Mobile"
-															InputProps={{
-																endAdornment: (
-																	<InputAdornment position="end">
-																		<Tooltip
-																			title={
-																				details.login &&
-																				details.login.mobile_verified_at
-																					? "Verified"
-																					: "Mobile Not Verified!"
-																			}
-																		>
-																			<IconButton aria-label="toggle phone">
-																				{!(
-																					details.login &&
-																					details.login.mobile_verified_at
-																				) ? (
-																					<div>
-																						<ErrorOutlineIcon color="primary" />
-																						<Button
-																							size="small"
-																							onClick={() =>
-																								setverifyUsername(
-																									props.values.mobile
-																								)
-																							}
-																							variant="outlined"
-																							color="primary"
-																						>
-																							Verify!
-																						</Button>
-																					</div>
-																				) : (
-																					<CheckCircleIcon
-																						style={{ color: "green" }}
-																					/>
-																				)}
-																			</IconButton>
-																		</Tooltip>
-																	</InputAdornment>
-																),
-															}}
-														/>
-													</Box>
-												</Grid>
-											</Grid>
-										</Grid>
 
-										<Grid item md={6} xs={12}>
-											<Box margin={1}>
-												<Field
-													fullWidth
-													type="text"
-													component={TextField}
-													label="Generate/Update Transaction PIN (4 Digit)"
-													name="mpin"
+												<Divider />
+											</AccordionDetails>
+											<Divider />
+											<AccordionActions>
+												{props.isSubmitting && t("common:cant_revert")}
+												<Button
+													disabled={props.isSubmitting}
+													type="submit"
+													color="primary"
 													variant="outlined"
-													placeholder="Enter 4-Digit M-PIN"
-												/>
-											</Box>
-										</Grid>
-										<Grid item md={6} xs={12}>
-											<Box margin={1}>
-												<Field
-													fullWidth
-													required
-													type="password"
-													variant="outlined"
-													component={TextField}
-													label={"Password"}
-													name="password"
-													placeholder="Enter Password"
-												/>
-											</Box>
-										</Grid>
-									</Grid>
+												>
+													Save details
+												</Button>
+											</AccordionActions>
+										</Accordion>
+									</Form>
 								</CardContent>
-								<Divider />
-								<CardActions>
-									{props.isSubmitting && t("common:cant_revert")}
-									<Button
-										disabled={props.isSubmitting}
-										type="submit"
-										color="primary"
-										variant="outlined"
-									>
-										Save details
-									</Button>
-								</CardActions>
-							</Form>
+							</div>
 						);
 					}}
-				/>
+				</Formik>
 			)}
 			{_renderModal()}
 		</Card>

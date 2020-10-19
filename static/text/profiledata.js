@@ -166,7 +166,6 @@ export const occupation = [
 	"Business/Self Employed",
 	"Not working",
 	"Looking For Job",
-	"ADD (only in matrimony  FATHER/ MOTHER occupation Expired)",
 ];
 export const religion = [
 	"Hindu",

@@ -19,6 +19,11 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import Tooltip from "@material-ui/core/Tooltip";
 import { profileActions } from "../../_actions/profile.action";
+import DateFnsUtils from "@date-io/date-fns";
+import {
+	KeyboardDatePicker,
+	MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
 import LocalStorageService from "../../_services/LocalStorageService";
 const localStorageService = LocalStorageService.getService();
 import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
@@ -147,35 +152,27 @@ const ProfileForm = (props) => {
 	React.useEffect(() => {
 		setStates(Object.keys(state));
 		setDetails(localStorageService.getUserDetails("Details"));
-		profileActions
-			.getUserProfileDetails()
-			.then(function (response) {
-				if (response.data) {
-					postsetUserData(response.data);
-				}
-			})
-			.catch(function (error) {
-				console.error("errrrr ", error);
-			});
-		profileActions
-			.getLoginDetails()
-			.then(function (response) {
-				if (response.data) {
-					postsetLoginData(response.data.data);
-				}
-			})
-			.catch(function (error) {
-				console.error("errrrr ", error);
-			});
+		// profileActions
+		// 	.getUserProfileDetails()
+		// 	.then(function (response) {
+		// 		if (response.data) {
+		// 			postsetUserData(response.data);
+		// 		}
+		// 	})
+		// 	.catch(function (error) {
+		// 		console.error("errrrr ", error);
+		// 	});
+		// profileActions
+		// 	.getLoginDetails()
+		// 	.then(function (response) {
+		// 		if (response.data) {
+		// 			postsetLoginData(response.data.data);
+		// 		}
+		// 	})
+		// 	.catch(function (error) {
+		// 		console.error("errrrr ", error);
+		// 	});
 	}, []);
-	React.useEffect(() => {
-		if (details.profile && details.profile.data.state) {
-			setDistrict(state[details.profile.data.state]);
-		}
-		if (details.profile && details.profile.data.district) {
-			setCity(cities[details.profile.data.district]);
-		}
-	}, [details]);
 
 	const _handleModalClose = () => {
 		setProfileUpdateSuccess(() => true);
@@ -198,8 +195,8 @@ const ProfileForm = (props) => {
 	};
 
 	const initVals = {
-		gender: props.getNested(details, "profile", "data", "gender")
-			? props.getNested(details, "profile", "data", "gender")
+		gender: !isNaN(props.getNested(details, "profile", "data", "gender"))
+			? gender[props.getNested(details, "profile", "data", "gender") - 1]
 			: "",
 		dob: props.getNested(details, "profile", "data", "dob")
 			? props.getNested(details, "profile", "data", "dob")
@@ -266,7 +263,17 @@ const ProfileForm = (props) => {
 		id_proof_path: null,
 		password: "",
 	};
+	function formatDate(date) {
+		var d = new Date(date),
+			month = "" + (d.getMonth() + 1),
+			day = "" + d.getDate(),
+			year = d.getFullYear();
 
+		if (month.length < 2) month = "0" + month;
+		if (day.length < 2) day = "0" + day;
+
+		return [year, month, day].join("-");
+	}
 	const _handleSubmit = ({ vals, setSubmitting, resetForm, setFieldError }) => {
 		let payload = new FormData();
 		vals["id_proof_path"] &&
@@ -301,7 +308,7 @@ const ProfileForm = (props) => {
 					console.log("ressss", response);
 					if (response.data.input_error) {
 						Object.keys(response.data.input_error).forEach((k) => {
-							setFieldError(k, result[k][0]);
+							setFieldError(k, response.data.input_error[k][0]);
 						});
 					}
 
@@ -319,7 +326,7 @@ const ProfileForm = (props) => {
 					console.error("errrrr ", error);
 					if (props.getNested(error, "response", "data", "input_error")) {
 						Object.keys(error.response.data.input_error).forEach((k) => {
-							setFieldError(k, result[k][0]);
+							setFieldError(k, error.response.data.input_error[k][0]);
 						});
 					}
 				});
@@ -359,6 +366,33 @@ const ProfileForm = (props) => {
 		return <MuiTextField {...fieldToTextField(props)} onChange={onChange} />;
 	}
 
+	const DatePickerField = ({ field, form, ...other }) => {
+		const currentError = form.errors[field.name];
+
+		return (
+			<MuiPickersUtilsProvider utils={DateFnsUtils}>
+				<KeyboardDatePicker
+					clearable
+					name={field.name}
+					format="yyyy/MM/dd"
+					style={{ width: "100%" }}
+					value={field.value}
+					helperText={currentError}
+					error={Boolean(currentError)}
+					onError={(error) => {
+						// handle as a side effect
+						if (error !== currentError) {
+							form.setFieldError(field.name, error);
+						}
+					}}
+					// if you are using custom validation schema you probably want to pass `true` as third argument
+					onChange={(date) => form.setFieldValue(field.name, date, false)}
+					{...other}
+				/>
+			</MuiPickersUtilsProvider>
+		);
+	};
+
 	return (
 		<Card {...rest} className={clsx(classes.root, className)}>
 			{/* <Button type="submit" color="primary" variant="outlined">
@@ -393,7 +427,7 @@ const ProfileForm = (props) => {
 						<div>
 							<CardHeader
 								subheader="The information can be edited"
-								title="Profile"
+								title="Please Fill Personal Other Details For Best Services"
 							/>
 							<Divider />
 							<CardContent>
@@ -405,520 +439,526 @@ const ProfileForm = (props) => {
 											id="panel1c-header"
 										>
 											<Typography className={classes.heading}>
-												Profile
+												Click To Expand This Section
 											</Typography>
 										</AccordionSummary>
 										<AccordionDetails>
 											<Grid container spacing={3}>
-												<Grid item md={6} xs={12}>
-													<Box margin={1}>
-														<Field
-															required
-															fullWidth
-															component={TextField}
-															type="text"
-															name="mother_tongue"
-															label="Mother Tongue"
-															select
-															onChange={handleChange}
-															variant="outlined"
-															helperText={
-																props.errors.hasOwnProperty("mother_tongue") &&
-																props.errors["mother_tongue"]
-															}
-															margin="dense"
-															InputLabelProps={{
-																shrink: true,
-															}}
-														>
-															{languages.map((option, index) => (
-																<MenuItem key={index} value={option}>
-																	{option}
-																</MenuItem>
-															))}
-														</Field>
-													</Box>
+												<Grid
+													container
+													direction="row"
+													justify="center"
+													alignItems="flex-end"
+												>
+													<Grid item md={6} xs={12}>
+														<Box margin={1}>
+															<Field
+																fullWidth
+																component={TextField}
+																type="text"
+																name="gender"
+																label="Gender"
+																select
+																onChange={handleChange}
+																variant="outlined"
+																helperText={
+																	props.errors.hasOwnProperty("gender") &&
+																	props.errors["gender"]
+																}
+																InputLabelProps={{
+																	shrink: true,
+																}}
+															>
+																{gender.map((option, index) => (
+																	<MenuItem key={index} value={index + 1}>
+																		{option}
+																	</MenuItem>
+																))}
+															</Field>
+														</Box>
+													</Grid>
+													<Grid item md={6} xs={12}>
+														<Box margin={1}>
+															<Field
+																fullwidth
+																autoOk
+																variant="inline"
+																component={DatePickerField}
+																name="dob"
+																label="Date Of Birth"
+																onChange={handleChange}
+																inputVariant="outlined"
+																InputAdornmentProps={{ position: "start" }}
+																helperText={
+																	props.errors.hasOwnProperty("dob") &&
+																	props.errors["dob"]
+																}
+																InputLabelProps={{
+																	shrink: true,
+																}}
+															/>
+														</Box>
+													</Grid>
 												</Grid>
-												<Grid item md={6} xs={12}>
-													<InputLabel shrink={true} htmlFor="language_speak">
-														Language I Speak
-													</InputLabel>
-													<Box margin={1}>
-														<Field
-															required
-															fullWidth
-															component={Select}
-															type="text"
-															name="language_speak"
-															multiple={true}
-															onChange={handleChange}
-															variant="outlined"
-															helperText={
-																props.errors.hasOwnProperty("language_speak") &&
-																props.errors["language_speak"]
-															}
-															margin="dense"
-															InputLabelProps={{
-																shrink: true,
-															}}
-															renderValue={(selected) => (
-																<div className={classes.chips}>
-																	{selected.map((value) => (
-																		<Chip
-																			key={value}
-																			label={value}
-																			className={classes.chip}
-																		/>
-																	))}
-																</div>
-															)}
-														>
-															{languages.map((option, index) => (
-																<MenuItem key={index} value={option}>
-																	{option}
-																</MenuItem>
-															))}
-														</Field>
-													</Box>
-												</Grid>
-												<Grid item md={6} xs={12}>
-													<Box margin={1}>
-														<InputLabel shrink={true} htmlFor="education">
-															Education
+												<Grid
+													container
+													direction="row"
+													justify="center"
+													alignItems="flex-end"
+												>
+													<Grid item md={4} xs={12}>
+														<InputLabel shrink={true} htmlFor="mother_tongue">
+															<Typography variant="h6" component="h6">
+																Preference Language
+															</Typography>
 														</InputLabel>
-														<Field
-															fullWidth
-															component={Select}
-															type="text"
-															name="education"
-															label="Education"
-															select
-															multiple={true}
-															onChange={handleChange}
-															variant="outlined"
-															helperText={
-																props.errors.hasOwnProperty("education") &&
-																props.errors["education"]
-															}
-															margin="dense"
-															InputLabelProps={{
-																shrink: true,
-															}}
-															renderValue={(selected) => (
-																<div className={classes.chips}>
-																	{selected.map((value) => (
-																		<Chip
-																			key={value}
-																			label={value}
-																			className={classes.chip}
-																		/>
-																	))}
-																</div>
-															)}
-														>
-															{education.map((option, index) => (
-																<MenuItem key={index} value={option}>
-																	{option}
-																</MenuItem>
-															))}
-														</Field>
-													</Box>
-												</Grid>
-												<Grid item md={6} xs={12}>
-													<Box margin={1}>
-														<InputLabel shrink={true} htmlFor="experience">
-															Experience
+														<Box margin={1}>
+															<Field
+																fullWidth
+																component={TextField}
+																type="text"
+																name="mother_tongue"
+																select
+																onChange={handleChange}
+																variant="outlined"
+																helperText={
+																	props.errors.hasOwnProperty(
+																		"mother_tongue"
+																	) && props.errors["mother_tongue"]
+																}
+																InputLabelProps={{
+																	shrink: true,
+																}}
+															>
+																{languages.map((option, index) => (
+																	<MenuItem key={index} value={option}>
+																		{option}
+																	</MenuItem>
+																))}
+															</Field>
+														</Box>
+													</Grid>
+													<Grid item md={4} xs={12}>
+														<InputLabel shrink={true} htmlFor="language_speak">
+															Language I Speak
 														</InputLabel>
-														<Field
-															fullWidth
-															component={Select}
-															type="text"
-															name="experience"
-															label="Experience/Knowledge"
-															select
-															multiple={true}
-															onChange={handleChange}
-															variant="outlined"
-															helperText={
-																props.errors.hasOwnProperty("experience") &&
-																props.errors["experience"]
-															}
-															margin="dense"
-															InputLabelProps={{
-																shrink: true,
-															}}
-															renderValue={(selected) => (
-																<div className={classes.chips}>
-																	{selected.map((value) => (
-																		<Chip
-																			key={value}
-																			label={value}
-																			className={classes.chip}
-																		/>
-																	))}
-																</div>
-															)}
-														>
-															{experience.map((option, index) => (
-																<MenuItem key={index} value={option}>
-																	{option}
-																</MenuItem>
-															))}
-														</Field>
-													</Box>
-												</Grid>
-												<Grid item md={6} xs={12}>
-													<Box margin={1}>
-														<InputLabel shrink={true} htmlFor="interest">
-															Interests/Hobbies
+														<Box margin={1}>
+															<Field
+																fullWidth
+																component={Select}
+																type="text"
+																name="language_speak"
+																multiple={true}
+																onChange={handleChange}
+																variant="outlined"
+																helperText={
+																	props.errors.hasOwnProperty(
+																		"language_speak"
+																	) && props.errors["language_speak"]
+																}
+																InputLabelProps={{
+																	shrink: true,
+																}}
+															>
+																{languages.map((option, index) => (
+																	<MenuItem key={index} value={option}>
+																		{option}
+																	</MenuItem>
+																))}
+															</Field>
+														</Box>
+													</Grid>
+													<Grid item md={4} xs={12}>
+														<InputLabel shrink={true} htmlFor="religion">
+															Religion
 														</InputLabel>
-														<Field
-															fullWidth
-															component={Select}
-															type="text"
-															name="interest"
-															helperText={
-																props.errors.hasOwnProperty("interest") &&
-																props.errors["interest"]
-															}
-															select
-															multiple={true}
-															onChange={handleChange}
-															variant="outlined"
-															// helperText="Enter Language Speak"
-															margin="dense"
-															InputLabelProps={{
-																shrink: true,
-															}}
-															renderValue={(selected) => (
-																<div className={classes.chips}>
-																	{selected.map((value) => (
-																		<Chip
-																			key={value}
-																			label={value}
-																			className={classes.chip}
-																		/>
-																	))}
-																</div>
-															)}
-														>
-															{interest.map((option, index) => (
-																<MenuItem key={index} value={option}>
-																	{option}
-																</MenuItem>
-															))}
-														</Field>
-													</Box>
+														<Box margin={1}>
+															<Field
+																fullWidth
+																component={TextField}
+																type="text"
+																name="religion"
+																select
+																onChange={handleChange}
+																variant="outlined"
+																helperText={
+																	props.errors.hasOwnProperty("religion") &&
+																	props.errors["religion"]
+																}
+																InputLabelProps={{
+																	shrink: true,
+																}}
+															>
+																{religion.map((option, index) => (
+																	<MenuItem key={index} value={option}>
+																		{option}
+																	</MenuItem>
+																))}
+															</Field>
+														</Box>
+													</Grid>
 												</Grid>
+												<Grid
+													container
+													direction="row"
+													justify="center"
+													alignItems="flex-end"
+												>
+													<Grid item md={6} xs={12}>
+														<Box margin={1}>
+															<InputLabel shrink={true} htmlFor="experience">
+																Experience/Knowledge
+															</InputLabel>
+															<Field
+																fullWidth
+																component={Select}
+																type="text"
+																name="experience"
+																label="Experience/Knowledge"
+																select
+																multiple={true}
+																onChange={handleChange}
+																variant="outlined"
+																helperText={
+																	props.errors.hasOwnProperty("experience") &&
+																	props.errors["experience"]
+																}
+																InputLabelProps={{
+																	shrink: true,
+																}}
+															>
+																{experience.map((option, index) => (
+																	<MenuItem key={index} value={option}>
+																		{option}
+																	</MenuItem>
+																))}
+															</Field>
+														</Box>
+													</Grid>
+													<Grid item md={6} xs={12}>
+														<Box margin={1}>
+															<InputLabel shrink={true} htmlFor="interest">
+																Interests/Hobbies
+															</InputLabel>
+															<Field
+																fullWidth
+																component={Select}
+																type="text"
+																name="interest"
+																helperText={
+																	props.errors.hasOwnProperty("interest") &&
+																	props.errors["interest"]
+																}
+																select
+																multiple={true}
+																onChange={handleChange}
+																variant="outlined"
+																// helperText="Enter Language Speak"
 
-												<Grid item md={6} xs={12}>
-													<Box margin={1}>
-														<InputLabel shrink={true} htmlFor="profession">
-															Profession
-														</InputLabel>
-														<Field
-															fullWidth
-															component={TextField}
-															type="text"
-															name="profession"
-															label="Profession"
-															variant="outlined"
-															helperText={
-																props.errors.hasOwnProperty("profession") &&
-																props.errors["profession"]
-															}
-															margin="dense"
-														/>
-													</Box>
-												</Grid>
-												<Grid item md={6} xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															component={TextField}
-															type="text"
-															name="profession_details"
-															label="Profession Details"
-															variant="outlined"
-															helperText={
-																props.errors.hasOwnProperty(
-																	"profession_details"
-																) && props.errors["profession_details"]
-															}
-															margin="dense"
-														/>
-													</Box>
-												</Grid>
-												<Grid item md={6} xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															type="text"
-															component={TextField}
-															name="occupation"
-															label="Occupation"
-															select
-															onChange={handleChange}
-															variant="outlined"
-															helperText={
-																props.errors.hasOwnProperty("id_proof_type") &&
-																props.errors["id_proof_type"]
-															}
-															margin="dense"
-														>
-															{occupation.map((option, index) => (
-																<MenuItem key={index} value={option}>
-																	{option}
-																</MenuItem>
-															))}
-														</Field>
-													</Box>
-												</Grid>
-												<Grid item xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															multiline
-															rows={4}
-															type="text"
-															component={TextField}
-															name="current_address"
-															label="Present Address"
-															onChange={handleChange}
-															variant="outlined"
-															helperText={
-																props.errors.hasOwnProperty(
-																	"current_address"
-																) && props.errors["current_address"]
-															}
-															margin="dense"
-															inputprops={{
-																inputComponent: TextareaAutosize,
-																rows: 3,
-															}}
-														/>
-													</Box>
-												</Grid>
-												<Grid item md={4} xs={12}>
-													<Box margin={1}>
-														<Field
-															required
-															onChange={handleChange}
-															fullWidth
-															component={TextField}
-															type="text"
-															name="state"
-															label="State"
-															select
-															variant="outlined"
-															helperText={
-																props.errors.hasOwnProperty("state") &&
-																props.errors["state"]
-															}
-															margin="normal"
-															InputLabelProps={{
-																shrink: true,
-															}}
-														>
-															{Object.keys(state).map((option) => (
-																<MenuItem key={option} value={option}>
-																	{option}
-																</MenuItem>
-															))}
-														</Field>
-													</Box>
-												</Grid>
-												<Grid item md={4} xs={12}>
-													<Box margin={1}>
-														<Field
-															required
-															fullWidth
-															component={TextField}
-															type="text"
-															name="district"
-															label="District"
-															select
-															variant="outlined"
-															helperText={
-																props.errors.hasOwnProperty("district") &&
-																props.errors["district"]
-															}
-															margin="normal"
-															InputLabelProps={{
-																shrink: true,
-															}}
-														>
-															{props.values.state &&
-																state[props.values.state].map(
+																InputLabelProps={{
+																	shrink: true,
+																}}
+															>
+																{interest.map((option, index) => (
+																	<MenuItem key={index} value={option}>
+																		{option}
+																	</MenuItem>
+																))}
+															</Field>
+														</Box>
+													</Grid>
+
+													<Grid item md={6} xs={12}>
+														<Box margin={1}>
+															<Field
+																fullWidth
+																type="text"
+																component={TextField}
+																name="occupation"
+																label="Employed in Occupation"
+																select
+																onChange={handleChange}
+																variant="outlined"
+																helperText={
+																	props.errors.hasOwnProperty(
+																		"id_proof_type"
+																	) && props.errors["id_proof_type"]
+																}
+															>
+																{occupation.map((option, index) => (
+																	<MenuItem key={index} value={option}>
+																		{option}
+																	</MenuItem>
+																))}
+															</Field>
+														</Box>
+													</Grid>
+													<Grid item md={6} xs={12}>
+														<Box margin={1}>
+															<Field
+																fullWidth
+																component={TextField}
+																type="text"
+																name="profession"
+																label="Occupation Field"
+																variant="outlined"
+																select
+																helperText={
+																	props.errors.hasOwnProperty("profession") &&
+																	props.errors["profession"]
+																}
+															>
+																{occupation.map((option, index) => (
+																	<MenuItem key={index} value={option}>
+																		{option}
+																	</MenuItem>
+																))}
+															</Field>
+														</Box>
+													</Grid>
+													<Grid item md={6} xs={12}>
+														<Box margin={1}>
+															<Field
+																fullWidth
+																component={TextField}
+																type="text"
+																name="lookingfor"
+																label="Looking For Part Time Job"
+																select
+																disabled={true}
+																onChange={handleChange}
+																variant="outlined"
+																defaultValue="Yes"
+																helperText={
+																	props.errors.hasOwnProperty("lookingfor") &&
+																	props.errors["lookingfor"]
+																}
+																InputLabelProps={{
+																	shrink: true,
+																}}
+															>
+																{["Yes"].map((option, index) => (
+																	<MenuItem key={index} value={option}>
+																		{option}
+																	</MenuItem>
+																))}
+															</Field>
+														</Box>
+													</Grid>
+													<Grid item md={6} xs={12}>
+														<Box margin={1}>
+															<Field
+																fullWidth
+																component={TextField}
+																type="text"
+																name="education"
+																label="Education"
+																select
+																onChange={handleChange}
+																variant="outlined"
+																helperText={
+																	props.errors.hasOwnProperty("lookingfor") &&
+																	props.errors["lookingfor"]
+																}
+																InputLabelProps={{
+																	shrink: true,
+																}}
+															>
+																{education.map((option, index) => (
+																	<MenuItem key={index} value={option}>
+																		{option}
+																	</MenuItem>
+																))}
+															</Field>
+														</Box>
+													</Grid>
+
+													<Grid item xs={12}>
+														<Box margin={1}>
+															<Field
+																fullWidth
+																multiline
+																rows={4}
+																type="text"
+																component={TextField}
+																name="current_address"
+																label="Present Address"
+																onChange={handleChange}
+																variant="outlined"
+																helperText={
+																	props.errors.hasOwnProperty(
+																		"current_address"
+																	) && props.errors["current_address"]
+																}
+																inputprops={{
+																	inputComponent: TextareaAutosize,
+																	rows: 3,
+																}}
+															/>
+														</Box>
+													</Grid>
+													<Grid item md={4} xs={12}>
+														<Box margin={1}>
+															<Field
+																required
+																onChange={handleChange}
+																fullWidth
+																component={TextField}
+																type="text"
+																name="state"
+																label="State"
+																select
+																variant="outlined"
+																helperText={
+																	props.errors.hasOwnProperty("state") &&
+																	props.errors["state"]
+																}
+																margin="normal"
+																InputLabelProps={{
+																	shrink: true,
+																}}
+															>
+																{Object.keys(state).map((option) => (
+																	<MenuItem key={option} value={option}>
+																		{option}
+																	</MenuItem>
+																))}
+															</Field>
+														</Box>
+													</Grid>
+													<Grid item md={4} xs={12}>
+														<Box margin={1}>
+															<Field
+																required
+																fullWidth
+																component={TextField}
+																type="text"
+																name="district"
+																label="District"
+																select
+																variant="outlined"
+																helperText={
+																	props.errors.hasOwnProperty("district") &&
+																	props.errors["district"]
+																}
+																margin="normal"
+																InputLabelProps={{
+																	shrink: true,
+																}}
+															>
+																{props.values.state &&
+																	state[props.values.state].map(
+																		(option, index) => (
+																			<MenuItem key={index} value={option}>
+																				{option}
+																			</MenuItem>
+																		)
+																	)}
+															</Field>
+														</Box>
+													</Grid>
+													<Grid item md={4} xs={12}>
+														<Box margin={1}>
+															<Field
+																required
+																fullWidth
+																component={TextField}
+																type="text"
+																name="city"
+																label="City"
+																select
+																variant="outlined"
+																helperText={
+																	props.errors.hasOwnProperty("city") &&
+																	props.errors["city"]
+																}
+																margin="normal"
+																InputLabelProps={{
+																	shrink: true,
+																}}
+															>
+																{props.values.district &&
+																	cities[props.values.district].map(
+																		(option, index) => (
+																			<MenuItem key={index} value={option}>
+																				{option}
+																			</MenuItem>
+																		)
+																	)}
+															</Field>
+														</Box>
+													</Grid>
+													<Grid item md={6} xs={12}>
+														<Box margin={1}>
+															<Field
+																fullWidth
+																multiline
+																type="text"
+																component={TextField}
+																name="area"
+																label="Area/Locality"
+																select
+																onChange={handleChange}
+																variant="outlined"
+																helperText={
+																	props.errors.hasOwnProperty("area") &&
+																	props.errors["area"]
+																}
+																margin="normal"
+															>
+																{["Ghantaghar", "Premnagar"].map(
 																	(option, index) => (
 																		<MenuItem key={index} value={option}>
 																			{option}
 																		</MenuItem>
 																	)
 																)}
-														</Field>
-													</Box>
-												</Grid>
-												<Grid item md={4} xs={12}>
-													<Box margin={1}>
-														<Field
-															required
-															fullWidth
-															component={TextField}
-															type="text"
-															name="city"
-															label="City"
-															select
-															variant="outlined"
-															helperText={
-																props.errors.hasOwnProperty("city") &&
-																props.errors["city"]
-															}
-															margin="normal"
-															InputLabelProps={{
-																shrink: true,
-															}}
-														>
-															{props.values.district &&
-																cities[props.values.district].map(
-																	(option, index) => (
-																		<MenuItem key={index} value={option}>
-																			{option}
-																		</MenuItem>
-																	)
-																)}
-														</Field>
-													</Box>
-												</Grid>
-												<Grid item xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															multiline
-															type="text"
-															component={TextField}
-															name="area"
-															label="Area"
-															rows={4}
-															onChange={handleChange}
-															variant="outlined"
-															helperText={
-																props.errors.hasOwnProperty("area") &&
-																props.errors["area"]
-															}
-															margin="normal"
-														/>
-													</Box>
-												</Grid>
-												{/* ID PROOOF FILE UPLOAD */}
+															</Field>
+														</Box>
+													</Grid>
+													<Grid item md={6} xs={12}>
+														<Box margin={1}>
+															<Field
+																fullWidth
+																multiline
+																type="text"
+																component={TextField}
+																name="googlemap"
+																label="Google Map Link"
+																disabled={true}
+																onChange={handleChange}
+																variant="outlined"
+																helperText={
+																	props.errors.hasOwnProperty("googlemap") &&
+																	props.errors["googlemap"]
+																}
+																margin="normal"
+															/>
+														</Box>
+													</Grid>
+													{/* ID PROOOF FILE UPLOAD */}
 
-												<Grid item md={4} xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															type="text"
-															component={TextField}
-															name="id_proof_type"
-															label="ID Proof Type"
-															select
-															onChange={handleChange}
-															variant="outlined"
-															helperText={
-																props.errors.hasOwnProperty("id_proof_type") &&
-																props.errors["id_proof_type"]
-															}
-															margin="normal"
-														>
-															{idType.map((option, index) => (
-																<MenuItem key={index} value={option}>
-																	{option}
-																</MenuItem>
-															))}
-														</Field>
-													</Box>
-												</Grid>
-												<Grid item md={4} xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															type="text"
-															component={TextField}
-															name="id_proof_number"
-															label="Identity Number"
-															onChange={handleChange}
-															variant="outlined"
-															margin="normal"
-														/>
-													</Box>
-												</Grid>
-												<Grid item md={4} xs={12}>
-													<Box margin={1}>
-														<Field
-															name="id_proof_path"
-															label="Upload Document"
-															className={
-																"form-check-input " +
-																(props.errors["id_proof_path"] &&
-																props.touched["id_proof_path"]
-																	? " is-invalid"
-																	: "")
-															}
-														>
-															{({ field, form, meta }) => (
-																<div>
-																	<input
-																		id={field.name}
-																		style={{ display: "none" }}
-																		name={field.name}
-																		type="file"
-																		onChange={(event) => {
-																			props.setFieldValue(
-																				field.name,
-																				event.currentTarget.files[0]
-																			);
-																		}}
-																	/>
-																	<label htmlFor={field.name}>
-																		<Button
-																			variant="contained"
-																			color="primary"
-																			component="span"
-																		>
-																			Upload
-																		</Button>
-																		{field.value && field.value.name}
-																	</label>
-																</div>
-															)}
-														</Field>
-														{props.errors.hasOwnProperty("id_proof_path") && (
-															<div style={{ color: "red" }} component="div">
-																{props.errors["id_proof_path"]}
-															</div>
-														)}
-													</Box>
-												</Grid>
-												<Grid item md={12} xs={12}>
-													<Box margin={1}>
-														<Field
-															required
-															fullWidth
-															type="password"
-															variant="outlined"
-															component={TextField}
-															label={
-																details.login && details.login.mpin
-																	? "M-PIN"
-																	: "Password"
-															}
-															name="password"
-															placeholder={
-																details.login && details.login.mpin
-																	? "Enter M-PIN"
-																	: "Enter Password"
-															}
-														/>
-													</Box>
+													<Grid item md={12} xs={12}>
+														<Box margin={1}>
+															<Field
+																fullWidth
+																type="password"
+																variant="outlined"
+																component={TextField}
+																label={
+																	details.login && details.login.mpin
+																		? "M-PIN"
+																		: "Password"
+																}
+																name="password"
+																placeholder={
+																	details.login && details.login.mpin
+																		? "Enter M-PIN"
+																		: "Enter Password"
+																}
+															/>
+														</Box>
+													</Grid>
 												</Grid>
 											</Grid>
 
