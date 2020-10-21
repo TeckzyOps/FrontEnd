@@ -261,11 +261,6 @@ const AccountDetails = (compprops) => {
 						} = props;
 						return (
 							<div>
-								<CardHeader
-									subheader="The information can be edited"
-									title="Account Details Of Member"
-								/>
-								<Divider />
 								<CardContent>
 									<Form>
 										<Accordion>
@@ -275,7 +270,7 @@ const AccountDetails = (compprops) => {
 												id="panel1c-header"
 											>
 												<Typography className={classes.heading}>
-													Click To Expand This Section
+													Account Details Of Member
 												</Typography>
 											</AccordionSummary>
 											<AccordionDetails>
@@ -314,6 +309,60 @@ const AccountDetails = (compprops) => {
 																		variant="outlined"
 																		name="name"
 																		placeholder="Full Name"
+																	/>
+																</Box>
+															</Grid>
+															<Grid item md={6} xs={12}>
+																<Box margin={1}>
+																	<Field
+																		fullWidth
+																		type="text"
+																		component={TextField}
+																		label="Mobile"
+																		name="mobile"
+																		variant="outlined"
+																		placeholder="Enter Mobile"
+																		InputProps={{
+																			endAdornment: (
+																				<InputAdornment position="end">
+																					<Tooltip
+																						title={
+																							details.login &&
+																							details.login.mobile_verified_at
+																								? "Verified"
+																								: "Mobile Not Verified!"
+																						}
+																					>
+																						<IconButton aria-label="toggle phone">
+																							{!(
+																								details.login &&
+																								details.login.mobile_verified_at
+																							) ? (
+																								<div>
+																									<ErrorOutlineIcon color="primary" />
+																									<Button
+																										size="small"
+																										onClick={() =>
+																											setverifyUsername(
+																												props.values.mobile
+																											)
+																										}
+																										variant="outlined"
+																										color="primary"
+																									>
+																										Verify!
+																									</Button>
+																								</div>
+																							) : (
+																								<CheckCircleIcon
+																									style={{ color: "green" }}
+																								/>
+																							)}
+																						</IconButton>
+																					</Tooltip>
+																				</InputAdornment>
+																			),
+																		}}
 																	/>
 																</Box>
 															</Grid>
@@ -375,60 +424,7 @@ const AccountDetails = (compprops) => {
 																	/>
 																</Box>
 															</Grid>
-															<Grid item md={6} xs={12}>
-																<Box margin={1}>
-																	<Field
-																		fullWidth
-																		type="text"
-																		component={TextField}
-																		label="Mobile"
-																		name="mobile"
-																		variant="outlined"
-																		placeholder="Enter Mobile"
-																		InputProps={{
-																			endAdornment: (
-																				<InputAdornment position="end">
-																					<Tooltip
-																						title={
-																							details.login &&
-																							details.login.mobile_verified_at
-																								? "Verified"
-																								: "Mobile Not Verified!"
-																						}
-																					>
-																						<IconButton aria-label="toggle phone">
-																							{!(
-																								details.login &&
-																								details.login.mobile_verified_at
-																							) ? (
-																								<div>
-																									<ErrorOutlineIcon color="primary" />
-																									<Button
-																										size="small"
-																										onClick={() =>
-																											setverifyUsername(
-																												props.values.mobile
-																											)
-																										}
-																										variant="outlined"
-																										color="primary"
-																									>
-																										Verify!
-																									</Button>
-																								</div>
-																							) : (
-																								<CheckCircleIcon
-																									style={{ color: "green" }}
-																								/>
-																							)}
-																						</IconButton>
-																					</Tooltip>
-																				</InputAdornment>
-																			),
-																		}}
-																	/>
-																</Box>
-															</Grid>
+
 															<Grid item md={6} xs={12}>
 																<Box margin={1}>
 																	<Field

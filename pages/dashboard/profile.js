@@ -10,6 +10,7 @@ import AccountDetails from "../../components/Dashboard/AccountDetails";
 import ProfileForm from "../../components/Dashboard/ProfileForm";
 import KYCForm from "../../components/Dashboard/ProfileKYC_form";
 import withAuth from "../../components/Hoc/withAuth";
+import { useAuth } from "../../components/provider/Auth";
 import LocalStorageService from "../../_services/LocalStorageService";
 const localStorageService = LocalStorageService.getService();
 
@@ -20,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Account = (props) => {
 	const classes = useStyles();
+	const { postloginsetToken, postsetLoginData, postsetUserData } = useAuth();
 
 	return (
 		<Fragment>
@@ -80,6 +82,30 @@ const redirectToLogin = (res) => {
 		Router.push("/login");
 	}
 };
+const refreshLocalData = async () => {
+	profileActions
+		.getUserProfileDetails()
+		.then(function (response) {
+			console.log("Called from Intital");
+			if (response.data) {
+				postsetUserData(response.data);
+			}
+		})
+		.catch(function (error) {
+			console.error("errrrr ", error);
+		});
+	profileActions
+		.getLoginDetails()
+		.then(function (response) {
+			console.log("Called from Intital");
+			if (response.data) {
+				postsetLoginData(response.data.data);
+			}
+		})
+		.catch(function (error) {
+			console.error("errrrr ", error);
+		});
+};
 const getCookieFromReq = (req, cookieKey) => {
 	const cookie = req.headers.cookie
 		.split(";")
@@ -89,7 +115,8 @@ const getCookieFromReq = (req, cookieKey) => {
 	return cookie.split("=")[1];
 };
 
-Account.getInitialProps = ({ req, res }) => {
+Account.getInitialProps = async ({ req, res }) => {
+	await refreshLocalData;
 	const ISSERVER = typeof window === "undefined";
 	let token = null;
 
