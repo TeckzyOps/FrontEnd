@@ -335,11 +335,6 @@ const ProfileForm = (props) => {
 
 					return (
 						<div>
-							<CardHeader
-								subheader="The information can be edited"
-								title="Only Use In Member KYC"
-							/>
-							<Divider />
 							<CardContent>
 								<Form autocomplete="off">
 									<Accordion>
@@ -349,7 +344,7 @@ const ProfileForm = (props) => {
 											id="panel1c-header"
 										>
 											<Typography className={classes.heading}>
-												Click To Expand This Section
+												Only Use In Member KYC
 											</Typography>
 										</AccordionSummary>
 										<AccordionDetails>

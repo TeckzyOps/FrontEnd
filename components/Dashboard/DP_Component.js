@@ -84,11 +84,12 @@ const dpcomponent = (props) => {
 	});
 	const [avatar, setAvatar] = React.useState("");
 	const [opeDPDialog, setOpeDPDialog] = React.useState(false);
+	const imgLink = props.img;
 	React.useEffect(() => {
 		console.log("dpcomponent", props);
 		if (props.img) {
-			setAvatar(props.img);
-			setDP({ ...dp, ["imagePreviewUrl"]: props.img });
+			setAvatar(imgLink);
+			setDP({ ...dp, ["imagePreviewUrl"]: imgLink });
 		}
 
 		// if (loginDet) {
@@ -258,18 +259,13 @@ const dpcomponent = (props) => {
 															>
 																<IconButton color="primary" component="span">
 																	<Avatar
-																		src={
-																			props.values[field.name]
-																				? dp.imagePreviewUrl
-																				: avatar
-																		}
 																		className={classes.large}
 																		style={{
 																			width: "200px",
 																			height: "200px",
 																		}}
 																	>
-																		{!avatar && showPreloadImage()}
+																		{showPreloadImage()}
 																	</Avatar>
 																</IconButton>
 															</label>
@@ -303,7 +299,7 @@ const dpcomponent = (props) => {
 										<Button
 											autoFocus
 											onClick={() => {
-												setDP({ file: null });
+												setDP({ ...dp, ["imagePreviewUrl"]: imgLink });
 												showPreloadImage();
 												setOpeDPDialog(!opeDPDialog);
 											}}

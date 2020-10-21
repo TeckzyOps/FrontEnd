@@ -10,6 +10,7 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Accordion from "@material-ui/core/Accordion";
+import ListSubheader from "@material-ui/core/ListSubheader";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionActions from "@material-ui/core/AccordionActions";
@@ -20,6 +21,7 @@ import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import Tooltip from "@material-ui/core/Tooltip";
 import { profileActions } from "../../_actions/profile.action";
 import DateFnsUtils from "@date-io/date-fns";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import {
 	KeyboardDatePicker,
 	MuiPickersUtilsProvider,
@@ -70,10 +72,12 @@ import {
 	Typography,
 	Chip,
 	Paper,
+	ListItemIcon,
 	Button,
 	InputAdornment,
 	IconButton,
 } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 import MuiTextField from "@material-ui/core/TextField";
 import * as Yup from "yup";
 
@@ -115,6 +119,7 @@ const ProfileForm = (props) => {
 	const [states, setStates] = useState([]);
 	const [district, setDistrict] = useState([]);
 	const [city, setCity] = useState([]);
+	const [openselect, setopenselect] = useState(false);
 	const [profileUpdateSuccess, setProfileUpdateSuccess] = useState(false);
 	const profileSchema = Yup.object().shape({
 		state: Yup.string().required("Required"),
@@ -152,26 +157,26 @@ const ProfileForm = (props) => {
 	React.useEffect(() => {
 		setStates(Object.keys(state));
 		setDetails(localStorageService.getUserDetails("Details"));
-		// profileActions
-		// 	.getUserProfileDetails()
-		// 	.then(function (response) {
-		// 		if (response.data) {
-		// 			postsetUserData(response.data);
-		// 		}
-		// 	})
-		// 	.catch(function (error) {
-		// 		console.error("errrrr ", error);
-		// 	});
-		// profileActions
-		// 	.getLoginDetails()
-		// 	.then(function (response) {
-		// 		if (response.data) {
-		// 			postsetLoginData(response.data.data);
-		// 		}
-		// 	})
-		// 	.catch(function (error) {
-		// 		console.error("errrrr ", error);
-		// 	});
+		profileActions
+			.getUserProfileDetails()
+			.then(function (response) {
+				if (response.data) {
+					postsetUserData(response.data);
+				}
+			})
+			.catch(function (error) {
+				console.error("errrrr ", error);
+			});
+		profileActions
+			.getLoginDetails()
+			.then(function (response) {
+				if (response.data) {
+					postsetLoginData(response.data.data);
+				}
+			})
+			.catch(function (error) {
+				console.error("errrrr ", error);
+			});
 	}, []);
 
 	const _handleModalClose = () => {
@@ -194,9 +199,12 @@ const ProfileForm = (props) => {
 		);
 	};
 
+	const hideSelect = (event) => {
+		event.nativeEvent.srcElement.hidden = true;
+	};
 	const initVals = {
 		gender: !isNaN(props.getNested(details, "profile", "data", "gender"))
-			? gender[props.getNested(details, "profile", "data", "gender") - 1]
+			? props.getNested(details, "profile", "data", "gender")
 			: "",
 		dob: props.getNested(details, "profile", "data", "dob")
 			? props.getNested(details, "profile", "data", "dob")
@@ -425,11 +433,6 @@ const ProfileForm = (props) => {
 
 					return (
 						<div>
-							<CardHeader
-								subheader="The information can be edited"
-								title="Please Fill Personal Other Details For Best Services"
-							/>
-							<Divider />
 							<CardContent>
 								<Form autocomplete="off">
 									<Accordion>
@@ -439,7 +442,7 @@ const ProfileForm = (props) => {
 											id="panel1c-header"
 										>
 											<Typography className={classes.heading}>
-												Click To Expand This Section
+												Please Fill Personal Other Details For Best Services
 											</Typography>
 										</AccordionSummary>
 										<AccordionDetails>
@@ -469,6 +472,22 @@ const ProfileForm = (props) => {
 																	shrink: true,
 																}}
 															>
+																<MenuItem
+																	value={props.values["gender"]}
+																	style={{
+																		position: "sticky",
+																		backgroundColor: "grey",
+																		zIndex: 999,
+																		top: 0,
+																	}}
+																>
+																	<ListItemIcon>
+																		<CloseIcon fontSize="small" />
+																	</ListItemIcon>
+																	<Typography variant="inherit">
+																		Close
+																	</Typography>
+																</MenuItem>
 																{gender.map((option, index) => (
 																	<MenuItem key={index} value={index + 1}>
 																		{option}
@@ -486,7 +505,6 @@ const ProfileForm = (props) => {
 																component={DatePickerField}
 																name="dob"
 																label="Date Of Birth"
-																onChange={handleChange}
 																inputVariant="outlined"
 																InputAdornmentProps={{ position: "start" }}
 																helperText={
@@ -530,6 +548,23 @@ const ProfileForm = (props) => {
 																	shrink: true,
 																}}
 															>
+																<MenuItem
+																	value={props.values["mother_tongue"]}
+																	style={{
+																		position: "sticky",
+																		backgroundColor: "grey",
+																		zIndex: 999,
+																		top: 0,
+																	}}
+																>
+																	<ListItemIcon>
+																		<CloseIcon fontSize="small" />
+																	</ListItemIcon>
+																	<Typography variant="inherit">
+																		Close
+																	</Typography>
+																</MenuItem>
+
 																{languages.map((option, index) => (
 																	<MenuItem key={index} value={option}>
 																		{option}
@@ -539,33 +574,31 @@ const ProfileForm = (props) => {
 														</Box>
 													</Grid>
 													<Grid item md={4} xs={12}>
-														<InputLabel shrink={true} htmlFor="language_speak">
-															Language I Speak
-														</InputLabel>
 														<Box margin={1}>
 															<Field
 																fullWidth
-																component={Select}
-																type="text"
+																component={Autocomplete}
 																name="language_speak"
-																multiple={true}
-																onChange={handleChange}
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty(
-																		"language_speak"
-																	) && props.errors["language_speak"]
-																}
+																multiple
+																options={languages}
+																getOptionLabel={(label) => label}
+																renderInput={(params) => (
+																	<MuiTextField
+																		{...params}
+																		onChange={handleChange}
+																		variant="outlined"
+																		label="Language I Speak"
+																		helperText={
+																			props.errors.hasOwnProperty(
+																				"language_speak"
+																			) && props.errors["language_speak"]
+																		}
+																	/>
+																)}
 																InputLabelProps={{
 																	shrink: true,
 																}}
-															>
-																{languages.map((option, index) => (
-																	<MenuItem key={index} value={option}>
-																		{option}
-																	</MenuItem>
-																))}
-															</Field>
+															></Field>
 														</Box>
 													</Grid>
 													<Grid item md={4} xs={12}>
@@ -577,8 +610,8 @@ const ProfileForm = (props) => {
 																fullWidth
 																component={TextField}
 																type="text"
-																name="religion"
 																select
+																name="religion"
 																onChange={handleChange}
 																variant="outlined"
 																helperText={
@@ -589,6 +622,22 @@ const ProfileForm = (props) => {
 																	shrink: true,
 																}}
 															>
+																<MenuItem
+																	value={props.values["religion"]}
+																	style={{
+																		position: "sticky",
+																		backgroundColor: "grey",
+																		zIndex: 999,
+																		top: 0,
+																	}}
+																>
+																	<ListItemIcon>
+																		<CloseIcon fontSize="small" />
+																	</ListItemIcon>
+																	<Typography variant="inherit">
+																		Close
+																	</Typography>
+																</MenuItem>
 																{religion.map((option, index) => (
 																	<MenuItem key={index} value={option}>
 																		{option}
@@ -606,65 +655,57 @@ const ProfileForm = (props) => {
 												>
 													<Grid item md={6} xs={12}>
 														<Box margin={1}>
-															<InputLabel shrink={true} htmlFor="experience">
-																Experience/Knowledge
-															</InputLabel>
 															<Field
 																fullWidth
-																component={Select}
-																type="text"
+																component={Autocomplete}
 																name="experience"
-																label="Experience/Knowledge"
-																select
-																multiple={true}
-																onChange={handleChange}
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty("experience") &&
-																	props.errors["experience"]
-																}
+																multiple
+																options={experience}
+																getOptionLabel={(label) => label}
+																renderInput={(params) => (
+																	<MuiTextField
+																		{...params}
+																		onChange={handleChange}
+																		variant="outlined"
+																		label="Experience/Knowledge"
+																		helperText={
+																			props.errors.hasOwnProperty(
+																				"experience"
+																			) && props.errors["experience"]
+																		}
+																	/>
+																)}
 																InputLabelProps={{
 																	shrink: true,
 																}}
-															>
-																{experience.map((option, index) => (
-																	<MenuItem key={index} value={option}>
-																		{option}
-																	</MenuItem>
-																))}
-															</Field>
+															></Field>
 														</Box>
 													</Grid>
 													<Grid item md={6} xs={12}>
 														<Box margin={1}>
-															<InputLabel shrink={true} htmlFor="interest">
-																Interests/Hobbies
-															</InputLabel>
 															<Field
 																fullWidth
-																component={Select}
-																type="text"
+																component={Autocomplete}
 																name="interest"
-																helperText={
-																	props.errors.hasOwnProperty("interest") &&
-																	props.errors["interest"]
-																}
-																select
-																multiple={true}
-																onChange={handleChange}
-																variant="outlined"
-																// helperText="Enter Language Speak"
-
+																multiple
+																options={interest}
+																getOptionLabel={(label) => label}
+																renderInput={(params) => (
+																	<MuiTextField
+																		{...params}
+																		onChange={handleChange}
+																		variant="outlined"
+																		label="Interests/Hobbies"
+																		helperText={
+																			props.errors.hasOwnProperty("interest") &&
+																			props.errors["interest"]
+																		}
+																	/>
+																)}
 																InputLabelProps={{
 																	shrink: true,
 																}}
-															>
-																{interest.map((option, index) => (
-																	<MenuItem key={index} value={option}>
-																		{option}
-																	</MenuItem>
-																))}
-															</Field>
+															></Field>
 														</Box>
 													</Grid>
 
@@ -685,6 +726,22 @@ const ProfileForm = (props) => {
 																	) && props.errors["id_proof_type"]
 																}
 															>
+																<MenuItem
+																	value={props.values["occupation"]}
+																	style={{
+																		position: "sticky",
+																		backgroundColor: "grey",
+																		zIndex: 999,
+																		top: 0,
+																	}}
+																>
+																	<ListItemIcon>
+																		<CloseIcon fontSize="small" />
+																	</ListItemIcon>
+																	<Typography variant="inherit">
+																		Close
+																	</Typography>
+																</MenuItem>
 																{occupation.map((option, index) => (
 																	<MenuItem key={index} value={option}>
 																		{option}
@@ -708,6 +765,22 @@ const ProfileForm = (props) => {
 																	props.errors["profession"]
 																}
 															>
+																<MenuItem
+																	value={props.values["profession"]}
+																	style={{
+																		position: "sticky",
+																		backgroundColor: "grey",
+																		zIndex: 999,
+																		top: 0,
+																	}}
+																>
+																	<ListItemIcon>
+																		<CloseIcon fontSize="small" />
+																	</ListItemIcon>
+																	<Typography variant="inherit">
+																		Close
+																	</Typography>
+																</MenuItem>
 																{occupation.map((option, index) => (
 																	<MenuItem key={index} value={option}>
 																		{option}
@@ -764,6 +837,22 @@ const ProfileForm = (props) => {
 																	shrink: true,
 																}}
 															>
+																<MenuItem
+																	value={props.values["education"]}
+																	style={{
+																		position: "sticky",
+																		backgroundColor: "grey",
+																		zIndex: 999,
+																		top: 0,
+																	}}
+																>
+																	<ListItemIcon>
+																		<CloseIcon fontSize="small" />
+																	</ListItemIcon>
+																	<Typography variant="inherit">
+																		Close
+																	</Typography>
+																</MenuItem>
 																{education.map((option, index) => (
 																	<MenuItem key={index} value={option}>
 																		{option}
@@ -818,6 +907,22 @@ const ProfileForm = (props) => {
 																	shrink: true,
 																}}
 															>
+																<MenuItem
+																	value={props.values["state"]}
+																	style={{
+																		position: "sticky",
+																		backgroundColor: "grey",
+																		zIndex: 999,
+																		top: 0,
+																	}}
+																>
+																	<ListItemIcon>
+																		<CloseIcon fontSize="small" />
+																	</ListItemIcon>
+																	<Typography variant="inherit">
+																		Close
+																	</Typography>
+																</MenuItem>
 																{Object.keys(state).map((option) => (
 																	<MenuItem key={option} value={option}>
 																		{option}
@@ -846,6 +951,22 @@ const ProfileForm = (props) => {
 																	shrink: true,
 																}}
 															>
+																<MenuItem
+																	value={props.values["district"]}
+																	style={{
+																		position: "sticky",
+																		backgroundColor: "grey",
+																		zIndex: 999,
+																		top: 0,
+																	}}
+																>
+																	<ListItemIcon>
+																		<CloseIcon fontSize="small" />
+																	</ListItemIcon>
+																	<Typography variant="inherit">
+																		Close
+																	</Typography>
+																</MenuItem>
 																{props.values.state &&
 																	state[props.values.state].map(
 																		(option, index) => (
@@ -877,6 +998,22 @@ const ProfileForm = (props) => {
 																	shrink: true,
 																}}
 															>
+																<MenuItem
+																	value={props.values["city"]}
+																	style={{
+																		position: "sticky",
+																		backgroundColor: "grey",
+																		zIndex: 999,
+																		top: 0,
+																	}}
+																>
+																	<ListItemIcon>
+																		<CloseIcon fontSize="small" />
+																	</ListItemIcon>
+																	<Typography variant="inherit">
+																		Close
+																	</Typography>
+																</MenuItem>
 																{props.values.district &&
 																	cities[props.values.district].map(
 																		(option, index) => (
@@ -906,6 +1043,22 @@ const ProfileForm = (props) => {
 																}
 																margin="normal"
 															>
+																<MenuItem
+																	value={props.values["area"]}
+																	style={{
+																		position: "sticky",
+																		backgroundColor: "grey",
+																		zIndex: 999,
+																		top: 0,
+																	}}
+																>
+																	<ListItemIcon>
+																		<CloseIcon fontSize="small" />
+																	</ListItemIcon>
+																	<Typography variant="inherit">
+																		Close
+																	</Typography>
+																</MenuItem>
 																{["Ghantaghar", "Premnagar"].map(
 																	(option, index) => (
 																		<MenuItem key={index} value={option}>
