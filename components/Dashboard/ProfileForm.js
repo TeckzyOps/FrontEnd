@@ -26,6 +26,7 @@ import {
 	KeyboardDatePicker,
 	MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
+import { createMuiTheme } from "@material-ui/core/styles";
 import LocalStorageService from "../../_services/LocalStorageService";
 const localStorageService = LocalStorageService.getService();
 import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
@@ -80,7 +81,7 @@ import {
 import CloseIcon from "@material-ui/icons/Close";
 import MuiTextField from "@material-ui/core/TextField";
 import * as Yup from "yup";
-
+let theme = createMuiTheme();
 const useStyles = makeStyles((theme) => ({
 	root: {
 		display: "flex",
@@ -104,10 +105,21 @@ const useStyles = makeStyles((theme) => ({
 		width: theme.spacing(7),
 		height: theme.spacing(7),
 	},
+	headerBadge: {
+		width: 30,
+		height: 30,
+		marginRight: 10,
+		backgroundColor: theme.palette.primary.light,
+	},
+	labelRoot: {
+		fontSize: 18,
+		fontWeight: "bold",
+	},
 }));
 
 const ProfileForm = (props) => {
 	const { className, ...rest } = props;
+
 	// const { loginDetails, user, updateUser } = useAuth();
 
 	const classes = useStyles();
@@ -157,26 +169,26 @@ const ProfileForm = (props) => {
 	React.useEffect(() => {
 		setStates(Object.keys(state));
 		setDetails(localStorageService.getUserDetails("Details"));
-		profileActions
-			.getUserProfileDetails()
-			.then(function (response) {
-				if (response.data) {
-					postsetUserData(response.data);
-				}
-			})
-			.catch(function (error) {
-				console.error("errrrr ", error);
-			});
-		profileActions
-			.getLoginDetails()
-			.then(function (response) {
-				if (response.data) {
-					postsetLoginData(response.data.data);
-				}
-			})
-			.catch(function (error) {
-				console.error("errrrr ", error);
-			});
+		// profileActions
+		// 	.getUserProfileDetails()
+		// 	.then(function (response) {
+		// 		if (response.data) {
+		// 			postsetUserData(response.data);
+		// 		}
+		// 	})
+		// 	.catch(function (error) {
+		// 		console.error("errrrr ", error);
+		// 	});
+		// profileActions
+		// 	.getLoginDetails()
+		// 	.then(function (response) {
+		// 		if (response.data) {
+		// 			postsetLoginData(response.data.data);
+		// 		}
+		// 	})
+		// 	.catch(function (error) {
+		// 		console.error("errrrr ", error);
+		// 	});
 	}, []);
 
 	const _handleModalClose = () => {
@@ -433,711 +445,736 @@ const ProfileForm = (props) => {
 
 					return (
 						<div>
-							<CardContent>
-								<Form autocomplete="off">
-									<Accordion>
-										<AccordionSummary
-											expandIcon={<ExpandMoreIcon />}
-											aria-controls="panel1c-content"
-											id="panel1c-header"
-										>
-											<Typography className={classes.heading}>
-												Please Fill Personal Other Details For Best Services
-											</Typography>
-										</AccordionSummary>
-										<AccordionDetails>
-											<Grid container spacing={3}>
-												<Grid
-													container
-													direction="row"
-													justify="center"
-													alignItems="flex-end"
-												>
-													<Grid item md={6} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																component={TextField}
-																type="text"
-																name="gender"
-																label="Gender"
-																select
-																onChange={handleChange}
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty("gender") &&
-																	props.errors["gender"]
-																}
-																InputLabelProps={{
-																	shrink: true,
+							<Form autocomplete="off">
+								<Accordion>
+									<AccordionSummary
+										expandIcon={<ExpandMoreIcon />}
+										aria-controls="panel1c-content"
+										id="panel1c-header"
+									>
+										<Avatar className={classes.headerBadge}>2</Avatar>
+
+										<Typography className={classes.heading}>
+											Please Fill Personal Other Details For Best Services
+										</Typography>
+									</AccordionSummary>
+									<AccordionDetails>
+										<Grid container spacing={3}>
+											<Grid
+												container
+												direction="row"
+												justify="center"
+												alignItems="flex-end"
+											>
+												<Grid item md={6} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															component={TextField}
+															type="text"
+															name="gender"
+															label="Gender"
+															select
+															onChange={handleChange}
+															variant="outlined"
+															helperText={
+																props.errors.hasOwnProperty("gender") &&
+																props.errors["gender"]
+															}
+															InputLabelProps={{
+																classes: {
+																	root: classes.labelRoot,
+																},
+															}}
+														>
+															<MenuItem
+																value={props.values["gender"]}
+																style={{
+																	position: "sticky",
+																	backgroundColor: "grey",
+																	zIndex: 999,
+																	top: 0,
 																}}
 															>
-																<MenuItem
-																	value={props.values["gender"]}
-																	style={{
-																		position: "sticky",
-																		backgroundColor: "grey",
-																		zIndex: 999,
-																		top: 0,
-																	}}
-																>
-																	<ListItemIcon>
-																		<CloseIcon fontSize="small" />
-																	</ListItemIcon>
-																	<Typography variant="inherit">
-																		Close
-																	</Typography>
+																<ListItemIcon>
+																	<CloseIcon fontSize="small" />
+																</ListItemIcon>
+																<Typography variant="inherit">Close</Typography>
+															</MenuItem>
+															{gender.map((option, index) => (
+																<MenuItem key={index} value={index + 1}>
+																	{option}
 																</MenuItem>
-																{gender.map((option, index) => (
-																	<MenuItem key={index} value={index + 1}>
-																		{option}
-																	</MenuItem>
-																))}
-															</Field>
-														</Box>
-													</Grid>
-													<Grid item md={6} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullwidth
-																autoOk
-																variant="inline"
-																component={DatePickerField}
-																name="dob"
-																label="Date Of Birth"
-																inputVariant="outlined"
-																InputAdornmentProps={{ position: "start" }}
-																helperText={
-																	props.errors.hasOwnProperty("dob") &&
-																	props.errors["dob"]
-																}
-																InputLabelProps={{
-																	shrink: true,
-																}}
-															/>
-														</Box>
-													</Grid>
+															))}
+														</Field>
+													</Box>
 												</Grid>
-												<Grid
-													container
-													direction="row"
-													justify="center"
-													alignItems="flex-end"
-												>
-													<Grid item md={4} xs={12}>
-														<InputLabel shrink={true} htmlFor="mother_tongue">
-															<Typography variant="h6" component="h6">
-																Preference Language
-															</Typography>
-														</InputLabel>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																component={TextField}
-																type="text"
-																name="mother_tongue"
-																select
-																onChange={handleChange}
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty(
-																		"mother_tongue"
-																	) && props.errors["mother_tongue"]
-																}
-																InputLabelProps={{
-																	shrink: true,
-																}}
-															>
-																<MenuItem
-																	value={props.values["mother_tongue"]}
-																	style={{
-																		position: "sticky",
-																		backgroundColor: "grey",
-																		zIndex: 999,
-																		top: 0,
-																	}}
-																>
-																	<ListItemIcon>
-																		<CloseIcon fontSize="small" />
-																	</ListItemIcon>
-																	<Typography variant="inherit">
-																		Close
-																	</Typography>
-																</MenuItem>
-
-																{languages.map((option, index) => (
-																	<MenuItem key={index} value={option}>
-																		{option}
-																	</MenuItem>
-																))}
-															</Field>
-														</Box>
-													</Grid>
-													<Grid item md={4} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																component={Autocomplete}
-																name="language_speak"
-																multiple
-																options={languages}
-																getOptionLabel={(label) => label}
-																renderInput={(params) => (
-																	<MuiTextField
-																		{...params}
-																		onChange={handleChange}
-																		variant="outlined"
-																		label="Language I Speak"
-																		helperText={
-																			props.errors.hasOwnProperty(
-																				"language_speak"
-																			) && props.errors["language_speak"]
-																		}
-																	/>
-																)}
-																InputLabelProps={{
-																	shrink: true,
-																}}
-															></Field>
-														</Box>
-													</Grid>
-													<Grid item md={4} xs={12}>
-														<InputLabel shrink={true} htmlFor="religion">
-															Religion
-														</InputLabel>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																component={TextField}
-																type="text"
-																select
-																name="religion"
-																onChange={handleChange}
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty("religion") &&
-																	props.errors["religion"]
-																}
-																InputLabelProps={{
-																	shrink: true,
-																}}
-															>
-																<MenuItem
-																	value={props.values["religion"]}
-																	style={{
-																		position: "sticky",
-																		backgroundColor: "grey",
-																		zIndex: 999,
-																		top: 0,
-																	}}
-																>
-																	<ListItemIcon>
-																		<CloseIcon fontSize="small" />
-																	</ListItemIcon>
-																	<Typography variant="inherit">
-																		Close
-																	</Typography>
-																</MenuItem>
-																{religion.map((option, index) => (
-																	<MenuItem key={index} value={option}>
-																		{option}
-																	</MenuItem>
-																))}
-															</Field>
-														</Box>
-													</Grid>
+												<Grid item md={6} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullwidth
+															autoOk
+															variant="inline"
+															component={DatePickerField}
+															name="dob"
+															label="Date Of Birth"
+															inputVariant="outlined"
+															InputAdornmentProps={{ position: "start" }}
+															helperText={
+																props.errors.hasOwnProperty("dob") &&
+																props.errors["dob"]
+															}
+															InputLabelProps={{
+																classes: {
+																	root: classes.labelRoot,
+																},
+															}}
+														/>
+													</Box>
 												</Grid>
-												<Grid
-													container
-													direction="row"
-													justify="center"
-													alignItems="flex-end"
-												>
-													<Grid item md={6} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																component={Autocomplete}
-																name="experience"
-																multiple
-																options={experience}
-																getOptionLabel={(label) => label}
-																renderInput={(params) => (
-																	<MuiTextField
-																		{...params}
-																		onChange={handleChange}
-																		variant="outlined"
-																		label="Experience/Knowledge"
-																		helperText={
-																			props.errors.hasOwnProperty(
-																				"experience"
-																			) && props.errors["experience"]
-																		}
-																	/>
-																)}
-																InputLabelProps={{
-																	shrink: true,
+											</Grid>
+											<Grid
+												container
+												direction="row"
+												justify="center"
+												alignItems="flex-end"
+											>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															component={TextField}
+															type="text"
+															name="mother_tongue"
+															label="Preference Language"
+															select
+															onChange={handleChange}
+															variant="outlined"
+															helperText={
+																props.errors.hasOwnProperty("mother_tongue") &&
+																props.errors["mother_tongue"]
+															}
+															InputLabelProps={{
+																classes: {
+																	root: classes.labelRoot,
+																},
+															}}
+														>
+															<MenuItem
+																value={props.values["mother_tongue"]}
+																style={{
+																	position: "sticky",
+																	backgroundColor: "grey",
+																	zIndex: 999,
+																	top: 0,
 																}}
-															></Field>
-														</Box>
-													</Grid>
-													<Grid item md={6} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																component={Autocomplete}
-																name="interest"
-																multiple
-																options={interest}
-																getOptionLabel={(label) => label}
-																renderInput={(params) => (
-																	<MuiTextField
-																		{...params}
-																		onChange={handleChange}
-																		variant="outlined"
-																		label="Interests/Hobbies"
-																		helperText={
-																			props.errors.hasOwnProperty("interest") &&
-																			props.errors["interest"]
-																		}
-																	/>
-																)}
-																InputLabelProps={{
-																	shrink: true,
-																}}
-															></Field>
-														</Box>
-													</Grid>
+															>
+																<ListItemIcon>
+																	<CloseIcon fontSize="small" />
+																</ListItemIcon>
+																<Typography variant="inherit">Close</Typography>
+															</MenuItem>
 
-													<Grid item md={6} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																type="text"
-																component={TextField}
-																name="occupation"
-																label="Employed in Occupation"
-																select
-																onChange={handleChange}
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty(
-																		"id_proof_type"
-																	) && props.errors["id_proof_type"]
-																}
-															>
-																<MenuItem
-																	value={props.values["occupation"]}
-																	style={{
-																		position: "sticky",
-																		backgroundColor: "grey",
-																		zIndex: 999,
-																		top: 0,
-																	}}
-																>
-																	<ListItemIcon>
-																		<CloseIcon fontSize="small" />
-																	</ListItemIcon>
-																	<Typography variant="inherit">
-																		Close
-																	</Typography>
+															{languages.map((option, index) => (
+																<MenuItem key={index} value={option}>
+																	{option}
 																</MenuItem>
-																{occupation.map((option, index) => (
-																	<MenuItem key={index} value={option}>
-																		{option}
-																	</MenuItem>
-																))}
-															</Field>
-														</Box>
-													</Grid>
-													<Grid item md={6} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																component={TextField}
-																type="text"
-																name="profession"
-																label="Occupation Field"
-																variant="outlined"
-																select
-																helperText={
-																	props.errors.hasOwnProperty("profession") &&
-																	props.errors["profession"]
-																}
-															>
-																<MenuItem
-																	value={props.values["profession"]}
-																	style={{
-																		position: "sticky",
-																		backgroundColor: "grey",
-																		zIndex: 999,
-																		top: 0,
+															))}
+														</Field>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															component={Autocomplete}
+															name="language_speak"
+															multiple
+															options={languages}
+															getOptionLabel={(label) => label}
+															renderInput={(params) => (
+																<MuiTextField
+																	{...params}
+																	onChange={handleChange}
+																	variant="outlined"
+																	label="Language I Speak"
+																	InputLabelProps={{
+																		classes: {
+																			root: classes.labelRoot,
+																		},
 																	}}
-																>
-																	<ListItemIcon>
-																		<CloseIcon fontSize="small" />
-																	</ListItemIcon>
-																	<Typography variant="inherit">
-																		Close
-																	</Typography>
-																</MenuItem>
-																{occupation.map((option, index) => (
-																	<MenuItem key={index} value={option}>
-																		{option}
-																	</MenuItem>
-																))}
-															</Field>
-														</Box>
-													</Grid>
-													<Grid item md={6} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																component={TextField}
-																type="text"
-																name="lookingfor"
-																label="Looking For Part Time Job"
-																select
-																disabled={true}
-																onChange={handleChange}
-																variant="outlined"
-																defaultValue="Yes"
-																helperText={
-																	props.errors.hasOwnProperty("lookingfor") &&
-																	props.errors["lookingfor"]
-																}
-																InputLabelProps={{
-																	shrink: true,
+																	helperText={
+																		props.errors.hasOwnProperty(
+																			"language_speak"
+																		) && props.errors["language_speak"]
+																	}
+																/>
+															)}
+														></Field>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															component={TextField}
+															type="text"
+															select
+															name="religion"
+															label="Religion"
+															onChange={handleChange}
+															variant="outlined"
+															helperText={
+																props.errors.hasOwnProperty("religion") &&
+																props.errors["religion"]
+															}
+															InputLabelProps={{
+																classes: {
+																	root: classes.labelRoot,
+																},
+															}}
+														>
+															<MenuItem
+																value={props.values["religion"]}
+																style={{
+																	position: "sticky",
+																	backgroundColor: "grey",
+																	zIndex: 999,
+																	top: 0,
 																}}
 															>
-																{["Yes"].map((option, index) => (
-																	<MenuItem key={index} value={option}>
-																		{option}
-																	</MenuItem>
-																))}
-															</Field>
-														</Box>
-													</Grid>
-													<Grid item md={6} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																component={TextField}
-																type="text"
-																name="education"
-																label="Education"
-																select
-																onChange={handleChange}
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty("lookingfor") &&
-																	props.errors["lookingfor"]
-																}
-																InputLabelProps={{
-																	shrink: true,
-																}}
-															>
-																<MenuItem
-																	value={props.values["education"]}
-																	style={{
-																		position: "sticky",
-																		backgroundColor: "grey",
-																		zIndex: 999,
-																		top: 0,
-																	}}
-																>
-																	<ListItemIcon>
-																		<CloseIcon fontSize="small" />
-																	</ListItemIcon>
-																	<Typography variant="inherit">
-																		Close
-																	</Typography>
+																<ListItemIcon>
+																	<CloseIcon fontSize="small" />
+																</ListItemIcon>
+																<Typography variant="inherit">Close</Typography>
+															</MenuItem>
+															{religion.map((option, index) => (
+																<MenuItem key={index} value={option}>
+																	{option}
 																</MenuItem>
-																{education.map((option, index) => (
-																	<MenuItem key={index} value={option}>
-																		{option}
-																	</MenuItem>
-																))}
-															</Field>
-														</Box>
-													</Grid>
+															))}
+														</Field>
+													</Box>
+												</Grid>
+											</Grid>
+											<Grid
+												container
+												direction="row"
+												justify="center"
+												alignItems="flex-end"
+											>
+												<Grid item md={6} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															component={Autocomplete}
+															name="experience"
+															multiple
+															options={experience}
+															getOptionLabel={(label) => label}
+															renderInput={(params) => (
+																<MuiTextField
+																	{...params}
+																	onChange={handleChange}
+																	variant="outlined"
+																	label="Experience/Knowledge"
+																	InputLabelProps={{
+																		classes: {
+																			root: classes.labelRoot,
+																		},
+																	}}
+																	helperText={
+																		props.errors.hasOwnProperty("experience") &&
+																		props.errors["experience"]
+																	}
+																/>
+															)}
+														></Field>
+													</Box>
+												</Grid>
+												<Grid item md={6} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															component={Autocomplete}
+															name="interest"
+															multiple
+															options={interest}
+															getOptionLabel={(label) => label}
+															renderInput={(params) => (
+																<MuiTextField
+																	{...params}
+																	onChange={handleChange}
+																	variant="outlined"
+																	label="Interests/Hobbies"
+																	InputLabelProps={{
+																		classes: {
+																			root: classes.labelRoot,
+																		},
+																	}}
+																	helperText={
+																		props.errors.hasOwnProperty("interest") &&
+																		props.errors["interest"]
+																	}
+																/>
+															)}
+														></Field>
+													</Box>
+												</Grid>
 
-													<Grid item xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																multiline
-																rows={4}
-																type="text"
-																component={TextField}
-																name="current_address"
-																label="Present Address"
-																onChange={handleChange}
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty(
-																		"current_address"
-																	) && props.errors["current_address"]
-																}
-																inputprops={{
-																	inputComponent: TextareaAutosize,
-																	rows: 3,
-																}}
-															/>
-														</Box>
-													</Grid>
-													<Grid item md={4} xs={12}>
-														<Box margin={1}>
-															<Field
-																required
-																onChange={handleChange}
-																fullWidth
-																component={TextField}
-																type="text"
-																name="state"
-																label="State"
-																select
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty("state") &&
-																	props.errors["state"]
-																}
-																margin="normal"
-																InputLabelProps={{
-																	shrink: true,
+												<Grid item md={6} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															type="text"
+															component={TextField}
+															name="occupation"
+															label="Employed in Occupation"
+															select
+															onChange={handleChange}
+															variant="outlined"
+															InputLabelProps={{
+																classes: {
+																	root: classes.labelRoot,
+																},
+															}}
+															helperText={
+																props.errors.hasOwnProperty("id_proof_type") &&
+																props.errors["id_proof_type"]
+															}
+														>
+															<MenuItem
+																value={props.values["occupation"]}
+																style={{
+																	position: "sticky",
+																	backgroundColor: "grey",
+																	zIndex: 999,
+																	top: 0,
 																}}
 															>
-																<MenuItem
-																	value={props.values["state"]}
-																	style={{
-																		position: "sticky",
-																		backgroundColor: "grey",
-																		zIndex: 999,
-																		top: 0,
-																	}}
-																>
-																	<ListItemIcon>
-																		<CloseIcon fontSize="small" />
-																	</ListItemIcon>
-																	<Typography variant="inherit">
-																		Close
-																	</Typography>
+																<ListItemIcon>
+																	<CloseIcon fontSize="small" />
+																</ListItemIcon>
+																<Typography variant="inherit">Close</Typography>
+															</MenuItem>
+															{occupation.map((option, index) => (
+																<MenuItem key={index} value={option}>
+																	{option}
 																</MenuItem>
-																{Object.keys(state).map((option) => (
-																	<MenuItem key={option} value={option}>
-																		{option}
-																	</MenuItem>
-																))}
-															</Field>
-														</Box>
-													</Grid>
-													<Grid item md={4} xs={12}>
-														<Box margin={1}>
-															<Field
-																required
-																fullWidth
-																component={TextField}
-																type="text"
-																name="district"
-																label="District"
-																select
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty("district") &&
-																	props.errors["district"]
-																}
-																margin="normal"
-																InputLabelProps={{
-																	shrink: true,
+															))}
+														</Field>
+													</Box>
+												</Grid>
+												<Grid item md={6} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															component={TextField}
+															type="text"
+															name="profession"
+															label="Occupation Field"
+															variant="outlined"
+															InputLabelProps={{
+																classes: {
+																	root: classes.labelRoot,
+																},
+															}}
+															select
+															helperText={
+																props.errors.hasOwnProperty("profession") &&
+																props.errors["profession"]
+															}
+														>
+															<MenuItem
+																value={props.values["profession"]}
+																style={{
+																	position: "sticky",
+																	backgroundColor: "grey",
+																	zIndex: 999,
+																	top: 0,
 																}}
 															>
-																<MenuItem
-																	value={props.values["district"]}
-																	style={{
-																		position: "sticky",
-																		backgroundColor: "grey",
-																		zIndex: 999,
-																		top: 0,
-																	}}
-																>
-																	<ListItemIcon>
-																		<CloseIcon fontSize="small" />
-																	</ListItemIcon>
-																	<Typography variant="inherit">
-																		Close
-																	</Typography>
+																<ListItemIcon>
+																	<CloseIcon fontSize="small" />
+																</ListItemIcon>
+																<Typography variant="inherit">Close</Typography>
+															</MenuItem>
+															{occupation.map((option, index) => (
+																<MenuItem key={index} value={option}>
+																	{option}
 																</MenuItem>
-																{props.values.state &&
-																	state[props.values.state].map(
-																		(option, index) => (
-																			<MenuItem key={index} value={option}>
-																				{option}
-																			</MenuItem>
-																		)
-																	)}
-															</Field>
-														</Box>
-													</Grid>
-													<Grid item md={4} xs={12}>
-														<Box margin={1}>
-															<Field
-																required
-																fullWidth
-																component={TextField}
-																type="text"
-																name="city"
-																label="City"
-																select
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty("city") &&
-																	props.errors["city"]
-																}
-																margin="normal"
-																InputLabelProps={{
-																	shrink: true,
+															))}
+														</Field>
+													</Box>
+												</Grid>
+												<Grid item md={6} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															component={TextField}
+															type="text"
+															name="lookingfor"
+															label="Looking For Part Time Job"
+															select
+															disabled={true}
+															onChange={handleChange}
+															variant="outlined"
+															defaultValue="Yes"
+															helperText={
+																props.errors.hasOwnProperty("lookingfor") &&
+																props.errors["lookingfor"]
+															}
+															InputLabelProps={{
+																classes: {
+																	root: classes.labelRoot,
+																},
+															}}
+														>
+															{["Yes"].map((option, index) => (
+																<MenuItem key={index} value={option}>
+																	{option}
+																</MenuItem>
+															))}
+														</Field>
+													</Box>
+												</Grid>
+												<Grid item md={6} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															component={TextField}
+															type="text"
+															name="education"
+															label="Education"
+															select
+															onChange={handleChange}
+															variant="outlined"
+															helperText={
+																props.errors.hasOwnProperty("lookingfor") &&
+																props.errors["lookingfor"]
+															}
+															InputLabelProps={{
+																classes: {
+																	root: classes.labelRoot,
+																},
+															}}
+														>
+															<MenuItem
+																value={props.values["education"]}
+																style={{
+																	position: "sticky",
+																	backgroundColor: "grey",
+																	zIndex: 999,
+																	top: 0,
 																}}
 															>
-																<MenuItem
-																	value={props.values["city"]}
-																	style={{
-																		position: "sticky",
-																		backgroundColor: "grey",
-																		zIndex: 999,
-																		top: 0,
-																	}}
-																>
-																	<ListItemIcon>
-																		<CloseIcon fontSize="small" />
-																	</ListItemIcon>
-																	<Typography variant="inherit">
-																		Close
-																	</Typography>
+																<ListItemIcon>
+																	<CloseIcon fontSize="small" />
+																</ListItemIcon>
+																<Typography variant="inherit">Close</Typography>
+															</MenuItem>
+															{education.map((option, index) => (
+																<MenuItem key={index} value={option}>
+																	{option}
 																</MenuItem>
-																{props.values.district &&
-																	cities[props.values.district].map(
-																		(option, index) => (
-																			<MenuItem key={index} value={option}>
-																				{option}
-																			</MenuItem>
-																		)
-																	)}
-															</Field>
-														</Box>
-													</Grid>
-													<Grid item md={6} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																multiline
-																type="text"
-																component={TextField}
-																name="area"
-																label="Area/Locality"
-																select
-																onChange={handleChange}
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty("area") &&
-																	props.errors["area"]
-																}
-																margin="normal"
+															))}
+														</Field>
+													</Box>
+												</Grid>
+
+												<Grid item xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															multiline
+															rows={4}
+															type="text"
+															component={TextField}
+															name="current_address"
+															label="Present Address"
+															onChange={handleChange}
+															variant="outlined"
+															InputLabelProps={{
+																classes: {
+																	root: classes.labelRoot,
+																},
+															}}
+															helperText={
+																props.errors.hasOwnProperty(
+																	"current_address"
+																) && props.errors["current_address"]
+															}
+															inputprops={{
+																inputComponent: TextareaAutosize,
+																rows: 3,
+															}}
+														/>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															required
+															onChange={handleChange}
+															fullWidth
+															component={TextField}
+															type="text"
+															name="state"
+															label="State"
+															select
+															variant="outlined"
+															helperText={
+																props.errors.hasOwnProperty("state") &&
+																props.errors["state"]
+															}
+															margin="normal"
+															InputLabelProps={{
+																classes: {
+																	root: classes.labelRoot,
+																},
+															}}
+														>
+															<MenuItem
+																value={props.values["state"]}
+																style={{
+																	position: "sticky",
+																	backgroundColor: "grey",
+																	zIndex: 999,
+																	top: 0,
+																}}
 															>
-																<MenuItem
-																	value={props.values["area"]}
-																	style={{
-																		position: "sticky",
-																		backgroundColor: "grey",
-																		zIndex: 999,
-																		top: 0,
-																	}}
-																>
-																	<ListItemIcon>
-																		<CloseIcon fontSize="small" />
-																	</ListItemIcon>
-																	<Typography variant="inherit">
-																		Close
-																	</Typography>
+																<ListItemIcon>
+																	<CloseIcon fontSize="small" />
+																</ListItemIcon>
+																<Typography variant="inherit">Close</Typography>
+															</MenuItem>
+															{Object.keys(state).map((option) => (
+																<MenuItem key={option} value={option}>
+																	{option}
 																</MenuItem>
-																{["Ghantaghar", "Premnagar"].map(
+															))}
+														</Field>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															required
+															fullWidth
+															component={TextField}
+															type="text"
+															name="district"
+															label="District"
+															select
+															variant="outlined"
+															helperText={
+																props.errors.hasOwnProperty("district") &&
+																props.errors["district"]
+															}
+															margin="normal"
+															InputLabelProps={{
+																classes: {
+																	root: classes.labelRoot,
+																},
+															}}
+														>
+															<MenuItem
+																value={props.values["district"]}
+																style={{
+																	position: "sticky",
+																	backgroundColor: "grey",
+																	zIndex: 999,
+																	top: 0,
+																}}
+															>
+																<ListItemIcon>
+																	<CloseIcon fontSize="small" />
+																</ListItemIcon>
+																<Typography variant="inherit">Close</Typography>
+															</MenuItem>
+															{props.values.state &&
+																state[props.values.state].map(
 																	(option, index) => (
 																		<MenuItem key={index} value={option}>
 																			{option}
 																		</MenuItem>
 																	)
 																)}
-															</Field>
-														</Box>
-													</Grid>
-													<Grid item md={6} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																multiline
-																type="text"
-																component={TextField}
-																name="googlemap"
-																label="Google Map Link"
-																disabled={true}
-																onChange={handleChange}
-																variant="outlined"
-																helperText={
-																	props.errors.hasOwnProperty("googlemap") &&
-																	props.errors["googlemap"]
-																}
-																margin="normal"
-															/>
-														</Box>
-													</Grid>
-													{/* ID PROOOF FILE UPLOAD */}
+														</Field>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															required
+															fullWidth
+															component={TextField}
+															type="text"
+															name="city"
+															label="City"
+															select
+															variant="outlined"
+															helperText={
+																props.errors.hasOwnProperty("city") &&
+																props.errors["city"]
+															}
+															margin="normal"
+															InputLabelProps={{
+																classes: {
+																	root: classes.labelRoot,
+																},
+															}}
+														>
+															<MenuItem
+																value={props.values["city"]}
+																style={{
+																	position: "sticky",
+																	backgroundColor: "grey",
+																	zIndex: 999,
+																	top: 0,
+																}}
+															>
+																<ListItemIcon>
+																	<CloseIcon fontSize="small" />
+																</ListItemIcon>
+																<Typography variant="inherit">Close</Typography>
+															</MenuItem>
+															{props.values.district &&
+																cities[props.values.district].map(
+																	(option, index) => (
+																		<MenuItem key={index} value={option}>
+																			{option}
+																		</MenuItem>
+																	)
+																)}
+														</Field>
+													</Box>
+												</Grid>
+												<Grid item md={6} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															multiline
+															type="text"
+															component={TextField}
+															name="area"
+															label="Area/Locality"
+															select
+															onChange={handleChange}
+															variant="outlined"
+															InputLabelProps={{
+																classes: {
+																	root: classes.labelRoot,
+																},
+															}}
+															helperText={
+																props.errors.hasOwnProperty("area") &&
+																props.errors["area"]
+															}
+															margin="normal"
+														>
+															<MenuItem
+																value={props.values["area"]}
+																style={{
+																	position: "sticky",
+																	backgroundColor: "grey",
+																	zIndex: 999,
+																	top: 0,
+																}}
+															>
+																<ListItemIcon>
+																	<CloseIcon fontSize="small" />
+																</ListItemIcon>
+																<Typography variant="inherit">Close</Typography>
+															</MenuItem>
+															{["Ghantaghar", "Premnagar"].map(
+																(option, index) => (
+																	<MenuItem key={index} value={option}>
+																		{option}
+																	</MenuItem>
+																)
+															)}
+														</Field>
+													</Box>
+												</Grid>
+												<Grid item md={6} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															multiline
+															type="text"
+															component={TextField}
+															name="googlemap"
+															label="Google Map Link"
+															disabled={true}
+															InputLabelProps={{
+																classes: {
+																	root: classes.labelRoot,
+																},
+															}}
+															onChange={handleChange}
+															variant="outlined"
+															helperText={
+																props.errors.hasOwnProperty("googlemap") &&
+																props.errors["googlemap"]
+															}
+															margin="normal"
+														/>
+													</Box>
+												</Grid>
+												{/* ID PROOOF FILE UPLOAD */}
 
-													<Grid item md={12} xs={12}>
-														<Box margin={1}>
-															<Field
-																fullWidth
-																type="password"
-																variant="outlined"
-																component={TextField}
-																label={
-																	details.login && details.login.mpin
-																		? "M-PIN"
-																		: "Password"
-																}
-																name="password"
-																placeholder={
-																	details.login && details.login.mpin
-																		? "Enter M-PIN"
-																		: "Enter Password"
-																}
-															/>
-														</Box>
-													</Grid>
+												<Grid item md={12} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															type="password"
+															variant="outlined"
+															component={TextField}
+															InputLabelProps={{
+																classes: {
+																	root: classes.labelRoot,
+																},
+															}}
+															label={
+																details.login && details.login.mpin
+																	? "M-PIN"
+																	: "Password"
+															}
+															name="password"
+															placeholder={
+																details.login && details.login.mpin
+																	? "Enter M-PIN"
+																	: "Enter Password"
+															}
+														/>
+													</Box>
 												</Grid>
 											</Grid>
+										</Grid>
 
-											<Divider />
-										</AccordionDetails>
 										<Divider />
-										<AccordionActions>
-											{!props.isSubmitting ? (
-												<Button onClick={props.resetForm} size="small">
-													Reset To Default
-												</Button>
-											) : (
-												t("common:cant_revert")
-											)}
-											<Button
-												disable={props.isSubmitting}
-												type="submit"
-												color="primary"
-												variant="outlined"
-											>
-												Save details
+									</AccordionDetails>
+									<Divider />
+									<AccordionActions>
+										{!props.isSubmitting ? (
+											<Button onClick={props.resetForm} size="small">
+												Reset To Default
 											</Button>
-										</AccordionActions>
-									</Accordion>
-								</Form>
-							</CardContent>
+										) : (
+											t("common:cant_revert")
+										)}
+										<Button
+											disable={props.isSubmitting}
+											type="submit"
+											color="primary"
+											variant="outlined"
+										>
+											Save details
+										</Button>
+									</AccordionActions>
+								</Accordion>
+							</Form>
 						</div>
 					);
 				}}

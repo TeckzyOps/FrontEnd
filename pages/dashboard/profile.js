@@ -33,7 +33,7 @@ const Account = (props) => {
 				onToggleDir={props.onToggleDir}
 			/>
 			<div className={classes.root}>
-				<Grid container spacing={4}>
+				<Grid container spacing={1}>
 					{/* <Grid item lg={4} md={6} xl={4} xs={12}>
 						<AccountProfile
 							logindata={props.logindata}
@@ -41,19 +41,17 @@ const Account = (props) => {
 						/>
 					</Grid> */}
 					<Grid item xs={12}>
-						<div>
-							<AccountDetails {...props} />
-							<br />
-							<br />
-							<ProfileForm
-								{...props}
-								logindata={props.logindata}
-								userdata={props.userdata}
-							/>
-							<br />
-							<br />
-							<KYCForm {...props} />
-						</div>
+						<AccountDetails {...props} />
+					</Grid>
+					<Grid item xs={12}>
+						<ProfileForm
+							{...props}
+							logindata={props.logindata}
+							userdata={props.userdata}
+						/>
+					</Grid>
+					<Grid item xs={12}>
+						<KYCForm {...props} />
 					</Grid>
 				</Grid>
 			</div>
@@ -116,7 +114,14 @@ const getCookieFromReq = (req, cookieKey) => {
 };
 
 Account.getInitialProps = async ({ req, res }) => {
-	await refreshLocalData;
+	let profileres = await profileActions.getUserProfileDetails();
+	if (profileres.data) {
+		postsetUserData(profileres.data);
+	}
+	let logineres = await profileActions.getLoginDetails();
+	if (logineres.data) {
+		postsetLoginData(logineres.data.data);
+	}
 	const ISSERVER = typeof window === "undefined";
 	let token = null;
 

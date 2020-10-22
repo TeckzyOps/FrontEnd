@@ -210,9 +210,11 @@ function Header(props) {
 									>
 										<LocationCityIcon color="primary" />
 									</IconButton> */}
-									<IconButton color="primary">
-										<PersonAddIcon color="primary" />
-									</IconButton>
+									{isMobile && (
+										<IconButton color="primary">
+											<PersonAddIcon color="primary" />
+										</IconButton>
+									)}
 									<IconButton color="primary">
 										<ShoppingCartIcon color="primary" />
 									</IconButton>
