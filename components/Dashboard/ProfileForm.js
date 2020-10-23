@@ -169,26 +169,26 @@ const ProfileForm = (props) => {
 	React.useEffect(() => {
 		setStates(Object.keys(state));
 		setDetails(localStorageService.getUserDetails("Details"));
-		// profileActions
-		// 	.getUserProfileDetails()
-		// 	.then(function (response) {
-		// 		if (response.data) {
-		// 			postsetUserData(response.data);
-		// 		}
-		// 	})
-		// 	.catch(function (error) {
-		// 		console.error("errrrr ", error);
-		// 	});
-		// profileActions
-		// 	.getLoginDetails()
-		// 	.then(function (response) {
-		// 		if (response.data) {
-		// 			postsetLoginData(response.data.data);
-		// 		}
-		// 	})
-		// 	.catch(function (error) {
-		// 		console.error("errrrr ", error);
-		// 	});
+		profileActions
+			.getUserProfileDetails()
+			.then(function (response) {
+				if (response.data) {
+					postsetUserData(response.data);
+				}
+			})
+			.catch(function (error) {
+				console.error("errrrr ", error);
+			});
+		profileActions
+			.getLoginDetails()
+			.then(function (response) {
+				if (response.data) {
+					postsetLoginData(response.data.data);
+				}
+			})
+			.catch(function (error) {
+				console.error("errrrr ", error);
+			});
 	}, []);
 
 	const _handleModalClose = () => {
