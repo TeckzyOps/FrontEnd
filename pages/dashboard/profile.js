@@ -114,14 +114,14 @@ const getCookieFromReq = (req, cookieKey) => {
 };
 
 Account.getInitialProps = async ({ req, res }) => {
-	let profileres = await profileActions.getUserProfileDetails();
-	if (profileres.data) {
-		postsetUserData(profileres.data);
-	}
-	let logineres = await profileActions.getLoginDetails();
-	if (logineres.data) {
-		postsetLoginData(logineres.data.data);
-	}
+	// let profileres = await profileActions.getUserProfileDetails();
+	// if (profileres.data) {
+	// 	postsetUserData(profileres.data);
+	// }
+	// let logineres = await profileActions.getLoginDetails();
+	// if (logineres.data) {
+	// 	postsetLoginData(logineres.data.data);
+	// }
 	const ISSERVER = typeof window === "undefined";
 	let token = null;
 
