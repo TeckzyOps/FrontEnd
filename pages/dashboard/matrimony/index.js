@@ -256,7 +256,7 @@ const MatrimonySearch = (props) => {
 	return (
 		<React.Fragment>
 			<Head>
-				<title>Dashboard &nbsp; - Login</title>
+				<title>Matrimony</title>
 			</Head>
 
 			<Header

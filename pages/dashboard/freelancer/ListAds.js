@@ -113,7 +113,7 @@ const index = (props) => {
 	return (
 		<React.Fragment>
 			<Head>
-				<title>Dashboard &nbsp; - Login</title>
+				<title>Freelancer &nbsp; - Ad List</title>
 			</Head>
 
 			<DashboardWrapper logindata={props.logindata} userdata={props.userdata} />

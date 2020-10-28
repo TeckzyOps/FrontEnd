@@ -255,7 +255,7 @@ const profile = (props) => {
 	return (
 		<React.Fragment>
 			<Head>
-				<title>Dashboard &nbsp; - Login</title>
+				<title>Matrimony &nbsp; - Profile</title>
 			</Head>
 			<Header
 				onToggleDark={props.onToggleDark}

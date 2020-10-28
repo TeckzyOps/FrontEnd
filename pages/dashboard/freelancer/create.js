@@ -21,7 +21,7 @@ const Freelancer = (props) => {
 	return (
 		<Fragment>
 			<Head>
-				<title>Dashboard &nbsp; - Login</title>
+				<title>Freelancer &nbsp; - Create</title>
 			</Head>
 			<Header
 				onToggleDark={props.onToggleDark}
