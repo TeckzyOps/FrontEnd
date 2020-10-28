@@ -31,6 +31,7 @@ import { bookingActions } from "../../_actions/booking.action";
 import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { withRouter } from "react-router";
 import { useTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -64,7 +65,9 @@ const BookingModule = ({ booking_id, ...props }) => {
 		return [year, month, day].join("-");
 	}
 	React.useEffect(() => {
-		getBookings();
+		if (booking_id) {
+			getBookings();
+		}
 	}, []);
 
 	function getBookings(data) {
@@ -218,6 +221,7 @@ const BookingModule = ({ booking_id, ...props }) => {
 												endAdornment: (
 													<InputAdornment position="end">
 														<IconButton
+															disabled={null == booking_id}
 															aria-label="book date"
 															onClick={bookDate}
 															edge="end"
@@ -271,4 +275,4 @@ const BookingModule = ({ booking_id, ...props }) => {
 		</Fragment>
 	);
 };
-export default BookingModule;
+export default withRouter(BookingModule);

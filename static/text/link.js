@@ -7,6 +7,7 @@ const link = {
 		dashboard: "/dashboard",
 		profile: "/dashboard/profile",
 		freelancer: "/dashboard/freelancer/",
+		joinus: "/join_us",
 		freelancernew: "/dashboard/freelancer/create",
 		freelancerDetails: "/dashboard/freelancer/details",
 		freelancerVids: "/dashboard/freelancer/upload_videos",

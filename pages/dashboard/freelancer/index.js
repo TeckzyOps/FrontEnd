@@ -97,7 +97,7 @@ const index = (props) => {
 	return (
 		<React.Fragment>
 			<Head>
-				<title>Dashboard &nbsp; - Login</title>
+				<title>Freelancer</title>
 			</Head>
 
 			<Header
@@ -133,7 +133,7 @@ const index = (props) => {
 							<Grid key={index} item md={3} xs={12}>
 								<Link
 									style={{ textDecoration: "none" }}
-									href={routerLink.starter.freelancerDetails + "?id=" + ad.id}
+									href={routerLink.starter.freelancernew + "?id=" + ad.id}
 								>
 									<Card className={classes.card}>
 										{/* <CardMedia

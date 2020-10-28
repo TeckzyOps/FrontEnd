@@ -60,7 +60,7 @@ const index = (props) => {
 	return (
 		<React.Fragment>
 			<Head>
-				<title>Dashboard &nbsp; - Login</title>
+				<title>Matrimony &nbsp; - Ad List</title>
 			</Head>
 
 			<DashboardWrapper logindata={props.logindata} userdata={props.userdata} />

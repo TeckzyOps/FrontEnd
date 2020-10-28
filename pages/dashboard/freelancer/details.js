@@ -120,12 +120,13 @@ const details = (props) => {
 	const [value, setValue] = React.useState(0);
 
 	const [bookingPopup, setBookingPopup] = React.useState(false);
+	const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 	const theme = useTheme();
 	const [activeStep, setActiveStep] = React.useState(0);
 
 	const [images, setImages] = React.useState([]);
 	const maxSteps = images.length;
-	const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
 	const handleNext = () => {
 		setActiveStep((prevActiveStep) => prevActiveStep + 1);
 	};

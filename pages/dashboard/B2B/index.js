@@ -97,7 +97,7 @@ const index = (props) => {
 	return (
 		<React.Fragment>
 			<Head>
-				<title>Dashboard &nbsp; - Login</title>
+				<title>B2B &nbsp;</title>
 			</Head>
 
 			<Header
