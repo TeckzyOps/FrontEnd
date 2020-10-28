@@ -41,7 +41,7 @@ import {
 	interest,
 	languages,
 } from "~static/text/profiledata";
-import { state } from "~static/text/state";
+import { states } from "~static/text/state";
 import { cities } from "~static/text/city";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -128,7 +128,7 @@ const ProfileForm = (props) => {
 	const { postloginsetToken, postsetLoginData, postsetUserData } = useAuth();
 	const [details, setDetails] = useState({});
 	const [loginData, setloginData] = React.useState({});
-	const [states, setStates] = useState([]);
+
 	const [district, setDistrict] = useState([]);
 	const [city, setCity] = useState([]);
 	const [openselect, setopenselect] = useState(false);
@@ -167,7 +167,6 @@ const ProfileForm = (props) => {
 	});
 
 	React.useEffect(() => {
-		setStates(Object.keys(state));
 		setDetails(localStorageService.getUserDetails("Details"));
 		profileActions
 			.getUserProfileDetails()
@@ -358,7 +357,7 @@ const ProfileForm = (props) => {
 
 		switch (e.target.name) {
 			case "state":
-				setDistrict(state[e.target.value]);
+				setDistrict(states[e.target.value]);
 				setCity(null);
 				break;
 			case "district":
@@ -948,7 +947,7 @@ const ProfileForm = (props) => {
 																</ListItemIcon>
 																<Typography variant="inherit">Close</Typography>
 															</MenuItem>
-															{Object.keys(state).map((option) => (
+															{Object.keys(states).map((option) => (
 																<MenuItem key={option} value={option}>
 																	{option}
 																</MenuItem>
@@ -993,7 +992,7 @@ const ProfileForm = (props) => {
 																<Typography variant="inherit">Close</Typography>
 															</MenuItem>
 															{props.values.state &&
-																state[props.values.state].map(
+																states[props.values.state].map(
 																	(option, index) => (
 																		<MenuItem key={index} value={option}>
 																			{option}

@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import Grid from "@material-ui/core/Grid";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { createYupSchema } from "../../utils/yupSchemaCreator";
+import DateFnsUtils from "@date-io/date-fns";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import * as Yup from "yup";
 import {
 	Button,
@@ -75,110 +77,232 @@ const FormContainer = React.forwardRef((props, refs) => {
 		// 	Form.setFieldValue(key, value);
 		// }
 	}, [props.defaultvals ? props.defaultvals : ""]);
-
+	const getNested = (obj, ...args) => {
+		return args.reduce((obj, level) => obj && obj[level], obj);
+	};
 	function stateExtraxtor(state, obj) {
-		if (obj.type == "checkbox") {
-			state[obj.id] = obj.value ? obj.value : false;
+		if (Array.isArray(obj)) {
+			obj.map((obj) => {
+				if (obj.id) {
+					if (obj.type == "checkbox") {
+						state[obj.id] = obj.value ? obj.value : false;
+					} else {
+						state[obj.id] = obj.value ? obj.value : "";
+					}
+				}
+			});
 		} else {
-			state[obj.id] = obj.value ? obj.value : "";
+			if (obj.id) {
+				if (obj.type == "checkbox") {
+					state[obj.id] = obj.value ? obj.value : false;
+				} else {
+					state[obj.id] = obj.value ? obj.value : "";
+				}
+			}
 		}
 
 		return state;
 	}
-
-	const renderFormElements = (prop) =>
-		props.elements.map((item, index) => {
-			const fieldMap = {
-				text: TextField,
-				checkbox: CheckboxWithLabel,
-				select: TextField,
-				password: TextField,
-			};
-			const Component = fieldMap[item.type ? item.type : text];
-			let error = prop.errors.hasOwnProperty(item.id) && prop.errors[item.id];
-
-			let styles = { width: "100%" };
-			if (item.type && item.type == "checkbox") {
+	const fieldMap = {
+		text: TextField,
+		checkbox: CheckboxWithLabel,
+		select: TextField,
+		textarea: TextField,
+		password: TextField,
+		autocomplete: Autocomplete,
+	};
+	function getElement(item, prop) {
+		console.log(prop);
+		if (item.id == "undefined") {
+			return;
+		}
+		let styles = { width: "100%" };
+		let Component = fieldMap[item.type ? item.type : "text"];
+		let error = prop.errors.hasOwnProperty(item.id) && prop.errors[item.id];
+		let params = item.ElementParams;
+		let type = item.type;
+		switch (type) {
+			case "checkbox":
 				return (
-					<Grid key={index} item xs={12}>
-						<Box margin={1}>
-							<Field
-								type={item.type}
-								component={Component}
-								name={item.id}
-								className={
-									"form-check-input " +
-									(prop.errors[item.id] && prop.touched[item.id]
-										? " is-invalid"
-										: "")
-								}
-							/>
-							<label htmlFor="acceptTerms" className="form-check-label">
-								{item.label}
-							</label>
-							<ErrorMessage
-								style={{ color: "red" }}
-								name={item.id}
-								component="div"
-								className="invalid-feedback"
-							/>
-						</Box>
-					</Grid>
+					<Box margin={1}>
+						<Field
+							type={item.type}
+							component={Component}
+							name={item.id}
+							className={
+								"form-check-input " +
+								(prop.errors[item.id] && prop.touched[item.id]
+									? " is-invalid"
+									: "")
+							}
+						/>
+						<label htmlFor="acceptTerms" className="form-check-label">
+							{item.label}
+						</label>
+						<ErrorMessage
+							style={{ color: "red" }}
+							name={item.id}
+							component="div"
+							className="invalid-feedback"
+						/>
+					</Box>
 				);
-			} else if (item.type && item.type == "select") {
+				break;
+			case "select":
+				let opts = null;
+				if (getNested(item, "options", "dependsOn")) {
+					let opt = getNested(item, "options", "data");
+					let index = getNested(item, "options", "dependsOn");
+					opts = opt[prop.values[index]];
+				} else {
+					opts = getNested(item, "options", "data");
+				}
+
+				console.log(
+					item.id,
+					getNested(item, "options", "data")[
+						prop.values[getNested(item, "options", "dependsOn")]
+					]
+				);
 				return (
-					<Grid key={index} item xs={12}>
-						<Box margin={1}>
-							<Field
-								component={Component}
-								type="text"
-								name="select"
-								label={item.label}
-								select
-								variant="standard"
-								onChange={prop.handleChange}
-								error={error}
-								placeholder={
-									item.placeholder
-										? item.placeholder
-										: "Enter " + toTitleCase(item.id)
-								}
-								helperText={item.helpertext}
-								margin="normal"
-								InputLabelProps={{
-									shrink: true,
-								}}
-							>
-								{item.options.map((option) => (
-									<MenuItem key={option.value} value={option.value}>
-										{option.label}
+					<Box margin={1}>
+						<Field
+							{...params}
+							fullWidth
+							component={Component}
+							name={item.id}
+							label={item.label}
+							select
+							onChange={prop.handleChange}
+							error={error}
+							placeholder={
+								item.placeholder
+									? item.placeholder
+									: "Enter " + toTitleCase(item.id)
+							}
+							helperText={item.helpertext}
+						>
+							{/* {getNested(item, "options", "data", "dependsOn")
+								? getNested(item, "options", "data")[
+										prop.values[getNested(item, "options", "dependsOn")]
+								  ].map((option, index) => (
+										<MenuItem key={index} value={option}>
+											{option}
+										</MenuItem>
+								  ))
+								: Array.isArray(getNested(item, "options", "data")) &&
+								  getNested(item, "options", "data").map((option, index) => (
+										<MenuItem key={index} value={option}>
+											{option}
+										</MenuItem>
+								  ))} */}
+
+							{Array.isArray(opts) &&
+								opts.map((option, index) => (
+									<MenuItem key={index} value={option}>
+										{option}
 									</MenuItem>
 								))}
-							</Field>
-						</Box>
-					</Grid>
+						</Field>
+					</Box>
+				);
+				break;
+
+			case "autocomplete":
+				return (
+					<Box margin={1}>
+						<Field
+							fullWidth
+							component={Component}
+							name={item.id}
+							{...params}
+							multiple
+							options={item.options}
+							getOptionLabel={(label) => label}
+							renderInput={(params) => (
+								<MuiTextField
+									{...params}
+									onChange={prop.handleChange}
+									variant="outlined"
+									label={item.label}
+									helperText={
+										prop.errors.hasOwnProperty("experience") &&
+										prop.errors["experience"]
+									}
+								/>
+							)}
+						></Field>
+					</Box>
+				);
+				break;
+			case "textarea":
+				return (
+					<Box margin={1}>
+						<Field
+							fullWidth
+							{...params}
+							type={item.type ? item.type : "text"}
+							component={Component}
+							label={item.label ? item.label : "Enter " + toTitleCase(item.id)}
+							name={item.id}
+							multiline={true}
+							rows={item.rows || 4}
+							placeholder={
+								item.placeholder
+									? item.placeholder
+									: "Enter " + toTitleCase(item.id)
+							}
+							onChange={prop.handleChange}
+							error={"error"}
+						/>
+					</Box>
+				);
+				break;
+			default:
+				return (
+					<Box margin={1}>
+						<Field
+							fullWidth
+							{...params}
+							type={item.type ? item.type : "text"}
+							component={Component}
+							label={item.label ? item.label : "Enter " + toTitleCase(item.id)}
+							name={item.id}
+							placeholder={
+								item.placeholder
+									? item.placeholder
+									: "Enter " + toTitleCase(item.id)
+							}
+							onChange={prop.handleChange}
+							error={"error"}
+						/>
+					</Box>
+				);
+		}
+	}
+
+	function isInt(n) {
+		return Number(n) === n && n % 1 === 0;
+	}
+	const renderFormElements = (prop) =>
+		props.elements.map((item, index) => {
+			let md = isInt(12 / item.length)
+				? 12 / item.length
+				: 2 * Math.round(12 / item.length / 2);
+
+			if (Array.isArray(item)) {
+				return item.map(
+					(item, index) =>
+						Object.keys(item).length > 1 && (
+							<Grid key={item.id || index} item sm={md} xs={12}>
+								{getElement(item, prop)}
+							</Grid>
+						)
 				);
 			} else {
 				return (
 					<Grid key={index} item xs={12}>
-						<Box margin={1}>
-							<Field
-								style={styles}
-								type={item.type ? item.type : "text"}
-								component={Component}
-								label={
-									item.label ? item.label : "Enter " + toTitleCase(item.id)
-								}
-								name={item.id}
-								placeholder={
-									item.placeholder
-										? item.placeholder
-										: "Enter " + toTitleCase(item.id)
-								}
-								onChange={prop.handleChange}
-								error={"error"}
-							/>
-						</Box>
+						{getElement(item, prop)}
 					</Grid>
 				);
 			}
@@ -208,7 +332,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 						{renderFormElements(prop)}
 					</Grid>
 
-					{HelperElement && <HelperElement />}
+					{HelperElement && <HelperElement props={prop} />}
 					{props.btn && (
 						<div>
 							{prop.isSubmitting && "You Can't go back, Now!"}

@@ -33,7 +33,7 @@ import {
 	interest,
 	languages,
 } from "~static/text/profiledata";
-import { state } from "~static/text/state";
+import { states } from "~static/text/state";
 import { cities } from "~static/text/city";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -160,7 +160,7 @@ const ProfileForm = (props) => {
 
 	React.useEffect(() => {
 		// console.error(Object.keys(state));
-		setStates(Object.keys(state));
+		setStates(Object.keys(states));
 		setDetails(localStorageService.getUserDetails("Details"));
 	}, []);
 

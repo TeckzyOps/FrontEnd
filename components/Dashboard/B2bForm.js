@@ -34,7 +34,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { state } from "~static/text/state";
+import { states } from "~static/text/state";
 import { cities } from "~static/text/city";
 import {
 	gender,

@@ -31,7 +31,7 @@ import {
 	languages,
 	OcassionallyBoolean,
 } from "~static/text/profiledata";
-import { state } from "~static/text/state";
+import { states } from "~static/text/state";
 import { cities } from "~static/text/city";
 
 // import { useAuth } from "../provider/Auth";
