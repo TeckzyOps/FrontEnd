@@ -202,38 +202,6 @@ const DefaultPrefs = ({
 		}
 	};
 
-	const handleChange = (e) => {
-		console.log(e);
-
-		switch (e.target.name) {
-			case "state":
-				setDistrict(state[e.target.value]);
-				break;
-			case "district":
-				profileActions;
-				setCity(cities[e.target.value]);
-				break;
-			// case "city":
-			// 	text = "How you like them apples?";
-			// 	break;
-		}
-	};
-	function CustomTextField(props) {
-		const {
-			form: { setFieldValue },
-			field: { name },
-		} = props;
-		const onChange = React.useCallback(
-			(event) => {
-				const { value } = event.target;
-				setFieldValue(name, value ? value : "");
-				handleChange(event);
-			},
-			[setFieldValue, name]
-		);
-		return <MuiTextField {...fieldToTextField(props)} onChange={onChange} />;
-	}
-
 	return (
 		<Card {...rest} className={clsx(classes.root, className)}>
 			{/* <Button type="submit" color="primary" variant="outlined">

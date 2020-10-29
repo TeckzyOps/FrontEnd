@@ -10,9 +10,14 @@ import {
 	Table,
 	Link,
 	Grid,
+	Fab,
 	Container,
 	Typography,
 } from "@material-ui/core/";
+import AddIcon from "@material-ui/icons/Add";
+import Card from "@material-ui/core/Card";
+import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
 import Head from "next/head";
 import Paper from "@material-ui/core/Paper";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -25,19 +30,16 @@ import LocalStorageService from "../_services/LocalStorageService";
 const localStorageService = LocalStorageService.getService();
 let theme = createMuiTheme();
 const useStyles = makeStyles((theme) => ({
+	cardroot: {
+		minWidth: 200,
+		minHeight: 200,
+	},
+
 	root: {
+		paddingTop: "11vh",
+		flexGrow: 1,
 		height: "100%",
 		display: "flex",
-	},
-	styledTblRow: {
-		"&:nth-of-type(odd)": {
-			backgroundColor: theme.palette.action.hover,
-		},
-	},
-	mainWrap: {
-		position: "relative",
-		width: "100%",
-		overflow: "hidden",
 	},
 }));
 
@@ -46,13 +48,13 @@ function createData(services, link) {
 }
 
 const rows = [
-	createData("Matrimony", routerLink.starter.matrimony),
-	createData("Freelancer", routerLink.starter.freelancer),
+	createData("Matrimony", routerLink.starter.matrimonynew),
+	createData("Freelancer", routerLink.starter.freelancernew),
 
-	createData("Vendor", routerLink.starter.vendor),
-	createData("Seller", routerLink.starter.seller),
-	createData("Worker", routerLink.starter.worker),
-	createData("B2B", routerLink.starter.b2b),
+	createData("Services Vendor", routerLink.starter.vendornew),
+	createData("Goods Vendor", routerLink.starter.sellernew),
+	createData("Hunarbaaz", routerLink.starter.workernew),
+	createData("B2B Vendor", routerLink.starter.b2bnew),
 ];
 
 export default function joinus(props) {
@@ -71,43 +73,54 @@ export default function joinus(props) {
 			<CssBaseline />
 			<Header onToggleDark={onToggleDark} onToggleDir={onToggleDir} />
 			<div className={classes.root}>
-				<Container maxWidth="sm">
+				<Container maxWidth="md">
 					<Grid
 						container
-						style={{ width: "100%", height: "100vh" }}
-						spacing={0}
-						align="center"
-						justify="center"
-						direction="column"
+						alignItems="center"
+						justify="space-evenly"
+						style={{ width: "100%" }}
+						spacing={1}
 					>
-						<Grid item>
-							<TableContainer component={Paper}>
-								<Table>
-									<TableBody>
-										{rows.map((row) => (
-											<TableRow
-												className={classes.styledTblRow}
-												key={row.services}
+						{rows.map((row, index) => (
+							<Grid item key={index} sm={4} xs={12}>
+								<Link style={{ textDecoration: "none" }} href={row.link}>
+									<Card className={classes.cardroot}>
+										<CardContent>
+											<Grid
+												container
+												direction="column"
+												justify="center"
+												alignItems="center"
 											>
-												<TableCell align="center">
-													<Typography variant="h5">{row.services}</Typography>
-												</TableCell>
-												<TableCell align="center">
-													<Link
-														style={{ textDecoration: "none" }}
-														href={row.link}
+												<Grid item>
+													<div>
+														<Fab color="primary" aria-label="add">
+															<AddIcon />
+														</Fab>
+													</div>
+												</Grid>
+												<Grid item>
+													<Typography
+														variant="h5"
+														align="center"
+														component="h2"
+														gutterBottom={true}
 													>
-														<Button variant="outlined" color="primary">
-															Manage
-														</Button>
-													</Link>
-												</TableCell>
-											</TableRow>
-										))}
-									</TableBody>
-								</Table>
-							</TableContainer>
-						</Grid>
+														New {row.services} Application
+													</Typography>
+												</Grid>
+											</Grid>
+											<Grid
+												container
+												direction="row"
+												justify="center"
+												alignItems="center"
+											></Grid>
+										</CardContent>
+									</Card>
+								</Link>
+							</Grid>
+						))}
 					</Grid>
 				</Container>
 			</div>

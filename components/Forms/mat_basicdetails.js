@@ -151,7 +151,7 @@ const Basicdetails = ({
 
 	React.useEffect(() => {
 		// console.error(Object.keys(state));
-		setStates(Object.keys(state));
+		// setStates(Object.keys(state));
 	}, []);
 
 	const _handleModalClose = () => {
