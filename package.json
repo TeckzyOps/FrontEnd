@@ -57,6 +57,7 @@
     "react-awesome-slider": "^4.1.0",
     "react-countup": "^4.2.0",
     "react-dom": "16.8.6",
+    "react-easy-crop": "^3.2.2",
     "react-i18next": "^10.11.2",
     "react-ionicons": "^3.0.1",
     "react-loading-bar": "^0.0.7",

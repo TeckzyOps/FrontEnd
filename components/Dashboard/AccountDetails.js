@@ -295,6 +295,7 @@ const AccountDetails = (compprops) => {
 																"login",
 																"id"
 															)}
+															{...compprops}
 															img={compprops.getNested(
 																details,
 																"profile",
