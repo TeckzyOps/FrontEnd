@@ -25,12 +25,12 @@ function MobileMenu(props) {
 						<ListItem
 							button
 							component="a"
-							href={`#${item}`}
-							key={item}
+							href={`${item.link}`}
+							key={item.link}
 							index={index.toString()}
 							style={{ animationDuration: index * 0.15 + "s" }}
 						>
-							<ListItemText primary={item} className={classes.menuList} />
+							<ListItemText primary={item.name} className={classes.menuList} />
 						</ListItem>
 					))}
 				</List>

@@ -125,7 +125,7 @@ const ProfileForm = (props) => {
 	const classes = useStyles();
 	const { t } = props;
 
-	const { postloginsetToken, postsetLoginData, postsetUserData } = useAuth();
+	const { postloginsetToken } = useAuth();
 	const [details, setDetails] = useState({});
 	const [loginData, setloginData] = React.useState({});
 
@@ -165,7 +165,24 @@ const ProfileForm = (props) => {
 				}
 			),
 	});
-
+	const postsetLoginData = (logindata) => {
+		let det = {
+			login: logindata,
+			profile: {},
+		};
+		Cookies.set("Details", JSON.stringify(det));
+		localStorageService.setValue("Details", JSON.stringify(det));
+	};
+	const postsetUserData = (userdata) => {
+		let det = Cookies.getJSON("Details");
+		if (!det) {
+			det = localStorageService.getValue("Details");
+		}
+		det["profile"] = userdata;
+		Cookies.set("Details", JSON.stringify(det));
+		localStorageService.setValue("Details", JSON.stringify(det));
+		setDetails(det);
+	};
 	React.useEffect(() => {
 		setDetails(localStorageService.getUserDetails("Details"));
 		profileActions

@@ -84,12 +84,12 @@ function Header(props) {
 		setLocationanchorEl(event.currentTarget);
 	};
 	const [menuList] = useState([
-		createData(navMenu[0], "/"),
-		createData(navMenu[1], "#" + navMenu[1]),
-		createData(navMenu[2], "#" + navMenu[2]),
-		createData(navMenu[3], "#" + navMenu[3]),
-		createData(navMenu[4], "#" + navMenu[4]),
-		createData(navMenu[5], routerLink.starter.joinus),
+		createData(navMenu[0].name, navMenu[0].link),
+		createData(navMenu[1].name, navMenu[1].link),
+		createData(navMenu[2].name, navMenu[2].link),
+		createData(navMenu[3].name, navMenu[3].link),
+		createData(navMenu[4].name, navMenu[4].link),
+		createData(navMenu[5].name, navMenu[5].link),
 	]);
 	const [openDrawer, setOpenDrawer] = useState(false);
 	const handleOpenDrawer = () => {
@@ -183,7 +183,7 @@ function Header(props) {
 								</Link>
 							</div>
 							{isDesktop && (
-								<Scrollspy items={navMenu} currentClassName="active">
+								<Scrollspy items={navMenu.name} currentClassName="active">
 									{menuList.map((item) => (
 										<li key={item.id.toString()}>
 											<Link href={item.url} style={{ textDecoration: "none" }}>

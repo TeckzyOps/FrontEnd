@@ -103,7 +103,7 @@ const Lifestyledetails = ({
 		/^([0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(value);
 	const [details, setDetails] = useState(props.prefilldata || {});
 	const [loginData, setloginData] = React.useState({});
-	const [states, setStates] = useState([]);
+
 	const [district, setDistrict] = useState([]);
 	const [city, setCity] = useState([]);
 	const [profileUpdateSuccess, setProfileUpdateSuccess] = useState(false);
@@ -140,11 +140,6 @@ const Lifestyledetails = ({
 				digitsOnly
 			),
 	});
-
-	React.useEffect(() => {
-		// console.error(Object.keys(state));
-		setStates(Object.keys(state));
-	}, []);
 
 	const _handleModalClose = () => {
 		setProfileUpdateSuccess(() => true);

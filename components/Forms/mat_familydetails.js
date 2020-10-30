@@ -104,7 +104,7 @@ const Familydetails = ({
 
 	const [details, setDetails] = useState(props.prefilldata || {});
 	const [loginData, setloginData] = React.useState({});
-	const [states, setStates] = useState([]);
+
 	const [district, setDistrict] = useState([]);
 	const [city, setCity] = useState([]);
 	const [profileUpdateSuccess, setProfileUpdateSuccess] = useState(false);
@@ -136,7 +136,6 @@ const Familydetails = ({
 
 	React.useEffect(() => {
 		// console.error(Object.keys(state));
-		setStates(Object.keys(state));
 	}, []);
 
 	const _handleModalClose = () => {
@@ -526,7 +525,7 @@ const Familydetails = ({
 														shrink: true,
 													}}
 												>
-													{states.map((option, index) => (
+													{Object.values(states).map((option, index) => (
 														<MenuItem key={index} value={option}>
 															{option}
 														</MenuItem>
@@ -556,7 +555,7 @@ const Familydetails = ({
 													}}
 												>
 													{formprops.values.state &&
-														state[formprops.values.state].map(
+														states[formprops.values.state].map(
 															(option, index) => (
 																<MenuItem key={index} value={option}>
 																	{option}
