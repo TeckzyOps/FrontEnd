@@ -76,7 +76,12 @@ function Login(props) {
 		setCheck(event.target.checked);
 	};
 
-	const handleSubmit = (values, setError) => {
+	const handleSubmit = ({
+		values,
+		setSubmitting,
+		resetForm,
+		setFieldError,
+	}) => {
 		if (values.username && values.password) {
 			if (check) {
 				localStorageService.setValue("username", values.username);
@@ -117,15 +122,22 @@ function Login(props) {
 
 							// setToken(response.data.access_token, response.data.user_data);
 						} else {
-							setError({ username: ["Username not verified"] });
+							setFieldError({ username: ["Username not verified"] });
 							setValues({ ...values, ["username"]: values.username });
 							console.error("errrrr ", "Username not verified");
 							setOTP(true);
 						}
 					}
+					setSubmitting(false);
 				})
 				.catch(function (error) {
+					if (error.response && error.response.data.input_error) {
+						Object.keys(error.response.data.input_error).forEach((k) => {
+							setFieldError(k, error.response.data.input_error[k][0]);
+						});
+					}
 					console.error("errrrr ", error);
+					setSubmitting(false);
 				});
 		}
 	};

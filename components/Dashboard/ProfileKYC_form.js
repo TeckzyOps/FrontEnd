@@ -396,7 +396,7 @@ const ProfileForm = (props) => {
 												</Box>
 											</Grid>
 											<Grid item md={6} container alignItems="flex-end" xs={12}>
-												<Grid item md={6} xs={12}>
+												<Grid item md={8} xs={12}>
 													<Box margin={1}>
 														<Field
 															fullWidth
@@ -415,7 +415,7 @@ const ProfileForm = (props) => {
 														/>
 													</Box>
 												</Grid>
-												<Grid item md={6} xs={12}>
+												<Grid item md={4} xs={12}>
 													<Box margin={1}>
 														<Field
 															margin="dense"

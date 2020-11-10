@@ -116,11 +116,9 @@ const redirectToLogin = (res) => {
 	}
 };
 const getCookieFromReq = (req, cookieKey) => {
-	const cookie = req.headers.cookie
-		.split(";")
-		.find((c) => c.trim().startsWith(`${cookieKey}=`));
-
+	let cookie = req.headers.cookie;
 	if (!cookie) return undefined;
+	cookie = cookie.split(";").find((c) => c.trim().startsWith(`${cookieKey}=`));
 	return cookie.split("=")[1];
 };
 

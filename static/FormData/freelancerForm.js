@@ -11,8 +11,18 @@ import {
 	interest,
 	languages,
 } from "~static/text/profiledata";
+import {
+	serviceCategory,
+	serviceArea,
+	professionSince,
+	closeDay,
+	workTime,
+	tagline,
+} from "~static/text/freelancerData.js";
 import { states } from "~static/text/state";
 import { cities } from "~static/text/city";
+import { makeStyles } from "@material-ui/core/styles";
+
 // {
 // 	id: "username",
 // 	label: "Mobile/E-Mail",
@@ -57,9 +67,16 @@ export const freelancerForm = [
 			label: "Service Category",
 			placeholder: "",
 			type: "select",
-			ElementParams: { variant: "outlined" },
+			ElementParams: {
+				variant: "outlined",
+				InputLabelProps: {
+					classes: {
+						root: { color: "red" },
+					},
+				},
+			},
 			validationType: "string",
-			options: { data: gender },
+			options: { data: Object.keys(serviceCategory) },
 			value: "",
 			validations: [
 				{
@@ -76,9 +93,10 @@ export const freelancerForm = [
 			id: "sub_service",
 			label: "Sub Service",
 			placeholder: "",
+			ElementParams: { variant: "outlined" },
 			type: "select",
 			validationType: "string",
-			options: { data: gender },
+			options: { data: serviceCategory, dependsOn: "service_category" },
 			value: "",
 			validations: [
 				{
@@ -96,8 +114,9 @@ export const freelancerForm = [
 			label: "Service Area",
 			placeholder: "",
 			type: "select",
+			ElementParams: { variant: "outlined" },
 			validationType: "string",
-			options: { data: gender },
+			options: { data: serviceArea },
 			value: "",
 			validations: [
 				{
@@ -111,6 +130,7 @@ export const freelancerForm = [
 			],
 		},
 	],
+	//2nd row---------------
 	[
 		{
 			id: "min_service_price",
@@ -118,7 +138,7 @@ export const freelancerForm = [
 			placeholder: "",
 			type: "text",
 			validationType: "string",
-
+			ElementParams: { variant: "outlined" },
 			value: "",
 			validations: [
 				{
@@ -136,6 +156,7 @@ export const freelancerForm = [
 			label: "Maximum Service Price",
 			placeholder: "",
 			type: "text",
+			ElementParams: { variant: "outlined" },
 			validationType: "string",
 			options: { data: gender },
 			value: "",
@@ -153,27 +174,51 @@ export const freelancerForm = [
 		{},
 		{},
 	],
-	{
-		id: "bussiness_name",
-		label: "Bussiness Name",
-		placeholder: "",
-		type: "text",
-		validationType: "string",
-		value: "",
-		validations: [
-			{
-				type: "required",
-				params: ["Field is required"],
-			},
-			{
-				type: "min",
-				params: [5, "Mobile/E-Mail cannot be less than 5 characters"],
-			},
-		],
-	},
+	[
+		{
+			id: "bussiness_name",
+			label: "Profession Name",
+			placeholder: "",
+			type: "text",
+			ElementParams: { variant: "outlined" },
+			validationType: "string",
+			value: "",
+			validations: [
+				{
+					type: "required",
+					params: ["Field is required"],
+				},
+				{
+					type: "min",
+					params: [5, "Mobile/E-Mail cannot be less than 5 characters"],
+				},
+			],
+		},
+		{
+			id: "bussiness_name",
+			label: "Profession Since",
+			placeholder: "",
+			ElementParams: { variant: "outlined" },
+			type: "select",
+			validationType: "string",
+			value: "",
+			options: { data: professionSince },
+			validations: [
+				{
+					type: "required",
+					params: ["Field is required"],
+				},
+				{
+					type: "min",
+					params: [5, "Mobile/E-Mail cannot be less than 5 characters"],
+				},
+			],
+		},
+	],
 	{
 		id: "bussiness_description",
 		label: "Bussiness Description",
+		ElementParams: { variant: "outlined" },
 		placeholder: "",
 		type: "textarea",
 		rows: 4,
@@ -191,42 +236,10 @@ export const freelancerForm = [
 			},
 		],
 	},
-	[
-		{
-			id: "offer_tagline",
-			label: "Offer Tagline",
-			placeholder: "",
-			type: "text",
-			validationType: "string",
-
-			value: "",
-			validations: [
-				{
-					type: "required",
-					params: ["Field is required"],
-				},
-			],
-		},
-		{
-			id: "total_experience",
-			label: "Total Experience",
-			placeholder: "",
-			type: "text",
-			rows: 4,
-			validationType: "string",
-
-			value: "",
-			validations: [
-				{
-					type: "required",
-					params: ["Field is required"],
-				},
-			],
-		},
-	],
 	{
 		id: "address",
 		label: "Bussiness Address",
+		ElementParams: { variant: "outlined" },
 		placeholder: "",
 		type: "textarea",
 		rows: 4,
@@ -240,45 +253,13 @@ export const freelancerForm = [
 			},
 		],
 	},
-	[
-		{
-			id: "office_map_link",
-			label: "Map Link",
-			placeholder: "",
-			type: "text",
-			validationType: "string",
-
-			value: "",
-			validations: [
-				{
-					type: "required",
-					params: ["Field is required"],
-				},
-			],
-		},
-		{
-			id: "office_number",
-			label: "Office Number",
-			placeholder: "",
-			type: "text",
-
-			validationType: "string",
-
-			value: "",
-			validations: [
-				{
-					type: "required",
-					params: ["Field is required"],
-				},
-			],
-		},
-	],
 	[
 		{
 			id: "state",
 			label: "State",
 			placeholder: "",
 			type: "select",
+			ElementParams: { variant: "outlined" },
 			validationType: "string",
 			options: { data: Object.keys(states) },
 			value: "",
@@ -294,6 +275,7 @@ export const freelancerForm = [
 			label: "District",
 			placeholder: "",
 			type: "select",
+			ElementParams: { variant: "outlined" },
 			validationType: "string",
 			options: { data: states, dependsOn: "state" },
 			value: "",
@@ -309,6 +291,7 @@ export const freelancerForm = [
 			label: "City",
 			placeholder: "",
 			type: "select",
+			ElementParams: { variant: "outlined" },
 			validationType: "string",
 			options: { data: cities, dependsOn: "district" },
 			value: "",
@@ -320,12 +303,45 @@ export const freelancerForm = [
 			],
 		},
 	],
+	{
+		id: "locality",
+		label: "Locality",
+		placeholder: "",
+		type: "text",
+		ElementParams: { variant: "outlined" },
+		validationType: "string",
+
+		value: "",
+		validations: [
+			{
+				type: "required",
+				params: ["Field is required"],
+			},
+		],
+	},
+	{
+		id: "offer_tagline",
+		label: "Offer Tagline",
+		placeholder: "",
+		type: "text",
+		ElementParams: { variant: "outlined" },
+		validationType: "string",
+
+		value: "",
+		validations: [
+			{
+				type: "required",
+				params: ["Field is required"],
+			},
+		],
+	},
 	[
 		{
-			id: "locality",
-			label: "Locality",
+			id: "shop_work_time_from",
+			label: "Shop's Work Time From",
 			placeholder: "",
 			type: "text",
+			ElementParams: { variant: "outlined" },
 			validationType: "string",
 
 			value: "",
@@ -337,12 +353,100 @@ export const freelancerForm = [
 			],
 		},
 		{
-			id: "commission_percent",
-			label: "Commission Percent",
+			id: "shop_work_time_to",
+			label: "Shop's Work Time To",
+			placeholder: "",
+			type: "text",
+			ElementParams: { variant: "outlined" },
+			validationType: "string",
+
+			value: "",
+			validations: [
+				{
+					type: "required",
+					params: ["Field is required"],
+				},
+			],
+		},
+		{
+			id: "shop_close_day",
+			label: "Shop Close Day",
+			ElementParams: { variant: "outlined" },
 			placeholder: "",
 			type: "select",
 			validationType: "string",
-			options: { data: ["10%", "15%", "20%"] },
+			options: { data: closeDay },
+			value: "",
+			validations: [
+				{
+					type: "required",
+					params: ["Field is required"],
+				},
+			],
+		},
+		{
+			id: "shop_close_day_on_calendar",
+			label: "Show on Calendar?",
+			ElementParams: { variant: "outlined" },
+			placeholder: "",
+			type: "select",
+			validationType: "string",
+			options: { data: ["Yes", "No"] },
+			value: "",
+			validations: [
+				{
+					type: "required",
+					params: ["Field is required"],
+				},
+			],
+		},
+	],
+
+	[
+		{
+			id: "office_email",
+			label: "Profession's Email",
+			placeholder: "",
+			ElementParams: { variant: "outlined" },
+			type: "text",
+			validationType: "string",
+
+			value: "",
+			validations: [
+				{
+					type: "email",
+					params: [],
+					type: "required",
+					params: ["Field is required"],
+				},
+			],
+		},
+		{
+			id: "office_number",
+			label: "Office Number",
+			placeholder: "",
+			type: "text",
+			ElementParams: { variant: "outlined" },
+			validationType: "string",
+
+			value: "",
+			validations: [
+				{
+					type: "required",
+					params: ["Field is required"],
+				},
+			],
+		},
+	],
+
+	[
+		{
+			id: "gst_number",
+			label: "GST Number",
+			placeholder: "",
+			type: "text",
+			validationType: "string",
+			ElementParams: { variant: "outlined" },
 			value: "",
 			validations: [
 				{
@@ -353,11 +457,11 @@ export const freelancerForm = [
 		},
 		{
 			id: "min_commission",
-			label: "Minimum Commission",
+			label: "Commission Range",
 			placeholder: "",
 			type: "text",
 			validationType: "string",
-
+			ElementParams: { variant: "outlined" },
 			value: "",
 			validations: [
 				{
@@ -372,9 +476,11 @@ export const freelancerForm = [
 		},
 		{
 			id: "max_commission",
-			label: "Max Comission",
+			label: "Paid Leads",
 			placeholder: "",
-			type: "text",
+			type: "select",
+			options: { data: [1, 2, 3, 4, 5, 6] },
+			ElementParams: { variant: "outlined" },
 			validationType: "string",
 			value: "",
 			validations: [

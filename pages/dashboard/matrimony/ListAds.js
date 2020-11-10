@@ -13,6 +13,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import routerLink from "~/static/text/link";
+import Header from "../../../components/Header";
 import Link from "@material-ui/core/Link";
 import api, {
 	addBearerToken,
@@ -63,7 +64,10 @@ const index = (props) => {
 				<title>Matrimony &nbsp; - Ad List</title>
 			</Head>
 
-			<DashboardWrapper logindata={props.logindata} userdata={props.userdata} />
+			<Header
+				onToggleDark={props.onToggleDark}
+				onToggleDir={props.onToggleDir}
+			/>
 			<div className={classes.root}>
 				<Grid container spacing={4}>
 					<Grid item lg={4} md={6} xl={4} xs={12}>

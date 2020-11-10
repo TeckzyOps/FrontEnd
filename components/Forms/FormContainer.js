@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Component } from "react";
 import PropTypes from "prop-types";
-
 import Grid from "@material-ui/core/Grid";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { createYupSchema } from "../../utils/yupSchemaCreator";
@@ -26,6 +25,14 @@ import {
 	Select,
 	Switch,
 } from "formik-material-ui";
+import { createMuiTheme, makeStyles } from "@material-ui/core/styles";
+let theme = createMuiTheme();
+export const styles = makeStyles((theme) => ({
+	labelRoot: {
+		fontSize: 18,
+		fontWeight: "bold",
+	},
+}));
 const toTitleCase = (s) => {
 	if (typeof s === "string" && s.length > 0) {
 		const words = s.split(" ");
@@ -63,6 +70,7 @@ const toTitleCase = (s) => {
 
 const FormContainer = React.forwardRef((props, refs) => {
 	const HelperElement = props.helperEle;
+	const classes = styles();
 	const [values, setValues] = useState(
 		props.elements.reduce(stateExtraxtor, {})
 	);
@@ -158,12 +166,6 @@ const FormContainer = React.forwardRef((props, refs) => {
 					opts = getNested(item, "options", "data");
 				}
 
-				console.log(
-					item.id,
-					getNested(item, "options", "data")[
-						prop.values[getNested(item, "options", "dependsOn")]
-					]
-				);
 				return (
 					<Box margin={1}>
 						<Field
@@ -174,6 +176,11 @@ const FormContainer = React.forwardRef((props, refs) => {
 							label={item.label}
 							select
 							onChange={prop.handleChange}
+							InputLabelProps={{
+								classes: {
+									root: classes.labelRoot,
+								},
+							}}
 							error={error}
 							placeholder={
 								item.placeholder
@@ -217,6 +224,11 @@ const FormContainer = React.forwardRef((props, refs) => {
 							name={item.id}
 							{...params}
 							multiple
+							InputLabelProps={{
+								classes: {
+									root: classes.labelRoot,
+								},
+							}}
 							options={item.options}
 							getOptionLabel={(label) => label}
 							renderInput={(params) => (
@@ -246,6 +258,11 @@ const FormContainer = React.forwardRef((props, refs) => {
 							label={item.label ? item.label : "Enter " + toTitleCase(item.id)}
 							name={item.id}
 							multiline={true}
+							InputLabelProps={{
+								classes: {
+									root: classes.labelRoot,
+								},
+							}}
 							rows={item.rows || 4}
 							placeholder={
 								item.placeholder
@@ -266,6 +283,11 @@ const FormContainer = React.forwardRef((props, refs) => {
 							{...params}
 							type={item.type ? item.type : "text"}
 							component={Component}
+							InputLabelProps={{
+								classes: {
+									root: classes.labelRoot,
+								},
+							}}
 							label={item.label ? item.label : "Enter " + toTitleCase(item.id)}
 							name={item.id}
 							placeholder={
@@ -309,22 +331,24 @@ const FormContainer = React.forwardRef((props, refs) => {
 		});
 	const schema = Yup.object().shape(props.elements.reduce(createYupSchema, {}));
 
-	const handleSubmit = (values, { setSubmitting, setFieldError }) => {
-		setSubmitting(false);
-		const setError = (result) => {
-			Object.keys(result).forEach((k) => {
-				setFieldError(k, result[k][0]);
-			});
-		};
-		let res = props.onSubmit(values, setError);
-	};
+	// const handleSubmit = (onSubmitProps) => {
+	// 	setSubmitting(false);
+	// 	const setError = (result) => {
+	// 		Object.keys(result).forEach((k) => {
+	// 			setFieldError(k, result[k][0]);
+	// 		});
+	// 	};
+	// 	let res = props.onSubmit(values, setError);
+	// };
 	return (
 		<Formik
 			innerRef={refs}
 			enableReinitialize
 			initialValues={values}
 			validationSchema={schema.concat(props.valSchema)}
-			onSubmit={handleSubmit}
+			onSubmit={(values, { setSubmitting, resetForm, setFieldError }) =>
+				props.onSubmit({ values, setSubmitting, resetForm, setFieldError })
+			}
 		>
 			{(prop) => (
 				<Form>

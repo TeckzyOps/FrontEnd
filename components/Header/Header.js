@@ -1,9 +1,13 @@
 import React, { useState, useEffect, Fragment } from "react";
 import PropTypes from "prop-types";
+
 import AppBar from "@material-ui/core/AppBar";
 import clsx from "clsx";
 import Cookies from "js-cookie";
-import { Button, Link, Badge } from "@material-ui/core/";
+import { Button, Link, Badge, ListItem, Collapse } from "@material-ui/core/";
+import List from "@material-ui/core/List";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
 import IconButton from "@material-ui/core/IconButton";
 import Container from "@material-ui/core/Container";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -14,6 +18,7 @@ import Settings from "./Settings";
 import MobileMenu from "./MobileMenu";
 import logo from "~/static/home/navbarLogo.jpg";
 import "~/vendors/hamburger-menu.css";
+import { ExpandLess, ExpandMore } from "@material-ui/icons";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import useStyles from "./header-style";
 import { useAuth } from "../provider/Auth";
@@ -32,7 +37,7 @@ const localStorageService = LocalStorageService.getService();
 import navMenu from "./menu";
 
 let counter = 0;
-function createData(name, url) {
+function createNavs(name, url) {
 	counter += 1;
 	return {
 		id: counter,
@@ -67,6 +72,8 @@ function Header(props) {
 	const { onToggleDark, onToggleDir } = props;
 	const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
 	const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+	const [expandjoinus, setExpandJoinus] = React.useState(null);
+	const [joinusanchorEl, setJoinusAnchorEl] = React.useState(null);
 	const isMenuOpen = Boolean(anchorEl);
 	const isLocationMenuOpen = Boolean(LocationanchorEl);
 	useEffect(() => {
@@ -84,12 +91,11 @@ function Header(props) {
 		setLocationanchorEl(event.currentTarget);
 	};
 	const [menuList] = useState([
-		createData(navMenu[0].name, navMenu[0].link),
-		createData(navMenu[1].name, navMenu[1].link),
-		createData(navMenu[2].name, navMenu[2].link),
-		createData(navMenu[3].name, navMenu[3].link),
-		createData(navMenu[4].name, navMenu[4].link),
-		createData(navMenu[5].name, navMenu[5].link),
+		createNavs(navMenu[0].name, navMenu[0].link),
+		createNavs(navMenu[1].name, navMenu[1].link),
+		createNavs(navMenu[2].name, navMenu[2].link),
+		createNavs(navMenu[3].name, navMenu[3].link),
+		createNavs(navMenu[4].name, navMenu[4].link),
 	]);
 	const [openDrawer, setOpenDrawer] = useState(false);
 	const handleOpenDrawer = () => {
@@ -146,6 +152,97 @@ function Header(props) {
 			<MenuItem onClick={handleLogout}>Logout</MenuItem>
 		</Menu>
 	);
+	function createData(services, newlink, existingLink) {
+		return { services, newlink, existingLink };
+	}
+
+	const joinusrows = [
+		createData(
+			"Matrimony",
+			routerLink.starter.matrimonynew,
+			routerLink.starter.matrimonyAds
+		),
+		createData(
+			"Freelancer",
+			routerLink.starter.freelancernew,
+			routerLink.starter.freelancer
+		),
+
+		createData(
+			"Services Vendor",
+			routerLink.starter.vendornew,
+			routerLink.starter.vendor
+		),
+		createData(
+			"Goods Vendor",
+			routerLink.starter.sellernew,
+			routerLink.starter.seller
+		),
+		createData(
+			"Hunarbaaz",
+			routerLink.starter.workernew,
+			routerLink.starter.worker
+		),
+		createData("B2B Vendor", routerLink.starter.b2bnew, routerLink.starter.b2b),
+	];
+
+	const handlejoinusClick = (event) => {
+		setJoinusAnchorEl(event.currentTarget);
+	};
+
+	const handlejoinusClose = () => {
+		setJoinusAnchorEl(null);
+		setExpandJoinus(null);
+	};
+	const joinusMenu = (
+		<Menu
+			id="joinus-menu"
+			anchorEl={joinusanchorEl}
+			keepMounted
+			open={Boolean(joinusanchorEl)}
+			onClose={handlejoinusClose}
+		>
+			<List component="nav">
+				{joinusrows.map((item, index) => (
+					<div keys={index}>
+						<ListItem button onClick={() => setExpandJoinus(item.services)}>
+							<ListItemText primary={item.services} />
+							{expandjoinus == item.services ? <ExpandLess /> : <ExpandMore />}
+						</ListItem>
+						<Collapse
+							in={expandjoinus == item.services}
+							timeout="auto"
+							unmountOnExit
+						>
+							<List component="div" disablePadding>
+								<ListItem button className={classes.nested}>
+									<Link style={{ textDecoration: "none" }} href={item.newlink}>
+										<ListItemText primary="New" />
+									</Link>
+								</ListItem>
+								<ListItem button className={classes.nested}>
+									<Link
+										style={{ textDecoration: "none" }}
+										href={item.existingLink}
+									>
+										<ListItemText primary="Existing" />
+									</Link>
+								</ListItem>
+							</List>
+						</Collapse>
+					</div>
+				))}
+			</List>
+
+			{/* <MenuItem onClick={handlejoinusClose}>Matrimony</MenuItem>
+			<MenuItem onClick={handlejoinusClose}>Freelancer</MenuItem>
+			<MenuItem onClick={handlejoinusClose}>Services Vendor</MenuItem>
+			<MenuItem onClick={handlejoinusClose}>Goods Vendor</MenuItem>
+			<MenuItem onClick={handlejoinusClose}>Hunarbaaz</MenuItem>
+			<MenuItem onClick={handlejoinusClose}>B2B Vendor</MenuItem> */}
+		</Menu>
+	);
+
 	return (
 		<Fragment>
 			{isMobile && (
@@ -191,9 +288,16 @@ function Header(props) {
 											</Link>
 										</li>
 									))}
-									{/* <li>
-										<Button href="/contact">Contact</Button>
-									</li> */}
+									<li>
+										<Button
+											color="primary"
+											aria-controls="joinus-menu"
+											aria-haspopup="true"
+											onClick={handlejoinusClick}
+										>
+											Join Us
+										</Button>
+									</li>
 								</Scrollspy>
 							)}
 						</nav>
@@ -211,7 +315,12 @@ function Header(props) {
 										<LocationCityIcon color="primary" />
 									</IconButton> */}
 									{isMobile && (
-										<IconButton color="primary">
+										<IconButton
+											aria-controls="joinus-menu"
+											aria-haspopup="true"
+											onClick={handlejoinusClick}
+											color="primary"
+										>
 											<PersonAddIcon color="primary" />
 										</IconButton>
 									)}
@@ -258,6 +367,7 @@ function Header(props) {
 			</AppBar>
 			{renderMenu}
 			{renderLocationMenu}
+			{joinusMenu}
 		</Fragment>
 	);
 }

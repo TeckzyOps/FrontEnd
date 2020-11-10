@@ -49,14 +49,16 @@ function Register(props) {
 		setValues({ ...values, [name]: event.target.value });
 	};
 
-	const handleSubmit = (values, setError) => {
+	const handleSubmit = ({ values, setFieldError, setSubmitting }) => {
 		let res = {};
 		if (values.name && values.mobile && values.password) {
 			userActions
 				.register(values.name, values.mobile, values.password)
 				.then(function (response) {
 					if (response.data.input_error) {
-						setError(response.data.input_error);
+						Object.keys(response.data.input_error).forEach((k) => {
+							setFieldError(k, response.data.input_error[k][0]);
+						});
 					}
 
 					if (response.data.message) {
@@ -67,12 +69,16 @@ function Register(props) {
 					// userActions.sendOTP(value.mobile).then(() => {
 					// setOTP(!showOTP);
 					// });
+					setSubmitting(false);
 				})
 				.catch(function (error) {
-					if (error.response.data.input_error) {
-						setError(error.response.data.input_error);
+					if (error.response && error.response.data.input_error) {
+						Object.keys(error.response.data.input_error).forEach((k) => {
+							setFieldError(k, error.response.data.input_error[k][0]);
+						});
 					}
 					console.error(error.response);
+					setSubmitting(false);
 				});
 		}
 	};
