@@ -217,7 +217,7 @@ function Header(props) {
 							<List component="div" disablePadding>
 								<ListItem button className={classes.nested}>
 									<Link style={{ textDecoration: "none" }} href={item.newlink}>
-										<ListItemText primary="New" />
+										<ListItemText primary="New Application" />
 									</Link>
 								</ListItem>
 								<ListItem button className={classes.nested}>
@@ -225,7 +225,7 @@ function Header(props) {
 										style={{ textDecoration: "none" }}
 										href={item.existingLink}
 									>
-										<ListItemText primary="Existing" />
+										<ListItemText primary="Existing Application" />
 									</Link>
 								</ListItem>
 							</List>

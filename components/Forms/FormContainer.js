@@ -129,6 +129,15 @@ const FormContainer = React.forwardRef((props, refs) => {
 		let error = prop.errors.hasOwnProperty(item.id) && prop.errors[item.id];
 		let params = item.ElementParams;
 		let type = item.type;
+		let opts = null;
+		if (getNested(item, "options", "dependsOn")) {
+			let opt = getNested(item, "options", "data");
+			let index = getNested(item, "options", "dependsOn");
+			opts = opt[prop.values[index]];
+		} else {
+			opts = getNested(item, "options", "data");
+		}
+		console.log(opts);
 		switch (type) {
 			case "checkbox":
 				return (
@@ -157,15 +166,6 @@ const FormContainer = React.forwardRef((props, refs) => {
 				);
 				break;
 			case "select":
-				let opts = null;
-				if (getNested(item, "options", "dependsOn")) {
-					let opt = getNested(item, "options", "data");
-					let index = getNested(item, "options", "dependsOn");
-					opts = opt[prop.values[index]];
-				} else {
-					opts = getNested(item, "options", "data");
-				}
-
 				return (
 					<Box margin={1}>
 						<Field
@@ -223,13 +223,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 							component={Component}
 							name={item.id}
 							{...params}
-							multiple
-							InputLabelProps={{
-								classes: {
-									root: classes.labelRoot,
-								},
-							}}
-							options={item.options}
+							options={null == opts ? [] : opts}
 							getOptionLabel={(label) => label}
 							renderInput={(params) => (
 								<MuiTextField
@@ -237,9 +231,13 @@ const FormContainer = React.forwardRef((props, refs) => {
 									onChange={prop.handleChange}
 									variant="outlined"
 									label={item.label}
+									InputLabelProps={{
+										classes: {
+											root: classes.labelRoot,
+										},
+									}}
 									helperText={
-										prop.errors.hasOwnProperty("experience") &&
-										prop.errors["experience"]
+										prop.errors.hasOwnProperty(item.id) && prop.errors[item.id]
 									}
 								/>
 							)}
