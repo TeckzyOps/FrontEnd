@@ -99,7 +99,7 @@ function otpdialog(props) {
 			btnRef.current.removeAttribute("disabled");
 		}
 	};
-	const verifyOtp = (values) => {
+	const verifyOtp = ({ values }) => {
 		if (values.username && values.otp) {
 			userActions
 				.verifyOTP(values.username, values.otp)

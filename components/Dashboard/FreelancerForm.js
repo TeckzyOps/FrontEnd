@@ -537,8 +537,35 @@ const freelancerform = (props) => {
 		<div {...rest} className={clsx(classes.root, className)}>
 			<Grid container spacing={1}>
 				<Grid item xs={12}>
+					<Accordion expanded={false} disabled={props.router.query.id == null}>
+						<AccordionSummary
+							expandIcon={<ArrowForwardIcon />}
+							aria-controls="panel1c-content"
+							id="panel1c-header"
+						>
+							<Avatar className={classes.headerBadge}>1</Avatar>
+
+							<Typography>Proprietor Detail (Do Not Edit)</Typography>
+						</AccordionSummary>
+					</Accordion>
+				</Grid>
+				<Grid item xs={12}>
+					<Accordion>
+						<AccordionSummary
+							expandIcon={<ArrowForwardIcon />}
+							aria-controls="panel1c-content"
+							id="panel1c-header"
+						>
+							<Avatar className={classes.headerBadge}>2</Avatar>
+
+							<Typography gutterBottom>
+								Tell Us About Your Profession
+							</Typography>
+						</AccordionSummary>
+						<FormContainer onSubmit={_handleSubmit} elements={freelancerForm} />
+					</Accordion>
 					<div>
-						<Formik
+						{/* <Formik
 							enableReinitialize
 							initialValues={freelancerData}
 							validationSchema={profileSchema}
@@ -572,9 +599,9 @@ const freelancerform = (props) => {
 													aria-controls="panel1c-content"
 													id="panel1c-header"
 												>
-													<Avatar className={classes.headerBadge}>1</Avatar>
+													<Avatar className={classes.headerBadge}>2</Avatar>
 													<Typography gutterBottom>
-														Freelancer Application Form
+														Tell Us About Your Profession
 													</Typography>
 												</AccordionSummary>
 												<AccordionDetails>
@@ -678,7 +705,7 @@ const freelancerform = (props) => {
 														</Grid>
 														<Grid item xs={6}>
 															<Typography variant="body2" gutterBottom>
-																Service Price
+																Service Price Range
 															</Typography>
 															<div style={{ marginBottom: 20 }}>
 																<div>
@@ -1252,24 +1279,8 @@ const freelancerform = (props) => {
 									</div>
 								);
 							}}
-						</Formik>
+						</Formik> */}
 					</div>
-				</Grid>
-				<Grid item xs={12}>
-					<Accordion
-						onClick={() => setBookingPopup(true)}
-						expanded={false}
-						disabled={props.router.query.id == null}
-					>
-						<AccordionSummary
-							expandIcon={<ArrowForwardIcon />}
-							aria-controls="panel1c-content"
-							id="panel1c-header"
-						>
-							<Avatar className={classes.headerBadge}>2</Avatar>
-							<Typography>Booking Calendar</Typography>
-						</AccordionSummary>
-					</Accordion>
 				</Grid>
 				<Grid item xs={12}>
 					<Accordion expanded={false} disabled={props.router.query.id == null}>
@@ -1279,15 +1290,12 @@ const freelancerform = (props) => {
 							id="panel1c-header"
 						>
 							<Avatar className={classes.headerBadge}>3</Avatar>
-							<Link
-								style={{ textDecoration: "none", color: "black" }}
-								href={routerLink.starter.freelancerVids + "?id=" + id}
-							>
-								<Typography>Upload Videos</Typography>
-							</Link>
+
+							<Typography>Update Catalog Format</Typography>
 						</AccordionSummary>
 					</Accordion>
 				</Grid>
+
 				<Grid item xs={12}>
 					<Accordion expanded={false} disabled={props.router.query.id == null}>
 						<AccordionSummary
@@ -1300,8 +1308,67 @@ const freelancerform = (props) => {
 								style={{ textDecoration: "none", color: "black" }}
 								href={routerLink.starter.freelancerImg + "?id=" + id}
 							>
-								<Typography>Upload Images</Typography>
+								<Typography>Update Photo Gallery</Typography>
 							</Link>
+						</AccordionSummary>
+					</Accordion>
+				</Grid>
+				<Grid item xs={12}>
+					<Accordion expanded={false} disabled={props.router.query.id == null}>
+						<AccordionSummary
+							expandIcon={<ArrowForwardIcon />}
+							aria-controls="panel1c-content"
+							id="panel1c-header"
+						>
+							<Avatar className={classes.headerBadge}>5</Avatar>
+							<Link
+								style={{ textDecoration: "none", color: "black" }}
+								href={routerLink.starter.freelancerVids + "?id=" + id}
+							>
+								<Typography>Update Video Gallery</Typography>
+							</Link>
+						</AccordionSummary>
+					</Accordion>
+				</Grid>
+				<Grid item xs={12}>
+					<Accordion
+						onClick={() => setBookingPopup(true)}
+						expanded={false}
+						disabled={props.router.query.id == null}
+					>
+						<AccordionSummary
+							expandIcon={<ArrowForwardIcon />}
+							aria-controls="panel1c-content"
+							id="panel1c-header"
+						>
+							<Avatar className={classes.headerBadge}>6</Avatar>
+							<Typography>Booking Calendar</Typography>
+						</AccordionSummary>
+					</Accordion>
+				</Grid>
+				<Grid item xs={12}>
+					<Accordion expanded={false} disabled={props.router.query.id == null}>
+						<AccordionSummary
+							expandIcon={<ArrowForwardIcon />}
+							aria-controls="panel1c-content"
+							id="panel1c-header"
+						>
+							<Avatar className={classes.headerBadge}>7</Avatar>
+
+							<Typography>Update Advertise Status</Typography>
+						</AccordionSummary>
+					</Accordion>
+				</Grid>
+				<Grid item xs={12}>
+					<Accordion expanded={false} disabled={props.router.query.id == null}>
+						<AccordionSummary
+							expandIcon={<ArrowForwardIcon />}
+							aria-controls="panel1c-content"
+							id="panel1c-header"
+						>
+							<Avatar className={classes.headerBadge}>8</Avatar>
+
+							<Typography>Only Use in Profession KYC</Typography>
 						</AccordionSummary>
 					</Accordion>
 				</Grid>

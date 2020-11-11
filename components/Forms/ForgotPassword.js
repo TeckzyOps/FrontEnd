@@ -72,7 +72,8 @@ function ForgotPassword(props) {
 		}
 	};
 
-	const handleSubmit = (vals) => {
+	const handleSubmit = (submitProps) => {
+		let vals = submitProps.values;
 		console.log(forgetPasswordForm.length);
 		if (forgetPasswordForm.length < 2) {
 			setValues({ ...values, ["username"]: vals.username });
@@ -88,9 +89,11 @@ function ForgotPassword(props) {
 						if (response.status == 201) {
 							router.push("/login");
 						}
+						submitProps.setSubmitting(false);
 					})
 					.catch(function (error) {
 						console.error(error.response);
+						submitProps.setSubmitting(false);
 					});
 			}
 		}

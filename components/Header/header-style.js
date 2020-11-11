@@ -75,6 +75,10 @@ const headerStyles = makeStyles((theme) => ({
 			boxShadow: "none",
 		},
 	},
+	nested: {
+		paddingLeft: theme.spacing(4),
+	},
+
 	headerContent: {
 		display: "flex",
 		alignItems: "center",
