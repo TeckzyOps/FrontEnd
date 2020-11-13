@@ -6,6 +6,7 @@ import { createYupSchema } from "../../utils/yupSchemaCreator";
 import DateFnsUtils from "@date-io/date-fns";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import * as Yup from "yup";
+import ReactDOM from "react-dom";
 import {
 	Button,
 	Box,
@@ -71,10 +72,26 @@ const toTitleCase = (s) => {
 const FormContainer = React.forwardRef((props, refs) => {
 	const HelperElement = props.helperEle;
 	const classes = styles();
+
 	const [values, setValues] = useState(
 		props.elements.reduce(stateExtraxtor, {})
 	);
 
+	const inputLabel = React.useRef(null);
+	const [labelWidth, setLabelWidth] = React.useState(0);
+	React.useEffect(() => {
+		setLabelWidth(inputLabel.current.offsetWidth);
+	}, []);
+
+	const [selectOpen, setSelectOpen] = useState(null);
+	const handleSelectClose = (name, previousValue, setFieldValue) => {
+		setSelectOpen(null);
+		setFieldValue(name, previousValue);
+	};
+
+	const handleSelectOpen = (name) => {
+		setSelectOpen(name);
+	};
 	useEffect(() => {
 		if (props.defaultvals) {
 			setValues(props.defaultvals);
@@ -111,16 +128,16 @@ const FormContainer = React.forwardRef((props, refs) => {
 
 		return state;
 	}
+
 	const fieldMap = {
 		text: TextField,
 		checkbox: CheckboxWithLabel,
-		select: TextField,
+		select: Select,
 		textarea: TextField,
 		password: TextField,
 		autocomplete: Autocomplete,
 	};
 	function getElement(item, prop) {
-		console.log(prop);
 		if (item.id == "undefined") {
 			return;
 		}
@@ -128,6 +145,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 		let Component = fieldMap[item.type ? item.type : "text"];
 		let error = prop.errors.hasOwnProperty(item.id) && prop.errors[item.id];
 		let params = item.ElementParams;
+
 		let type = item.type;
 		let opts = null;
 		if (getNested(item, "options", "dependsOn")) {
@@ -137,7 +155,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 		} else {
 			opts = getNested(item, "options", "data");
 		}
-		console.log(opts);
+
 		switch (type) {
 			case "checkbox":
 				return (
@@ -168,49 +186,57 @@ const FormContainer = React.forwardRef((props, refs) => {
 			case "select":
 				return (
 					<Box margin={1}>
-						<Field
-							{...params}
-							fullWidth
-							component={Component}
-							name={item.id}
-							label={item.label}
-							select
-							onChange={prop.handleChange}
-							InputLabelProps={{
-								classes: {
-									root: classes.labelRoot,
-								},
-							}}
-							error={error}
-							placeholder={
-								item.placeholder
-									? item.placeholder
-									: "Enter " + toTitleCase(item.id)
-							}
-							helperText={item.helpertext}
-						>
-							{/* {getNested(item, "options", "data", "dependsOn")
-								? getNested(item, "options", "data")[
-										prop.values[getNested(item, "options", "dependsOn")]
-								  ].map((option, index) => (
+						<FormControl variant="outlined" fullWidth>
+							<InputLabel
+								className={classes.labelRoot}
+								ref={inputLabel}
+								htmlFor={item.id}
+							>
+								{item.label}
+							</InputLabel>
+							<Field
+								component={Select}
+								onChange={prop.handleChange}
+								type="text"
+								helperText={
+									prop.errors.hasOwnProperty(item.id) && prop.errors[item.id]
+								}
+								name={item.id}
+								labelWidth={labelWidth}
+								onClose={() =>
+									handleSelectClose(
+										item.id,
+										prop.values[item.id],
+										prop.setFieldValue
+									)
+								}
+								open={selectOpen == item.id}
+								onOpen={() => handleSelectOpen(item.id)}
+								inputProps={{ width: "100%", name: item.id, id: item.id }}
+							>
+								<Button
+									style={{ width: "100%" }}
+									variant="contained"
+									color="primary"
+									disableElevation
+									onClick={() =>
+										handleSelectClose(
+											item.id,
+											prop.values[item.id],
+											prop.setFieldValue
+										)
+									}
+								>
+									Close
+								</Button>
+								{Array.isArray(opts) &&
+									opts.map((option, index) => (
 										<MenuItem key={index} value={option}>
 											{option}
 										</MenuItem>
-								  ))
-								: Array.isArray(getNested(item, "options", "data")) &&
-								  getNested(item, "options", "data").map((option, index) => (
-										<MenuItem key={index} value={option}>
-											{option}
-										</MenuItem>
-								  ))} */}
-
-							{Array.isArray(opts) &&
-								opts.map((option, index) => (
-									<MenuItem key={index} value={option}>
-										{option}
-									</MenuItem>
-								))}
-						</Field>
+									))}
+							</Field>
+						</FormControl>
 					</Box>
 				);
 				break;
@@ -219,6 +245,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 				return (
 					<Box margin={1}>
 						<Field
+							readOnly
 							fullWidth
 							component={Component}
 							name={item.id}
