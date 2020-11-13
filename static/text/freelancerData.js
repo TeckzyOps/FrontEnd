@@ -211,3 +211,17 @@ export const tagline = [
 	" Happy Republic day ",
 	"Lohari ki lakh lakh Vadaiya",
 ];
+
+export const commissionRange = [
+	"50:500",
+	" 100:1000",
+	" 200:2000",
+	" 300:3000",
+	" 400:4000",
+	" 500:5000",
+	" 600:6000",
+	" 700:7000",
+	" 800:8000",
+	" 900:9000",
+	" 1000:10000",
+];

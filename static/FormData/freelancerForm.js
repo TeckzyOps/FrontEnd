@@ -18,47 +18,11 @@ import {
 	closeDay,
 	workTime,
 	tagline,
+	commissionRange,
 } from "~static/text/freelancerData.js";
 import { states } from "~static/text/state";
 import { cities } from "~static/text/city";
 import { makeStyles } from "@material-ui/core/styles";
-
-// {
-// 	id: "username",
-// 	label: "Mobile/E-Mail",
-// 	placeholder: "Enter Mobile/E-Mail",
-// 	type: "text",
-// 	validationType: "string",
-// 	value: "",
-// 	validations: [
-// 		{
-// 			type: "required",
-// 			params: ["Mobile/E-Mail is required"],
-// 		},
-// 		{
-// 			type: "min",
-// 			params: [5, "Mobile/E-Mail cannot be less than 5 characters"],
-// 		},
-// 	],
-// },
-// {
-// 	id: "password",
-// 	label: "Password",
-// 	placeholder: "Password",
-// 	type: "password",
-// 	validationType: "string",
-// 	value: "",
-// 	validations: [
-// 		{
-// 			type: "required",
-// 			params: ["Password is required"],
-// 		},
-// 		{
-// 			type: "min",
-// 			params: [6, "passowrd cannot be less than 5 characters"],
-// 		},
-// 	],
-// },
 
 export const freelancerForm = [
 	[
@@ -66,18 +30,11 @@ export const freelancerForm = [
 			id: "service_category",
 			label: "Service Category",
 			placeholder: "",
-			type: "autocomplete",
-			ElementParams: {
-				variant: "outlined",
-				InputLabelProps: {
-					classes: {
-						root: { color: "red" },
-					},
-				},
-			},
+			type: "select",
+
 			validationType: "string",
 			options: { data: Object.keys(serviceCategory) },
-			value: "",
+			value: [],
 			validations: [
 				{
 					type: "required",
@@ -93,8 +50,10 @@ export const freelancerForm = [
 			id: "sub_service",
 			label: "Sub Service",
 			placeholder: "",
-			ElementParams: { variant: "outlined" },
-			type: "autocomplete",
+			ElementParams: {
+				multiple: true,
+			},
+			type: "select",
 			validationType: "string",
 			options: { data: serviceCategory, dependsOn: "service_category" },
 			value: "",
@@ -113,7 +72,7 @@ export const freelancerForm = [
 			id: "service_area",
 			label: "Service Area",
 			placeholder: "",
-			type: "autocomplete",
+			type: "select",
 			ElementParams: { variant: "outlined" },
 			validationType: "string",
 			options: { data: serviceArea },
@@ -171,13 +130,11 @@ export const freelancerForm = [
 				},
 			],
 		},
-		{},
-		{},
 	],
 	[
 		{
 			id: "bussiness_name",
-			label: "Profession Name",
+			label: "Profession's Name",
 			placeholder: "",
 			type: "text",
 			ElementParams: { variant: "outlined" },
@@ -195,11 +152,11 @@ export const freelancerForm = [
 			],
 		},
 		{
-			id: "bussiness_name",
+			id: "bussiness_since",
 			label: "Profession Since",
 			placeholder: "",
 			ElementParams: { variant: "outlined" },
-			type: "autocomplete",
+			type: "select",
 			validationType: "string",
 			value: "",
 			options: { data: professionSince },
@@ -216,8 +173,8 @@ export const freelancerForm = [
 		},
 	],
 	{
-		id: "bussiness_description",
-		label: "Bussiness Description",
+		id: "bussineess_description",
+		label: "Profession's Description",
 		ElementParams: { variant: "outlined" },
 		placeholder: "",
 		type: "textarea",
@@ -231,14 +188,14 @@ export const freelancerForm = [
 				params: ["Field is required"],
 			},
 			{
-				type: "min",
-				params: [5, "Mobile/E-Mail cannot be less than 5 characters"],
+				type: "max",
+				params: [100, "Maximum 100 words will be accepted!"],
 			},
 		],
 	},
 	{
 		id: "address",
-		label: "Bussiness Address",
+		label: "Profession's Address",
 		ElementParams: { variant: "outlined" },
 		placeholder: "",
 		type: "textarea",
@@ -258,7 +215,7 @@ export const freelancerForm = [
 			id: "state",
 			label: "State",
 			placeholder: "",
-			type: "autocomplete",
+			type: "select",
 			ElementParams: { variant: "outlined" },
 			validationType: "string",
 			options: { data: Object.keys(states) },
@@ -274,7 +231,7 @@ export const freelancerForm = [
 			id: "district",
 			label: "District",
 			placeholder: "",
-			type: "autocomplete",
+			type: "select",
 			ElementParams: { variant: "outlined" },
 			validationType: "string",
 			options: { data: states, dependsOn: "state" },
@@ -288,9 +245,9 @@ export const freelancerForm = [
 		},
 		{
 			id: "city",
-			label: "City",
+			label: "City/Town",
 			placeholder: "",
-			type: "autocomplete",
+			type: "select",
 			ElementParams: { variant: "outlined" },
 			validationType: "string",
 			options: { data: cities, dependsOn: "district" },
@@ -304,13 +261,13 @@ export const freelancerForm = [
 		},
 	],
 	{
-		id: "locality",
-		label: "Locality",
+		id: "area",
+		label: "Locality/Area/Village",
 		placeholder: "",
-		type: "text",
+		type: "select",
 		ElementParams: { variant: "outlined" },
 		validationType: "string",
-
+		options: { data: cities, dependsOn: "district" },
 		value: "",
 		validations: [
 			{
@@ -323,7 +280,8 @@ export const freelancerForm = [
 		id: "offer_tagline",
 		label: "Offer Tagline",
 		placeholder: "",
-		type: "text",
+		type: "select",
+		options: { data: tagline },
 		ElementParams: { variant: "outlined" },
 		validationType: "string",
 
@@ -337,7 +295,7 @@ export const freelancerForm = [
 	},
 	[
 		{
-			id: "shop_work_time_from",
+			id: "work_start_time",
 			label: "Shop's Work Time From",
 			placeholder: "",
 			type: "text",
@@ -353,7 +311,7 @@ export const freelancerForm = [
 			],
 		},
 		{
-			id: "shop_work_time_to",
+			id: "work_end_time",
 			label: "Shop's Work Time To",
 			placeholder: "",
 			type: "text",
@@ -369,29 +327,13 @@ export const freelancerForm = [
 			],
 		},
 		{
-			id: "shop_close_day",
-			label: "Shop Close Day",
+			id: "close_day",
+			label: "Office/Shop Close Day",
 			ElementParams: { variant: "outlined" },
 			placeholder: "",
-			type: "autocomplete",
+			type: "select",
 			validationType: "string",
 			options: { data: closeDay },
-			value: "",
-			validations: [
-				{
-					type: "required",
-					params: ["Field is required"],
-				},
-			],
-		},
-		{
-			id: "shop_close_day_on_calendar",
-			label: "Show on Calendar?",
-			ElementParams: { variant: "outlined" },
-			placeholder: "",
-			type: "autocomplete",
-			validationType: "string",
-			options: { data: ["Yes", "No"] },
 			value: "",
 			validations: [
 				{
@@ -441,7 +383,7 @@ export const freelancerForm = [
 
 	[
 		{
-			id: "gst_number",
+			id: "gst_no",
 			label: "GST Number",
 			placeholder: "",
 			type: "text",
@@ -456,8 +398,8 @@ export const freelancerForm = [
 			],
 		},
 		{
-			id: "min_commission",
-			label: "Commission Range",
+			id: "commission_percent",
+			label: "Commission Percent",
 			placeholder: "",
 			type: "text",
 			validationType: "string",
@@ -468,17 +410,29 @@ export const freelancerForm = [
 					type: "required",
 					params: ["Field is required"],
 				},
+			],
+		},
+		{
+			id: "commission_range",
+			label: "Commission Range",
+			placeholder: "",
+			type: "select",
+			validationType: "string",
+
+			options: { data: commissionRange },
+			value: "",
+			validations: [
 				{
-					type: "min",
-					params: [5, "Mobile/E-Mail cannot be less than 5 characters"],
+					type: "required",
+					params: ["Field is required"],
 				},
 			],
 		},
 		{
-			id: "max_commission",
+			id: "paid_leads",
 			label: "Paid Leads",
 			placeholder: "",
-			type: "autocomplete",
+			type: "select",
 			options: { data: [1, 2, 3, 4, 5, 6] },
 			ElementParams: { variant: "outlined" },
 			validationType: "string",
@@ -487,10 +441,6 @@ export const freelancerForm = [
 				{
 					type: "required",
 					params: ["Field is required"],
-				},
-				{
-					type: "min",
-					params: [5, "Mobile/E-Mail cannot be less than 5 characters"],
 				},
 			],
 		},

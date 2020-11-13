@@ -241,22 +241,27 @@ const freelancerform = (props) => {
 	// 			});
 	// 	}
 	// }
-	const _handleSubmit = ({ vals, setSubmitting, resetForm, setFieldError }) => {
+	const _handleSubmit = ({
+		values,
+		setSubmitting,
+		resetForm,
+		setFieldError,
+	}) => {
 		let payload = new FormData();
 
-		for (var i in vals) {
-			if (!Object.values(fileDropdown).includes(i)) {
-				if (Array.isArray(vals[i])) {
-					if (vals[i].length > 0) {
-						payload.append(i, JSON.stringify(vals[i]));
-					}
-				} else {
-					if (vals[i]) {
-						payload.append(i, vals[i]);
-					}
-				}
-			}
-		}
+		// for (var i in vals) {
+		// 	if (!Object.values(fileDropdown).includes(i)) {
+		// 		if (Array.isArray(vals[i])) {
+		// 			if (vals[i].length > 0) {
+		// 				payload.append(i, JSON.stringify(vals[i]));
+		// 			}
+		// 		} else {
+		// 			if (vals[i]) {
+		// 				payload.append(i, vals[i]);
+		// 			}
+		// 		}
+		// 	}
+		// }
 		let want_advertisement = 0;
 		let except_shaadiwala_offer = 0;
 		// Object.keys(fileDropdown).forEach((dropdown) => {
@@ -275,22 +280,27 @@ const freelancerform = (props) => {
 		// 	}
 		// });
 
-		docData.forEach((data) => {
-			payload.set(fileDropdown[data.document], data.fileObject);
-			if (data.document == "Advertisement") {
-				want_advertisement = 1;
-			}
-			if (data.document == "Shaadiwala Offer") {
-				except_shaadiwala_offer = 1;
-			}
-		});
+		// docData.forEach((data) => {
+		// 	payload.set(fileDropdown[data.document], data.fileObject);
+		// 	if (data.document == "Advertisement") {
+		// 		want_advertisement = 1;
+		// 	}
+		// 	if (data.document == "Shaadiwala Offer") {
+		// 		except_shaadiwala_offer = 1;
+		// 	}
+		// });
 
-		payload.append("want_advertisement", want_advertisement);
-		payload.append("except_shaadiwala_offer", except_shaadiwala_offer);
-		payload.delete("doc_type");
+		// payload.append("want_advertisement", want_advertisement);
+		// payload.append("except_shaadiwala_offer", except_shaadiwala_offer);
+		// payload.delete("doc_type");
 		if (id) {
 			payload.append("freelancer_id", id);
 		}
+
+		for (var key in values) {
+			payload.append(key, values[key]);
+		}
+
 		if (payload) {
 			freelancerActions
 				.createFreelancer(payload)
@@ -562,7 +572,11 @@ const freelancerform = (props) => {
 								Tell Us About Your Profession
 							</Typography>
 						</AccordionSummary>
-						<FormContainer onSubmit={_handleSubmit} elements={freelancerForm} />
+						<FormContainer
+							btn={{ label: "Submit" }}
+							onSubmit={_handleSubmit}
+							elements={freelancerForm}
+						/>
 					</Accordion>
 					<div>
 						{/* <Formik
