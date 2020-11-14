@@ -32,6 +32,7 @@ export const styles = makeStyles((theme) => ({
 	labelRoot: {
 		fontSize: 18,
 		fontWeight: "bold",
+		backgroundColor: "white",
 	},
 }));
 const toTitleCase = (s) => {
@@ -80,6 +81,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 	const inputLabel = React.useRef(null);
 	const [labelWidth, setLabelWidth] = React.useState(0);
 	React.useEffect(() => {
+		console.log("inputLabel.current.offsetWidth", inputLabel);
 		setLabelWidth(inputLabel.current.offsetWidth);
 	}, []);
 
@@ -112,7 +114,11 @@ const FormContainer = React.forwardRef((props, refs) => {
 					if (obj.type == "checkbox") {
 						state[obj.id] = obj.value ? obj.value : false;
 					} else {
-						state[obj.id] = obj.value ? obj.value : "";
+						if (typeof obj.value === "object") {
+							state[obj.id] = obj.value;
+						} else {
+							state[obj.id] = obj.value ? obj.value : "";
+						}
 					}
 				}
 			});
@@ -121,7 +127,11 @@ const FormContainer = React.forwardRef((props, refs) => {
 				if (obj.type == "checkbox") {
 					state[obj.id] = obj.value ? obj.value : false;
 				} else {
-					state[obj.id] = obj.value ? obj.value : "";
+					if (typeof obj.value === "object") {
+						state[obj.id] = obj.value;
+					} else {
+						state[obj.id] = obj.value ? obj.value : "";
+					}
 				}
 			}
 		}
@@ -196,6 +206,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 							</InputLabel>
 							<Field
 								component={Select}
+								{...params}
 								onChange={prop.handleChange}
 								type="text"
 								helperText={
@@ -212,7 +223,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 								}
 								open={selectOpen == item.id}
 								onOpen={() => handleSelectOpen(item.id)}
-								inputProps={{ width: "100%", name: item.id, id: item.id }}
+								inputProps={{ name: item.id, id: item.id }}
 							>
 								<Button
 									style={{ width: "100%" }}
