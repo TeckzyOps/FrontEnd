@@ -34,7 +34,7 @@ export const freelancerForm = [
 
 			validationType: "string",
 			options: { data: Object.keys(serviceCategory) },
-			value: [],
+			value: "",
 			validations: [
 				{
 					type: "required",
@@ -56,7 +56,7 @@ export const freelancerForm = [
 			type: "select",
 			validationType: "string",
 			options: { data: serviceCategory, dependsOn: "service_category" },
-			value: "",
+			value: [],
 			validations: [
 				{
 					type: "required",
@@ -73,7 +73,7 @@ export const freelancerForm = [
 			label: "Service Area",
 			placeholder: "",
 			type: "select",
-			ElementParams: { variant: "outlined" },
+
 			validationType: "string",
 			options: { data: serviceArea },
 			value: "",
@@ -155,7 +155,7 @@ export const freelancerForm = [
 			id: "bussiness_since",
 			label: "Profession Since",
 			placeholder: "",
-			ElementParams: { variant: "outlined" },
+
 			type: "select",
 			validationType: "string",
 			value: "",
@@ -216,7 +216,7 @@ export const freelancerForm = [
 			label: "State",
 			placeholder: "",
 			type: "select",
-			ElementParams: { variant: "outlined" },
+
 			validationType: "string",
 			options: { data: Object.keys(states) },
 			value: "",
@@ -232,7 +232,7 @@ export const freelancerForm = [
 			label: "District",
 			placeholder: "",
 			type: "select",
-			ElementParams: { variant: "outlined" },
+
 			validationType: "string",
 			options: { data: states, dependsOn: "state" },
 			value: "",
@@ -248,7 +248,7 @@ export const freelancerForm = [
 			label: "City/Town",
 			placeholder: "",
 			type: "select",
-			ElementParams: { variant: "outlined" },
+
 			validationType: "string",
 			options: { data: cities, dependsOn: "district" },
 			value: "",
@@ -265,7 +265,7 @@ export const freelancerForm = [
 		label: "Locality/Area/Village",
 		placeholder: "",
 		type: "select",
-		ElementParams: { variant: "outlined" },
+
 		validationType: "string",
 		options: { data: cities, dependsOn: "district" },
 		value: "",
@@ -282,7 +282,7 @@ export const freelancerForm = [
 		placeholder: "",
 		type: "select",
 		options: { data: tagline },
-		ElementParams: { variant: "outlined" },
+
 		validationType: "string",
 
 		value: "",
@@ -329,7 +329,7 @@ export const freelancerForm = [
 		{
 			id: "close_day",
 			label: "Office/Shop Close Day",
-			ElementParams: { variant: "outlined" },
+
 			placeholder: "",
 			type: "select",
 			validationType: "string",
@@ -434,7 +434,7 @@ export const freelancerForm = [
 			placeholder: "",
 			type: "select",
 			options: { data: [1, 2, 3, 4, 5, 6] },
-			ElementParams: { variant: "outlined" },
+
 			validationType: "string",
 			value: "",
 			validations: [
