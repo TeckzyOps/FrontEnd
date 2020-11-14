@@ -81,8 +81,9 @@ const FormContainer = React.forwardRef((props, refs) => {
 	const inputLabel = React.useRef(null);
 	const [labelWidth, setLabelWidth] = React.useState(0);
 	React.useEffect(() => {
-		console.log("inputLabel.current.offsetWidth", inputLabel);
-		setLabelWidth(inputLabel.current.offsetWidth);
+		if (inputLabel != null && inputLabel.current != null) {
+			setLabelWidth(inputLabel.current.offsetWidth);
+		}
 	}, []);
 
 	const [selectOpen, setSelectOpen] = useState(null);
