@@ -194,6 +194,14 @@ function Header(props) {
 		setJoinusAnchorEl(null);
 		setExpandJoinus(null);
 	};
+	const handlejoinusExpand = (service) => {
+		if (expandjoinus == service) {
+			setExpandJoinus(null);
+		} else {
+			setExpandJoinus(service);
+		}
+	};
+
 	const joinusMenu = (
 		<Menu
 			id="joinus-menu"
@@ -205,7 +213,7 @@ function Header(props) {
 			<List component="nav">
 				{joinusrows.map((item, index) => (
 					<div keys={index}>
-						<ListItem button onClick={() => setExpandJoinus(item.services)}>
+						<ListItem button onClick={() => handlejoinusExpand(item.services)}>
 							<ListItemText primary={item.services} />
 							{expandjoinus == item.services ? <ExpandLess /> : <ExpandMore />}
 						</ListItem>

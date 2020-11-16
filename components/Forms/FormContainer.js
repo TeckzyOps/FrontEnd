@@ -89,7 +89,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 	const [selectOpen, setSelectOpen] = useState(null);
 	const handleSelectClose = (name, previousValue, setFieldValue) => {
 		setSelectOpen(null);
-		setFieldValue(name, previousValue);
+		// setFieldValue(name, previousValue);
 	};
 
 	const handleSelectOpen = (name) => {
