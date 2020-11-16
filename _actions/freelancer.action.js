@@ -10,9 +10,9 @@ export const freelancerActions = {
 	getbookDate,
 };
 
-function createFreelancer(payload) {
+function createFreelancer(payload, id) {
 	let apiEndpoint = "";
-	if (payload.get("freelancer_id")) {
+	if (id) {
 		apiEndpoint = "editFreelancerId";
 	} else {
 		apiEndpoint = "createFreelancerId";

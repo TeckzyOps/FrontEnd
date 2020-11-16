@@ -247,7 +247,7 @@ const freelancerform = (props) => {
 		resetForm,
 		setFieldError,
 	}) => {
-		let payload = new FormData();
+		let vals = values;
 
 		// for (var i in vals) {
 		// 	if (!Object.values(fileDropdown).includes(i)) {
@@ -294,16 +294,12 @@ const freelancerform = (props) => {
 		// payload.append("except_shaadiwala_offer", except_shaadiwala_offer);
 		// payload.delete("doc_type");
 		if (id) {
-			payload.append("freelancer_id", id);
+			vals["freelancer_id"] = id;
 		}
 
-		for (var key in values) {
-			payload.append(key, values[key]);
-		}
-
-		if (payload) {
+		if (vals) {
 			freelancerActions
-				.createFreelancer(payload)
+				.createFreelancer(vals, id)
 				.then(function (response) {
 					setSubmitting(false);
 					console.log("ressss", response);
