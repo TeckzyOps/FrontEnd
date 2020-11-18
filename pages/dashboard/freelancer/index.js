@@ -8,8 +8,10 @@ import {
 	CardActions,
 	CardContent,
 	CardMedia,
+	CardHeader,
 	Divider,
 	Button,
+	Avatar,
 } from "@material-ui/core";
 import Head from "next/head";
 import LocalStorageService from "../../../_services/LocalStorageService";
@@ -22,7 +24,14 @@ import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import routerLink from "~/static/text/link";
 import Link from "@material-ui/core/Link";
-
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import logo from "~/static/home/navbarLogo.jpg";
+import CustomCard from "./card";
 import api, {
 	addBearerToken,
 	removeBearerToken,
@@ -40,18 +49,14 @@ theme = responsiveFontSizes(theme);
 const sectionMargin = (margin) => margin * 2;
 const useStyles = makeStyles((theme) => ({
 	root: { paddingTop: "11vh" },
-
-	card: {
-		maxWidth: 300,
-		margin: "auto",
+	details: {
 		display: "flex",
 		flexDirection: "column",
-		transition: "0.3s",
-		boxShadow: "0 8px 40px -12px rgba(0,0,0,0.3)",
-		"&:hover": {
-			boxShadow: "0 16px 70px -12.125px rgba(0,0,0,0.3)",
-		},
 	},
+	content: {
+		flex: "1 0 auto",
+	},
+
 	media: {
 		paddingTop: "56.25%",
 	},
@@ -130,47 +135,229 @@ const index = (props) => {
 
 					{adList &&
 						adList.map((ad, index) => (
-							<Grid key={index} item md={3} xs={12}>
+							<Grid key={index} item md={4} xs={12}>
 								<Link
 									style={{ textDecoration: "none" }}
 									href={routerLink.starter.freelancernew + "?id=" + ad.id}
 								>
-									<Card className={classes.card}>
-										{/* <CardMedia
-											className={classes.media}
-											image={
-												"https://image.freepik.com/free-photo/river-foggy-mountains-landscape_1204-511.jpg"
-											}
-										/> */}
+									<CustomCard ad={ad} {...props} />
+									{/* <Card>
+										<CardHeader
+											avatar={<Avatar aria-label="recipe" src={logo} />}
+											title="Freelancer"
+											subheader="ISF00000001"
+										/>
+										
 										<CardContent className={classes.content}>
-											<MuiThemeProvider theme={theme}>
-												Tagline:
-												<Typography
-													className={"MuiTypography--heading"}
-													variant={"h5"}
-													gutterBottom
-												>
-													{ad.offer_tagline}
-												</Typography>
-												Business Name:
-												<Typography
-													className={"MuiTypography--heading"}
-													variant={"h6"}
-													gutterBottom
-												>
-													{ad.bussiness_name}
-												</Typography>
-												<Typography variant="subtitle1" color="textSecondary">
-													{ad.sub_service + " | " + ad.service_area}
-												</Typography>
-												Business Description:
-												<Typography
-													className={"MuiTypography--subheading"}
-													variant={"caption"}
-												>
-													{ad.bussineess_description}
-												</Typography>
-											</MuiThemeProvider>
+											<Grid container spacing={3}>
+												<Grid container justify="center" spacing={2}>
+													<Grid item xs={12} sm container>
+														<Table
+															className={classes.table}
+															size="small"
+															aria-label="a dense table"
+														>
+															<TableBody>
+																<TableRow>
+																	<TableCell component="th" scope="row">
+																		<MuiThemeProvider theme={theme}>
+																			<Typography
+																				variant="caption"
+																				display="block"
+																				gutterBottom
+																				noWrap
+																			>
+																				Profession's Name
+																			</Typography>
+																		</MuiThemeProvider>
+																	</TableCell>
+																	<TableCell align="left">
+																		<MuiThemeProvider theme={theme}>
+																			<Typography
+																				variant="caption"
+																				display="block"
+																				gutterBottom
+																				noWrap
+																			>
+																				{ad.bussiness_name}
+																			</Typography>
+																		</MuiThemeProvider>
+																	</TableCell>
+																</TableRow>
+
+																<TableRow>
+																	<TableCell component="th" scope="row">
+																		<MuiThemeProvider theme={theme}>
+																			<Typography
+																				variant="caption"
+																				display="block"
+																				gutterBottom
+																				noWrap
+																			>
+																				Profession's Since
+																			</Typography>
+																		</MuiThemeProvider>
+																	</TableCell>
+																	<TableCell align="left">
+																		<MuiThemeProvider theme={theme}>
+																			<Typography
+																				variant="caption"
+																				display="block"
+																				gutterBottom
+																				noWrap
+																			>
+																				{ad.bussiness_since}
+																			</Typography>
+																		</MuiThemeProvider>
+																	</TableCell>
+																</TableRow>
+
+																<TableRow>
+																	<TableCell component="th" scope="row">
+																		<MuiThemeProvider theme={theme}>
+																			<Typography
+																				variant="caption"
+																				display="block"
+																				gutterBottom
+																				noWrap
+																			>
+																				Service Area
+																			</Typography>
+																		</MuiThemeProvider>
+																	</TableCell>
+																	<TableCell align="left">
+																		<MuiThemeProvider theme={theme}>
+																			<Typography
+																				variant="caption"
+																				display="block"
+																				gutterBottom
+																				noWrap
+																			>
+																				{ad.service_area}
+																			</Typography>
+																		</MuiThemeProvider>
+																	</TableCell>
+																</TableRow>
+
+																<TableRow>
+																	<TableCell component="th" scope="row">
+																		<MuiThemeProvider theme={theme}>
+																			<Typography
+																				variant="caption"
+																				display="block"
+																				gutterBottom
+																				noWrap
+																			>
+																				Service Category
+																			</Typography>
+																		</MuiThemeProvider>
+																	</TableCell>
+																	<TableCell align="left">
+																		<MuiThemeProvider theme={theme}>
+																			<Typography
+																				variant="caption"
+																				display="block"
+																				gutterBottom
+																				noWrap
+																			>
+																				{ad.service_category}
+																			</Typography>
+																		</MuiThemeProvider>
+																	</TableCell>
+																</TableRow>
+
+																<TableRow>
+																	<TableCell component="th" scope="row">
+																		<MuiThemeProvider theme={theme}>
+																			<Typography
+																				variant="caption"
+																				display="block"
+																				gutterBottom
+																				noWrap
+																			>
+																				Sub Category
+																			</Typography>
+																		</MuiThemeProvider>
+																	</TableCell>
+																	<TableCell align="left">
+																		<MuiThemeProvider theme={theme}>
+																			<Typography
+																				variant="caption"
+																				display="block"
+																				gutterBottom
+																				noWrap
+																			>
+																				{ad.sub_service.join(", ")}
+																			</Typography>
+																		</MuiThemeProvider>
+																	</TableCell>
+																</TableRow>
+
+																<TableRow>
+																	<TableCell component="th" scope="row">
+																		<MuiThemeProvider theme={theme}>
+																			<Typography
+																				variant="caption"
+																				display="block"
+																				gutterBottom
+																				noWrap
+																			>
+																				Offers/Tagline
+																			</Typography>
+																		</MuiThemeProvider>
+																	</TableCell>
+																	<TableCell align="left">
+																		<MuiThemeProvider theme={theme}>
+																			<Typography
+																				variant="caption"
+																				display="block"
+																				gutterBottom
+																				noWrap
+																			>
+																				{ad.offer_tagline}
+																			</Typography>
+																		</MuiThemeProvider>
+																	</TableCell>
+																</TableRow>
+
+																<TableRow>
+																	<TableCell component="th" scope="row">
+																		<MuiThemeProvider theme={theme}>
+																			<Typography
+																				variant="caption"
+																				display="block"
+																				gutterBottom
+																				noWrap
+																			>
+																				Email Add.
+																			</Typography>
+																		</MuiThemeProvider>
+																	</TableCell>
+																	<TableCell align="left">
+																		<MuiThemeProvider theme={theme}>
+																			<Typography
+																				variant="caption"
+																				display="block"
+																				gutterBottom
+																				noWrap
+																			>
+																				{ad.office_email}
+																			</Typography>
+																		</MuiThemeProvider>
+																	</TableCell>
+																</TableRow>
+															</TableBody>
+														</Table>
+													</Grid>
+													<Grid item>
+														<Avatar
+															alt="Remy Sharp"
+															src="https://image.freepik.com/free-photo/river-foggy-mountains-landscape_1204-511.jpg"
+														/>
+													</Grid>
+												</Grid>
+											</Grid>
+
 											<Divider className={classes.divider} light />
 										</CardContent>
 										<CardActions>
@@ -184,7 +371,7 @@ const index = (props) => {
 												</IconButton>
 											</Link>
 										</CardActions>
-									</Card>
+									</Card> */}
 								</Link>
 							</Grid>
 						))}
