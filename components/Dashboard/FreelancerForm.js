@@ -127,35 +127,34 @@ const freelancerform = (props) => {
 	const router = useRouter();
 	const [docSelected, setDocSelected] = useState(0);
 	const [freelancerData, setFreelancerData] = useState({
-		gst_file_path: null,
-		license_file_path: null,
-		certificate_file_path: null,
-		advertisement_file_path: null,
 		service_category: "",
-		sub_service: "",
-		bussiness_name: "",
-		total_experience: "",
-		bussineess_description: "",
+		sub_service: [],
+		service_area: "",
 		min_service_price: "",
 		max_service_price: "",
+		bussiness_name: "",
+		bussiness_since: "",
+		bussineess_description: "",
 		address: "",
-		city: "",
 		state: "",
 		district: "",
-		service_area: "",
-		locality: "",
-		office_map_link: "",
-		office_number: "",
-		catalog_pdf_match: "",
+		city: "",
+		area: "",
 		offer_tagline: "",
-		shadiwala_offer_files: "",
+		work_start_time: "",
+		work_end_time: "",
+		close_day: [],
+		office_email: "",
+		office_number: "",
+		gst_no: "",
 		commission_percent: "",
-		min_commission: "",
-		max_commission: "",
+		commission_range: "",
+		paid_leads: "",
 	});
 
 	const [profileUpdateSuccess, setProfileUpdateSuccess] = useState(false);
-	const id = props.router.query.id;
+	const [id, setId] = useState(props.router.query.id);
+
 	React.useEffect(() => {
 		setDetails(localStorageService.getUserDetails("Details"));
 		if (id) {
@@ -247,21 +246,28 @@ const freelancerform = (props) => {
 		resetForm,
 		setFieldError,
 	}) => {
-		let vals = values;
+		let payload = new FormData();
 
-		// for (var i in vals) {
-		// 	if (!Object.values(fileDropdown).includes(i)) {
-		// 		if (Array.isArray(vals[i])) {
-		// 			if (vals[i].length > 0) {
-		// 				payload.append(i, JSON.stringify(vals[i]));
-		// 			}
-		// 		} else {
-		// 			if (vals[i]) {
-		// 				payload.append(i, vals[i]);
-		// 			}
-		// 		}
-		// 	}
-		// }
+		let proceed = false;
+		let valKeyArr = Object.keys(values);
+		for (var i = 0; i < valKeyArr.length; i++) {
+			if (freelancerData[valKeyArr[i]] != values[valKeyArr[i]]) {
+				proceed = true;
+				break;
+			}
+		}
+
+		if (proceed) {
+			for (var i in values) {
+				if (Array.isArray(values[i])) {
+					if (values[i].length > 0) {
+						payload.append(i, JSON.stringify(values[i]));
+					}
+				} else {
+					payload.append(i, values[i] + "");
+				}
+			}
+		}
 		let want_advertisement = 0;
 		let except_shaadiwala_offer = 0;
 		// Object.keys(fileDropdown).forEach((dropdown) => {
@@ -294,16 +300,17 @@ const freelancerform = (props) => {
 		// payload.append("except_shaadiwala_offer", except_shaadiwala_offer);
 		// payload.delete("doc_type");
 		if (id) {
-			vals["freelancer_id"] = id;
+			payload.append("freelancer_id", id);
 		}
 
-		if (vals) {
+		if (payload) {
 			freelancerActions
-				.createFreelancer(vals, id)
+				.createFreelancer(payload, id)
 				.then(function (response) {
 					setSubmitting(false);
 					console.log("ressss", response);
 					if (response.data.data.id) {
+						setId(id);
 						setProfileUpdateSuccess(() => true);
 						resetForm();
 					}
@@ -572,6 +579,7 @@ const freelancerform = (props) => {
 							btn={{ label: "Submit" }}
 							onSubmit={_handleSubmit}
 							elements={freelancerForm}
+							defaultvals={freelancerData}
 						/>
 					</Accordion>
 					<div>
@@ -1307,38 +1315,46 @@ const freelancerform = (props) => {
 				</Grid>
 
 				<Grid item xs={12}>
-					<Accordion expanded={false} disabled={props.router.query.id == null}>
-						<AccordionSummary
-							expandIcon={<ArrowForwardIcon />}
-							aria-controls="panel1c-content"
-							id="panel1c-header"
+					<Link
+						style={{ textDecoration: "none", color: "black" }}
+						href={routerLink.starter.freelancerImg + "?id=" + id}
+					>
+						<Accordion
+							expanded={false}
+							disabled={props.router.query.id == null}
 						>
-							<Avatar className={classes.headerBadge}>4</Avatar>
-							<Link
-								style={{ textDecoration: "none", color: "black" }}
-								href={routerLink.starter.freelancerImg + "?id=" + id}
+							<AccordionSummary
+								expandIcon={<ArrowForwardIcon />}
+								aria-controls="panel1c-content"
+								id="panel1c-header"
 							>
+								<Avatar className={classes.headerBadge}>4</Avatar>
+
 								<Typography>Update Photo Gallery</Typography>
-							</Link>
-						</AccordionSummary>
-					</Accordion>
+							</AccordionSummary>
+						</Accordion>
+					</Link>
 				</Grid>
 				<Grid item xs={12}>
-					<Accordion expanded={false} disabled={props.router.query.id == null}>
-						<AccordionSummary
-							expandIcon={<ArrowForwardIcon />}
-							aria-controls="panel1c-content"
-							id="panel1c-header"
+					<Link
+						style={{ textDecoration: "none", color: "black" }}
+						href={routerLink.starter.freelancerVids + "?id=" + id}
+					>
+						<Accordion
+							expanded={false}
+							disabled={props.router.query.id == null}
 						>
-							<Avatar className={classes.headerBadge}>5</Avatar>
-							<Link
-								style={{ textDecoration: "none", color: "black" }}
-								href={routerLink.starter.freelancerVids + "?id=" + id}
+							<AccordionSummary
+								expandIcon={<ArrowForwardIcon />}
+								aria-controls="panel1c-content"
+								id="panel1c-header"
 							>
+								<Avatar className={classes.headerBadge}>5</Avatar>
+
 								<Typography>Update Video Gallery</Typography>
-							</Link>
-						</AccordionSummary>
-					</Accordion>
+							</AccordionSummary>
+						</Accordion>
+					</Link>
 				</Grid>
 				<Grid item xs={12}>
 					<Accordion

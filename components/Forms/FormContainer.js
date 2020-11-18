@@ -15,6 +15,7 @@ import {
 	FormControl,
 	InputLabel,
 	FormControlLabel,
+	FormHelperText,
 	Typography,
 } from "@material-ui/core";
 import MuiTextField from "@material-ui/core/TextField";
@@ -89,7 +90,16 @@ const FormContainer = React.forwardRef((props, refs) => {
 	const [selectOpen, setSelectOpen] = useState(null);
 	const handleSelectClose = (name, previousValue, setFieldValue) => {
 		setSelectOpen(null);
-		// setFieldValue(name, previousValue);
+		let prevValue = previousValue;
+		if (Array.isArray(previousValue)) {
+			prevValue = [];
+			previousValue.forEach((value) => {
+				if (value) {
+					prevValue.push(value);
+				}
+			});
+		}
+		setFieldValue(name, prevValue);
 	};
 
 	const handleSelectOpen = (name) => {
@@ -207,12 +217,10 @@ const FormContainer = React.forwardRef((props, refs) => {
 							</InputLabel>
 							<Field
 								component={Select}
+								displayEmpty={true}
 								{...params}
 								onChange={prop.handleChange}
 								type="text"
-								helperText={
-									prop.errors.hasOwnProperty(item.id) && prop.errors[item.id]
-								}
 								name={item.id}
 								labelWidth={labelWidth}
 								onClose={() =>
@@ -227,6 +235,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 								inputProps={{ name: item.id, id: item.id }}
 							>
 								<Button
+									value=""
 									style={{ width: "100%" }}
 									variant="contained"
 									color="primary"
@@ -248,6 +257,9 @@ const FormContainer = React.forwardRef((props, refs) => {
 										</MenuItem>
 									))}
 							</Field>
+							<FormHelperText error>
+								{prop.errors.hasOwnProperty(item.id) && prop.errors[item.id]}
+							</FormHelperText>
 						</FormControl>
 					</Box>
 				);
@@ -301,11 +313,11 @@ const FormContainer = React.forwardRef((props, refs) => {
 								},
 							}}
 							rows={item.rows || 4}
-							placeholder={
-								item.placeholder
-									? item.placeholder
-									: "Enter " + toTitleCase(item.id)
-							}
+							// placeholder={
+							// 	item.placeholder
+							// 		? item.placeholder
+							// 		: "Enter " + toTitleCase(item.id)
+							// }
 							onChange={prop.handleChange}
 							error={"error"}
 						/>
@@ -327,11 +339,11 @@ const FormContainer = React.forwardRef((props, refs) => {
 							}}
 							label={item.label ? item.label : "Enter " + toTitleCase(item.id)}
 							name={item.id}
-							placeholder={
-								item.placeholder
-									? item.placeholder
-									: "Enter " + toTitleCase(item.id)
-							}
+							// placeholder={
+							// 	item.placeholder
+							// 		? item.placeholder
+							// 		: "Enter " + toTitleCase(item.id)
+							// }
 							onChange={prop.handleChange}
 							error={"error"}
 						/>

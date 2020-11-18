@@ -333,8 +333,11 @@ export const freelancerForm = [
 			placeholder: "",
 			type: "select",
 			validationType: "string",
+			ElementParams: {
+				multiple: true,
+			},
 			options: { data: closeDay },
-			value: "",
+			value: [],
 			validations: [
 				{
 					type: "required",
