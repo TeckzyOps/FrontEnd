@@ -55,17 +55,17 @@ export default function CustomCard({ ad, ...props }) {
 	return (
 		<div className={classes.root}>
 			<Paper className={classes.paper}>
-				<Grid container>
+				<Grid direction="row" container>
 					<Grid item xs={6}>
 						<img src={logo} width="100px" alt="logo" />
 					</Grid>
-					<Grid item justify="flex-end" xs={6}>
+					<Grid container justify="flex-end" item justify="flex-end" xs={6}>
 						<MuiThemeProvider theme={theme}>
 							<Typography variant="caption" color="inherit" noWrap>
 								ID : &nbsp;
 							</Typography>
 							<Typography variant="caption" color="inherit" noWrap>
-								IFS0000001
+								IFS0000001 <br /> Freelancer
 							</Typography>
 						</MuiThemeProvider>
 					</Grid>
@@ -76,7 +76,12 @@ export default function CustomCard({ ad, ...props }) {
 							<Grid item xs={12} zeroMinWidth>
 								<div style={{ display: "flex" }}>
 									<MuiThemeProvider theme={theme}>
-										<Typography variant="caption" color="inherit" noWrap>
+										<Typography
+											style={{ fontWeight: 500 }}
+											variant="caption"
+											color="inherit"
+											noWrap
+										>
 											Profession's Name : &nbsp;
 										</Typography>
 										<Typography variant="caption" color="inherit" noWrap>
@@ -87,7 +92,12 @@ export default function CustomCard({ ad, ...props }) {
 
 								<div style={{ display: "flex" }}>
 									<MuiThemeProvider theme={theme}>
-										<Typography variant="caption" color="inherit" noWrap>
+										<Typography
+											style={{ fontWeight: 500 }}
+											variant="caption"
+											color="inherit"
+											noWrap
+										>
 											Profession's Since : &nbsp;
 										</Typography>
 										<Typography variant="caption" color="inherit" noWrap>
@@ -98,7 +108,12 @@ export default function CustomCard({ ad, ...props }) {
 
 								<div style={{ display: "flex" }}>
 									<MuiThemeProvider theme={theme}>
-										<Typography variant="caption" color="inherit" noWrap>
+										<Typography
+											style={{ fontWeight: 500 }}
+											variant="caption"
+											color="inherit"
+											noWrap
+										>
 											Service Area : &nbsp;
 										</Typography>
 										<Typography variant="caption" color="inherit" noWrap>
@@ -108,7 +123,12 @@ export default function CustomCard({ ad, ...props }) {
 								</div>
 								<div style={{ display: "flex" }}>
 									<MuiThemeProvider theme={theme}>
-										<Typography variant="caption" color="inherit" noWrap>
+										<Typography
+											style={{ fontWeight: 500 }}
+											variant="caption"
+											color="inherit"
+											noWrap
+										>
 											Service Category : &nbsp;
 										</Typography>
 										<Typography variant="caption" color="inherit" noWrap>
@@ -134,7 +154,12 @@ export default function CustomCard({ ad, ...props }) {
 					<Grid item xs={12}>
 						<div style={{ display: "flex" }}>
 							<MuiThemeProvider theme={theme}>
-								<Typography variant="caption" color="inherit" noWrap>
+								<Typography
+									style={{ fontWeight: 500 }}
+									variant="caption"
+									color="inherit"
+									noWrap
+								>
 									Sub Category : &nbsp;
 								</Typography>
 								<Typography variant="caption" color="inherit" noWrap>
@@ -145,7 +170,12 @@ export default function CustomCard({ ad, ...props }) {
 
 						<div style={{ display: "flex" }}>
 							<MuiThemeProvider theme={theme}>
-								<Typography variant="caption" color="inherit" noWrap>
+								<Typography
+									style={{ fontWeight: 500 }}
+									variant="caption"
+									color="inherit"
+									noWrap
+								>
 									Offers/Tagline : &nbsp;
 								</Typography>
 								<Typography variant="caption" color="inherit" noWrap>
@@ -155,7 +185,12 @@ export default function CustomCard({ ad, ...props }) {
 						</div>
 						<div style={{ display: "flex" }}>
 							<MuiThemeProvider theme={theme}>
-								<Typography variant="caption" color="inherit" noWrap>
+								<Typography
+									style={{ fontWeight: 500 }}
+									variant="caption"
+									color="inherit"
+									noWrap
+								>
 									Email Add. : &nbsp;
 								</Typography>
 								<Typography variant="caption" color="inherit" noWrap>
