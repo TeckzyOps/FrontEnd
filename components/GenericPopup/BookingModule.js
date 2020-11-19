@@ -233,11 +233,11 @@ const BookingModule = ({ booking_id, ...props }) => {
 							<Grid item md={6} sm={6} xs={12}>
 								{bookingInit && (
 									<div>
+										<Typography variant="h5">
+											Booking Date: <b>{new Date(date).toDateString()}</b>
+										</Typography>
 										{bookingStatus == 1 ? (
 											<div>
-												<Typography variant="h5">
-													Booking Date: <b>{new Date(date).toDateString()}</b>
-												</Typography>
 												<TextField
 													type="text"
 													onChange={handleCommentChange}
@@ -267,6 +267,7 @@ const BookingModule = ({ booking_id, ...props }) => {
 										) : (
 											<div>
 												<TextField
+													fullWidth
 													select
 													label="Choose a Reason"
 													onChange={handleCommentChange}
