@@ -65,6 +65,7 @@ import {
 } from "formik-material-ui";
 import FolderIcon from "@material-ui/icons/Folder";
 import { freelancerForm } from "~static/FormData/freelancerForm.js";
+import { freelancerProperietor } from "~static/FormData/form.js";
 import * as Yup from "yup";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -124,6 +125,7 @@ const freelancerform = (props) => {
 	const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 	const [docData, setDocData] = useState([]);
 	const [details, setDetails] = React.useState({});
+	const [properietor_details, setProperietorDetails] = React.useState({});
 	const router = useRouter();
 	const [docSelected, setDocSelected] = useState(0);
 	const [freelancerData, setFreelancerData] = useState({
@@ -157,6 +159,40 @@ const freelancerform = (props) => {
 
 	React.useEffect(() => {
 		setDetails(localStorageService.getUserDetails("Details"));
+		let name = props.getNested(
+			localStorageService.getUserDetails("Details"),
+			"login",
+			"name"
+		);
+		let email = props.getNested(
+			localStorageService.getUserDetails("Details"),
+			"login",
+			"email"
+		);
+		let mobile = props.getNested(
+			localStorageService.getUserDetails("Details"),
+			"login",
+			"mobile"
+		);
+		let religion = props.getNested(
+			localStorageService.getUserDetails("Details"),
+			"profile",
+			"data",
+			"religion"
+		);
+		let gender = props.getNested(
+			localStorageService.getUserDetails("Details"),
+			"profile",
+			"data",
+			"gender"
+		);
+		setProperietorDetails({
+			name: name,
+			email: email,
+			mobile: mobile,
+			religion: religion,
+			gender: gender,
+		});
 		if (id) {
 			freelancerActions
 				.getFreelancer({ freelancer_id: id })
@@ -550,7 +586,7 @@ const freelancerform = (props) => {
 		<div {...rest} className={clsx(classes.root, className)}>
 			<Grid container spacing={1}>
 				<Grid item xs={12}>
-					<Accordion expanded={false} disabled={props.router.query.id == null}>
+					<Accordion disabled={details == null}>
 						<AccordionSummary
 							expandIcon={<ArrowForwardIcon />}
 							aria-controls="panel1c-content"
@@ -560,6 +596,10 @@ const freelancerform = (props) => {
 
 							<Typography>Proprietor Detail (Do Not Edit)</Typography>
 						</AccordionSummary>
+						<FormContainer
+							elements={freelancerProperietor}
+							defaultvals={properietor_details}
+						/>
 					</Accordion>
 				</Grid>
 				<Grid item xs={12}>
