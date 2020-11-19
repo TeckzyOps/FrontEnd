@@ -20,7 +20,13 @@ import {
 	ListItem,
 	ListItemAvatar,
 	Avatar,
+	MenuItem,
 } from "@material-ui/core";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
 import { Badge } from "@material-ui/core";
 import Head from "next/head";
 import LocalStorageService from "../../_services/LocalStorageService";
@@ -33,7 +39,7 @@ import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { withRouter } from "react-router";
 import { useTheme } from "@material-ui/core/styles";
-
+import { partly } from "~static/text/bookingCalendar";
 const useStyles = makeStyles((theme) => ({
 	root: {},
 }));
@@ -50,8 +56,9 @@ const BookingModule = ({ booking_id, ...props }) => {
 	const [remoteData, setRemoteData] = React.useState([]);
 	const [remoteError, setRemoteError] = React.useState("");
 	const [bookingInit, setBookingInit] = React.useState(false);
-	const [comments, setComments] = React.useState("");
-	const [selectedDays, setSelectedDays] = React.useState([]);
+	const [comments, setComments] = React.useState(null);
+	const [selectedDays, setSelectedDays] = React.useState({});
+	const [bookingStatus, setbookingStatus] = React.useState(1);
 	const apifor_id = props.apifor + "_id";
 	function formatDate(date) {
 		var d = new Date(date),
@@ -64,11 +71,19 @@ const BookingModule = ({ booking_id, ...props }) => {
 
 		return [year, month, day].join("-");
 	}
+
+	const handlebookingstatusChange = (event) => {
+		setbookingStatus(event.target.value);
+	};
 	React.useEffect(() => {
 		if (booking_id) {
 			getBookings();
 		}
 	}, []);
+
+	React.useEffect(() => {
+		console.log("selectedDays :: ", selectedDays);
+	}, [selectedDays]);
 
 	function getBookings(data) {
 		let d = date;
@@ -78,7 +93,7 @@ const BookingModule = ({ booking_id, ...props }) => {
 		let mm = ("0" + (new Date(d).getMonth() + 1)).slice(-2);
 		let yyyy = new Date(d).getFullYear();
 		let payload = { month: mm, year: yyyy };
-		setSelectedDays([]);
+		setSelectedDays({});
 		setRemoteData([]);
 		if (props.apifor) {
 			payload[apifor_id] = booking_id;
@@ -97,10 +112,11 @@ const BookingModule = ({ booking_id, ...props }) => {
 							let year = date.getFullYear();
 							if (mm == mon && yyyy == year) {
 								let d = date.getDate();
-								dArray.push(d);
+								let prevSelected = selectedDays;
+								prevSelected[d] = obj.booking_status;
+								setSelectedDays(prevSelected);
 							}
 						});
-						setSelectedDays(dArray);
 					}
 				})
 				.catch(function (error) {
@@ -113,6 +129,7 @@ const BookingModule = ({ booking_id, ...props }) => {
 		let payload = {
 			date_of_booking: formatDate(date),
 			comment: comments,
+			booking_status: bookingStatus,
 		};
 
 		if (Object.values(payload).length <= 0) {
@@ -130,7 +147,10 @@ const BookingModule = ({ booking_id, ...props }) => {
 						setBookingInit(false);
 						let date = new Date(response.data.data.date_of_booking);
 						let d = date.getDate();
-						setSelectedDays(selectedDays.concat(d));
+						setSelectedDays({
+							...selectedDays,
+							[d]: response.data.data.booking_status,
+						});
 					}
 				})
 				.catch(function (error) {
@@ -177,15 +197,22 @@ const BookingModule = ({ booking_id, ...props }) => {
 											dayComponent
 										) => {
 											const date = new Date(day); // skip this step, it is required to support date libs
+											const selDays = Object.keys(selectedDays);
+
+											const currentDay = date.getDate();
 											const isSelected =
 												isInCurrentMonth &&
-												selectedDays.includes(date.getDate());
+												selDays.includes(currentDay.toString());
 
 											// You can also use our internal <Day /> component
 											return (
 												<div
 													style={
-														isSelected ? { backgroundColor: "grey" } : undefined
+														isSelected
+															? selectedDays[date.getDate()] == 1
+																? { backgroundColor: "yellow" }
+																: { backgroundColor: "red" }
+															: undefined
 													}
 												>
 													{dayComponent}
@@ -205,34 +232,97 @@ const BookingModule = ({ booking_id, ...props }) => {
 							</Grid>
 							<Grid item md={6} sm={6} xs={12}>
 								{bookingInit && (
-									<Grid item>
-										<Typography variant="h5">
-											Booking Date: <b>{new Date(date).toDateString()}</b>
-										</Typography>
-										<TextField
-											type="text"
-											onChange={handleCommentChange}
-											variant="outlined"
-											fullWidth
-											multiline
-											rows={4}
-											label="Booking Description"
-											InputProps={{
-												endAdornment: (
-													<InputAdornment position="end">
-														<IconButton
-															disabled={null == booking_id}
-															aria-label="book date"
-															onClick={bookDate}
-															edge="end"
-														>
-															<SendIcon />
-														</IconButton>
-													</InputAdornment>
-												),
-											}}
-										/>
-									</Grid>
+									<div>
+										{bookingStatus == 1 ? (
+											<div>
+												<Typography variant="h5">
+													Booking Date: <b>{new Date(date).toDateString()}</b>
+												</Typography>
+												<TextField
+													type="text"
+													onChange={handleCommentChange}
+													variant="outlined"
+													fullWidth
+													multiline
+													rows={4}
+													label="Fill Availability Details"
+													InputProps={{
+														endAdornment: (
+															<InputAdornment position="end">
+																<IconButton
+																	disabled={
+																		null == booking_id || null == bookingStatus
+																	}
+																	aria-label="book date"
+																	onClick={bookDate}
+																	edge="end"
+																>
+																	<SendIcon />
+																</IconButton>
+															</InputAdornment>
+														),
+													}}
+												/>
+											</div>
+										) : (
+											<div>
+												<TextField
+													select
+													label="Choose a Reason"
+													onChange={handleCommentChange}
+													InputProps={{
+														endAdornment: (
+															<InputAdornment position="end">
+																<IconButton
+																	disabled={
+																		null == booking_id ||
+																		null == bookingStatus ||
+																		null == comments
+																	}
+																	aria-label="book date"
+																	onClick={bookDate}
+																	edge="end"
+																>
+																	<SendIcon />
+																</IconButton>
+															</InputAdornment>
+														),
+													}}
+												>
+													{partly.map((option) => (
+														<MenuItem key={option} value={option}>
+															{option}
+														</MenuItem>
+													))}
+												</TextField>
+											</div>
+										)}
+
+										<hr />
+
+										<FormControl component="fieldset">
+											<FormLabel component="legend">Booking Status</FormLabel>
+											<RadioGroup
+												aria-label="bookingStatus"
+												name="bookingStatus"
+												value={bookingStatus}
+												onChange={handlebookingstatusChange}
+												row
+											>
+												<FormControlLabel
+													value="1"
+													control={<Radio />}
+													label="Partially"
+													checked={bookingStatus == 1}
+												/>
+												<FormControlLabel
+													value="0"
+													control={<Radio />}
+													label="Completely"
+												/>
+											</RadioGroup>
+										</FormControl>
+									</div>
 								)}
 								{!bookingInit && (
 									<List className={classes.root}>
@@ -254,7 +344,10 @@ const BookingModule = ({ booking_id, ...props }) => {
 																	className={classes.inline}
 																	color="textPrimary"
 																>
-																	Status : "Booked"
+																	Status :{" "}
+																	{data.booking_status == 1
+																		? "Partly"
+																		: "Completely"}
 																</Typography>
 																<br></br>
 																{data.comment}

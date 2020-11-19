@@ -112,7 +112,7 @@ const index = (props) => {
 
 			<div className={classes.root}>
 				<Grid alignContent="center" container spacing={2}>
-					<Grid item md={3} xs={12}>
+					{/* <Grid item md={3} xs={12}>
 						<Card
 							style={{ textAlign: "center", height: "100%" }}
 							className={classes.card}
@@ -131,7 +131,7 @@ const index = (props) => {
 								New Freelancer Application
 							</Typography>
 						</Card>
-					</Grid>
+					</Grid> */}
 
 					{adList &&
 						adList.map((ad, index) => (
