@@ -298,11 +298,11 @@ export const freelancerForm = [
 			id: "work_start_time",
 			label: "Shop's Work Time From",
 			placeholder: "",
-			type: "text",
+			type: "select",
+			options: { data: workTime },
 			ElementParams: { variant: "outlined" },
 			validationType: "string",
 
-			value: "",
 			validations: [
 				{
 					type: "required",
@@ -314,7 +314,8 @@ export const freelancerForm = [
 			id: "work_end_time",
 			label: "Shop's Work Time To",
 			placeholder: "",
-			type: "text",
+			type: "select",
+			options: { data: workTime },
 			ElementParams: { variant: "outlined" },
 			validationType: "string",
 
