@@ -106,17 +106,18 @@ const BookingModule = ({ booking_id, ...props }) => {
 						setRemoteData(response.data.data.data);
 						setComments("");
 						setBookingInit(false);
+						let prevSelected = {};
 						response.data.data.data.forEach((obj) => {
 							let date = new Date(obj.date_of_booking);
 							let mon = ("0" + (date.getMonth() + 1)).slice(-2);
 							let year = date.getFullYear();
 							if (mm == mon && yyyy == year) {
 								let d = date.getDate();
-								let prevSelected = selectedDays;
+
 								prevSelected[d] = obj.booking_status;
-								setSelectedDays(prevSelected);
 							}
 						});
+						setSelectedDays(prevSelected);
 					}
 				})
 				.catch(function (error) {
@@ -233,11 +234,11 @@ const BookingModule = ({ booking_id, ...props }) => {
 							<Grid item md={6} sm={6} xs={12}>
 								{bookingInit && (
 									<div>
+										<Typography variant="h5">
+											Booking Date: <b>{new Date(date).toDateString()}</b>
+										</Typography>
 										{bookingStatus == 1 ? (
 											<div>
-												<Typography variant="h5">
-													Booking Date: <b>{new Date(date).toDateString()}</b>
-												</Typography>
 												<TextField
 													type="text"
 													onChange={handleCommentChange}
@@ -267,6 +268,7 @@ const BookingModule = ({ booking_id, ...props }) => {
 										) : (
 											<div>
 												<TextField
+													fullWidth
 													select
 													label="Choose a Reason"
 													onChange={handleCommentChange}
