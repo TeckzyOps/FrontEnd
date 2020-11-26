@@ -414,4 +414,26 @@ export const freelancerForm = [
 			],
 		},
 	],
+	{
+		id: "agreement",
+		name: "accept",
+		type: "checkbox",
+		label: (
+			<span>
+				I Accept Terms of use, privacy policy and send KYC request to Indianwala
+			</span>
+		),
+		validationType: "boolean",
+
+		validations: [
+			{
+				type: "required",
+				params: ["Field is required"],
+			},
+			{
+				type: "oneOf",
+				params: [[true], "You must accept the terms and conditions"],
+			},
+		],
+	},
 ];
