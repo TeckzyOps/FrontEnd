@@ -257,9 +257,11 @@ const FormContainer = React.forwardRef((props, refs) => {
 										</MenuItem>
 									))}
 							</Field>
-							<FormHelperText error>
-								{prop.errors.hasOwnProperty(item.id) && prop.errors[item.id]}
-							</FormHelperText>
+							{/* {prop.touched[item.id] && (
+								<FormHelperText error>
+									{prop.errors.hasOwnProperty(item.id) && prop.errors[item.id]}
+								</FormHelperText>
+							)} */}
 						</FormControl>
 					</Box>
 				);
@@ -319,8 +321,12 @@ const FormContainer = React.forwardRef((props, refs) => {
 							// 		: "Enter " + toTitleCase(item.id)
 							// }
 							onChange={prop.handleChange}
-							error={"error"}
 						/>
+						{/* {prop.touched[item.id] && (
+							<FormHelperText error>
+								{prop.errors.hasOwnProperty(item.id) && prop.errors[item.id]}
+							</FormHelperText>
+						)} */}
 					</Box>
 				);
 				break;
@@ -345,8 +351,12 @@ const FormContainer = React.forwardRef((props, refs) => {
 							// 		: "Enter " + toTitleCase(item.id)
 							// }
 							onChange={prop.handleChange}
-							error={"error"}
 						/>
+						{/* {prop.touched[item.id] && (
+							<FormHelperText error>
+								{prop.errors.hasOwnProperty(item.id) && prop.errors[item.id]}
+							</FormHelperText>
+						)} */}
 					</Box>
 				);
 		}
@@ -378,7 +388,9 @@ const FormContainer = React.forwardRef((props, refs) => {
 				);
 			}
 		});
-	const schema = Yup.object().shape(props.elements.reduce(createYupSchema, {}));
+	const schema = Yup.object().shape(
+		props.elements.flat().reduce(createYupSchema, {})
+	);
 
 	// const handleSubmit = (onSubmitProps) => {
 	// 	setSubmitting(false);

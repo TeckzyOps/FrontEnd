@@ -214,6 +214,9 @@ function Header(props) {
 				{joinusrows.map((item, index) => (
 					<div keys={index}>
 						<ListItem button onClick={() => handlejoinusExpand(item.services)}>
+							<ListItemIcon>
+								<AccountCircle />
+							</ListItemIcon>
 							<ListItemText primary={item.services} />
 							{expandjoinus == item.services ? <ExpandLess /> : <ExpandMore />}
 						</ListItem>

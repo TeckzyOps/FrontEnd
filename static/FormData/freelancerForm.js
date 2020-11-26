@@ -42,7 +42,7 @@ export const freelancerForm = [
 				},
 				{
 					type: "min",
-					params: [5, "Mobile/E-Mail cannot be less than 5 characters"],
+					params: [5, "Field cannot be less than 5 characters"],
 				},
 			],
 		},
@@ -64,7 +64,7 @@ export const freelancerForm = [
 				},
 				{
 					type: "min",
-					params: [5, "Mobile/E-Mail cannot be less than 5 characters"],
+					params: [5, "Field cannot be less than 5 characters"],
 				},
 			],
 		},
@@ -84,7 +84,7 @@ export const freelancerForm = [
 				},
 				{
 					type: "min",
-					params: [5, "Mobile/E-Mail cannot be less than 5 characters"],
+					params: [5, "Field cannot be less than 5 characters"],
 				},
 			],
 		},
@@ -106,7 +106,7 @@ export const freelancerForm = [
 				},
 				{
 					type: "min",
-					params: [5, "Mobile/E-Mail cannot be less than 5 characters"],
+					params: [5, "Field cannot be less than 5 characters"],
 				},
 			],
 		},
@@ -126,7 +126,7 @@ export const freelancerForm = [
 				},
 				{
 					type: "min",
-					params: [5, "Mobile/E-Mail cannot be less than 5 characters"],
+					params: [5, "Field cannot be less than 5 characters"],
 				},
 			],
 		},
@@ -145,10 +145,6 @@ export const freelancerForm = [
 					type: "required",
 					params: ["Field is required"],
 				},
-				{
-					type: "min",
-					params: [5, "Mobile/E-Mail cannot be less than 5 characters"],
-				},
 			],
 		},
 		{
@@ -165,10 +161,6 @@ export const freelancerForm = [
 					type: "required",
 					params: ["Field is required"],
 				},
-				{
-					type: "min",
-					params: [5, "Mobile/E-Mail cannot be less than 5 characters"],
-				},
 			],
 		},
 	],
@@ -183,10 +175,6 @@ export const freelancerForm = [
 
 		value: "",
 		validations: [
-			{
-				type: "required",
-				params: ["Field is required"],
-			},
 			{
 				type: "max",
 				params: [100, "Maximum 100 words will be accepted!"],
@@ -267,14 +255,8 @@ export const freelancerForm = [
 		type: "select",
 
 		validationType: "string",
-		options: { data: cities, dependsOn: "district" },
+		options: { data: ["Others"] },
 		value: "",
-		validations: [
-			{
-				type: "required",
-				params: ["Field is required"],
-			},
-		],
 	},
 	{
 		id: "offer_tagline",
@@ -286,12 +268,7 @@ export const freelancerForm = [
 		validationType: "string",
 
 		value: "",
-		validations: [
-			{
-				type: "required",
-				params: ["Field is required"],
-			},
-		],
+		validations: [],
 	},
 	[
 		{
@@ -358,14 +335,7 @@ export const freelancerForm = [
 			validationType: "string",
 
 			value: "",
-			validations: [
-				{
-					type: "email",
-					params: [],
-					type: "required",
-					params: ["Field is required"],
-				},
-			],
+			validations: [],
 		},
 		{
 			id: "office_number",
@@ -394,12 +364,7 @@ export const freelancerForm = [
 			validationType: "string",
 			ElementParams: { variant: "outlined" },
 			value: "",
-			validations: [
-				{
-					type: "required",
-					params: ["Field is required"],
-				},
-			],
+			validations: [],
 		},
 		{
 			id: "commission_percent",

@@ -48,7 +48,7 @@ let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
 const sectionMargin = (margin) => margin * 2;
 const useStyles = makeStyles((theme) => ({
-	root: { paddingTop: "11vh" },
+	root: { paddingTop: "11vh", flexGrow: 1 },
 	details: {
 		display: "flex",
 		flexDirection: "column",
