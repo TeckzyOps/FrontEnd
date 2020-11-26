@@ -48,7 +48,7 @@ export const freelancerForm = [
 		},
 		{
 			id: "sub_service",
-			label: "Sub Service",
+			label: "Sub Service Category",
 			placeholder: "",
 			ElementParams: {
 				multiple: true,
@@ -70,7 +70,7 @@ export const freelancerForm = [
 		},
 		{
 			id: "service_area",
-			label: "Service Area",
+			label: "Service's Area",
 			placeholder: "",
 			type: "select",
 
@@ -93,7 +93,7 @@ export const freelancerForm = [
 	[
 		{
 			id: "min_service_price",
-			label: "Minimum Sub Service",
+			label: "Minimum Service's Price Range",
 			placeholder: "",
 			type: "text",
 			validationType: "string",
@@ -112,7 +112,7 @@ export const freelancerForm = [
 		},
 		{
 			id: "max_service_price",
-			label: "Maximum Service Price",
+			label: "Maximum Service's Price Range",
 			placeholder: "",
 			type: "text",
 			ElementParams: { variant: "outlined" },
@@ -149,7 +149,7 @@ export const freelancerForm = [
 		},
 		{
 			id: "bussiness_since",
-			label: "Profession Since",
+			label: "Profession's Since",
 			placeholder: "",
 
 			type: "select",
@@ -183,7 +183,7 @@ export const freelancerForm = [
 	},
 	{
 		id: "address",
-		label: "Profession's Address",
+		label: "Profession's Add",
 		ElementParams: { variant: "outlined" },
 		placeholder: "",
 		type: "textarea",
@@ -260,7 +260,7 @@ export const freelancerForm = [
 	},
 	{
 		id: "offer_tagline",
-		label: "Offer Tagline",
+		label: "Offer/Special Tagline",
 		placeholder: "",
 		type: "select",
 		options: { data: tagline },
@@ -273,7 +273,7 @@ export const freelancerForm = [
 	[
 		{
 			id: "work_start_time",
-			label: "Shop's Work Time From",
+			label: "Office/Shop's Work Time From",
 			placeholder: "",
 			type: "select",
 			options: { data: workTime },
@@ -289,7 +289,7 @@ export const freelancerForm = [
 		},
 		{
 			id: "work_end_time",
-			label: "Shop's Work Time To",
+			label: "Office/Shop's Work Time To",
 			placeholder: "",
 			type: "select",
 			options: { data: workTime },
@@ -339,7 +339,7 @@ export const freelancerForm = [
 		},
 		{
 			id: "office_number",
-			label: "Office Number",
+			label: "Profession's Contact Number",
 			placeholder: "",
 			type: "text",
 			ElementParams: { variant: "outlined" },
@@ -358,7 +358,7 @@ export const freelancerForm = [
 	[
 		{
 			id: "gst_no",
-			label: "GST Number",
+			label: "If Available GST Number",
 			placeholder: "",
 			type: "text",
 			validationType: "string",
@@ -368,7 +368,7 @@ export const freelancerForm = [
 		},
 		{
 			id: "commission_percent",
-			label: "Commission Percent",
+			label: "Commission Calculate On 10%",
 			placeholder: "",
 			type: "text",
 			validationType: "string",
