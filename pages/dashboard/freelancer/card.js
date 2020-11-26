@@ -27,6 +27,7 @@ theme = responsiveFontSizes(theme);
 const useStyles = makeStyles((theme) => ({
 	root: {
 		flexGrow: 1,
+		padding: theme.spacing(2),
 	},
 	paper: {
 		padding: theme.spacing(2),
@@ -34,8 +35,8 @@ const useStyles = makeStyles((theme) => ({
 		maxWidth: 500,
 	},
 	image: {
-		width: 100,
-		height: 100,
+		width: 115,
+		height: 120,
 	},
 	img: {
 		float: "left",

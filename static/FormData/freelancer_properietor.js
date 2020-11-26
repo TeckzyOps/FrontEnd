@@ -11,6 +11,7 @@ export const freelancerProperietor = [
 			validationType: "string",
 			ElementParams: {
 				disabled: true,
+				variant: "outlined",
 			},
 			value: "",
 			validations: [
@@ -27,6 +28,7 @@ export const freelancerProperietor = [
 			type: "text",
 			ElementParams: {
 				disabled: true,
+				variant: "outlined",
 			},
 			validationType: "string",
 			value: "",
@@ -44,6 +46,7 @@ export const freelancerProperietor = [
 			type: "text",
 			ElementParams: {
 				disabled: true,
+				variant: "outlined",
 			},
 			validationType: "string",
 			value: "",
@@ -62,6 +65,7 @@ export const freelancerProperietor = [
 			type: "text",
 			ElementParams: {
 				disabled: true,
+				variant: "outlined",
 			},
 			validationType: "number",
 			value: "",
@@ -81,8 +85,10 @@ export const freelancerProperietor = [
 			id: "email",
 			label: "Email",
 			placeholder: "",
+
 			ElementParams: {
 				disabled: true,
+				variant: "outlined",
 			},
 			type: "text",
 			validationType: "string",

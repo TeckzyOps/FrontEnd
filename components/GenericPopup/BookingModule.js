@@ -42,6 +42,10 @@ import { useTheme } from "@material-ui/core/styles";
 import { partly } from "~static/text/bookingCalendar";
 const useStyles = makeStyles((theme) => ({
 	root: {},
+	booked: {
+		boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
+		borderRadius: "50%",
+	},
 }));
 
 const BookingModule = ({ booking_id, ...props }) => {
@@ -208,11 +212,12 @@ const BookingModule = ({ booking_id, ...props }) => {
 											// You can also use our internal <Day /> component
 											return (
 												<div
+													className={isSelected && classes.booked}
 													style={
 														isSelected
 															? selectedDays[date.getDate()] == 1
-																? { backgroundColor: "yellow" }
-																: { backgroundColor: "red" }
+																? { backgroundColor: "#f6d55c" }
+																: { backgroundColor: "#ed5538" }
 															: undefined
 													}
 												>

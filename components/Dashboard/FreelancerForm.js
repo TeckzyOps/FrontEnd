@@ -302,25 +302,30 @@ const freelancerform = (props) => {
 		let payload = new FormData();
 
 		let proceed = false;
-		let valKeyArr = Object.keys(values);
-		for (var i = 0; i < valKeyArr.length; i++) {
-			if (freelancerData[valKeyArr[i]] != values[valKeyArr[i]]) {
-				proceed = true;
-				break;
+		if (values.catalog_pdf_path) {
+			payload.append("catalog_pdf_path", values.catalog_pdf_path);
+			proceed = true;
+		} else {
+			let valKeyArr = Object.keys(values);
+			for (var i = 0; i < valKeyArr.length; i++) {
+				if (freelancerData[valKeyArr[i]] != values[valKeyArr[i]]) {
+					proceed = true;
+					break;
+				}
 			}
-		}
-
-		if (proceed) {
-			for (var i in values) {
-				if (Array.isArray(values[i])) {
-					if (values[i].length > 0) {
-						payload.append(i, JSON.stringify(values[i]));
+			if (proceed) {
+				for (var i in values) {
+					if (Array.isArray(values[i])) {
+						if (values[i].length > 0) {
+							payload.append(i, JSON.stringify(values[i]));
+						}
+					} else {
+						payload.append(i, values[i] + "");
 					}
-				} else {
-					payload.append(i, values[i] + "");
 				}
 			}
 		}
+
 		let want_advertisement = 0;
 		let except_shaadiwala_offer = 0;
 		// Object.keys(fileDropdown).forEach((dropdown) => {
@@ -369,7 +374,10 @@ const freelancerform = (props) => {
 								title: "Operation Status",
 								text: "Operation Completed Successfully",
 								submitText: "Done",
-								submitURL: routerLink.starter.freelancernew + "?id=" + id,
+								submitURL:
+									routerLink.starter.freelancernew +
+									"?id=" +
+									response.data.data.id,
 							});
 							resetForm();
 						}
@@ -446,6 +454,7 @@ const freelancerform = (props) => {
 		); // fragment locator
 		return !!pattern.test(str);
 	}
+
 	const profileSchema = Yup.object().shape({
 		service_category: Yup.string().required("Required"),
 		sub_service: Yup.string().required("Required"),
@@ -500,12 +509,15 @@ const freelancerform = (props) => {
 			})
 			.test(
 				"fileType",
-				"Unsupported File Format, Upload a JPEG,JPG or PNG file",
+				"Unsupported File Format, Upload a JPEG,JPG,PNG or PDF file",
 				(value) => {
 					if (null != value && value.type) {
-						return ["image/png", "image/jpg", "image/jpeg"].includes(
-							value.type
-						);
+						return [
+							"image/png",
+							"image/jpg",
+							"image/jpeg",
+							"application/pdf",
+						].includes(value.type);
 					}
 					return true;
 				}
@@ -677,7 +689,7 @@ const freelancerform = (props) => {
 					</Accordion>
 				</Grid>
 				<Grid item xs={12}>
-					<Accordion expanded={false} disabled={props.router.query.id == null}>
+					<Accordion disabled={props.router.query.id == null}>
 						<AccordionSummary
 							expandIcon={<ArrowForwardIcon />}
 							aria-controls="panel1c-content"
@@ -687,6 +699,176 @@ const freelancerform = (props) => {
 
 							<Typography>Update Catalog Format</Typography>
 						</AccordionSummary>
+
+						<Formik
+							enableReinitialize
+							initialValues={{ catalog_pdf_path: null }}
+							validationSchema={Yup.object().shape({
+								catalog_pdf_path: Yup.mixed()
+									.test("fileSize", "File Size is too large", (value) => {
+										if (null != value && value.size) {
+											return value.size <= 2000000;
+										}
+										return true;
+									})
+									.test(
+										"fileType",
+										"Unsupported File Format, Upload a JPEG,JPG,PNG or PDF file",
+										(value) => {
+											if (null != value && value.type) {
+												return [
+													"image/png",
+													"image/jpg",
+													"image/jpeg",
+													"application/pdf",
+												].includes(value.type);
+											}
+											return true;
+										}
+									),
+							})}
+							onSubmit={(values, { setSubmitting, resetForm, setFieldError }) =>
+								_handleSubmit({
+									values,
+									setSubmitting,
+									resetForm,
+									setFieldError,
+								})
+							}
+						>
+							{(formprops) => {
+								const {
+									values,
+									touched,
+									errors,
+									setFieldValue,
+
+									handleChange,
+
+									isSubmitting,
+									resetForm,
+								} = formprops;
+								console.log("ERROR", formprops);
+								return (
+									<Form>
+										<Grid container justify="center" alignItems="center">
+											<Grid item xs={12}>
+												<Box margin={1}>
+													<Field
+														name="catalog_pdf_path"
+														margin="normal"
+														label="Upload Catalog"
+														className={
+															"form-check-input " +
+															(errors["document"] && touched["document"]
+																? " is-invalid"
+																: "")
+														}
+													>
+														{({ field, form, meta }) => (
+															<div>
+																<input
+																	id={field.name}
+																	onClick="this.value = null"
+																	style={{ display: "none" }}
+																	name={field.name}
+																	type="file"
+																	onChange={(event) => {
+																		setFieldValue(
+																			field.name,
+																			event.currentTarget.files[0]
+																		);
+																	}}
+																/>
+																<label htmlFor={field.name}>
+																	<Button
+																		variant="contained"
+																		color="primary"
+																		component="span"
+																	>
+																		Choose Catalog File
+																	</Button>
+																</label>
+															</div>
+														)}
+													</Field>
+
+													{errors.hasOwnProperty("catalog_pdf_path") && (
+														<div style={{ color: "red" }} component="div">
+															{errors["catalog_pdf_path"]}
+														</div>
+													)}
+												</Box>
+											</Grid>
+
+											<Grid item xs={12}>
+												<table
+													style={{
+														borderCollapse: "collapse",
+														borderSpacing: 0,
+														width: "100%",
+														border: "1px solid #ddd",
+													}}
+												>
+													<thead>
+														<tr>
+															<th>File Name</th>
+															<th>File Type</th>
+															<th>File Size</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td>
+																{props.getNested(
+																	formprops,
+																	"values",
+																	"catalog_pdf_path"
+																) && values.catalog_pdf_path.name}
+															</td>
+															<td>
+																{props.getNested(
+																	formprops,
+																	"values",
+																	"catalog_pdf_path"
+																) && values.catalog_pdf_path.type}
+															</td>
+															<td>
+																{props.getNested(
+																	formprops,
+																	"values",
+																	"catalog_pdf_path"
+																) && values.catalog_pdf_path.size + "MB"}
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</Grid>
+
+											<Divider />
+
+											<Grid container justify="flex-end">
+												{!isSubmitting ? (
+													<Button onClick={resetForm} size="small">
+														Reset To Default
+													</Button>
+												) : (
+													t("common:cant_revert")
+												)}
+												<Button
+													disable={isSubmitting}
+													type="submit"
+													color="primary"
+													variant="outlined"
+												>
+													Save details
+												</Button>
+											</Grid>
+										</Grid>
+									</Form>
+								);
+							}}
+						</Formik>
 					</Accordion>
 				</Grid>
 
@@ -749,7 +931,7 @@ const freelancerform = (props) => {
 					</Accordion>
 				</Grid>
 				<Grid item xs={12}>
-					<Accordion expanded={false} disabled={props.router.query.id == null}>
+					<Accordion expanded={false} disabled={true}>
 						<AccordionSummary
 							expandIcon={<ArrowForwardIcon />}
 							aria-controls="panel1c-content"
