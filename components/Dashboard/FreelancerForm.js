@@ -315,13 +315,16 @@ const freelancerform = (props) => {
 			}
 			if (proceed) {
 				for (var i in values) {
-					if (Array.isArray(values[i])) {
-						if (values[i].length > 0) {
-							payload.append(i, JSON.stringify(values[i]));
+					if(i != "agreement"){
+						if (Array.isArray(values[i])) {
+							if (values[i].length > 0) {
+								payload.append(i, JSON.stringify(values[i]));
+							}
+						} else {
+							payload.append(i, values[i] + "");
 						}
-					} else {
-						payload.append(i, values[i] + "");
 					}
+					
 				}
 			}
 		}
