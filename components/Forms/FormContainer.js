@@ -182,25 +182,21 @@ const FormContainer = React.forwardRef((props, refs) => {
 				return (
 					<Box margin={1}>
 						<Field
+						{...params}
 							type={item.type}
 							component={Component}
 							name={item.id}
-							className={
-								"form-check-input " +
-								(prop.errors[item.id] && prop.touched[item.id]
-									? " is-invalid"
-									: "")
-							}
+							indeterminate={false}
+							Label={{ label: item.label }}
+							onChange={prop.handleChange}
+							
 						/>
-						<label htmlFor="acceptTerms" className="form-check-label">
-							{item.label}
-						</label>
-						<ErrorMessage
-							style={{ color: "red" }}
-							name={item.id}
-							component="div"
-							className="invalid-feedback"
-						/>
+						
+						
+								<FormHelperText error>
+									{prop.errors.hasOwnProperty(item.id) && prop.errors[item.id]}
+								</FormHelperText>
+							
 					</Box>
 				);
 				break;
@@ -217,7 +213,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 							</InputLabel>
 							<Field
 								component={Select}
-								displayEmpty={true}
+								
 								{...params}
 								onChange={prop.handleChange}
 								type="text"
@@ -236,10 +232,11 @@ const FormContainer = React.forwardRef((props, refs) => {
 							>
 								<Button
 									value=""
-									style={{ width: "100%" }}
+									style={{ width: "100%"}}
 									variant="contained"
 									color="primary"
 									disableElevation
+									
 									onClick={() =>
 										handleSelectClose(
 											item.id,
@@ -257,11 +254,11 @@ const FormContainer = React.forwardRef((props, refs) => {
 										</MenuItem>
 									))}
 							</Field>
-							{/* {prop.touched[item.id] && (
+							{prop.touched[item.id] && (
 								<FormHelperText error>
 									{prop.errors.hasOwnProperty(item.id) && prop.errors[item.id]}
 								</FormHelperText>
-							)} */}
+							)}
 						</FormControl>
 					</Box>
 				);

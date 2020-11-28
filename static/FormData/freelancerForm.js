@@ -42,7 +42,7 @@ export const freelancerForm = [
 				},
 				{
 					type: "min",
-					params: [5, "Field cannot be less than 5 characters"],
+					params: [1, "Field cannot be less than 5 characters"],
 				},
 			],
 		},
@@ -64,7 +64,7 @@ export const freelancerForm = [
 				},
 				{
 					type: "min",
-					params: [5, "Field cannot be less than 5 characters"],
+					params: [1, "Field cannot be less than 5 characters"],
 				},
 			],
 		},
@@ -82,10 +82,7 @@ export const freelancerForm = [
 					type: "required",
 					params: ["Field is required"],
 				},
-				{
-					type: "min",
-					params: [5, "Field cannot be less than 5 characters"],
-				},
+				
 			],
 		},
 	],
@@ -104,10 +101,7 @@ export const freelancerForm = [
 					type: "required",
 					params: ["Field is required"],
 				},
-				{
-					type: "min",
-					params: [5, "Field cannot be less than 5 characters"],
-				},
+				
 			],
 		},
 		{
@@ -124,10 +118,7 @@ export const freelancerForm = [
 					type: "required",
 					params: ["Field is required"],
 				},
-				{
-					type: "min",
-					params: [5, "Field cannot be less than 5 characters"],
-				},
+				
 			],
 		},
 	],
@@ -366,24 +357,24 @@ export const freelancerForm = [
 			value: "",
 			validations: [],
 		},
-		{
-			id: "commission_percent",
-			label: "Commission Calculate On 10%",
-			placeholder: "",
-			type: "text",
-			validationType: "string",
-			ElementParams: { variant: "outlined" },
-			value: "",
-			validations: [
-				{
-					type: "required",
-					params: ["Field is required"],
-				},
-			],
-		},
+		// {
+		// 	id: "commission_percent",
+		// 	label: "Commission Calculate On 10%",
+		// 	placeholder: "",
+		// 	type: "text",
+		// 	validationType: "string",
+		// 	ElementParams: { variant: "outlined" },
+		// 	value: "",
+		// 	validations: [
+		// 		{
+		// 			type: "required",
+		// 			params: ["Field is required"],
+		// 		},
+		// 	],
+		// },
 		{
 			id: "commission_range",
-			label: "Commission Range",
+			label: "10% Commission on Booking Value",
 			placeholder: "",
 			type: "select",
 			validationType: "string",
@@ -418,6 +409,9 @@ export const freelancerForm = [
 		id: "agreement",
 		name: "accept",
 		type: "checkbox",
+		ElementParams: {
+			checked: true,
+		},
 		label: (
 			<span>
 				I Accept Terms of use, privacy policy and send KYC request to Indianwala
