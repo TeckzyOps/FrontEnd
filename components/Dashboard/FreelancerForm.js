@@ -160,7 +160,6 @@ const freelancerform = (props) => {
 		office_email: "",
 		office_number: "",
 		gst_no: "",
-		commission_percent: "",
 		commission_range: "",
 		paid_leads: "",
 	});
