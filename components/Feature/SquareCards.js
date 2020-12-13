@@ -38,7 +38,7 @@ const tiers = [
 	{
 		title: "Freelancing",
 		imgsrc: freelance,
-		url: routerLink.starter.freelancer,
+		url: routerLink.starter.freelancerSearch,
 	},
 	{
 		title: "Vendor",

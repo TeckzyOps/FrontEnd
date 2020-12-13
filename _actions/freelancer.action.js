@@ -8,6 +8,7 @@ export const freelancerActions = {
 	getMedia,
 	bookDate,
 	getbookDate,
+	search,
 };
 
 function createFreelancer(payload, id) {
@@ -42,5 +43,10 @@ function submitMedia(payload) {
 
 function getMedia(payload) {
 	let apiEndpoint = "getFreelancerFile";
+	return Service.get(apiEndpoint, payload);
+}
+
+function search(payload) {
+	let apiEndpoint = "freelancerFilter";
 	return Service.get(apiEndpoint, payload);
 }

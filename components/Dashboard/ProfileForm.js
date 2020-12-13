@@ -20,8 +20,9 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import Tooltip from "@material-ui/core/Tooltip";
 import { profileActions } from "../../_actions/profile.action";
-import DateFnsUtils from "@date-io/date-fns";
+
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import DateFnsUtils from "@date-io/date-fns";
 import {
 	KeyboardDatePicker,
 	MuiPickersUtilsProvider,
@@ -124,8 +125,6 @@ const ProfileForm = (props) => {
 
 	const classes = useStyles();
 	const { t } = props;
-
-	
 
 	const { postloginsetToken } = useAuth();
 	const [details, setDetails] = useState({});

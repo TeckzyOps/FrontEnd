@@ -10,6 +10,7 @@ const link = {
 		joinus: "/join_us",
 		freelancernew: "/dashboard/freelancer/create",
 		freelancerDetails: "/dashboard/freelancer/details",
+		freelancerSearch: "/dashboard/freelancer/ListAds",
 		freelancerVids: "/dashboard/freelancer/upload_videos",
 		freelancerImg: "/dashboard/freelancer/upload_images",
 		matrimony: "/dashboard/matrimony/",

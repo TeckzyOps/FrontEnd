@@ -66,7 +66,7 @@ export default function CustomCard({ ad, ...props }) {
 								ID : &nbsp;
 							</Typography>
 							<Typography variant="caption" color="inherit" noWrap>
-								IFS0000001 <br /> Freelancer
+								{ad.freelancer_member_id} <br /> Freelancer
 							</Typography>
 						</MuiThemeProvider>
 					</Grid>
