@@ -129,6 +129,7 @@ const FreelancerVid = (props) => {
 	const [vidTitle, setVidTitle] = React.useState("");
 	const [selectedVideo, setSelectedVideo] = React.useState({});
 	const [open, setOpen] = React.useState(false);
+	let textInput = React.useRef(null);
 	const theme = useTheme();
 	const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 	React.useEffect(() => {
@@ -137,6 +138,7 @@ const FreelancerVid = (props) => {
 	}, []);
 
 	function getAllVideos() {
+		textInput.current.value = null;
 		freelancerActions
 			.getMedia({ freelancer_id: props.router.query.id, file_type: 2 })
 			.then(function (response) {
@@ -206,7 +208,7 @@ const FreelancerVid = (props) => {
 										<Link
 											style={{ textDecoration: "none" }}
 											href={
-												routerLink.starter.freelancerDetails +
+												routerLink.starter.freelancernew +
 												"?id=" +
 												props.router.query.id
 											}
@@ -240,6 +242,8 @@ const FreelancerVid = (props) => {
 												variant="outlined"
 												fullWidth
 												label="Video Title"
+												inputRef={textInput}
+												
 											/>
 										</Grid>
 									</Grid>
@@ -329,7 +333,7 @@ const FreelancerVid = (props) => {
 						{/* End hero unit */}
 						<Grid container spacing={2}>
 							{remoteData.map((card, index) => (
-								<Grid key={index} item md={6} xs={12}>
+								<Grid key={index} item xs={12} sm={6} md={4}>
 									<ButtonBase
 										onClick={() => playselected(card.file_path, card.title)}
 										focusRipple

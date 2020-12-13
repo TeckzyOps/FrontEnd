@@ -1,230 +1,549 @@
 import React from "react";
-import Router from "next/router";
 import withAuth from "../../../components/Hoc/withAuth";
-import { makeStyles } from "@material-ui/core/styles";
 import {
-	Grid,
-	Card,
-	CardActions,
-	CardContent,
-	CardMedia,
-	Divider,
-	Button,
-} from "@material-ui/core";
-import Head from "next/head";
-import LocalStorageService from "../../../_services/LocalStorageService";
-import DashboardWrapper from "../../../components/Dashboard/DashboardWrapper";
-import BookingModule from "../../../components/GenericPopup/BookingModule";
-import Typography from "@material-ui/core/Typography";
-import ControlPointIcon from "@material-ui/icons/ControlPoint";
-import IconButton from "@material-ui/core/IconButton";
-import ExploreIcon from "@material-ui/icons/Explore";
-import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add";
-import routerLink from "~/static/text/link";
-import Link from "@material-ui/core/Link";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import api, {
-	addBearerToken,
-	removeBearerToken,
-} from "../../../utils/httpClient";
-import { freelancerActions } from "../../../_actions/freelancer.action";
-const localStorageService = LocalStorageService.getService();
-import {
+	makeStyles,
+	useTheme,
 	createMuiTheme,
 	responsiveFontSizes,
 	MuiThemeProvider,
 } from "@material-ui/core/styles";
-
+import BrokenImageIcon from "@material-ui/icons/BrokenImage";
+import { Formik, Field, Form, useField, FieldArray } from "formik";
+import Router from "next/router";
+import cookies from "js-cookie";
+import * as Yup from "yup";
+import DateFnsUtils from "@date-io/date-fns";
+import {
+	KeyboardDatePicker,
+	MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
+import { TextField, Switch } from "formik-material-ui";
+import {
+	Grid,
+	Button,
+	Dialog,
+	Select,
+	Container,
+	ButtonBase,
+	FormControl,
+	Box,
+	MenuItem,
+	InputLabel,
+} from "@material-ui/core";
+import Head from "next/head";
+import LocalStorageService from "../../../_services/LocalStorageService";
+import DashboardWrapper from "../../../components/Dashboard/DashboardWrapper";
+import Typography from "@material-ui/core/Typography";
+import CustomCard from "./card";
+import routerLink from "~/static/text/link";
+import Link from "@material-ui/core/Link";
+import Pagination from "@material-ui/lab/Pagination";
+import Slide from "@material-ui/core/Slide";
+import AppBar from "@material-ui/core/AppBar";
+import FormContainer from "./../../../components/Forms/FormContainer";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import MobileStepper from "@material-ui/core/MobileStepper";
+import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
+import Avatar from "@material-ui/core/Avatar";
+import { freelancerFilter } from "~static/FormData/freelancerForms.js";
+import Header from "../../../components/Header";
+import Divider from "../../../components/CustomElements/Divider/";
+import { freelancerActions } from "../../../_actions/freelancer.action";
+import broken_image from "~/static/images/broken_image.svg";
+import FilterCard from "./filterCard";
+const localStorageService = LocalStorageService.getService();
 let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
 const useStyles = makeStyles((theme) => ({
-	root: {
-		paddingTop: "11vh",
-		padding: theme.spacing(1),
-		"& > *": {
-			margin: theme.spacing(1),
-		},
+	root: { paddingTop: "11vh", flexGrow: 1 },
+	appBar: {
+		position: "relative",
+	},
+	title: {
+		marginLeft: theme.spacing(1),
+		flex: 1,
+	},
+	formControl: {
+		margin: theme.spacing(1),
+		minWidth: 120,
 	},
 
-	card: {
-		maxWidth: 300,
-		margin: "auto",
-		transition: "0.3s",
-		boxShadow: "0 8px 40px -12px rgba(0,0,0,0.3)",
-		"&:hover": {
-			boxShadow: "0 16px 70px -12.125px rgba(0,0,0,0.3)",
-		},
+	labelRoot: {
+		fontSize: 18,
+		fontWeight: "bold",
+		backgroundColor: "white",
 	},
-	media: {
-		paddingTop: "56.25%",
+	Dividercontainer: {
+		display: "flex",
+		alignItems: "center",
+	},
+	img: {
+		height: 255,
+		maxWidth: 400,
+		overflow: "hidden",
+		display: "block",
+		width: "100%",
+	},
+	brokenImg: {
+		width: 50,
+	},
+	border: {
+		borderBottom: "1px solid black",
+		width: "100%",
+	},
+	large: {
+		width: theme.spacing(7),
+		height: theme.spacing(7),
 	},
 	content: {
-		textAlign: "left",
-		padding: theme.spacing(3),
-	},
-	divider: {
-		margin: `${theme.spacing(3)}px 0`,
-	},
-	heading: {
-		fontWeight: "bold",
-	},
-	subheading: {
-		lineHeight: 1.8,
-	},
-	avatar: {
-		display: "inline-block",
-		border: "2px solid white",
-		"&:not(:first-of-type)": {
-			marginLeft: -theme.spacing(),
-		},
-	},
-	addCard: {
-		justifyContent: "center",
-		alignItems: "center",
-		display: "flex",
-		height: "100%",
-		maxWidth: 345,
-		flexDirection: "column",
+		padding: "0 10px 0 10px",
 	},
 }));
-const index = (props) => {
-	const classes = useStyles();
-	const [adList, setadList] = React.useState([]);
-	const [bookingPopup, setBookingPopup] = React.useState(false);
-	React.useEffect(() => {
-		freelancerActions
-			.getFreelancer()
-			.then(function (response) {
-				console.log("ressss", response);
 
-				if (Array.isArray(response.data.data)) {
-					setadList(response.data.data);
+const Transition = React.forwardRef(function Transition(props, ref) {
+	return <Slide direction="up" ref={ref} {...props} />;
+});
+
+const MatrimonySearch = (props) => {
+	const classes = useStyles();
+	const theme = useTheme();
+	const [activeStep, setActiveStep] = React.useState(0);
+
+	const [images, setImages] = React.useState([]);
+	const maxSteps = images.length;
+
+	const handleNext = () => {
+		setActiveStep((prevActiveStep) => prevActiveStep + 1);
+	};
+	const handleBack = () => {
+		setActiveStep((prevActiveStep) => prevActiveStep - 1);
+	};
+
+	const [adList, setadList] = React.useState([]);
+	const [ad, setAd] = React.useState({});
+	const [filter, setFilter] = React.useState(true);
+
+	const [profile, setProfile] = React.useState(false);
+
+	const [page, setPage] = React.useState(1);
+	const [lastpage, setLastPage] = React.useState(1);
+	const [query, setQuery] = React.useState({});
+	const [value, setValue] = React.useState([20, 35]);
+	const [payload, setPayload] = React.useState({
+		service_category: "",
+		sub_service: "",
+		booking_date: "",
+		service_price: "",
+		district: "",
+		state: "",
+		freelancer_member_id: "",
+	});
+	function addDefaultSrc(ev) {
+		ev.target.src = broken_image;
+		ev.target.alt = "Seems a broken link!";
+	}
+	const resetState = () => {
+		setPayload({
+			service_category: "",
+			sub_service: "",
+			booking_date: "",
+			service_price: "",
+			district: "",
+			state: "",
+			freelancer_member_id: "",
+		});
+	};
+	React.useEffect(() => {
+		let obj = {};
+		Object.keys(payload).forEach((K) => {
+			if (K != "booking_date" || K != "freelancer_member_id") {
+				let key = "filter[" + K + "]";
+
+				if (payload[K].length > 0 || payload[K] > 0) {
+					obj[key] = payload[K];
 				}
-			})
-			.catch(function (error) {
-				console.error("errrrr ", error);
-			});
-	}, []);
+			}
+		});
+		if (payload["booking_date"]) {
+			obj["booking_date"] = payload["booking_date"];
+		}
+		if (payload["freelancer_member_id"]) {
+			obj = {};
+			obj["freelancer_member_id"] = payload["freelancer_member_id"];
+		}
+
+		if (Object.values(obj).length > 0) {
+			freelancerActions
+				.search(obj)
+				.then(function (response) {
+					setFilter(false);
+					console.log("ressss", response);
+
+					if (Array.isArray(response.data.data.data)) {
+						setadList(response.data.data.data);
+						setPage(response.data.data.current_page + 1);
+						setLastPage(response.data.data.last_page);
+					} else if (response.data.data.id) {
+						setadList([response.data.data]);
+					}
+				})
+				.catch(function (error) {
+					setFilter(false);
+					console.error("errrrr ", error);
+				});
+		}
+	}, [payload]);
+
+	// React.useEffect(() => {
+	// 	freelancerActions
+	// 		.getFreelancer()
+	// 		.then(function (response) {
+	// 			console.log("ressss", response);
+
+	// 			if (Array.isArray(response.data.data)) {
+	// 				setadList(response.data.data);
+	// 			}
+	// 		})
+	// 		.catch(function (error) {
+	// 			console.error("errrrr ", error);
+	// 		});
+	// }, []);
+	const handleFilterOpen = () => {
+		setFilter(true);
+	};
+
+	const handleFilterClose = () => {
+		setFilter(false);
+	};
+
+	function handleProfileOpen(index) {
+		setImages(adList[index].images.concat(adList[index].videos));
+		setAd(adList[index]);
+	}
+
+	const handlePageChange = (event, value) => {
+		setFilter(false);
+		let obj = {};
+		Object.keys(payload).forEach((K) => {
+			let key = "filter[" + K + "]";
+
+			if (payload[K].length > 0 || payload[K] > 0) {
+				obj[key] = payload[K];
+			}
+		});
+		obj.page = value;
+		if (Object.values(obj).length > 0) {
+			freelancerActions
+				.search(obj)
+				.then(function (response) {
+					console.log("ressss", response);
+
+					if (Array.isArray(response.data.data.data)) {
+						setadList(response.data.data.data);
+						setPage(response.data.data.current_page + 1);
+						setLastPage(response.data.data.last_page);
+					}
+				})
+				.catch(function (error) {
+					console.error("errrrr ", error);
+				});
+		}
+	};
+	const DatePickerField = ({ field, form, ...other }) => {
+		const currentError = form.errors[field.name];
+
+		return (
+			<MuiPickersUtilsProvider utils={DateFnsUtils}>
+				<KeyboardDatePicker
+					clearable
+					name={field.name}
+					format="yyyy/MM/dd"
+					style={{ width: "100%" }}
+					value={field.value}
+					helperText={currentError}
+					error={Boolean(currentError)}
+					onError={(error) => {
+						// handle as a side effect
+						if (error !== currentError) {
+							form.setFieldError(field.name, error);
+						}
+					}}
+					// if you are using custom validation schema you probably want to pass `true` as third argument
+					onChange={(date) => form.setFieldValue(field.name, date, false)}
+					{...other}
+				/>
+			</MuiPickersUtilsProvider>
+		);
+	};
+
+	const helperElement = (prop) => {
+		return (
+			<Grid item xs={12}>
+				<Divider>OR</Divider>
+
+				<Box margin={1}>
+					<Field
+						fullWidth
+						component={TextField}
+						InputLabelProps={{
+							classes: {
+								root: classes.labelRoot,
+							},
+						}}
+						label={"Fill ID/Name of Freelancer"}
+						name={"freelancer_member_id"}
+						variant="outlined"
+						onChange={prop.handleChange}
+					/>
+				</Box>
+			</Grid>
+		);
+	};
+
 	return (
 		<React.Fragment>
 			<Head>
-				<title>Freelancer &nbsp; - Ad List</title>
+				<title>Freelancer - Search</title>
 			</Head>
 
-			<DashboardWrapper logindata={props.logindata} userdata={props.userdata} />
+			<Header
+				onToggleDark={props.onToggleDark}
+				onToggleDir={props.onToggleDir}
+			/>
 			<div className={classes.root}>
-				<Grid container spacing={2} justify="flex-end">
-					<Grid item>
-						<Button
-							variant="outlined"
-							onClick={() => setBookingPopup(true)}
-							color="secondary"
-						>
-							Booking Calendar
-						</Button>
+				<div>
+					<Grid justify="flex-end" alignItems="center" container>
+						<Grid item>
+							<Button
+								variant="outlined"
+								onClick={handleFilterOpen}
+								color="secondary"
+							>
+								Filters
+							</Button>
+						</Grid>
 					</Grid>
-					<Grid item>
-						<BookingModule />
-					</Grid>
-				</Grid>
-				<Grid container spacing={2}>
-					<Grid item lg={4} md={6} xl={4} xs={12}>
-						<Card className={classes.addCard}>
-							<div>
-								<Typography variant="h6">Add More Profile</Typography>
-								<Typography variant="subtitle" component="h2">
-									New Freelancer Ad
-								</Typography>
-							</div>
-							<div className={classes.col}>
-								<Fab
-									href={routerLink.starter.freelancernew}
-									color="primary"
-									aria-label="add"
-								>
-									<AddIcon />
-								</Fab>
-							</div>
-						</Card>
-					</Grid>
-
-					{adList &&
-						adList.map((ad, index) => (
-							<Grid item lg={4} md={6} xl={4} xs={12}>
-								<Link
-									style={{ textDecoration: "none" }}
-									href={routerLink.starter.freelancerDetails + "?id=" + ad.id}
-								>
-									<Card className={classes.card}>
-										{/* <CardMedia
-											className={classes.media}
-											image={
-												"https://image.freepik.com/free-photo/river-foggy-mountains-landscape_1204-511.jpg"
-											}
-										/> */}
-										<CardContent className={classes.content}>
-											<MuiThemeProvider theme={theme}>
-												<Typography
-													className={"MuiTypography--heading"}
-													variant={"h5"}
-													gutterBottom
-												>
-													{ad.offer_tagline}
-												</Typography>
-												<Typography
-													className={"MuiTypography--heading"}
-													variant={"h6"}
-													gutterBottom
-												>
-													{ad.bussiness_name}
-												</Typography>
-												<Typography variant="subtitle1" color="textSecondary">
-													{ad.sub_service + " | " + ad.service_area}
-												</Typography>
-												<Typography
-													className={"MuiTypography--subheading"}
-													variant={"caption"}
-												>
-													{ad.bussineess_description}
-												</Typography>
-											</MuiThemeProvider>
-											<Divider className={classes.divider} light />
-										</CardContent>
-										<CardActions>
-											<Link
-												target="_blank"
-												to={ad.office_map_link}
-												rel="noopener"
-											>
-												<IconButton>
-													<ExploreIcon fontSize="large" />
-												</IconButton>
-											</Link>
-										</CardActions>
-									</Card>
-								</Link>
+					<br />
+					{adList.length > 0 && (
+						<div>
+							<Grid container spacing={4}>
+								<Grid item xs={12}></Grid>
+								{adList &&
+									adList.map((ad, index) => (
+										<Grid item md={4} xs={12}>
+											<FilterCard
+												ad={ad}
+												{...props}
+												index={index}
+												setAd={handleProfileOpen}
+												fullview={false}
+											/>
+										</Grid>
+									))}
 							</Grid>
-						))}
-				</Grid>
+							<Pagination
+								count={lastpage}
+								color="primary"
+								onChange={handlePageChange}
+							/>
+						</div>
+					)}
+
+					{adList.length === 0 && !filter && (
+						<Container maxWidth="sm">
+							<Grid
+								style={{
+									flex: 1,
+									alignItems: "center",
+									justifyContent: "center",
+									paddingTop: 20,
+								}}
+								container
+							>
+								<Grid
+									item
+									container
+									direction="column"
+									justify="center"
+									alignItems="center"
+									xs={12}
+								>
+									<Avatar color="secondary" className={classes.large}>
+										<SentimentVeryDissatisfiedIcon />
+									</Avatar>
+									<Typography variant="h4" gutterBottom>
+										Sorry! No Results Found.
+									</Typography>
+									<Button
+										variant="outlined"
+										onClick={handleFilterOpen}
+										color="secondary"
+									>
+										Filters
+									</Button>
+								</Grid>
+							</Grid>
+						</Container>
+					)}
+				</div>
 
 				<Dialog
-					fullWidth
+					fullWidth={true}
 					maxWidth={"md"}
-					open={bookingPopup}
-					onClose={() => setBookingPopup(false)}
-					aria-labelledby="max-width-dialog-title"
+					open={filter}
+					scroll="paper"
+					onClose={() => setFilter(false)}
+					TransitionComponent={Transition}
 				>
-					<DialogTitle id="max-width-dialog-title">
-						Booking Calendar
-					</DialogTitle>
-					<DialogContent></DialogContent>
+					<Grid container>
+						<Grid item xs={12}>
+							<DialogTitle onClose={() => setFilter(false)}>
+								Filters
+							</DialogTitle>
+						</Grid>
+					</Grid>
+					<FormContainer
+						btn={{ label: "Submit" }}
+						onSubmit={({ values, setSubmitting, setFieldError }) => {
+							setSubmitting(true);
+							let shouldSubmit = true;
+							if (values.freelancer_member_id) {
+								Object.keys(values).forEach((k) => {
+									if (k != "freelancer_member_id") {
+										values[k] = "";
+									}
+								});
+								setPayload(values);
+							} else {
+								Object.keys(values).forEach((k) => {
+									if (k != "freelancer_member_id" && k != "booking_date") {
+										if (!values[k]) {
+											setFieldError(k, "Field is required");
+											shouldSubmit = false;
+										}
+									}
+								});
+								if (shouldSubmit) {
+									setPayload(values);
+								}
+							}
+							if (shouldSubmit) {
+								setTimeout(() => {
+									setSubmitting(false);
+								}, 5000);
+							} else {
+								setSubmitting(false);
+							}
+						}}
+						elements={freelancerFilter}
+						defaultvals={payload}
+						helperEle={helperElement}
+					/>
+				</Dialog>
+
+				{/* Full Profile View Dialog */}
+
+				<Dialog
+					fullWidth={true}
+					maxWidth={"md"}
+					open={ad.id != null}
+					scroll="paper"
+					onClose={() => setAd({})}
+					TransitionComponent={Transition}
+				>
+					<Grid container>
+						<Grid item xs={12}>
+							<DialogTitle onClose={() => setFilter(false)}>
+								Freelancer Member : {ad.freelancer_member_id}
+							</DialogTitle>
+						</Grid>
+
+						<Grid container justify="center">
+							<Grid
+								style={{ padding: theme.spacing(2) }}
+								item
+								md={6}
+								sm={6}
+								xs={12}
+							>
+								{maxSteps <= 0 && (
+									<Typography
+										align="center"
+										component="h1"
+										variant="h6"
+										color="inherit"
+									>
+										Upload Some Images/Videos<br></br>to Showcase Here.
+									</Typography>
+								)}
+								{maxSteps > 0 && (
+									<div style={{ maxWidth: 400, flexGrow: 1 }}>
+										{images[activeStep].file_type == 1 ? (
+											<img
+												onError={(ev) => addDefaultSrc(ev)}
+												className={classes.img}
+												src={images.length > 0 && images[activeStep].file_path}
+												alt={images.length > 0 && images[activeStep].file_path}
+											/>
+										) : (
+											<video
+												width="100%"
+												src={images[activeStep].file_path}
+												muted="muted"
+												loop="loop"
+												autoPlay={false}
+												controls={true}
+											/>
+										)}
+										<MobileStepper
+											steps={maxSteps}
+											position="static"
+											variant="text"
+											activeStep={activeStep}
+											nextButton={
+												<Button
+													size="small"
+													onClick={handleNext}
+													disabled={activeStep === maxSteps - 1}
+												>
+													Next
+													{theme.direction === "rtl" ? (
+														<KeyboardArrowLeft />
+													) : (
+														<KeyboardArrowRight />
+													)}
+												</Button>
+											}
+											backButton={
+												<Button
+													size="small"
+													onClick={handleBack}
+													disabled={activeStep === 0}
+												>
+													{theme.direction === "rtl" ? (
+														<KeyboardArrowRight />
+													) : (
+														<KeyboardArrowLeft />
+													)}
+													Back
+												</Button>
+											}
+										/>
+									</div>
+								)}
+							</Grid>
+							<Grid item md={6} sm={6} xs={12}>
+								<FilterCard ad={ad} fullview={true} {...props} />
+							</Grid>
+						</Grid>
+					</Grid>
 					<DialogActions>
-						<Button onClick={() => setBookingPopup(false)} color="primary">
+						<Button onClick={() => setAd({})} color="primary">
 							Close
 						</Button>
 					</DialogActions>
@@ -251,7 +570,7 @@ const getCookieFromReq = (req, cookieKey) => {
 	return cookie.split("=")[1];
 };
 
-index.getInitialProps = ({ req, res }) => {
+MatrimonySearch.getInitialProps = ({ req, res }) => {
 	const ISSERVER = typeof window === "undefined";
 	let token = null;
 
@@ -267,4 +586,4 @@ index.getInitialProps = ({ req, res }) => {
 	}
 	return {};
 };
-export default index;
+export default MatrimonySearch;

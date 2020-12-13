@@ -131,9 +131,10 @@ const FreelancerImg = (props) => {
 	const [remoteData, setRemoteData] = React.useState([]);
 	const [remoteError, setRemoteError] = React.useState("");
 	const [selectedImg, setSelectedImg] = React.useState("");
+	const [imgTitle, setImgTitle] = React.useState("");
 	const [open, setOpen] = React.useState(false);
 	const theme = useTheme();
-
+	let textInput = React.useRef(null);
 	React.useEffect(() => {
 		getAllImages();
 	}, []);
@@ -147,6 +148,7 @@ const FreelancerImg = (props) => {
 		return "";
 	}
 	function getAllImages() {
+		textInput.current.value = null;
 		freelancerActions
 			.getMedia({ freelancer_id: props.router.query.id, file_type: 1 })
 			.then(function (response) {
@@ -167,6 +169,7 @@ const FreelancerImg = (props) => {
 		let payload = new FormData();
 		payload.append("image_file", img.fileObj);
 		payload.append("freelancer_id", props.router.query.id);
+		payload.append("title", imgTitle);
 		if (payload) {
 			freelancerActions
 				.submitMedia(payload)
@@ -209,7 +212,7 @@ const FreelancerImg = (props) => {
 										<Link
 											style={{ textDecoration: "none" }}
 											href={
-												routerLink.starter.freelancerDetails +
+												routerLink.starter.freelancernew +
 												"?id=" +
 												props.router.query.id
 											}
@@ -235,6 +238,18 @@ const FreelancerImg = (props) => {
 									)}
 								</Grid>
 								<Grid container spacing={2} justify="center">
+								<Grid container justify="center" alignItems="center">
+										<Grid item>
+											<TextField
+												type="text"
+												onChange={(e) => setImgTitle(e.target.value)}
+												variant="outlined"
+												fullWidth
+												label="Title - Price"
+												inputRef={textInput}
+											/>
+										</Grid>
+									</Grid>
 									<Grid item>
 										<input
 											accept="image/*"
@@ -352,6 +367,7 @@ const FreelancerImg = (props) => {
 											</Typography>
 										</span>
 									</ButtonBase>
+									<Typography variant="h5">{card.title}</Typography>
 								</Grid>
 							))}
 						</Grid>

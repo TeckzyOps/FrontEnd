@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import Router from "next/router";
 import withAuth from "../../../components/Hoc/withAuth";
-import { makeStyles } from "@material-ui/core/styles";
+import {
+	makeStyles,
+	useTheme,
+	createMuiTheme,
+	responsiveFontSizes,
+	MuiThemeProvider,
+} from "@material-ui/core/styles";
 import { Box, Typography } from "@material-ui/core";
 import routerLink from "~/static/text/link";
 import Link from "@material-ui/core/Link";
@@ -15,7 +21,6 @@ import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import IconButton from "@material-ui/core/IconButton";
 import { Fab, useMediaQuery, Tab, Tabs } from "@material-ui/core/";
-import { useTheme } from "@material-ui/core/styles";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -41,6 +46,8 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+let theme = createMuiTheme();
+theme = responsiveFontSizes(theme);
 const useStyles = makeStyles((theme) => ({
 	root: { paddingTop: "11vh", flexGrow: 1 },
 	card: {
@@ -118,10 +125,10 @@ const content = [
 const details = (props) => {
 	const classes = useStyles();
 	const [value, setValue] = React.useState(0);
-
+	const theme = useTheme();
 	const [bookingPopup, setBookingPopup] = React.useState(false);
 	const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-	const theme = useTheme();
+
 	const [activeStep, setActiveStep] = React.useState(0);
 
 	const [images, setImages] = React.useState([]);
@@ -286,22 +293,6 @@ const details = (props) => {
 									</div>
 								)}
 							</Grid>
-
-							{/* <Grid item xs={12}>
-								<div className={classes.gridList_BG}>
-									<GridList className={classes.gridList} cols={3.5}>
-										{content.map((tile) => (
-											<GridListTile key={tile.image}>
-												<img
-													onClick={() => setprimaryImage(tile.image)}
-													src={tile.image}
-													alt={tile.title}
-												/>
-											</GridListTile>
-										))}
-									</GridList>
-								</div>
-							</Grid> */}
 						</Grid>
 
 						<Grid style={{ paddingTop: "2%", textAlign: "center" }}>
@@ -353,10 +344,7 @@ const details = (props) => {
 									<TableCell align="left">Service Area</TableCell>
 									<TableCell align="left">{details.service_area}</TableCell>
 								</TableBody>
-								<TableBody>
-									<TableCell align="left">Total Experience</TableCell>
-									<TableCell align="left">{details.total_experience}</TableCell>
-								</TableBody>
+
 								<TableBody>
 									<TableCell align="left">Business Description</TableCell>
 									<TableCell align="left">
@@ -393,20 +381,14 @@ const details = (props) => {
 								</TableBody>
 								<TableBody>
 									<TableCell align="left">Locality</TableCell>
-									<TableCell align="left">{details.locality}</TableCell>
+									<TableCell align="left">{details.area}</TableCell>
 								</TableBody>
-								<TableBody>
-									<TableCell align="left">Office Map Link</TableCell>
-									<TableCell align="left">{details.office_map_link}</TableCell>
-								</TableBody>
+
 								<TableBody>
 									<TableCell align="left">Office Number</TableCell>
 									<TableCell align="left">{details.office_number}</TableCell>
 								</TableBody>
-								<TableBody>
-									<TableCell align="left">Catalog Pdf Path</TableCell>
-									<TableCell align="left">{details.catalog_pdf_path}</TableCell>
-								</TableBody>
+
 								<TableBody>
 									<TableCell align="left">Offer Tagline</TableCell>
 									<TableCell align="left">{details.offer_tagline}</TableCell>

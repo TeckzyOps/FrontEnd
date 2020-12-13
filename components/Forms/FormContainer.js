@@ -4,6 +4,10 @@ import Grid from "@material-ui/core/Grid";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { createYupSchema } from "../../utils/yupSchemaCreator";
 import DateFnsUtils from "@date-io/date-fns";
+import {
+	KeyboardDatePicker,
+	MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import * as Yup from "yup";
 import ReactDOM from "react-dom";
@@ -87,24 +91,6 @@ const FormContainer = React.forwardRef((props, refs) => {
 		}
 	}, []);
 
-	const [selectOpen, setSelectOpen] = useState(null);
-	const handleSelectClose = (name, previousValue, setFieldValue) => {
-		setSelectOpen(null);
-		let prevValue = previousValue;
-		if (Array.isArray(previousValue)) {
-			prevValue = [];
-			previousValue.forEach((value) => {
-				if (value) {
-					prevValue.push(value);
-				}
-			});
-		}
-		setFieldValue(name, prevValue);
-	};
-
-	const handleSelectOpen = (name) => {
-		setSelectOpen(name);
-	};
 	useEffect(() => {
 		if (props.defaultvals) {
 			setValues(props.defaultvals);
@@ -149,13 +135,39 @@ const FormContainer = React.forwardRef((props, refs) => {
 
 		return state;
 	}
+	const DatePickerField = ({ field, form, ...other }) => {
+		const currentError = form.errors[field.name];
 
+		return (
+			<MuiPickersUtilsProvider utils={DateFnsUtils}>
+				<KeyboardDatePicker
+					clearable
+					name={field.name}
+					style={{ width: "100%" }}
+					value={field.value}
+					format="yyyy/MM/dd"
+					helperText={currentError}
+					error={Boolean(currentError)}
+					onError={(error) => {
+						// handle as a side effect
+						if (error !== currentError) {
+							form.setFieldError(field.name, error);
+						}
+					}}
+					// if you are using custom validation schema you probably want to pass `true` as third argument
+					onChange={(date) => form.setFieldValue(field.name, date, false)}
+					{...other}
+				/>
+			</MuiPickersUtilsProvider>
+		);
+	};
 	const fieldMap = {
 		text: TextField,
 		checkbox: CheckboxWithLabel,
 		select: Select,
 		textarea: TextField,
 		password: TextField,
+		date: DatePickerField,
 		autocomplete: Autocomplete,
 	};
 	function getElement(item, prop) {
@@ -178,25 +190,44 @@ const FormContainer = React.forwardRef((props, refs) => {
 		}
 
 		switch (type) {
+			case "date":
+				return (
+					<Box margin={1}>
+						<Field
+							fullwidth
+							{...params}
+							autoOk
+							value={new Date()}
+							inputVariant="outlined"
+							component={Component}
+							InputLabelProps={{
+								classes: {
+									root: classes.labelRoot,
+								},
+							}}
+							label={item.label ? item.label : "Enter " + toTitleCase(item.id)}
+							name={item.id}
+							InputAdornmentProps={{ position: "start" }}
+						/>
+					</Box>
+				);
+				break;
 			case "checkbox":
 				return (
 					<Box margin={1}>
 						<Field
-						{...params}
+							{...params}
 							type={item.type}
 							component={Component}
 							name={item.id}
 							indeterminate={false}
 							Label={{ label: item.label }}
 							onChange={prop.handleChange}
-							
 						/>
-						
-						
-								<FormHelperText error>
-									{prop.errors.hasOwnProperty(item.id) && prop.errors[item.id]}
-								</FormHelperText>
-							
+
+						<FormHelperText error>
+							{prop.errors.hasOwnProperty(item.id) && prop.errors[item.id]}
+						</FormHelperText>
 					</Box>
 				);
 				break;
@@ -213,40 +244,13 @@ const FormContainer = React.forwardRef((props, refs) => {
 							</InputLabel>
 							<Field
 								component={Select}
-								
 								{...params}
 								onChange={prop.handleChange}
 								type="text"
 								name={item.id}
 								labelWidth={labelWidth}
-								onClose={() =>
-									handleSelectClose(
-										item.id,
-										prop.values[item.id],
-										prop.setFieldValue
-									)
-								}
-								open={selectOpen == item.id}
-								onOpen={() => handleSelectOpen(item.id)}
 								inputProps={{ name: item.id, id: item.id }}
 							>
-								<Button
-									value=""
-									style={{ width: "100%"}}
-									variant="contained"
-									color="primary"
-									disableElevation
-									
-									onClick={() =>
-										handleSelectClose(
-											item.id,
-											prop.values[item.id],
-											prop.setFieldValue
-										)
-									}
-								>
-									Close
-								</Button>
 								{Array.isArray(opts) &&
 									opts.map((option, index) => (
 										<MenuItem key={index} value={option}>
@@ -342,6 +346,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 							}}
 							label={item.label ? item.label : "Enter " + toTitleCase(item.id)}
 							name={item.id}
+							variant="outlined"
 							// placeholder={
 							// 	item.placeholder
 							// 		? item.placeholder
@@ -414,7 +419,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 						{renderFormElements(prop)}
 					</Grid>
 
-					{HelperElement && <HelperElement props={prop} />}
+					{HelperElement && <HelperElement prop={prop} />}
 					{props.btn && (
 						<div>
 							{prop.isSubmitting && "You Can't go back, Now!"}

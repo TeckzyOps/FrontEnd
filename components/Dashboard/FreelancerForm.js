@@ -65,7 +65,7 @@ import {
 } from "formik-material-ui";
 import FolderIcon from "@material-ui/icons/Folder";
 import { freelancerForm } from "~static/FormData/freelancerForm.js";
-import { freelancerProperietor } from "~static/FormData/form.js";
+import { freelancerProperietor } from "~static/FormData/freelancerForms.js";
 import * as Yup from "yup";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -164,6 +164,11 @@ const freelancerform = (props) => {
 		paid_leads: "",
 	});
 
+	const [catalogFile, setCatalogFile] = useState({
+		visbility: null,
+		catalog_path: null,
+	});
+	const [showCatalogForm, setshowCatalogForm] = useState(false);
 	const [profileUpdateSuccess, setProfileUpdateSuccess] = useState({
 		open: false,
 		title: "",
@@ -217,6 +222,7 @@ const freelancerform = (props) => {
 
 					if (response.data.data.id) {
 						setFreelancerData(response.data.data);
+						setCatalogFile(response.data.data.catalog_pdf_path);
 					}
 				})
 				.catch(function (error) {
@@ -314,7 +320,7 @@ const freelancerform = (props) => {
 			}
 			if (proceed) {
 				for (var i in values) {
-					if(i != "agreement"){
+					if (i != "agreement") {
 						if (Array.isArray(values[i])) {
 							if (values[i].length > 0) {
 								payload.append(i, JSON.stringify(values[i]));
@@ -323,7 +329,6 @@ const freelancerform = (props) => {
 							payload.append(i, values[i] + "");
 						}
 					}
-					
 				}
 			}
 		}
@@ -381,6 +386,7 @@ const freelancerform = (props) => {
 									"?id=" +
 									response.data.data.id,
 							});
+							setCatalogFile(response.data.data.catalog_pdf_path);
 							resetForm();
 						}
 					})
@@ -456,151 +462,15 @@ const freelancerform = (props) => {
 		); // fragment locator
 		return !!pattern.test(str);
 	}
-
-	const profileSchema = Yup.object().shape({
-		service_category: Yup.string().required("Required"),
-		sub_service: Yup.string().required("Required"),
-		bussiness_name: Yup.string().required("Required"),
-		bussineess_description: Yup.string().required("Required"),
-		total_experience: Yup.number().required("Required"),
-		min_service_price: Yup.string().required("Required"),
-		max_service_price: Yup.string().required("Required"),
-		address: Yup.string().required("Required"),
-		city: Yup.string().required("Required"),
-		state: Yup.string().required("Required"),
-		district: Yup.string().required("Required"),
-		locality: Yup.string().required("Required"),
-		office_map_link: Yup.string().url().required("Required"),
-		office_number: Yup.number().required("Required"),
-		catalog_pdf_match: Yup.string(),
-		offer_tagline: Yup.string(),
-		shadiwala_offer_files: Yup.mixed()
-			.test("filevalid", "Remote File Error", (value) => {
-				if (null != value && !validURL(value)) {
-					return false;
-				}
-				return true;
-			})
-			.test("fileSize", "File Size is too large", (value) => {
-				if (null != value && value.size) {
-					return value.size <= 2000000;
-				}
-				return true;
-			})
-			.test(
-				"fileType",
-				"Unsupported File Format, Upload a JPEG,JPG or PNG file",
-				(value) => {
-					if (null != value && value.type) {
-						return ["image/png", "image/jpg", "image/jpeg"].includes(
-							value.type
-						);
-					}
-					return true;
-				}
-			),
-		commission_percent: Yup.string().required("Required"),
-		max_commission: Yup.string().required("Required"),
-		max_commission: Yup.string().required("Required"),
-		advertisement_file_path: Yup.mixed()
-			.test("fileSize", "File Size is too large", (value) => {
-				if (null != value && value.size) {
-					return value.size <= 2000000;
-				}
-				return true;
-			})
-			.test(
-				"fileType",
-				"Unsupported File Format, Upload a JPEG,JPG,PNG or PDF file",
-				(value) => {
-					if (null != value && value.type) {
-						return [
-							"image/png",
-							"image/jpg",
-							"image/jpeg",
-							"application/pdf",
-						].includes(value.type);
-					}
-					return true;
-				}
-			)
-			.test("filevalid", "Remote File Error", (value) => {
-				if (null != value && !validURL(value)) {
-					return false;
-				}
-				return true;
-			}),
-		gst_file_path: Yup.mixed()
-			.test("filevalid", "Remote File Error", (value) => {
-				if (null != value && !validURL(value)) {
-					return false;
-				}
-				return true;
-			})
-			.test("fileSize", "File Size is too large", (value) => {
-				if (null != value && value.size) {
-					return value.size <= 2000000;
-				}
-				return true;
-			})
-			.test(
-				"fileType",
-				"Unsupported File Format, Upload a PDF file",
-				(value) => {
-					if (null != value && value.type) {
-						return ["application/pdf"].includes(value.type);
-					}
-					return true;
-				}
-			),
-		license_file_path: Yup.mixed()
-			.test("filevalid", "Remote File Error", (value) => {
-				if (null != value && !validURL(value)) {
-					return false;
-				}
-				return true;
-			})
-			.test("fileSize", "File Size is too large", (value) => {
-				if (null != value && value.size) {
-					return value.size <= 2000000;
-				}
-				return true;
-			})
-			.test(
-				"fileType",
-				"Unsupported File Format, Upload a PDF file",
-				(value) => {
-					if (null != value && value.type) {
-						return ["application/pdf"].includes(value.type);
-					}
-					return true;
-				}
-			),
-		certificate_file_path: Yup.mixed()
-
-			.test("filevalid", "Remote File Error", (value) => {
-				if (null != value && !validURL(value)) {
-					return false;
-				}
-				return true;
-			})
-			.test("fileSize", "File Size is too large", (value) => {
-				if (null != value && value.size) {
-					return value.size <= 2000000;
-				}
-				return true;
-			})
-			.test(
-				"fileType",
-				"Unsupported File Format, Upload a PDF file",
-				(value) => {
-					if (null != value && value.type) {
-						return ["application/pdf"].includes(value.type);
-					}
-					return true;
-				}
-			),
-	});
+	function GetFilename(url) {
+		if (url) {
+			var m = url.toString().match(/.*\/(.+?)\./);
+			if (m && m.length > 1) {
+				return m[1];
+			}
+		}
+		return "";
+	}
 
 	function getFileLink(fileObject) {
 		let reader = new FileReader();
@@ -704,7 +574,9 @@ const freelancerform = (props) => {
 
 						<Formik
 							enableReinitialize
-							initialValues={{ catalog_pdf_path: null }}
+							initialValues={{
+								catalog_pdf_path: null,
+							}}
 							validationSchema={Yup.object().shape({
 								catalog_pdf_path: Yup.mixed()
 									.test("fileSize", "File Size is too large", (value) => {
@@ -744,16 +616,44 @@ const freelancerform = (props) => {
 									touched,
 									errors,
 									setFieldValue,
-
 									handleChange,
-
 									isSubmitting,
 									resetForm,
 								} = formprops;
 								console.log("ERROR", formprops);
+								// setshowCatalogForm(catalogFile.catalog_path == null);
 								return (
 									<Form>
-										<Grid container justify="center" alignItems="center">
+										<Grid
+											container
+											direction="row"
+											justify="center"
+											alignItems="center"
+										>
+											<Grid item xs={12}>
+												<Divider variant="middle" flexItem />
+												<Typography variant="h5">Catalog File :</Typography>
+
+												{catalogFile.catalog_path && (
+													<Link
+														href={catalogFile.catalog_path}
+														target="_blank"
+														rel="noreferrer"
+														variant="body2"
+													>
+														{catalogFile.catalog_path.split("/").pop()}
+													</Link>
+												)}
+
+												<Button
+													variant="contained"
+													onClick={setshowCatalogForm(true)}
+													color="primary"
+												>
+													Change File
+												</Button>
+											</Grid>
+
 											<Grid item xs={12}>
 												<Box margin={1}>
 													<Field
@@ -801,50 +701,51 @@ const freelancerform = (props) => {
 														</div>
 													)}
 												</Box>
-											</Grid>
-
-											<Grid item xs={12}>
-												<table
-													style={{
-														borderCollapse: "collapse",
-														borderSpacing: 0,
-														width: "100%",
-														border: "1px solid #ddd",
-													}}
-												>
-													<thead>
-														<tr>
-															<th>File Name</th>
-															<th>File Type</th>
-															<th>File Size</th>
-														</tr>
-													</thead>
-													<tbody>
-														<tr>
-															<td>
-																{props.getNested(
-																	formprops,
-																	"values",
-																	"catalog_pdf_path"
-																) && values.catalog_pdf_path.name}
-															</td>
-															<td>
-																{props.getNested(
-																	formprops,
-																	"values",
-																	"catalog_pdf_path"
-																) && values.catalog_pdf_path.type}
-															</td>
-															<td>
-																{props.getNested(
-																	formprops,
-																	"values",
-																	"catalog_pdf_path"
-																) && values.catalog_pdf_path.size + "MB"}
-															</td>
-														</tr>
-													</tbody>
-												</table>
+												{values.catalog_pdf_path && (
+													<Box>
+														<table
+															style={{
+																borderCollapse: "collapse",
+																borderSpacing: 0,
+																width: "100%",
+																border: "1px solid #ddd",
+															}}
+														>
+															<thead>
+																<tr>
+																	<th>File Name</th>
+																	<th>File Type</th>
+																	<th>File Size</th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr>
+																	<td>
+																		{props.getNested(
+																			formprops,
+																			"values",
+																			"catalog_pdf_path"
+																		) && values.catalog_pdf_path.name}
+																	</td>
+																	<td>
+																		{props.getNested(
+																			formprops,
+																			"values",
+																			"catalog_pdf_path"
+																		) && values.catalog_pdf_path.type}
+																	</td>
+																	<td>
+																		{props.getNested(
+																			formprops,
+																			"values",
+																			"catalog_pdf_path"
+																		) && values.catalog_pdf_path.size + "MB"}
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</Box>
+												)}
 											</Grid>
 
 											<Divider />
