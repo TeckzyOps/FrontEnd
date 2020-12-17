@@ -85,7 +85,12 @@ export default function CustomCard({ ad, ...props }) {
 										>
 											Profession's Name : &nbsp;
 										</Typography>
-										<Typography variant="caption" color="inherit" noWrap>
+										<Typography
+											variant="caption"
+											color="inherit"
+											gutterBottom
+											noWrap
+										>
 											{ad.bussiness_name}
 										</Typography>
 									</MuiThemeProvider>
@@ -101,7 +106,12 @@ export default function CustomCard({ ad, ...props }) {
 										>
 											Profession's Since : &nbsp;
 										</Typography>
-										<Typography variant="caption" color="inherit" noWrap>
+										<Typography
+											variant="caption"
+											color="inherit"
+											gutterBottom
+											noWrap
+										>
 											{ad.bussiness_since}
 										</Typography>
 									</MuiThemeProvider>
@@ -117,7 +127,12 @@ export default function CustomCard({ ad, ...props }) {
 										>
 											Service Area : &nbsp;
 										</Typography>
-										<Typography variant="caption" color="inherit" noWrap>
+										<Typography
+											variant="caption"
+											color="inherit"
+											gutterBottom
+											noWrap
+										>
 											{ad.service_area}
 										</Typography>
 									</MuiThemeProvider>
@@ -132,7 +147,12 @@ export default function CustomCard({ ad, ...props }) {
 										>
 											Service Category : &nbsp;
 										</Typography>
-										<Typography variant="caption" color="inherit" noWrap>
+										<Typography
+											variant="caption"
+											color="inherit"
+											gutterBottom
+											noWrap
+										>
 											{ad.service_category}
 										</Typography>
 									</MuiThemeProvider>
@@ -163,7 +183,12 @@ export default function CustomCard({ ad, ...props }) {
 								>
 									Sub Category : &nbsp;
 								</Typography>
-								<Typography variant="caption" color="inherit" noWrap>
+								<Typography
+									variant="caption"
+									color="inherit"
+									gutterBottom
+									noWrap
+								>
 									{ad.sub_service.join(", ")}
 								</Typography>
 							</MuiThemeProvider>
@@ -179,7 +204,12 @@ export default function CustomCard({ ad, ...props }) {
 								>
 									Offers/Tagline : &nbsp;
 								</Typography>
-								<Typography variant="caption" color="inherit" noWrap>
+								<Typography
+									variant="caption"
+									color="inherit"
+									gutterBottom
+									noWrap
+								>
 									{ad.offer_tagline}
 								</Typography>
 							</MuiThemeProvider>
@@ -194,7 +224,12 @@ export default function CustomCard({ ad, ...props }) {
 								>
 									Email Add. : &nbsp;
 								</Typography>
-								<Typography variant="caption" color="inherit" noWrap>
+								<Typography
+									variant="caption"
+									color="inherit"
+									gutterBottom
+									noWrap
+								>
 									{ad.office_email}
 								</Typography>
 							</MuiThemeProvider>

@@ -83,8 +83,8 @@ const useStyles = makeStyles((theme) => ({
 		alignItems: "center",
 	},
 	img: {
-		height: 255,
-		maxWidth: 400,
+		height: 200,
+
 		overflow: "hidden",
 		display: "block",
 		width: "100%",
@@ -113,7 +113,7 @@ const MatrimonySearch = (props) => {
 	const classes = useStyles();
 	const theme = useTheme();
 	const [activeStep, setActiveStep] = React.useState(0);
-
+	const [details, setDetails] = React.useState({});
 	const [images, setImages] = React.useState([]);
 	const maxSteps = images.length;
 
@@ -130,17 +130,25 @@ const MatrimonySearch = (props) => {
 
 	const [profile, setProfile] = React.useState(false);
 
-	const [page, setPage] = React.useState(1);
+	const [nextpage, setNextPage] = React.useState(0);
+	const [currentpage, setCurrentPage] = React.useState(1);
 	const [lastpage, setLastPage] = React.useState(1);
 	const [query, setQuery] = React.useState({});
 	const [value, setValue] = React.useState([20, 35]);
 	const [payload, setPayload] = React.useState({
 		service_category: "",
 		sub_service: "",
-		booking_date: "",
+		booking_date: null,
 		service_price: "",
-		district: "",
-		state: "",
+		city: props.getNested(details, "profile", "data", "city")
+			? details.profile.data.city
+			: "",
+		district: props.getNested(details, "profile", "data", "district")
+			? details.profile.data.district
+			: "",
+		state: props.getNested(details, "profile", "data", "state")
+			? details.profile.data.state
+			: "",
 		freelancer_member_id: "",
 	});
 	function addDefaultSrc(ev) {
@@ -158,25 +166,32 @@ const MatrimonySearch = (props) => {
 			freelancer_member_id: "",
 		});
 	};
-	React.useEffect(() => {
+	function applyFilter(payload, page) {
 		let obj = {};
-		Object.keys(payload).forEach((K) => {
-			if (K != "booking_date" || K != "freelancer_member_id") {
-				let key = "filter[" + K + "]";
 
-				if (payload[K].length > 0 || payload[K] > 0) {
-					obj[key] = payload[K];
-				}
-			}
-		});
-		if (payload["booking_date"]) {
-			obj["booking_date"] = payload["booking_date"];
-		}
 		if (payload["freelancer_member_id"]) {
-			obj = {};
 			obj["freelancer_member_id"] = payload["freelancer_member_id"];
+		} else {
+			if (payload["booking_date"]) {
+				obj["booking_date"] = payload["booking_date"];
+			} else {
+				Object.keys(payload).forEach((K) => {
+					let key = "filter[" + K + "]";
+					if (K != "booking_date") {
+						if (payload[K]) {
+							obj[key] = payload[K];
+						}
+					}
+				});
+			}
 		}
 
+		if (null != page && page <= lastpage && page != currentpage) {
+			obj.page = page;
+		}
+		if (null != page && page == currentpage) {
+			obj = {};
+		}
 		if (Object.values(obj).length > 0) {
 			freelancerActions
 				.search(obj)
@@ -186,7 +201,15 @@ const MatrimonySearch = (props) => {
 
 					if (Array.isArray(response.data.data.data)) {
 						setadList(response.data.data.data);
-						setPage(response.data.data.current_page + 1);
+						setCurrentPage(response.data.data.current_page);
+						if (
+							response.data.data.current_page < response.data.data.last_page
+						) {
+							setNextPage(response.data.data.current_page + 1);
+						} else {
+							setNextPage(1);
+						}
+
 						setLastPage(response.data.data.last_page);
 					} else if (response.data.data.id) {
 						setadList([response.data.data]);
@@ -197,22 +220,10 @@ const MatrimonySearch = (props) => {
 					console.error("errrrr ", error);
 				});
 		}
-	}, [payload]);
-
-	// React.useEffect(() => {
-	// 	freelancerActions
-	// 		.getFreelancer()
-	// 		.then(function (response) {
-	// 			console.log("ressss", response);
-
-	// 			if (Array.isArray(response.data.data)) {
-	// 				setadList(response.data.data);
-	// 			}
-	// 		})
-	// 		.catch(function (error) {
-	// 			console.error("errrrr ", error);
-	// 		});
-	// }, []);
+	}
+	React.useEffect(() => {
+		setDetails(localStorageService.getUserDetails("Details"));
+	}, []);
 	const handleFilterOpen = () => {
 		setFilter(true);
 	};
@@ -228,31 +239,7 @@ const MatrimonySearch = (props) => {
 
 	const handlePageChange = (event, value) => {
 		setFilter(false);
-		let obj = {};
-		Object.keys(payload).forEach((K) => {
-			let key = "filter[" + K + "]";
-
-			if (payload[K].length > 0 || payload[K] > 0) {
-				obj[key] = payload[K];
-			}
-		});
-		obj.page = value;
-		if (Object.values(obj).length > 0) {
-			freelancerActions
-				.search(obj)
-				.then(function (response) {
-					console.log("ressss", response);
-
-					if (Array.isArray(response.data.data.data)) {
-						setadList(response.data.data.data);
-						setPage(response.data.data.current_page + 1);
-						setLastPage(response.data.data.last_page);
-					}
-				})
-				.catch(function (error) {
-					console.error("errrrr ", error);
-				});
-		}
+		applyFilter(payload, value);
 	};
 	const DatePickerField = ({ field, form, ...other }) => {
 		const currentError = form.errors[field.name];
@@ -295,7 +282,7 @@ const MatrimonySearch = (props) => {
 								root: classes.labelRoot,
 							},
 						}}
-						label={"Fill ID/Name of Freelancer"}
+						label={"Freelancer ID"}
 						name={"freelancer_member_id"}
 						variant="outlined"
 						onChange={prop.handleChange}
@@ -401,49 +388,53 @@ const MatrimonySearch = (props) => {
 					TransitionComponent={Transition}
 				>
 					<Grid container>
-						<Grid item xs={12}>
-							<DialogTitle onClose={() => setFilter(false)}>
-								Filters
-							</DialogTitle>
-						</Grid>
-					</Grid>
-					<FormContainer
-						btn={{ label: "Submit" }}
-						onSubmit={({ values, setSubmitting, setFieldError }) => {
-							setSubmitting(true);
-							let shouldSubmit = true;
-							if (values.freelancer_member_id) {
-								Object.keys(values).forEach((k) => {
-									if (k != "freelancer_member_id") {
-										values[k] = "";
+						<FormContainer
+							resetLabel="Reset"
+							onSubmit={({ values, setSubmitting, setFieldError }) => {
+								setSubmitting(true);
+								let shouldSubmit = true;
+								if (values["booking_date"]) {
+									values["booking_date"] = new Date(values["booking_date"])
+										.toISOString()
+										.split("T")[0];
+								}
+								if (values.freelancer_member_id) {
+									applyFilter(values);
+								} else {
+									if (values["booking_date"]) {
+										values["booking_date"] = new Date(values["booking_date"])
+											.toISOString()
+											.split("T")[0];
+									} else {
+										Object.keys(values).forEach((k) => {
+											if (k != "freelancer_member_id" && k != "booking_date") {
+												if (!values[k]) {
+													setFieldError(k, "Field is required");
+													shouldSubmit = false;
+												}
+											}
+										});
 									}
-								});
-								setPayload(values);
-							} else {
-								Object.keys(values).forEach((k) => {
-									if (k != "freelancer_member_id" && k != "booking_date") {
-										if (!values[k]) {
-											setFieldError(k, "Field is required");
-											shouldSubmit = false;
-										}
+
+									if (shouldSubmit) {
+										applyFilter(values);
 									}
-								});
+								}
+
 								if (shouldSubmit) {
 									setPayload(values);
-								}
-							}
-							if (shouldSubmit) {
-								setTimeout(() => {
+									setTimeout(() => {
+										setSubmitting(false);
+									}, 5000);
+								} else {
 									setSubmitting(false);
-								}, 5000);
-							} else {
-								setSubmitting(false);
-							}
-						}}
-						elements={freelancerFilter}
-						defaultvals={payload}
-						helperEle={helperElement}
-					/>
+								}
+							}}
+							elements={freelancerFilter}
+							defaultvals={payload}
+							helperEle={helperElement}
+						/>
+					</Grid>
 				</Dialog>
 
 				{/* Full Profile View Dialog */}
@@ -482,7 +473,7 @@ const MatrimonySearch = (props) => {
 									</Typography>
 								)}
 								{maxSteps > 0 && (
-									<div style={{ maxWidth: 400, flexGrow: 1 }}>
+									<div style={{ maxWidth: 345, flexGrow: 1 }}>
 										{images[activeStep].file_type == 1 ? (
 											<img
 												onError={(ev) => addDefaultSrc(ev)}
