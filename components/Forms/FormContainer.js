@@ -4,12 +4,11 @@ import Grid from "@material-ui/core/Grid";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { createYupSchema } from "../../utils/yupSchemaCreator";
 import DateFnsUtils from "@date-io/date-fns";
-import {
-	KeyboardDatePicker,
-	MuiPickersUtilsProvider,
-} from "@material-ui/pickers";
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import * as Yup from "yup";
+import ClearIcon from "@material-ui/icons/Clear";
+import { IconButton } from "@material-ui/core";
 import ReactDOM from "react-dom";
 import {
 	Button,
@@ -139,14 +138,11 @@ const FormContainer = React.forwardRef((props, refs) => {
 		const currentError = form.errors[field.name];
 
 		return (
-			<MuiPickersUtilsProvider utils={DateFnsUtils}>
-				<KeyboardDatePicker
-					clearable
-					name={field.name}
+			<MuiPickersUtilsProvider utils={DateFnsUtils} fullWidth>
+				<DatePicker
 					style={{ width: "100%" }}
-					value={field.value}
-					format="yyyy/MM/dd"
 					helperText={currentError}
+					value={field.value}
 					error={Boolean(currentError)}
 					onError={(error) => {
 						// handle as a side effect
@@ -155,7 +151,9 @@ const FormContainer = React.forwardRef((props, refs) => {
 						}
 					}}
 					// if you are using custom validation schema you probably want to pass `true` as third argument
-					onChange={(date) => form.setFieldValue(field.name, date, false)}
+					onChange={(date) => {
+						form.setFieldValue(field.name, date, true);
+					}}
 					{...other}
 				/>
 			</MuiPickersUtilsProvider>
@@ -196,8 +194,6 @@ const FormContainer = React.forwardRef((props, refs) => {
 						<Field
 							fullwidth
 							{...params}
-							autoOk
-							value={new Date()}
 							inputVariant="outlined"
 							component={Component}
 							InputLabelProps={{
@@ -207,7 +203,15 @@ const FormContainer = React.forwardRef((props, refs) => {
 							}}
 							label={item.label ? item.label : "Enter " + toTitleCase(item.id)}
 							name={item.id}
-							InputAdornmentProps={{ position: "start" }}
+							InputProps={{
+								endAdornment: (
+									<IconButton
+										onClick={() => prop.setFieldValue(item.id, null, true)}
+									>
+										<ClearIcon />
+									</IconButton>
+								),
+							}}
 						/>
 					</Box>
 				);
@@ -420,9 +424,24 @@ const FormContainer = React.forwardRef((props, refs) => {
 					</Grid>
 
 					{HelperElement && <HelperElement prop={prop} />}
-					{props.btn && (
-						<div>
-							{prop.isSubmitting && "You Can't go back, Now!"}
+					<Grid justify="center" container spacing={2}>
+						<Grid item xs={6}>
+							{props.resetLabel && (
+								<Box margin={1}>
+									<Button
+										variant="contained"
+										fullWidth
+										color="secondary"
+										size="large"
+										onClick={() => prop.resetForm()}
+										disabled={prop.isSubmitting}
+									>
+										{props.resetLabel ? props.resetLabel : "Reset"}
+									</Button>
+								</Box>
+							)}
+						</Grid>
+						<Grid item xs={props.resetLabel ? 6 : 12}>
 							<Box margin={1}>
 								<Button
 									variant="contained"
@@ -432,10 +451,13 @@ const FormContainer = React.forwardRef((props, refs) => {
 									size="large"
 									disabled={prop.isSubmitting}
 								>
-									{props.btn.label}
+									{props.submitLabel ? props.submitLabel : "Submit"}
 								</Button>
 							</Box>
-						</div>
+						</Grid>
+					</Grid>
+					{props.submitLabel && (
+						<div>{prop.isSubmitting && "You Can't go back, Now!"}</div>
 					)}
 				</Form>
 			)}
@@ -449,7 +471,8 @@ FormContainer.propTypes = {
 	helperEle: PropTypes.func,
 	valSchema: PropTypes.array,
 	defaultvals: PropTypes.object,
-	btn: PropTypes.object,
+	submitLabel: PropTypes.string,
+	resetLabel: PropTypes.string,
 };
 
 export default FormContainer;

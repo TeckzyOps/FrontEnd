@@ -1127,6 +1127,7 @@ const freelancerform = (props) => {
 				<DialogTitle id="max-width-dialog-title">Booking Calendar</DialogTitle>
 				<DialogContent>
 					<BookingModule
+						editMode={true}
 						apifor="freelancer"
 						booking_id={props.router.query.id}
 					/>

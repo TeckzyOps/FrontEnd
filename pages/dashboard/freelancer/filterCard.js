@@ -196,12 +196,7 @@ const FilterCard = (props) => {
 							</div>
 						</Grid>
 
-						<Grid
-							container
-							style={{ textAlign: "center" }}
-							justify="center"
-							alignItems="center"
-						>
+						<Grid container justify="center" alignItems="center">
 							<Grid item xs={4}>
 								<MuiThemeProvider theme={theme}>
 									<Typography
@@ -426,14 +421,25 @@ const FilterCard = (props) => {
 							style={{ textAlign: "center" }}
 							justify="center"
 							alignItems="center"
+							spacing={2}
 						>
 							<Grid item container justify="center" xs={6}>
-								<Button size="small" variant="contained" color="primary">
+								<Button
+									size="small"
+									variant="contained"
+									color="primary"
+									fullWidth
+								>
 									Shortlist
 								</Button>
 							</Grid>
 							<Grid item xs={6}>
-								<Button size="small" variant="contained" color="primary">
+								<Button
+									size="small"
+									variant="contained"
+									color="primary"
+									fullWidth
+								>
 									Add To Cart
 								</Button>
 							</Grid>
@@ -455,7 +461,6 @@ const FilterCard = (props) => {
 					{/* </Box> */}
 
 					<Dialog
-						fullWidth
 						fullScreen={fullScreen}
 						maxWidth={"md"}
 						open={bookingPopup}
@@ -466,7 +471,11 @@ const FilterCard = (props) => {
 							Booking Calendar
 						</DialogTitle>
 						<DialogContent>
-							<BookingModule apifor="freelancer" booking_id={ad.id} />
+							<BookingModule
+								editMode={false}
+								apifor="freelancer"
+								booking_id={ad.id}
+							/>
 						</DialogContent>
 						<DialogActions>
 							<Button onClick={() => setBookingPopup(false)} color="primary">

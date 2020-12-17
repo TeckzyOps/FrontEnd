@@ -61,9 +61,6 @@ export const freelancerFilter = [
 			ElementParams: {
 				InputAdornmentProps: { position: "start" },
 			},
-			validationType: "string",
-			value: new Date(),
-			validations: [],
 		},
 		{
 			id: "service_price",

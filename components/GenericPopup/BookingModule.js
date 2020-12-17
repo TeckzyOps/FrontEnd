@@ -185,7 +185,12 @@ const BookingModule = ({ booking_id, ...props }) => {
 					{/* Hero unit */}
 					<div className={classes.heroContent}>
 						<Grid container spacing={2}>
-							<Grid item md={6} sm={6} xs={12}>
+							<Grid
+								item
+								md={props.editMode ? 6 : 12}
+								sm={props.editMode ? 6 : 12}
+								xs={12}
+							>
 								<MuiPickersUtilsProvider utils={DateFnsUtils}>
 									<DatePicker
 										autoOk
@@ -228,146 +233,151 @@ const BookingModule = ({ booking_id, ...props }) => {
 									/>
 								</MuiPickersUtilsProvider>
 								<br></br>
-								<Button
-									color="secondary"
-									onClick={() => setBookingInit(!bookingInit)}
-									variant="outlined"
-								>
-									{bookingInit ? "Close." : "Book Selected Date."}
-								</Button>
-							</Grid>
-							<Grid item md={6} sm={6} xs={12}>
-								{bookingInit && (
-									<div>
-										<Typography variant="h5">
-											Booking Date: <b>{new Date(date).toDateString()}</b>
-										</Typography>
-										{bookingStatus == 1 ? (
-											<div>
-												<TextField
-													type="text"
-													onChange={handleCommentChange}
-													variant="outlined"
-													fullWidth
-													multiline
-													rows={4}
-													label="Fill Availability Details"
-													InputProps={{
-														endAdornment: (
-															<InputAdornment position="end">
-																<IconButton
-																	disabled={
-																		null == booking_id || null == bookingStatus
-																	}
-																	aria-label="book date"
-																	onClick={bookDate}
-																	edge="end"
-																>
-																	<SendIcon />
-																</IconButton>
-															</InputAdornment>
-														),
-													}}
-												/>
-											</div>
-										) : (
-											<div>
-												<TextField
-													fullWidth
-													select
-													label="Choose a Reason"
-													onChange={handleCommentChange}
-													InputProps={{
-														endAdornment: (
-															<InputAdornment position="end">
-																<IconButton
-																	disabled={
-																		null == booking_id ||
-																		null == bookingStatus ||
-																		null == comments
-																	}
-																	aria-label="book date"
-																	onClick={bookDate}
-																	edge="end"
-																>
-																	<SendIcon />
-																</IconButton>
-															</InputAdornment>
-														),
-													}}
-												>
-													{partly.map((option) => (
-														<MenuItem key={option} value={option}>
-															{option}
-														</MenuItem>
-													))}
-												</TextField>
-											</div>
-										)}
-
-										<hr />
-
-										<FormControl component="fieldset">
-											<FormLabel component="legend">Booking Status</FormLabel>
-											<RadioGroup
-												aria-label="bookingStatus"
-												name="bookingStatus"
-												value={bookingStatus}
-												onChange={handlebookingstatusChange}
-												row
-											>
-												<FormControlLabel
-													value="1"
-													control={<Radio />}
-													label="Partially"
-													checked={bookingStatus == 1}
-												/>
-												<FormControlLabel
-													value="0"
-													control={<Radio />}
-													label="Completely"
-												/>
-											</RadioGroup>
-										</FormControl>
-									</div>
+								{props.editMode && (
+									<Button
+										color="secondary"
+										onClick={() => setBookingInit(!bookingInit)}
+										variant="outlined"
+									>
+										{bookingInit ? "Close." : "Book Selected Date."}
+									</Button>
 								)}
-								{!bookingInit && (
-									<List className={classes.root}>
-										{remoteData.map((data, index) => (
-											<div key={index}>
-												<ListItem alignItems="flex-start">
-													<ListItemAvatar>
-														<Avatar
-															alt={new Date(data.date_of_booking).getDate()}
-														/>
-													</ListItemAvatar>
-													<ListItemText
-														primary={data.date_of_booking}
-														secondary={
-															<React.Fragment>
-																<Typography
-																	component="span"
-																	variant="body2"
-																	className={classes.inline}
-																	color="textPrimary"
-																>
-																	Status :{" "}
-																	{data.booking_status == 1
-																		? "Partly"
-																		: "Completely"}
-																</Typography>
-																<br></br>
-																{data.comment}
-															</React.Fragment>
-														}
+							</Grid>
+							{props.editMode && (
+								<Grid item md={6} sm={6} xs={12}>
+									{bookingInit && (
+										<div>
+											<Typography variant="h5">
+												Booking Date: <b>{new Date(date).toDateString()}</b>
+											</Typography>
+											{bookingStatus == 1 ? (
+												<div>
+													<TextField
+														type="text"
+														onChange={handleCommentChange}
+														variant="outlined"
+														fullWidth
+														multiline
+														rows={4}
+														label="Fill Availability Details"
+														InputProps={{
+															endAdornment: (
+																<InputAdornment position="end">
+																	<IconButton
+																		disabled={
+																			null == booking_id ||
+																			null == bookingStatus
+																		}
+																		aria-label="book date"
+																		onClick={bookDate}
+																		edge="end"
+																	>
+																		<SendIcon />
+																	</IconButton>
+																</InputAdornment>
+															),
+														}}
 													/>
-												</ListItem>
-												<Divider variant="inset" component="li" />
-											</div>
-										))}
-									</List>
-								)}
-							</Grid>
+												</div>
+											) : (
+												<div>
+													<TextField
+														fullWidth
+														select
+														label="Choose a Reason"
+														onChange={handleCommentChange}
+														InputProps={{
+															endAdornment: (
+																<InputAdornment position="end">
+																	<IconButton
+																		disabled={
+																			null == booking_id ||
+																			null == bookingStatus ||
+																			null == comments
+																		}
+																		aria-label="book date"
+																		onClick={bookDate}
+																		edge="end"
+																	>
+																		<SendIcon />
+																	</IconButton>
+																</InputAdornment>
+															),
+														}}
+													>
+														{partly.map((option) => (
+															<MenuItem key={option} value={option}>
+																{option}
+															</MenuItem>
+														))}
+													</TextField>
+												</div>
+											)}
+
+											<hr />
+
+											<FormControl component="fieldset">
+												<FormLabel component="legend">Booking Status</FormLabel>
+												<RadioGroup
+													aria-label="bookingStatus"
+													name="bookingStatus"
+													value={bookingStatus}
+													onChange={handlebookingstatusChange}
+													row
+												>
+													<FormControlLabel
+														value="1"
+														control={<Radio />}
+														label="Partially"
+														checked={bookingStatus == 1}
+													/>
+													<FormControlLabel
+														value="0"
+														control={<Radio />}
+														label="Completely"
+													/>
+												</RadioGroup>
+											</FormControl>
+										</div>
+									)}
+									{!bookingInit && (
+										<List className={classes.root}>
+											{remoteData.map((data, index) => (
+												<div key={index}>
+													<ListItem alignItems="flex-start">
+														<ListItemAvatar>
+															<Avatar
+																alt={new Date(data.date_of_booking).getDate()}
+															/>
+														</ListItemAvatar>
+														<ListItemText
+															primary={data.date_of_booking}
+															secondary={
+																<React.Fragment>
+																	<Typography
+																		component="span"
+																		variant="body2"
+																		className={classes.inline}
+																		color="textPrimary"
+																	>
+																		Status :{" "}
+																		{data.booking_status == 1
+																			? "Partly"
+																			: "Completely"}
+																	</Typography>
+																	<br></br>
+																	{data.comment}
+																</React.Fragment>
+															}
+														/>
+													</ListItem>
+													<Divider variant="inset" component="li" />
+												</div>
+											))}
+										</List>
+									)}
+								</Grid>
+							)}
 						</Grid>
 					</div>
 				</main>
