@@ -116,7 +116,7 @@ const MatrimonySearch = (props) => {
 	const [details, setDetails] = React.useState({});
 	const [images, setImages] = React.useState([]);
 	const maxSteps = images.length;
-
+	console.log("props :: ", props);
 	const handleNext = () => {
 		setActiveStep((prevActiveStep) => prevActiveStep + 1);
 	};
@@ -383,58 +383,64 @@ const MatrimonySearch = (props) => {
 					fullWidth={true}
 					maxWidth={"md"}
 					open={filter}
+					disableBackdropClick
+					disableEscapeKeyDown
 					scroll="paper"
 					onClose={() => setFilter(false)}
 					TransitionComponent={Transition}
 				>
-					<Grid container>
-						<FormContainer
-							resetLabel="Reset"
-							onSubmit={({ values, setSubmitting, setFieldError }) => {
-								setSubmitting(true);
-								let shouldSubmit = true;
-								if (values["booking_date"]) {
-									values["booking_date"] = new Date(values["booking_date"])
-										.toISOString()
-										.split("T")[0];
-								}
-								if (values.freelancer_member_id) {
-									applyFilter(values);
-								} else {
+					<DialogContent>
+						<Grid container justify="center" alignItems="center">
+							<FormContainer
+								onSubmit={({ values, setSubmitting, setFieldError }) => {
+									setSubmitting(true);
+									let shouldSubmit = true;
 									if (values["booking_date"]) {
 										values["booking_date"] = new Date(values["booking_date"])
 											.toISOString()
 											.split("T")[0];
+									}
+									if (values.freelancer_member_id) {
+										applyFilter(values);
 									} else {
-										Object.keys(values).forEach((k) => {
-											if (k != "freelancer_member_id" && k != "booking_date") {
-												if (!values[k]) {
-													setFieldError(k, "Field is required");
-													shouldSubmit = false;
+										if (values["booking_date"]) {
+											values["booking_date"] = new Date(values["booking_date"])
+												.toISOString()
+												.split("T")[0];
+										} else {
+											Object.keys(values).forEach((k) => {
+												if (
+													k != "freelancer_member_id" &&
+													k != "booking_date"
+												) {
+													if (!values[k]) {
+														setFieldError(k, "Field is required");
+														shouldSubmit = false;
+													}
 												}
-											}
-										});
+											});
+										}
+
+										if (shouldSubmit) {
+											applyFilter(values);
+										}
 									}
 
 									if (shouldSubmit) {
-										applyFilter(values);
-									}
-								}
-
-								if (shouldSubmit) {
-									setPayload(values);
-									setTimeout(() => {
+										setPayload(values);
+										setTimeout(() => {
+											setSubmitting(false);
+										}, 5000);
+									} else {
 										setSubmitting(false);
-									}, 5000);
-								} else {
-									setSubmitting(false);
-								}
-							}}
-							elements={freelancerFilter}
-							defaultvals={payload}
-							helperEle={helperElement}
-						/>
-					</Grid>
+									}
+								}}
+								elements={freelancerFilter}
+								defaultvals={payload}
+								helperEle={helperElement}
+							/>
+						</Grid>
+					</DialogContent>
 				</Dialog>
 
 				{/* Full Profile View Dialog */}
@@ -447,21 +453,15 @@ const MatrimonySearch = (props) => {
 					onClose={() => setAd({})}
 					TransitionComponent={Transition}
 				>
-					<Grid container>
-						<Grid item xs={12}>
-							<DialogTitle onClose={() => setFilter(false)}>
-								Freelancer Member : {ad.freelancer_member_id}
-							</DialogTitle>
-						</Grid>
+					<DialogContent>
+						<Grid container justify="center" alignItems="center">
+							<Grid item xs={12}>
+								<DialogTitle color="primary" onClose={() => setFilter(false)}>
+									Freelancer Member : {ad.freelancer_member_id}
+								</DialogTitle>
+							</Grid>
 
-						<Grid container justify="center">
-							<Grid
-								style={{ padding: theme.spacing(2) }}
-								item
-								md={6}
-								sm={6}
-								xs={12}
-							>
+							<Grid style={{ padding: theme.spacing(2) }} item sm={6} xs={12}>
 								{maxSteps <= 0 && (
 									<Typography
 										align="center"
@@ -528,11 +528,12 @@ const MatrimonySearch = (props) => {
 									</div>
 								)}
 							</Grid>
-							<Grid item md={6} sm={6} xs={12}>
+
+							<Grid item sm={6} xs={12}>
 								<FilterCard ad={ad} fullview={true} {...props} />
 							</Grid>
 						</Grid>
-					</Grid>
+					</DialogContent>
 					<DialogActions>
 						<Button onClick={() => setAd({})} color="primary">
 							Close

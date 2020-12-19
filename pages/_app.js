@@ -26,8 +26,10 @@ import { AuthProvider } from "../components/provider/Auth";
 import Cookies from "js-cookie";
 import LocalStorageService from "../_services/LocalStorageService";
 const localStorageService = LocalStorageService.getService();
+import routerLinkProtected from "~static/text/link";
 
 let themeType = "light";
+let link = routerLinkProtected.starter;
 if (typeof Storage !== "undefined") {
 	themeType = localStorage.getItem("luxiTheme") || "light";
 }
@@ -36,7 +38,16 @@ class MyApp extends App {
 	state = {
 		Netloading: false,
 		user: {},
+		protectedLink: [
+			link.profile,
+			link.dashboard,
+			link.freelancernew,
+			link.freelancerVids,
+			link.freelancerImg,
+		],
+		redirectLink: this.props.router.route,
 		token: "",
+		loggedIn: false,
 		loading: true,
 		showSnackbar: false,
 		snackbarError: "",
@@ -118,6 +129,25 @@ class MyApp extends App {
 		if (jssStyles) {
 			jssStyles.parentNode.removeChild(jssStyles);
 		}
+
+		let details = localStorageService.getUserDetails("Details");
+		// if (
+		// 	!this.loggedIn &&
+		// 	(null !=
+		// 		["login", "id"].reduce(
+		// 			(details, level) => details && odetailsbj[level],
+		// 			details
+		// 		) ||
+		// 		undefined !=
+		// 			["login", "id"].reduce(
+		// 				(details, level) => details && odetailsbj[level],
+		// 				details
+		// 			))
+		// ) {
+		// 	this.setState({ loggedIn: true });
+		// } else {
+		// 	Router.push("/login");
+		// }
 	}
 
 	toggleDarkTheme = () => {
@@ -151,12 +181,12 @@ class MyApp extends App {
 	getNested = (obj, ...args) => {
 		return args.reduce((obj, level) => obj && obj[level], obj);
 	};
-
 	render() {
-		const { theme, loading, Netloading } = this.state;
+		const { theme, loading, Netloading, loggedIn } = this.state;
 		const muiTheme = createMuiTheme(theme);
 		const { Component, pageProps, router } = this.props; // eslint-disable-line
 		const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
+
 		return (
 			<Container>
 				<AuthProvider>

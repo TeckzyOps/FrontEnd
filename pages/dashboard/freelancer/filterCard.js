@@ -22,6 +22,7 @@ import {
 	Typography,
 	Button,
 	Box,
+	Icon,
 	Divider,
 	Link,
 	useMediaQuery,
@@ -31,6 +32,7 @@ import Rating from "@material-ui/lab/Rating";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import IconButton from "@material-ui/core/IconButton";
 import BookingModule from "../../../components/GenericPopup/BookingModule";
+import BrokenImage from "~static/favicons/ms-icon-310x310.png";
 let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
 const useStyles = makeStyles({
@@ -39,14 +41,34 @@ const useStyles = makeStyles({
 		flexGrow: 1,
 		margin: theme.spacing(2),
 	},
+	themeTextColor: { color: theme.palette.primary.main },
 });
 
 const FilterCard = (props) => {
 	const classes = useStyles();
+	const theme = useTheme();
 	const [value, setValue] = React.useState(2.1);
 	const [bookingPopup, setBookingPopup] = React.useState(false);
 	const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-	console.log("FILTERCARD :: ", props);
+
+	const image = () => {
+		let url = ad.images.length > 0 ? ad.images[0].file_path : null;
+		if (null == url) {
+			return "~static/favicons/favicon-96x96.png";
+		}
+		fetch(url)
+			.then((res) => {
+				if (res.status != 200 || res.status != 201) {
+					return "~static/favicons/favicon-96x96.png";
+				} else {
+					return url;
+				}
+			})
+			.catch((err) => {
+				return "~static/favicons/favicon-96x96.png";
+			});
+	};
+	function checkImageURL(url) {}
 	const { fullview, ad, setAd, index } = props;
 	if (ad.id) {
 		if (fullview) {
@@ -54,14 +76,18 @@ const FilterCard = (props) => {
 				<div>
 					{/* <Box border={1} borderColor="primary"> */}
 					<Divider variant="middle" />
-					<Grid className={classes.root} container>
+					<Grid container justify="center" alignItems="center">
 						<Grid item container justify="flex-start" xs={6}>
 							<div style={{ display: "flex" }}>
 								<MuiThemeProvider theme={theme}>
 									<Typography
-										style={{ fontWeight: 500, align: "right" }}
+										style={{
+											color: theme.palette.primary.main,
+											fontWeight: 500,
+											align: "right",
+										}}
 										variant="caption"
-										color="inherit"
+										color="primary"
 										noWrap
 									>
 										Rating : &nbsp;
@@ -69,8 +95,14 @@ const FilterCard = (props) => {
 								</MuiThemeProvider>
 							</div>
 						</Grid>
-						<Grid item container justify="flex-start" xs={6}>
-							<Box component="fieldset" mb={3} borderColor="transparent">
+						<Grid
+							item
+							container
+							justify="flex-start"
+							alignItems="flex-end"
+							xs={6}
+						>
+							<Box borderColor="transparent">
 								<Rating name="read-only" value={parseInt(ad.rating)} readOnly />
 							</Box>
 						</Grid>
@@ -80,7 +112,11 @@ const FilterCard = (props) => {
 							<div style={{ display: "flex" }}>
 								<MuiThemeProvider theme={theme}>
 									<Typography
-										style={{ fontWeight: 500, align: "right" }}
+										style={{
+											color: theme.palette.primary.main,
+											fontWeight: 500,
+											align: "right",
+										}}
 										variant="caption"
 										color="inherit"
 										noWrap
@@ -104,7 +140,11 @@ const FilterCard = (props) => {
 							<div style={{ display: "flex" }}>
 								<MuiThemeProvider theme={theme}>
 									<Typography
-										style={{ fontWeight: 500, align: "right" }}
+										style={{
+											color: theme.palette.primary.main,
+											fontWeight: 500,
+											align: "right",
+										}}
 										variant="caption"
 										color="inherit"
 										noWrap
@@ -128,7 +168,11 @@ const FilterCard = (props) => {
 							<div style={{ display: "flex" }}>
 								<MuiThemeProvider theme={theme}>
 									<Typography
-										style={{ fontWeight: 500, align: "right" }}
+										style={{
+											color: theme.palette.primary.main,
+											fontWeight: 500,
+											align: "right",
+										}}
 										variant="caption"
 										color="inherit"
 										noWrap
@@ -152,7 +196,11 @@ const FilterCard = (props) => {
 							<div style={{ display: "flex" }}>
 								<MuiThemeProvider theme={theme}>
 									<Typography
-										style={{ fontWeight: 500, align: "right" }}
+										style={{
+											color: theme.palette.primary.main,
+											fontWeight: 500,
+											align: "right",
+										}}
 										variant="caption"
 										color="inherit"
 										noWrap
@@ -176,7 +224,11 @@ const FilterCard = (props) => {
 							<div style={{ display: "flex" }}>
 								<MuiThemeProvider theme={theme}>
 									<Typography
-										style={{ fontWeight: 500, align: "right" }}
+										style={{
+											color: theme.palette.primary.main,
+											fontWeight: 500,
+											align: "right",
+										}}
 										variant="caption"
 										color="inherit"
 										noWrap
@@ -200,7 +252,10 @@ const FilterCard = (props) => {
 							<Grid item xs={4}>
 								<MuiThemeProvider theme={theme}>
 									<Typography
-										style={{ fontWeight: 500 }}
+										style={{
+											color: theme.palette.primary.main,
+											fontWeight: 500,
+										}}
 										variant="caption"
 										display="block"
 										gutterBottom
@@ -221,7 +276,10 @@ const FilterCard = (props) => {
 							<Grid item xs={4}>
 								<MuiThemeProvider theme={theme}>
 									<Typography
-										style={{ fontWeight: 500 }}
+										style={{
+											color: theme.palette.primary.main,
+											fontWeight: 500,
+										}}
 										variant="caption"
 										display="block"
 										gutterBottom
@@ -242,7 +300,10 @@ const FilterCard = (props) => {
 							<Grid item xs={4}>
 								<MuiThemeProvider theme={theme}>
 									<Typography
-										style={{ fontWeight: 500 }}
+										style={{
+											color: theme.palette.primary.main,
+											fontWeight: 500,
+										}}
 										variant="caption"
 										display="block"
 										gutterBottom
@@ -265,12 +326,16 @@ const FilterCard = (props) => {
 					{/* </Box> */}
 					<Divider variant="middle" />
 					{/* <Box border={1} borderColor="primary"> */}
-					<Grid className={classes.root} container>
+					<Grid container justify="center" alignItems="center">
 						<Grid item container justify="flex-start" xs={6}>
 							<div style={{ display: "flex" }}>
 								<MuiThemeProvider theme={theme}>
 									<Typography
-										style={{ fontWeight: 500, align: "right" }}
+										style={{
+											color: theme.palette.primary.main,
+											fontWeight: 500,
+											align: "right",
+										}}
 										variant="caption"
 										color="inherit"
 										noWrap
@@ -293,7 +358,11 @@ const FilterCard = (props) => {
 							<div style={{ display: "flex" }}>
 								<MuiThemeProvider theme={theme}>
 									<Typography
-										style={{ fontWeight: 500, align: "right" }}
+										style={{
+											color: theme.palette.primary.main,
+											fontWeight: 500,
+											align: "right",
+										}}
 										variant="caption"
 										color="inherit"
 										noWrap
@@ -316,40 +385,52 @@ const FilterCard = (props) => {
 							</div>
 						</Grid>
 
-						<Grid item container justify="flex-start" xs={6}>
-							<div style={{ display: "flex" }}>
-								<MuiThemeProvider theme={theme}>
-									<Typography
-										style={{ fontWeight: 500, align: "right" }}
-										variant="caption"
-										color="inherit"
-										noWrap
-									>
-										Catalog : &nbsp;
-									</Typography>
-								</MuiThemeProvider>
+						{ad.catalog_pdf_path && (
+							<div>
+								<Grid item container justify="flex-start" xs={6}>
+									<div style={{ display: "flex" }}>
+										<MuiThemeProvider theme={theme}>
+											<Typography
+												style={{
+													color: theme.palette.primary.main,
+													fontWeight: 500,
+													align: "right",
+												}}
+												variant="caption"
+												color="primary"
+												noWrap
+											>
+												Catalog : &nbsp;
+											</Typography>
+										</MuiThemeProvider>
+									</div>
+								</Grid>
+								<Grid item container justify="flex-start" xs={6}>
+									<div style={{ display: "flex" }}>
+										<Link
+											target="_blank"
+											rel="noopener"
+											rel="noreferrer"
+											style={{ textDecoration: "none" }}
+											href={ad.catalog_pdf_path.catalog_path}
+											color="primary"
+										>
+											View
+										</Link>
+									</div>
+								</Grid>
 							</div>
-						</Grid>
-						<Grid item container justify="flex-start" xs={6}>
-							<div style={{ display: "flex" }}>
-								<Link
-									target="_blank"
-									rel="noopener"
-									rel="noreferrer"
-									style={{ textDecoration: "none" }}
-									href={ad.catalog_pdf_path.catalog_path}
-									color="primary"
-								>
-									View
-								</Link>
-							</div>
-						</Grid>
+						)}
 
 						<Grid item container justify="flex-start" xs={6}>
 							<div style={{ display: "flex" }}>
 								<MuiThemeProvider theme={theme}>
 									<Typography
-										style={{ fontWeight: 500, align: "right" }}
+										style={{
+											color: theme.palette.primary.main,
+											fontWeight: 500,
+											align: "right",
+										}}
 										variant="caption"
 										color="inherit"
 										noWrap
@@ -373,7 +454,11 @@ const FilterCard = (props) => {
 							<div style={{ display: "flex" }}>
 								<MuiThemeProvider theme={theme}>
 									<Typography
-										style={{ fontWeight: 500, align: "right" }}
+										style={{
+											color: theme.palette.primary.main,
+											fontWeight: 500,
+											align: "right",
+										}}
 										variant="caption"
 										color="inherit"
 										noWrap
@@ -396,7 +481,11 @@ const FilterCard = (props) => {
 							<div style={{ display: "flex" }}>
 								<MuiThemeProvider theme={theme}>
 									<Typography
-										style={{ fontWeight: 500, align: "right" }}
+										style={{
+											color: theme.palette.primary.main,
+											fontWeight: 500,
+											align: "right",
+										}}
 										variant="caption"
 										color="inherit"
 										noWrap
@@ -491,10 +580,17 @@ const FilterCard = (props) => {
 					<CardActionArea>
 						<CardMedia
 							component="img"
-							alt="Contemplative Reptile"
+							alt={ad.bussiness_name}
 							height="200"
-							image="https://image.freepik.com/free-photo/river-foggy-mountains-landscape_1204-511.jpg"
-							title="Contemplative Reptile"
+							image={ad.images.length > 0 ? ad.images[0].file_path : null}
+							onError={(e) => {
+								/**
+								 * Any code. For instance, changing the `src` prop with a fallback url.
+								 * In our code, I've added `e.target.className = fallback_className` for instance.
+								 */
+								e.target.src = BrokenImage;
+							}}
+							title={ad.bussiness_name}
 						/>
 						<IconButton
 							color="secondary"
@@ -509,9 +605,12 @@ const FilterCard = (props) => {
 									<div style={{ display: "flex" }}>
 										<MuiThemeProvider theme={theme}>
 											<Typography
-												style={{ fontWeight: 500, align: "right" }}
+												style={{
+													color: theme.palette.primary.main,
+													fontWeight: 500,
+													align: "right",
+												}}
 												variant="caption"
-												color="inherit"
 												noWrap
 											>
 												Rating : &nbsp;
@@ -519,8 +618,14 @@ const FilterCard = (props) => {
 										</MuiThemeProvider>
 									</div>
 								</Grid>
-								<Grid item container justify="flex-start" xs={6}>
-									<Box component="fieldset" mb={3} borderColor="transparent">
+								<Grid
+									item
+									container
+									justify="flex-start"
+									alignItems="flex-end"
+									xs={6}
+								>
+									<Box borderColor="transparent">
 										<Rating name="read-only" value={value} readOnly />
 									</Box>
 								</Grid>
@@ -530,7 +635,11 @@ const FilterCard = (props) => {
 									<div style={{ display: "flex" }}>
 										<MuiThemeProvider theme={theme}>
 											<Typography
-												style={{ fontWeight: 500, align: "right" }}
+												style={{
+													color: theme.palette.primary.main,
+													fontWeight: 500,
+													align: "right",
+												}}
 												variant="caption"
 												color="inherit"
 												noWrap
@@ -554,7 +663,11 @@ const FilterCard = (props) => {
 									<div style={{ display: "flex" }}>
 										<MuiThemeProvider theme={theme}>
 											<Typography
-												style={{ fontWeight: 500, align: "right" }}
+												style={{
+													color: theme.palette.primary.main,
+													fontWeight: 500,
+													align: "right",
+												}}
 												variant="caption"
 												color="inherit"
 												noWrap
@@ -578,7 +691,11 @@ const FilterCard = (props) => {
 									<div style={{ display: "flex" }}>
 										<MuiThemeProvider theme={theme}>
 											<Typography
-												style={{ fontWeight: 500, align: "right" }}
+												style={{
+													color: theme.palette.primary.main,
+													fontWeight: 500,
+													align: "right",
+												}}
 												variant="caption"
 												color="inherit"
 												noWrap
@@ -602,7 +719,11 @@ const FilterCard = (props) => {
 									<div style={{ display: "flex" }}>
 										<MuiThemeProvider theme={theme}>
 											<Typography
-												style={{ fontWeight: 500, align: "right" }}
+												style={{
+													color: theme.palette.primary.main,
+													fontWeight: 500,
+													align: "right",
+												}}
 												variant="caption"
 												color="inherit"
 												noWrap
@@ -626,7 +747,11 @@ const FilterCard = (props) => {
 									<div style={{ display: "flex" }}>
 										<MuiThemeProvider theme={theme}>
 											<Typography
-												style={{ fontWeight: 500, align: "right" }}
+												style={{
+													color: theme.palette.primary.main,
+													fontWeight: 500,
+													align: "right",
+												}}
 												variant="caption"
 												color="inherit"
 												noWrap
@@ -650,7 +775,10 @@ const FilterCard = (props) => {
 									<Grid item xs={4}>
 										<MuiThemeProvider theme={theme}>
 											<Typography
-												style={{ fontWeight: 500 }}
+												style={{
+													color: theme.palette.primary.main,
+													fontWeight: 500,
+												}}
 												variant="caption"
 												display="block"
 												gutterBottom
@@ -671,7 +799,10 @@ const FilterCard = (props) => {
 									<Grid item xs={4}>
 										<MuiThemeProvider theme={theme}>
 											<Typography
-												style={{ fontWeight: 500 }}
+												style={{
+													color: theme.palette.primary.main,
+													fontWeight: 500,
+												}}
 												variant="caption"
 												display="block"
 												gutterBottom
@@ -692,7 +823,10 @@ const FilterCard = (props) => {
 									<Grid item xs={4}>
 										<MuiThemeProvider theme={theme}>
 											<Typography
-												style={{ fontWeight: 500 }}
+												style={{
+													color: theme.palette.primary.main,
+													fontWeight: 500,
+												}}
 												variant="caption"
 												display="block"
 												gutterBottom

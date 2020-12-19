@@ -634,7 +634,7 @@ const freelancerform = (props) => {
 												<Divider variant="middle" flexItem />
 												<Typography variant="h5">Catalog File :</Typography>
 
-												{catalogFile.catalog_path && (
+												{null != catalogFile && (
 													<Link
 														href={catalogFile.catalog_path}
 														target="_blank"

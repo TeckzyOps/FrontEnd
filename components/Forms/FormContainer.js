@@ -7,8 +7,6 @@ import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import * as Yup from "yup";
-import ClearIcon from "@material-ui/icons/Clear";
-import { IconButton } from "@material-ui/core";
 import ReactDOM from "react-dom";
 import {
 	Button,
@@ -203,15 +201,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 							}}
 							label={item.label ? item.label : "Enter " + toTitleCase(item.id)}
 							name={item.id}
-							InputProps={{
-								endAdornment: (
-									<IconButton
-										onClick={() => prop.setFieldValue(item.id, null, true)}
-									>
-										<ClearIcon />
-									</IconButton>
-								),
-							}}
+							InputAdornmentProps={{ position: "start" }}
 						/>
 					</Box>
 				);
@@ -419,7 +409,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 		>
 			{(prop) => (
 				<Form>
-					<Grid container spacing={3}>
+					<Grid container justify="center" alignItems="center" spacing={1}>
 						{renderFormElements(prop)}
 					</Grid>
 
