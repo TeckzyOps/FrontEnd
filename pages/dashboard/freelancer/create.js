@@ -10,6 +10,7 @@ import LocalStorageService from "../../../_services/LocalStorageService";
 import Header from "../../../components/Header";
 const localStorageService = LocalStorageService.getService();
 import FreelancerForm from "../../../components/Dashboard/FreelancerForm";
+import jsHttpCookie from "cookie";
 
 const useStyles = makeStyles((theme) => ({
 	root: { paddingTop: "11vh" },
@@ -62,7 +63,11 @@ Freelancer.getInitialProps = ({ req, res }) => {
 	if (!ISSERVER) {
 		token = localStorage.getItem("token");
 	} else {
-		token = getCookieFromReq(req, "token");
+		const cookies = req.headers.cookie;
+		if (typeof cookies === "string") {
+			const cookiesJSON = jsHttpCookie.parse(cookies);
+			token = cookiesJSON.token;
+		}
 	}
 
 	if (token == null) {

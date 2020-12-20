@@ -51,23 +51,31 @@ const FilterCard = (props) => {
 	const [bookingPopup, setBookingPopup] = React.useState(false);
 	const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-	const image = () => {
-		let url = ad.images.length > 0 ? ad.images[0].file_path : null;
+	function image() {
+		let url = ad.images.length > 0 ? ad.images : null;
 		if (null == url) {
-			return "~static/favicons/favicon-96x96.png";
+			return "invalid_link";
 		}
-		fetch(url)
-			.then((res) => {
-				if (res.status != 200 || res.status != 201) {
-					return "~static/favicons/favicon-96x96.png";
-				} else {
-					return url;
-				}
-			})
-			.catch((err) => {
-				return "~static/favicons/favicon-96x96.png";
-			});
-	};
+		let working = url.find(function (element) {
+			fetch(element.file_path)
+				.then((res) => {
+					if (res.status != 200 || res.status != 201) {
+						return false;
+					} else {
+						return true;
+					}
+				})
+				.catch((err) => {
+					return false;
+				});
+		});
+
+		if (working) {
+			return working;
+		}
+
+		return "invalid_link";
+	}
 	function checkImageURL(url) {}
 	const { fullview, ad, setAd, index } = props;
 	if (ad.id) {
@@ -541,7 +549,12 @@ const FilterCard = (props) => {
 							alignItems="center"
 						>
 							<Grid item container justify="center" xs={12}>
-								<Button size="small" variant="contained" color="primary">
+								<Button
+									size="small"
+									variant="contained"
+									color="primary"
+									fullWidth
+								>
 									Unlock Contact Detail
 								</Button>
 							</Grid>
@@ -582,7 +595,7 @@ const FilterCard = (props) => {
 							component="img"
 							alt={ad.bussiness_name}
 							height="200"
-							image={ad.images.length > 0 ? ad.images[0].file_path : null}
+							image={image()}
 							onError={(e) => {
 								/**
 								 * Any code. For instance, changing the `src` prop with a fallback url.
@@ -626,7 +639,11 @@ const FilterCard = (props) => {
 									xs={6}
 								>
 									<Box borderColor="transparent">
-										<Rating name="read-only" value={value} readOnly />
+										<Rating
+											name="read-only"
+											value={parseInt(ad.rating)}
+											readOnly
+										/>
 									</Box>
 								</Grid>
 

@@ -132,6 +132,15 @@ const FormContainer = React.forwardRef((props, refs) => {
 
 		return state;
 	}
+	function containsAll(needles, haystack) {
+		if (Array.isArray(haystack)) {
+			for (var i = 0; i < needles.length; i++) {
+				if (!haystack.includes(needles[i])) return false;
+			}
+			return true;
+		}
+		return null;
+	}
 	const DatePickerField = ({ field, form, ...other }) => {
 		const currentError = form.errors[field.name];
 
@@ -181,6 +190,13 @@ const FormContainer = React.forwardRef((props, refs) => {
 			let opt = getNested(item, "options", "data");
 			let index = getNested(item, "options", "dependsOn");
 			opts = opt[prop.values[index]];
+			if (
+				Array.isArray(prop.values[item.id]) &&
+				prop.values[item.id].length > 0 &&
+				!containsAll(prop.values[item.id], opts)
+			) {
+				prop.setFieldValue(item.id, []);
+			}
 		} else {
 			opts = getNested(item, "options", "data");
 		}
@@ -243,7 +259,6 @@ const FormContainer = React.forwardRef((props, refs) => {
 								type="text"
 								name={item.id}
 								labelWidth={labelWidth}
-								inputProps={{ name: item.id, id: item.id }}
 							>
 								{Array.isArray(opts) &&
 									opts.map((option, index) => (
