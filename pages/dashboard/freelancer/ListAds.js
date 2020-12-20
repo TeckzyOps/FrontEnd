@@ -463,14 +463,14 @@ const MatrimonySearch = (props) => {
 
 							<Grid style={{ padding: theme.spacing(2) }} item sm={6} xs={12}>
 								{maxSteps <= 0 && (
-									<Typography
-										align="center"
-										component="h1"
-										variant="h6"
-										color="inherit"
-									>
-										Upload Some Images/Videos<br></br>to Showcase Here.
-									</Typography>
+									<div style={{ maxWidth: 345, flexGrow: 1 }}>
+										<img
+											onError={(ev) => addDefaultSrc(ev)}
+											className={classes.img}
+											src={broken_image}
+											alt={"No Files Uploaded"}
+										/>
+									</div>
 								)}
 								{maxSteps > 0 && (
 									<div style={{ maxWidth: 345, flexGrow: 1 }}>

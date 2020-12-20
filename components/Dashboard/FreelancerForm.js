@@ -311,6 +311,7 @@ const freelancerform = (props) => {
 			payload.append("catalog_pdf_path", values.catalog_pdf_path);
 			proceed = true;
 		} else {
+			delete values["catalog_pdf_path"];
 			let valKeyArr = Object.keys(values);
 			for (var i = 0; i < valKeyArr.length; i++) {
 				if (freelancerData[valKeyArr[i]] != values[valKeyArr[i]]) {
@@ -634,16 +635,17 @@ const freelancerform = (props) => {
 												<Divider variant="middle" flexItem />
 												<Typography variant="h5">Catalog File :</Typography>
 
-												{null != catalogFile && (
-													<Link
-														href={catalogFile.catalog_path}
-														target="_blank"
-														rel="noreferrer"
-														variant="body2"
-													>
-														{catalogFile.catalog_path.split("/").pop()}
-													</Link>
-												)}
+												{null != catalogFile &&
+													null != catalogFile.catalog_path && (
+														<Link
+															href={catalogFile.catalog_path}
+															target="_blank"
+															rel="noreferrer"
+															variant="body2"
+														>
+															{catalogFile.catalog_path.split("/").pop()}
+														</Link>
+													)}
 
 												<Button
 													variant="contained"
