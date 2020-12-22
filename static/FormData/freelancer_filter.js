@@ -31,7 +31,7 @@ export const freelancerFilter = [
 	[
 		{
 			id: "service_category",
-			label: "Service Category",
+			label: "Category",
 			placeholder: "",
 			type: "select",
 
@@ -42,7 +42,7 @@ export const freelancerFilter = [
 		},
 		{
 			id: "sub_service",
-			label: "Sub Service Category",
+			label: "Service",
 			placeholder: "",
 
 			type: "select",

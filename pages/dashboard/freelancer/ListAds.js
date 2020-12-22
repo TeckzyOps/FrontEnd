@@ -3,6 +3,7 @@ import withAuth from "../../../components/Hoc/withAuth";
 import {
 	makeStyles,
 	useTheme,
+	withStyles,
 	createMuiTheme,
 	responsiveFontSizes,
 	MuiThemeProvider,
@@ -12,24 +13,15 @@ import { Formik, Field, Form, useField, FieldArray } from "formik";
 import Router from "next/router";
 import cookies from "js-cookie";
 import * as Yup from "yup";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
 import DateFnsUtils from "@date-io/date-fns";
 import {
 	KeyboardDatePicker,
 	MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import { TextField, Switch } from "formik-material-ui";
-import {
-	Grid,
-	Button,
-	Dialog,
-	Select,
-	Container,
-	ButtonBase,
-	FormControl,
-	Box,
-	MenuItem,
-	InputLabel,
-} from "@material-ui/core";
+import { Grid, Button, Dialog, Container, Box, Fab } from "@material-ui/core";
 import Head from "next/head";
 import LocalStorageService from "../../../_services/LocalStorageService";
 import DashboardWrapper from "../../../components/Dashboard/DashboardWrapper";
@@ -41,7 +33,7 @@ import Pagination from "@material-ui/lab/Pagination";
 import Slide from "@material-ui/core/Slide";
 import AppBar from "@material-ui/core/AppBar";
 import FormContainer from "./../../../components/Forms/FormContainer";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContentText from "@material-ui/core/DialogContentText";
@@ -61,47 +53,17 @@ let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
 const useStyles = makeStyles((theme) => ({
 	root: { paddingTop: "11vh", flexGrow: 1 },
-	appBar: {
-		position: "relative",
-	},
-	title: {
-		marginLeft: theme.spacing(1),
-		flex: 1,
-	},
-	formControl: {
-		margin: theme.spacing(1),
-		minWidth: 120,
-	},
-
 	labelRoot: {
 		fontSize: 18,
 		fontWeight: "bold",
 		backgroundColor: "white",
+		color: theme.palette.primary.main,
 	},
-	Dividercontainer: {
-		display: "flex",
-		alignItems: "center",
-	},
-	img: {
-		height: 200,
-
-		overflow: "hidden",
-		display: "block",
-		width: "100%",
-	},
-	brokenImg: {
-		width: 50,
-	},
-	border: {
-		borderBottom: "1px solid black",
-		width: "100%",
-	},
-	large: {
-		width: theme.spacing(7),
-		height: theme.spacing(7),
-	},
-	content: {
-		padding: "0 10px 0 10px",
+	closeButton: {
+		position: "absolute",
+		right: theme.spacing(1),
+		top: theme.spacing(1),
+		color: theme.palette.grey[500],
 	},
 }));
 
@@ -123,7 +85,23 @@ const MatrimonySearch = (props) => {
 	const handleBack = () => {
 		setActiveStep((prevActiveStep) => prevActiveStep - 1);
 	};
-
+	const DialogTitle = withStyles(useStyles)((props) => {
+		const { children, onClose, ...other } = props;
+		return (
+			<MuiDialogTitle disableTypography {...other}>
+				<Typography variant="h6">{children}</Typography>
+				{onClose ? (
+					<IconButton
+						aria-label="close"
+						className={classes.closeButton}
+						onClick={onClose}
+					>
+						<CloseIcon />
+					</IconButton>
+				) : null}
+			</MuiDialogTitle>
+		);
+	});
 	const [adList, setadList] = React.useState([]);
 	const [ad, setAd] = React.useState({});
 	const [filter, setFilter] = React.useState(true);
@@ -155,6 +133,7 @@ const MatrimonySearch = (props) => {
 		ev.target.src = broken_image;
 		ev.target.alt = "Seems a broken link!";
 	}
+
 	const resetState = () => {
 		setPayload({
 			service_category: "",
@@ -303,81 +282,88 @@ const MatrimonySearch = (props) => {
 				onToggleDir={props.onToggleDir}
 			/>
 			<div className={classes.root}>
-				<div>
-					<Grid justify="flex-end" alignItems="center" container>
-						<Grid item>
-							<Button
-								variant="outlined"
-								onClick={handleFilterOpen}
+				<Grid justify="flex-end" alignItems="center" container>
+					<Grid item>
+						{!filter && (
+							<Fab
+								variant="extended"
 								color="secondary"
+								onClick={handleFilterOpen}
+								style={{ right: 20, position: "fixed" }}
+								zIndex="9999999"
 							>
-								Filters
-							</Button>
-						</Grid>
+								Filter
+							</Fab>
+						)}
 					</Grid>
-					<br />
-					{adList.length > 0 && (
-						<div>
-							<Grid container spacing={4}>
-								<Grid item xs={12}></Grid>
-								{adList &&
-									adList.map((ad, index) => (
-										<Grid item md={4} xs={12}>
-											<FilterCard
-												ad={ad}
-												{...props}
-												index={index}
-												setAd={handleProfileOpen}
-												fullview={false}
-											/>
-										</Grid>
-									))}
-							</Grid>
-							<Pagination
-								count={lastpage}
-								color="primary"
-								onChange={handlePageChange}
-							/>
-						</div>
-					)}
+				</Grid>
+				<br />
+				{adList.length > 0 && (
+					<div>
+						<Grid
+							container
+							direction="row"
+							justify="center"
+							alignItems="center"
+							spacing={2}
+						>
+							{adList &&
+								adList.map((ad, index) => (
+									<Grid item md={4} xs={12}>
+										<FilterCard
+											ad={ad}
+											{...props}
+											index={index}
+											setAd={handleProfileOpen}
+											fullview={false}
+										/>
+									</Grid>
+								))}
+						</Grid>
+						<Pagination
+							count={lastpage}
+							color="primary"
+							onChange={handlePageChange}
+						/>
+					</div>
+				)}
 
-					{adList.length === 0 && !filter && (
-						<Container maxWidth="sm">
+				{adList.length === 0 && !filter && (
+					<Container maxWidth="sm">
+						<Grid
+							style={{
+								flex: 1,
+								alignItems: "center",
+								justifyContent: "center",
+								paddingTop: 20,
+							}}
+							container
+						>
 							<Grid
-								style={{
-									flex: 1,
-									alignItems: "center",
-									justifyContent: "center",
-									paddingTop: 20,
-								}}
+								item
 								container
+								direction="column"
+								justify="center"
+								alignItems="center"
+								xs={12}
 							>
-								<Grid
-									item
-									container
-									direction="column"
-									justify="center"
-									alignItems="center"
-									xs={12}
+								<Avatar color="secondary" className={classes.large}>
+									<SentimentVeryDissatisfiedIcon />
+								</Avatar>
+								<Typography variant="h4" gutterBottom>
+									Sorry! No Results Found.
+								</Typography>
+								<Button
+									variant="outlined"
+									onClick={handleFilterOpen}
+									color="secondary"
 								>
-									<Avatar color="secondary" className={classes.large}>
-										<SentimentVeryDissatisfiedIcon />
-									</Avatar>
-									<Typography variant="h4" gutterBottom>
-										Sorry! No Results Found.
-									</Typography>
-									<Button
-										variant="outlined"
-										onClick={handleFilterOpen}
-										color="secondary"
-									>
-										Filters
-									</Button>
-								</Grid>
+									Filters
+								</Button>
 							</Grid>
-						</Container>
-					)}
-				</div>
+						</Grid>
+					</Container>
+				)}
 
 				<Dialog
 					fullWidth={true}
@@ -389,9 +375,11 @@ const MatrimonySearch = (props) => {
 					onClose={() => setFilter(false)}
 					TransitionComponent={Transition}
 				>
+					<DialogTitle onClose={() => setFilter(false)} />
 					<DialogContent>
 						<Grid container justify="center" alignItems="center">
 							<FormContainer
+								labelStyling={classes.labelRoot}
 								onSubmit={({ values, setSubmitting, setFieldError }) => {
 									setSubmitting(true);
 									let shouldSubmit = true;
@@ -456,8 +444,24 @@ const MatrimonySearch = (props) => {
 					<DialogContent>
 						<Grid container justify="center" alignItems="center">
 							<Grid item xs={12}>
-								<DialogTitle color="primary" onClose={() => setFilter(false)}>
-									Freelancer Member : {ad.freelancer_member_id}
+								<DialogTitle
+									disableTypography={true}
+									color="primary"
+									onClose={() => setAd({})}
+								>
+									<MuiThemeProvider theme={theme}>
+										<Typography
+											style={{
+												color: theme.palette.primary.main,
+												fontWeight: 500,
+												align: "right",
+											}}
+											variant="button"
+											noWrap
+										>
+											{"Freelancer ID : " + ad.freelancer_member_id}
+										</Typography>
+									</MuiThemeProvider>
 								</DialogTitle>
 							</Grid>
 
