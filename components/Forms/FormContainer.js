@@ -151,6 +151,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 					helperText={currentError}
 					value={field.value}
 					error={Boolean(currentError)}
+					format="dd-MM-yyyy"
 					onError={(error) => {
 						// handle as a side effect
 						if (error !== currentError) {
@@ -212,7 +213,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 							component={Component}
 							InputLabelProps={{
 								classes: {
-									root: classes.labelRoot,
+									root: props.labelStyling || classes.labelRoot,
 								},
 							}}
 							label={item.label ? item.label : "Enter " + toTitleCase(item.id)}
@@ -246,7 +247,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 					<Box margin={1}>
 						<FormControl variant="outlined" fullWidth>
 							<InputLabel
-								className={classes.labelRoot}
+								className={props.labelStyling || classes.labelRoot}
 								ref={inputLabel}
 								htmlFor={item.id}
 							>
@@ -296,7 +297,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 									label={item.label}
 									InputLabelProps={{
 										classes: {
-											root: classes.labelRoot,
+											root: props.labelStyling || classes.labelRoot,
 										},
 									}}
 									helperText={
@@ -321,7 +322,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 							multiline={true}
 							InputLabelProps={{
 								classes: {
-									root: classes.labelRoot,
+									root: props.labelStyling || classes.labelRoot,
 								},
 							}}
 							rows={item.rows || 4}
@@ -350,7 +351,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 							component={Component}
 							InputLabelProps={{
 								classes: {
-									root: classes.labelRoot,
+									root: props.labelStyling || classes.labelRoot,
 								},
 							}}
 							label={item.label ? item.label : "Enter " + toTitleCase(item.id)}
@@ -478,6 +479,7 @@ FormContainer.propTypes = {
 	defaultvals: PropTypes.object,
 	submitLabel: PropTypes.string,
 	resetLabel: PropTypes.string,
+	labelStyling: PropTypes.string,
 };
 
 export default FormContainer;

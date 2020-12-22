@@ -17,6 +17,7 @@ import {
 	Card,
 	CardActionArea,
 	CardActions,
+	CardHeader,
 	CardContent,
 	CardMedia,
 	Typography,
@@ -24,6 +25,7 @@ import {
 	Box,
 	Icon,
 	Divider,
+	Tooltip,
 	Link,
 	useMediaQuery,
 	Grid,
@@ -41,12 +43,16 @@ const useStyles = makeStyles({
 		flexGrow: 1,
 		margin: theme.spacing(2),
 	},
-	themeTextColor: { color: theme.palette.primary.main },
 });
 
 const FilterCard = (props) => {
-	const classes = useStyles();
+	let classes = useStyles();
 	const theme = useTheme();
+	classes.label = {
+		color: theme.palette.primary.main,
+		fontWeight: 500,
+		align: "right",
+	};
 	const [value, setValue] = React.useState(2.1);
 	const [bookingPopup, setBookingPopup] = React.useState(false);
 	const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -110,9 +116,14 @@ const FilterCard = (props) => {
 							alignItems="flex-end"
 							xs={6}
 						>
-							<Box borderColor="transparent">
+							<div
+								style={{
+									display: "flex",
+								}}
+							>
 								<Rating name="read-only" value={parseInt(ad.rating)} readOnly />
-							</Box>
+								<Box ml={2}>{ad.rating}</Box>
+							</div>
 						</Grid>
 
 						{/* Starting Card Details */}
@@ -139,34 +150,6 @@ const FilterCard = (props) => {
 								<MuiThemeProvider theme={theme}>
 									<Typography variant="caption" color="inherit" noWrap>
 										{ad.service_category}
-									</Typography>
-								</MuiThemeProvider>
-							</div>
-						</Grid>
-
-						<Grid item container justify="flex-start" xs={6}>
-							<div style={{ display: "flex" }}>
-								<MuiThemeProvider theme={theme}>
-									<Typography
-										style={{
-											color: theme.palette.primary.main,
-											fontWeight: 500,
-											align: "right",
-										}}
-										variant="caption"
-										color="inherit"
-										noWrap
-									>
-										Service's Area : &nbsp;
-									</Typography>
-								</MuiThemeProvider>
-							</div>
-						</Grid>
-						<Grid item container justify="flex-start" xs={6}>
-							<div style={{ display: "flex" }}>
-								<MuiThemeProvider theme={theme}>
-									<Typography variant="caption" color="inherit" noWrap>
-										{ad.service_area}
 									</Typography>
 								</MuiThemeProvider>
 							</div>
@@ -241,6 +224,34 @@ const FilterCard = (props) => {
 										color="inherit"
 										noWrap
 									>
+										Service's Area : &nbsp;
+									</Typography>
+								</MuiThemeProvider>
+							</div>
+						</Grid>
+						<Grid item container justify="flex-start" xs={6}>
+							<div style={{ display: "flex" }}>
+								<MuiThemeProvider theme={theme}>
+									<Typography variant="caption" color="inherit" noWrap>
+										{ad.service_area}
+									</Typography>
+								</MuiThemeProvider>
+							</div>
+						</Grid>
+
+						<Grid item container justify="flex-start" xs={6}>
+							<div style={{ display: "flex" }}>
+								<MuiThemeProvider theme={theme}>
+									<Typography
+										style={{
+											color: theme.palette.primary.main,
+											fontWeight: 500,
+											align: "right",
+										}}
+										variant="caption"
+										color="inherit"
+										noWrap
+									>
 										Profession's Name : &nbsp;
 									</Typography>
 								</MuiThemeProvider>
@@ -251,6 +262,194 @@ const FilterCard = (props) => {
 								<MuiThemeProvider theme={theme}>
 									<Typography variant="caption" color="inherit" noWrap>
 										{ad.bussiness_name}
+									</Typography>
+								</MuiThemeProvider>
+							</div>
+						</Grid>
+
+						<Grid item container justify="flex-start" xs={6}>
+							<div style={{ display: "flex" }}>
+								<MuiThemeProvider theme={theme}>
+									<Typography
+										style={{
+											color: theme.palette.primary.main,
+											fontWeight: 500,
+											align: "right",
+										}}
+										variant="caption"
+										color="inherit"
+										noWrap
+									>
+										Profession's Since : &nbsp;
+									</Typography>
+								</MuiThemeProvider>
+							</div>
+						</Grid>
+						<Grid item container justify="flex-start" xs={6}>
+							<div style={{ display: "flex" }}>
+								<MuiThemeProvider theme={theme}>
+									<Typography variant="caption" color="inherit" noWrap>
+										{ad.bussiness_since}
+									</Typography>
+								</MuiThemeProvider>
+							</div>
+						</Grid>
+
+						<Grid item container justify="flex-start" xs={6}>
+							<div style={{ display: "flex" }}>
+								<MuiThemeProvider theme={theme}>
+									<Typography
+										style={{
+											color: theme.palette.primary.main,
+											fontWeight: 500,
+											align: "right",
+										}}
+										variant="caption"
+										color="inherit"
+										noWrap
+									>
+										Profession's Detail : &nbsp;
+									</Typography>
+								</MuiThemeProvider>
+							</div>
+						</Grid>
+						<Grid item container justify="flex-start" xs={6}>
+							<div style={{ display: "flex" }}>
+								<MuiThemeProvider theme={theme}>
+									<Typography variant="caption" color="inherit" noWrap>
+										{ad.bussineess_description}
+									</Typography>
+								</MuiThemeProvider>
+							</div>
+						</Grid>
+
+						<Grid item container justify="flex-start" xs={6}>
+							<div style={{ display: "flex" }}>
+								<MuiThemeProvider theme={theme}>
+									<Typography
+										style={{
+											color: theme.palette.primary.main,
+											fontWeight: 500,
+											align: "right",
+										}}
+										variant="caption"
+										color="primary"
+										noWrap
+									>
+										Catalog : &nbsp;
+									</Typography>
+								</MuiThemeProvider>
+							</div>
+						</Grid>
+
+						<Grid item container justify="flex-start" xs={6}>
+							<div style={{ display: "flex" }}>
+								<Tooltip
+									enterTouchDelay
+									title={
+										null != ad.catalog_pdf_path
+											? "View Catalog"
+											: "Catalog Not Uploaded"
+									}
+								>
+									<Link
+										target="_blank"
+										rel="noopener"
+										rel="noreferrer"
+										style={{ textDecoration: "none" }}
+										href={
+											null != ad.catalog_pdf_path &&
+											ad.catalog_pdf_path.catalog_path
+										}
+										color={"primary"}
+									>
+										View
+									</Link>
+								</Tooltip>
+							</div>
+						</Grid>
+
+						<Grid item container justify="flex-start" xs={6}>
+							<div style={{ display: "flex" }}>
+								<MuiThemeProvider theme={theme}>
+									<Typography
+										style={{
+											color: theme.palette.primary.main,
+											fontWeight: 500,
+											align: "right",
+										}}
+										variant="caption"
+										color="inherit"
+										noWrap
+									>
+										Booking Calendar : &nbsp;
+									</Typography>
+								</MuiThemeProvider>
+							</div>
+						</Grid>
+						<Grid item container justify="flex-start" xs={6}>
+							<div style={{ display: "flex" }}>
+								<Link
+									component="button"
+									onClick={() => setBookingPopup(true)}
+									style={{ textDecoration: "none" }}
+									color="primary"
+								>
+									View
+								</Link>
+							</div>
+						</Grid>
+						<Grid item container justify="flex-start" xs={6}>
+							<div style={{ display: "flex" }}>
+								<MuiThemeProvider theme={theme}>
+									<Typography
+										style={{
+											color: theme.palette.primary.main,
+											fontWeight: 500,
+											align: "right",
+										}}
+										variant="caption"
+										color="inherit"
+										noWrap
+									>
+										Call/Visit Time : &nbsp;
+									</Typography>
+								</MuiThemeProvider>
+							</div>
+						</Grid>
+						<Grid item container justify="flex-start" xs={6}>
+							<div style={{ display: "flex" }}>
+								<MuiThemeProvider theme={theme}>
+									<Typography variant="caption" color="inherit" noWrap>
+										{ad.work_start_time + " - " + ad.work_end_time}
+									</Typography>
+								</MuiThemeProvider>
+							</div>
+						</Grid>
+
+						<Grid item container justify="flex-start" xs={6}>
+							<div style={{ display: "flex" }}>
+								<MuiThemeProvider theme={theme}>
+									<Typography
+										style={{
+											color: theme.palette.primary.main,
+											fontWeight: 500,
+											align: "right",
+										}}
+										variant="caption"
+										color="inherit"
+										noWrap
+									>
+										Close/Not Work : &nbsp;
+									</Typography>
+								</MuiThemeProvider>
+							</div>
+						</Grid>
+						<Grid item container justify="flex-start" xs={6}>
+							<div style={{ display: "flex" }}>
+								<MuiThemeProvider theme={theme}>
+									<Typography variant="caption" color="inherit" noWrap>
+										{JSON.parse(ad.close_day).join(",")}
 									</Typography>
 								</MuiThemeProvider>
 							</div>
@@ -330,188 +529,6 @@ const FilterCard = (props) => {
 								</MuiThemeProvider>
 							</Grid>
 						</Grid>
-					</Grid>
-					{/* </Box> */}
-					<Divider variant="middle" />
-					{/* <Box border={1} borderColor="primary"> */}
-					<Grid container justify="center" alignItems="center">
-						<Grid item container justify="flex-start" xs={6}>
-							<div style={{ display: "flex" }}>
-								<MuiThemeProvider theme={theme}>
-									<Typography
-										style={{
-											color: theme.palette.primary.main,
-											fontWeight: 500,
-											align: "right",
-										}}
-										variant="caption"
-										color="inherit"
-										noWrap
-									>
-										Profession's Since : &nbsp;
-									</Typography>
-								</MuiThemeProvider>
-							</div>
-						</Grid>
-						<Grid item container justify="flex-start" xs={6}>
-							<div style={{ display: "flex" }}>
-								<MuiThemeProvider theme={theme}>
-									<Typography variant="caption" color="inherit" noWrap>
-										{ad.bussiness_since}
-									</Typography>
-								</MuiThemeProvider>
-							</div>
-						</Grid>
-						<Grid item container justify="flex-start" xs={6}>
-							<div style={{ display: "flex" }}>
-								<MuiThemeProvider theme={theme}>
-									<Typography
-										style={{
-											color: theme.palette.primary.main,
-											fontWeight: 500,
-											align: "right",
-										}}
-										variant="caption"
-										color="inherit"
-										noWrap
-									>
-										Booking Calendar : &nbsp;
-									</Typography>
-								</MuiThemeProvider>
-							</div>
-						</Grid>
-						<Grid item container justify="flex-start" xs={6}>
-							<div style={{ display: "flex" }}>
-								<Link
-									component="button"
-									onClick={() => setBookingPopup(true)}
-									style={{ textDecoration: "none" }}
-									color="primary"
-								>
-									View
-								</Link>
-							</div>
-						</Grid>
-
-						{ad.catalog_pdf_path && (
-							<div>
-								<Grid item container justify="flex-start" xs={6}>
-									<div style={{ display: "flex" }}>
-										<MuiThemeProvider theme={theme}>
-											<Typography
-												style={{
-													color: theme.palette.primary.main,
-													fontWeight: 500,
-													align: "right",
-												}}
-												variant="caption"
-												color="primary"
-												noWrap
-											>
-												Catalog : &nbsp;
-											</Typography>
-										</MuiThemeProvider>
-									</div>
-								</Grid>
-								<Grid item container justify="flex-start" xs={6}>
-									<div style={{ display: "flex" }}>
-										<Link
-											target="_blank"
-											rel="noopener"
-											rel="noreferrer"
-											style={{ textDecoration: "none" }}
-											href={ad.catalog_pdf_path.catalog_path}
-											color="primary"
-										>
-											View
-										</Link>
-									</div>
-								</Grid>
-							</div>
-						)}
-
-						<Grid item container justify="flex-start" xs={6}>
-							<div style={{ display: "flex" }}>
-								<MuiThemeProvider theme={theme}>
-									<Typography
-										style={{
-											color: theme.palette.primary.main,
-											fontWeight: 500,
-											align: "right",
-										}}
-										variant="caption"
-										color="inherit"
-										noWrap
-									>
-										Call/Visit Time : &nbsp;
-									</Typography>
-								</MuiThemeProvider>
-							</div>
-						</Grid>
-						<Grid item container justify="flex-start" xs={6}>
-							<div style={{ display: "flex" }}>
-								<MuiThemeProvider theme={theme}>
-									<Typography variant="caption" color="inherit" noWrap>
-										{ad.work_start_time + " - " + ad.work_end_time}
-									</Typography>
-								</MuiThemeProvider>
-							</div>
-						</Grid>
-
-						<Grid item container justify="flex-start" xs={6}>
-							<div style={{ display: "flex" }}>
-								<MuiThemeProvider theme={theme}>
-									<Typography
-										style={{
-											color: theme.palette.primary.main,
-											fontWeight: 500,
-											align: "right",
-										}}
-										variant="caption"
-										color="inherit"
-										noWrap
-									>
-										Not Working Day : &nbsp;
-									</Typography>
-								</MuiThemeProvider>
-							</div>
-						</Grid>
-						<Grid item container justify="flex-start" xs={6}>
-							<div style={{ display: "flex" }}>
-								<MuiThemeProvider theme={theme}>
-									<Typography variant="caption" color="inherit" noWrap>
-										{JSON.parse(ad.close_day).join(",")}
-									</Typography>
-								</MuiThemeProvider>
-							</div>
-						</Grid>
-						<Grid item container justify="flex-start" xs={12}>
-							<div style={{ display: "flex" }}>
-								<MuiThemeProvider theme={theme}>
-									<Typography
-										style={{
-											color: theme.palette.primary.main,
-											fontWeight: 500,
-											align: "right",
-										}}
-										variant="caption"
-										color="inherit"
-										noWrap
-									>
-										Profession's Description : &nbsp;
-									</Typography>
-								</MuiThemeProvider>
-							</div>
-						</Grid>
-						<Grid item container justify="flex-start" xs={12}>
-							<div style={{ display: "flex" }}>
-								<MuiThemeProvider theme={theme}>
-									<Typography variant="caption" color="inherit" noWrap>
-										{ad.bussineess_description}
-									</Typography>
-								</MuiThemeProvider>
-							</div>
-						</Grid>
 
 						<Grid
 							container
@@ -590,6 +607,13 @@ const FilterCard = (props) => {
 		} else {
 			return (
 				<Card className={classes.root}>
+					<CardHeader
+						titleTypographyProps={{
+							variant: "button",
+							className: classes.label,
+						}}
+						title={"Freelancer ID : " + ad.freelancer_member_id}
+					/>
 					<CardActionArea>
 						<CardMedia
 							component="img"
@@ -689,34 +713,6 @@ const FilterCard = (props) => {
 												color="inherit"
 												noWrap
 											>
-												Service's Area : &nbsp;
-											</Typography>
-										</MuiThemeProvider>
-									</div>
-								</Grid>
-								<Grid item container justify="flex-start" xs={6}>
-									<div style={{ display: "flex" }}>
-										<MuiThemeProvider theme={theme}>
-											<Typography variant="caption" color="inherit" noWrap>
-												{ad.service_area}
-											</Typography>
-										</MuiThemeProvider>
-									</div>
-								</Grid>
-
-								<Grid item container justify="flex-start" xs={6}>
-									<div style={{ display: "flex" }}>
-										<MuiThemeProvider theme={theme}>
-											<Typography
-												style={{
-													color: theme.palette.primary.main,
-													fontWeight: 500,
-													align: "right",
-												}}
-												variant="caption"
-												color="inherit"
-												noWrap
-											>
 												Price Range : &nbsp;
 											</Typography>
 										</MuiThemeProvider>
@@ -755,6 +751,34 @@ const FilterCard = (props) => {
 										<MuiThemeProvider theme={theme}>
 											<Typography variant="caption" color="inherit" noWrap>
 												{ad.offer_tagline}
+											</Typography>
+										</MuiThemeProvider>
+									</div>
+								</Grid>
+
+								<Grid item container justify="flex-start" xs={6}>
+									<div style={{ display: "flex" }}>
+										<MuiThemeProvider theme={theme}>
+											<Typography
+												style={{
+													color: theme.palette.primary.main,
+													fontWeight: 500,
+													align: "right",
+												}}
+												variant="caption"
+												color="inherit"
+												noWrap
+											>
+												Service's Area : &nbsp;
+											</Typography>
+										</MuiThemeProvider>
+									</div>
+								</Grid>
+								<Grid item container justify="flex-start" xs={6}>
+									<div style={{ display: "flex" }}>
+										<MuiThemeProvider theme={theme}>
+											<Typography variant="caption" color="inherit" noWrap>
+												{ad.service_area}
 											</Typography>
 										</MuiThemeProvider>
 									</div>
