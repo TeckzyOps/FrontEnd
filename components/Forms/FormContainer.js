@@ -29,7 +29,15 @@ import {
 	Switch,
 } from "formik-material-ui";
 import { createMuiTheme, makeStyles } from "@material-ui/core/styles";
-let theme = createMuiTheme();
+import appTheme from "../../theme/appTheme";
+let themeType = "light";
+if (typeof Storage !== "undefined") {
+	themeType = localStorage.getItem("luxiTheme") || "light";
+}
+let theme = createMuiTheme({
+	...appTheme("burgundy", themeType),
+	direction: "ltr",
+});
 export const styles = makeStyles((theme) => ({
 	labelRoot: {
 		fontSize: 18,
@@ -437,7 +445,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 									<Button
 										variant="contained"
 										fullWidth
-										color="secondary"
+										color="primary"
 										size="large"
 										onClick={() => prop.resetForm()}
 										disabled={prop.isSubmitting}
@@ -453,7 +461,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 									variant="contained"
 									fullWidth
 									type="submit"
-									color="secondary"
+									color="primary"
 									size="large"
 									disabled={prop.isSubmitting}
 								>

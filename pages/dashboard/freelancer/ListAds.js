@@ -8,6 +8,7 @@ import {
 	responsiveFontSizes,
 	MuiThemeProvider,
 } from "@material-ui/core/styles";
+import { fade } from "@material-ui/core/styles/colorManipulator";
 import BrokenImageIcon from "@material-ui/icons/BrokenImage";
 import { Formik, Field, Form, useField, FieldArray } from "formik";
 import Router from "next/router";
@@ -48,8 +49,16 @@ import Divider from "../../../components/CustomElements/Divider/";
 import { freelancerActions } from "../../../_actions/freelancer.action";
 import broken_image from "~/static/images/broken_image.svg";
 import FilterCard from "./filterCard";
+import appTheme from "../../../theme/appTheme";
 const localStorageService = LocalStorageService.getService();
-let theme = createMuiTheme();
+let themeType = "light";
+if (typeof Storage !== "undefined") {
+	themeType = localStorage.getItem("luxiTheme") || "light";
+}
+let theme = createMuiTheme({
+	...appTheme("burgundy", themeType),
+	direction: "ltr",
+});
 theme = responsiveFontSizes(theme);
 const useStyles = makeStyles((theme) => ({
 	root: { paddingTop: "11vh", flexGrow: 1 },
@@ -65,6 +74,14 @@ const useStyles = makeStyles((theme) => ({
 		top: theme.spacing(1),
 		color: theme.palette.grey[500],
 	},
+	titleRoot: {
+		margin: 0,
+		padding: theme.spacing(2),
+	},
+	img: {
+		height: 200,
+		width: "100%",
+	},
 }));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -73,7 +90,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const MatrimonySearch = (props) => {
 	const classes = useStyles();
-	const theme = useTheme();
+
 	const [activeStep, setActiveStep] = React.useState(0);
 	const [details, setDetails] = React.useState({});
 	const [images, setImages] = React.useState([]);
@@ -88,7 +105,11 @@ const MatrimonySearch = (props) => {
 	const DialogTitle = withStyles(useStyles)((props) => {
 		const { children, onClose, ...other } = props;
 		return (
-			<MuiDialogTitle disableTypography {...other}>
+			<MuiDialogTitle
+				disableTypography
+				className={classes.titleRoot}
+				{...other}
+			>
 				<Typography variant="h6">{children}</Typography>
 				{onClose ? (
 					<IconButton
@@ -284,16 +305,20 @@ const MatrimonySearch = (props) => {
 			<div className={classes.root}>
 				<Grid justify="flex-end" alignItems="center" container>
 					<Grid item>
-						{!filter && (
-							<Fab
-								variant="extended"
-								color="secondary"
+						{!filter && ad.id == null && (
+							<Button
+								variant="contained"
+								color="primary"
 								onClick={handleFilterOpen}
-								style={{ right: 20, position: "fixed" }}
-								zIndex="9999999"
+								style={{
+									right: 20,
+									position: "fixed",
+
+									zIndex: "9999999",
+								}}
 							>
 								Filter
-							</Fab>
+							</Button>
 						)}
 					</Grid>
 				</Grid>
@@ -320,11 +345,13 @@ const MatrimonySearch = (props) => {
 									</Grid>
 								))}
 						</Grid>
-						<Pagination
-							count={lastpage}
-							color="primary"
-							onChange={handlePageChange}
-						/>
+						<Grid item container justify="center" alignItems="center">
+							<Pagination
+								count={lastpage}
+								color="primary"
+								onChange={handlePageChange}
+							/>
+						</Grid>
 					</div>
 				)}
 
@@ -353,13 +380,6 @@ const MatrimonySearch = (props) => {
 								<Typography variant="h4" gutterBottom>
 									Sorry! No Results Found.
 								</Typography>
-								<Button
-									variant="outlined"
-									onClick={handleFilterOpen}
-									color="secondary"
-								>
-									Filters
-								</Button>
 							</Grid>
 						</Grid>
 					</Container>
@@ -441,31 +461,26 @@ const MatrimonySearch = (props) => {
 					onClose={() => setAd({})}
 					TransitionComponent={Transition}
 				>
+					<DialogTitle
+						disableTypography={true}
+						color="primary"
+						onClose={() => setAd({})}
+					>
+						<MuiThemeProvider theme={theme}>
+							<Typography
+								style={{
+									color: theme.palette.primary.main,
+									fontWeight: 500,
+								}}
+								variant="button"
+							>
+								{"Freelancer ID : " + ad.freelancer_member_id}
+							</Typography>
+						</MuiThemeProvider>
+					</DialogTitle>
 					<DialogContent>
 						<Grid container justify="center" alignItems="center">
-							<Grid item xs={12}>
-								<DialogTitle
-									disableTypography={true}
-									color="primary"
-									onClose={() => setAd({})}
-								>
-									<MuiThemeProvider theme={theme}>
-										<Typography
-											style={{
-												color: theme.palette.primary.main,
-												fontWeight: 500,
-												align: "right",
-											}}
-											variant="button"
-											noWrap
-										>
-											{"Freelancer ID : " + ad.freelancer_member_id}
-										</Typography>
-									</MuiThemeProvider>
-								</DialogTitle>
-							</Grid>
-
-							<Grid style={{ padding: theme.spacing(2) }} item sm={6} xs={12}>
+							<Grid item sm={6} xs={12}>
 								{maxSteps <= 0 && (
 									<div style={{ maxWidth: 345, flexGrow: 1 }}>
 										<img
