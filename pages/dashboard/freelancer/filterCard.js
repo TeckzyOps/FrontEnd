@@ -34,7 +34,7 @@ import Rating from "@material-ui/lab/Rating";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import IconButton from "@material-ui/core/IconButton";
 import BookingModule from "../../../components/GenericPopup/BookingModule";
-import BrokenImage from "~static/favicons/ms-icon-310x310.png";
+import BrokenImage from "~static/images/broken_image.svg";
 let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
 const useStyles = makeStyles({
@@ -58,31 +58,42 @@ const FilterCard = (props) => {
 	const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
 	function image() {
-		let url = ad.images.length > 0 ? ad.images : null;
-		if (null == url) {
+		let allURLs = ad.images.length > 0 ? ad.images : null;
+		if (null == allURLs) {
 			return "invalid_link";
 		}
-		let working = url.find(function (element) {
-			fetch(element.file_path)
-				.then((res) => {
-					if (res.status != 200 || res.status != 201) {
-						return false;
-					} else {
-						return true;
-					}
-				})
-				.catch((err) => {
-					return false;
-				});
+
+		let working = [],
+			notWorking = [],
+			find = (url) =>
+				fetch(url.file_path, { mode: "no-cors" }).then((res) =>
+					res.ok
+						? working.push(res.url) && res
+						: notWorking.push(res.url) && res
+				);
+
+		Promise.all(allURLs.map(find)).then((responses) => {
+			console.log("woking", working, "notWorking", notWorking);
+			/* Do whatever with the responses if needed */
 		});
 
 		if (working) {
-			return working;
+			return working[0];
 		}
 
 		return "invalid_link";
 	}
-	function checkImageURL(url) {}
+
+	function validateUrl(url) {
+		return new Promise((ok, fail) => {
+			http
+				.get(url, (res) => {
+					return ok(res.statusCode == 200);
+				})
+				.on("error", (e) => ok(false));
+		});
+	}
+
 	const { fullview, ad, setAd, index } = props;
 	if (ad.id) {
 		if (fullview) {
@@ -619,7 +630,11 @@ const FilterCard = (props) => {
 							component="img"
 							alt={ad.bussiness_name}
 							height="200"
-							image={image()}
+							image={
+								Array.isArray(ad.images) && ad.images.length > 0
+									? ad.images[0].file_path
+									: "Invalid_Link"
+							}
 							onError={(e) => {
 								/**
 								 * Any code. For instance, changing the `src` prop with a fallback url.
