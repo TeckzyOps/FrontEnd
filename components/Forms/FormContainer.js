@@ -185,7 +185,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 		autocomplete: Autocomplete,
 	};
 	function getElement(item, prop) {
-		if (item.id == "undefined") {
+		if (item.id == "undefined" || item.exclude) {
 			return;
 		}
 		let styles = { width: "100%" };

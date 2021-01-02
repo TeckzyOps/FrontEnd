@@ -314,7 +314,7 @@ const MatrimonySearch = (props) => {
 									right: 20,
 									position: "fixed",
 
-									zIndex: "9999999",
+									zIndex: "99",
 								}}
 							>
 								Filter
@@ -334,7 +334,7 @@ const MatrimonySearch = (props) => {
 						>
 							{adList &&
 								adList.map((ad, index) => (
-									<Grid item md={4} xs={12}>
+									<Grid style={{ zIndex: "9" }} item md={4} xs={12}>
 										<FilterCard
 											ad={ad}
 											{...props}
