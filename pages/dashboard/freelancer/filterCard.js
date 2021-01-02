@@ -43,6 +43,15 @@ const useStyles = makeStyles({
 		flexGrow: 1,
 		margin: theme.spacing(2),
 	},
+	media: {
+		// this is the`className` passed to `CardMedia` later
+		height: 200, // as an example I am modifying width and height
+		width: "100%",
+	},
+	img: {
+		height: 200, // as an example I am modifying width and height
+		width: "100%",
+	},
 });
 
 const FilterCard = (props) => {
@@ -627,9 +636,8 @@ const FilterCard = (props) => {
 					/>
 					<CardActionArea>
 						<CardMedia
-							component="img"
 							alt={ad.bussiness_name}
-							height="200"
+							className={classes.media}
 							image={
 								Array.isArray(ad.images) && ad.images.length > 0
 									? ad.images[0].file_path

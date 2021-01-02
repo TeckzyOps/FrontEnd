@@ -74,10 +74,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import {
-	Card,
-	CardHeader,
-	CardContent,
-	CardActions,
+	FormHelperText,
 	Divider,
 	Box,
 	Grid,
@@ -140,7 +137,7 @@ const freelancerform = (props) => {
 		kyc_otp: "",
 	});
 	const [freelancerData, setFreelancerData] = useState({
-		service_category: "",
+		service_category: null,
 		sub_service: [],
 		service_area: "",
 		min_service_price: "",
@@ -520,6 +517,39 @@ const freelancerform = (props) => {
 			);
 		}
 	};
+
+	const helperElement = (prop) => {
+		let show = prop.prop.values && null != prop.prop.values["service_category"];
+		return (
+			<Grid item xs={12}>
+				<Box margin={1}>
+					<Field
+						required
+						type={show ? "hidden" : "checkbox"}
+						component={show ? null : CheckboxWithLabel}
+						disabled={show}
+						name={"accept"}
+						indeterminate={false}
+						Label={{
+							label: (
+								<span>
+									I Accept Terms of use, privacy policy and send KYC request to
+									Indianwala
+								</span>
+							),
+						}}
+						onChange={prop.handleChange}
+					/>
+
+					<FormHelperText error>
+						{prop.errors &&
+							prop.errors.hasOwnProperty("accept") &&
+							prop.errors["accept"]}
+					</FormHelperText>
+				</Box>
+			</Grid>
+		);
+	};
 	return (
 		<div {...rest} className={clsx(classes.root, className)}>
 			<Grid container spacing={1}>
@@ -558,6 +588,7 @@ const freelancerform = (props) => {
 							onSubmit={_handleSubmit}
 							elements={freelancerForm}
 							defaultvals={freelancerData}
+							helperEle={helperElement}
 						/>
 					</Accordion>
 				</Grid>
