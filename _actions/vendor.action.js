@@ -8,6 +8,7 @@ export const vendorActions = {
 	getMedia,
 	bookDate,
 	getbookDate,
+	search,
 };
 
 function createVendor(payload) {
@@ -42,5 +43,10 @@ function submitMedia(payload) {
 
 function getMedia(payload) {
 	let apiEndpoint = "getVendorFile";
+	return Service.get(apiEndpoint, payload);
+}
+
+function search(payload) {
+	let apiEndpoint = "vendorFilter";
 	return Service.get(apiEndpoint, payload);
 }

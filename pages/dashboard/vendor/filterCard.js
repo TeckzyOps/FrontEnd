@@ -612,7 +612,7 @@ const FilterCard = (props) => {
 						<DialogContent>
 							<BookingModule
 								editMode={false}
-								apifor="freelancer"
+								apifor="vendor"
 								booking_id={ad.id}
 							/>
 						</DialogContent>
@@ -632,7 +632,7 @@ const FilterCard = (props) => {
 							variant: "button",
 							className: classes.label,
 						}}
-						title={"Freelancer ID : " + ad.freelancer_member_id}
+						title={"Vendor ID : " + ad.vendor_member_id}
 					/>
 					<CardActionArea>
 						<CardMedia alt={ad.bussiness_name} title={ad.bussiness_name}>

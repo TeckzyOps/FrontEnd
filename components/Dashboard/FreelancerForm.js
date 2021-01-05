@@ -128,7 +128,6 @@ const freelancerform = (props) => {
 	const [details, setDetails] = React.useState({});
 	const [properietor_details, setProperietorDetails] = React.useState({});
 	const router = useRouter();
-	const [docSelected, setDocSelected] = useState(0);
 	const [kycData, setKycData] = useState({
 		id_proof_path: null,
 		id_proof_type: "",
@@ -386,6 +385,7 @@ const freelancerform = (props) => {
 							});
 							setCatalogFile(response.data.data.catalog_pdf_path);
 							resetForm();
+							// window.location.href = window.location.pathname+"?id=" + response.data.data.id
 						}
 					})
 					.catch(function (error) {
@@ -430,7 +430,8 @@ const freelancerform = (props) => {
 		const onClick = () => {
 			setProfileUpdateSuccess(() => false);
 			if (profileUpdateSuccess.submitURL != null) {
-				router.push(profileUpdateSuccess.submitURL);
+				// router.push(profileUpdateSuccess.submitURL);
+				window.location.href = profileUpdateSuccess.submitURL;
 				//
 			}
 		};
@@ -519,7 +520,7 @@ const freelancerform = (props) => {
 	};
 
 	const helperElement = (prop) => {
-		let show = prop.prop.values && null != prop.prop.values["service_category"];
+		let show = id;
 		return (
 			<Grid item xs={12}>
 				<Box margin={1}>
@@ -528,7 +529,7 @@ const freelancerform = (props) => {
 						type={show ? "hidden" : "checkbox"}
 						component={show ? null : CheckboxWithLabel}
 						disabled={show}
-						name={"accept"}
+						name={"agreement"}
 						indeterminate={false}
 						Label={{
 							label: (

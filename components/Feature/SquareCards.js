@@ -43,7 +43,7 @@ const tiers = [
 	{
 		title: "Vendor",
 		imgsrc: vendor,
-		url: routerLink.starter.vendor,
+		url: routerLink.starter.vendorSearch,
 	},
 	{
 		title: "Seller",

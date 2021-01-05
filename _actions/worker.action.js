@@ -8,6 +8,7 @@ export const workerActions = {
 	getMedia,
 	bookDate,
 	getbookDate,
+	search,
 };
 
 function createWorker(payload) {
@@ -42,5 +43,10 @@ function submitMedia(payload) {
 
 function getMedia(payload) {
 	let apiEndpoint = "getWorkerFile";
+	return Service.get(apiEndpoint, payload);
+}
+
+function search(payload) {
+	let apiEndpoint = "workerFilter";
 	return Service.get(apiEndpoint, payload);
 }

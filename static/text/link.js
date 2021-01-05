@@ -25,6 +25,7 @@ const link = {
 		vendor: "/dashboard/vendor/",
 		vendornew: "/dashboard/vendor/create",
 		vendorDetails: "/dashboard/vendor/details",
+		vendorSearch: "/dashboard/vendor/ListAds",
 		vendorVids: "/dashboard/vendor/upload_videos",
 		vendorImg: "/dashboard/vendor/upload_images",
 		b2b: "/dashboard/B2B/",
