@@ -303,21 +303,22 @@ const MatrimonySearch = (props) => {
 				onToggleDir={props.onToggleDir}
 			/>
 			<div className={classes.root}>
-				<Grid justify="flex-end" alignItems="center" container>
+				<Grid justify="flex-end" alignItems="center" container spacing={1}>
 					<Grid item>
 						{!filter && ad.id == null && (
 							<Button
 								variant="contained"
 								color="primary"
 								onClick={handleFilterOpen}
-								style={{
-									right: 20,
-									position: "fixed",
-
-									zIndex: "99",
-								}}
 							>
 								Filter
+							</Button>
+						)}
+					</Grid>
+					<Grid item>
+						{!filter && ad.id == null && (
+							<Button variant="contained" color="primary">
+								Wishlist
 							</Button>
 						)}
 					</Grid>
