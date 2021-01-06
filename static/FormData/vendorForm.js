@@ -19,7 +19,7 @@ import {
 	workTime,
 	tagline,
 	commissionRange,
-} from "~static/text/freelancerData.js";
+} from "~static/text/vendorData.js";
 import { states } from "~static/text/state";
 import { cities } from "~static/text/city";
 import { makeStyles } from "@material-ui/core/styles";
@@ -28,7 +28,7 @@ export const vendorForm = [
 	[
 		{
 			id: "service_category",
-			label: "Service Category",
+			label: "Category",
 			placeholder: "",
 			type: "select",
 
@@ -48,7 +48,7 @@ export const vendorForm = [
 		},
 		{
 			id: "sub_service",
-			label: "Sub Service Category",
+			label: "Service",
 			placeholder: "",
 			ElementParams: {
 				multiple: true,
@@ -122,7 +122,7 @@ export const vendorForm = [
 	[
 		{
 			id: "bussiness_name",
-			label: "Profession's Name",
+			label: "Occupation's Name",
 			placeholder: "",
 			type: "text",
 			ElementParams: { variant: "outlined" },
@@ -137,7 +137,7 @@ export const vendorForm = [
 		},
 		{
 			id: "bussiness_since",
-			label: "Profession's Since",
+			label: "Occupation's Since",
 			placeholder: "",
 
 			type: "select",
@@ -154,7 +154,7 @@ export const vendorForm = [
 	],
 	{
 		id: "bussineess_description",
-		label: "Profession's Description",
+		label: "Occupation's Detail",
 		ElementParams: { variant: "outlined" },
 		placeholder: "",
 		type: "textarea",
@@ -169,9 +169,38 @@ export const vendorForm = [
 			},
 		],
 	},
+	[
+		{
+			id: "office_number",
+			label: "Occupation's Contact Number",
+			placeholder: "",
+			type: "text",
+			ElementParams: { variant: "outlined" },
+			validationType: "string",
+
+			value: "",
+			validations: [
+				{
+					type: "required",
+					params: ["Field is required"],
+				},
+			],
+		},
+		{
+			id: "office_email",
+			label: "Occupation's Email",
+			placeholder: "",
+			ElementParams: { variant: "outlined" },
+			type: "text",
+			validationType: "string",
+
+			value: "",
+			validations: [],
+		},
+	],
 	{
 		id: "address",
-		label: "Profession's Add",
+		label: "Occupation's Add.",
 		ElementParams: { variant: "outlined" },
 		placeholder: "",
 		type: "textarea",
@@ -246,22 +275,10 @@ export const vendorForm = [
 		options: { data: ["Others"] },
 		value: "",
 	},
-	{
-		id: "offer_tagline",
-		label: "Offer/Special Tagline",
-		placeholder: "",
-		type: "select",
-		options: { data: tagline },
-
-		validationType: "string",
-
-		value: "",
-		validations: [],
-	},
 	[
 		{
 			id: "work_start_time",
-			label: "Office/Shop's Work Time From",
+			label: "Call/Visit Time From",
 			placeholder: "",
 			type: "select",
 			options: { data: workTime },
@@ -277,7 +294,7 @@ export const vendorForm = [
 		},
 		{
 			id: "work_end_time",
-			label: "Office/Shop's Work Time To",
+			label: "Call/Visit Time To",
 			placeholder: "",
 			type: "select",
 			options: { data: workTime },
@@ -294,7 +311,7 @@ export const vendorForm = [
 		},
 		{
 			id: "close_day",
-			label: "Office/Shop Close Day",
+			label: "Don't Call/Visit",
 
 			placeholder: "",
 			type: "select",
@@ -312,48 +329,19 @@ export const vendorForm = [
 			],
 		},
 	],
+	{
+		id: "offer_tagline",
+		label: "Offer/Tagline",
+		placeholder: "",
+		type: "select",
+		options: { data: tagline },
 
+		validationType: "string",
+
+		value: "",
+		validations: [],
+	},
 	[
-		{
-			id: "office_email",
-			label: "Profession's Email",
-			placeholder: "",
-			ElementParams: { variant: "outlined" },
-			type: "text",
-			validationType: "string",
-
-			value: "",
-			validations: [],
-		},
-		{
-			id: "office_number",
-			label: "Profession's Contact Number",
-			placeholder: "",
-			type: "text",
-			ElementParams: { variant: "outlined" },
-			validationType: "string",
-
-			value: "",
-			validations: [
-				{
-					type: "required",
-					params: ["Field is required"],
-				},
-			],
-		},
-	],
-
-	[
-		{
-			id: "gst_no",
-			label: "If Available GST Number",
-			placeholder: "",
-			type: "text",
-			validationType: "string",
-			ElementParams: { variant: "outlined" },
-			value: "",
-			validations: [],
-		},
 		// {
 		// 	id: "commission_percent",
 		// 	label: "Commission Calculate On 10%",
@@ -371,7 +359,7 @@ export const vendorForm = [
 		// },
 		{
 			id: "commission_range",
-			label: "10% Commission on Booking Value",
+			label: "5% Commission on Booking Value",
 			placeholder: "",
 			type: "select",
 			validationType: "string",
@@ -387,10 +375,10 @@ export const vendorForm = [
 		},
 		{
 			id: "paid_leads",
-			label: "Paid Leads",
+			label: "20 points per Paid Leads",
 			placeholder: "",
 			type: "select",
-			options: { data: [1, 2, 3, 4, 5, 6] },
+			options: { data: ["Yes", "No"] },
 
 			validationType: "string",
 			value: "",
@@ -400,6 +388,16 @@ export const vendorForm = [
 					params: ["Field is required"],
 				},
 			],
+		},
+		{
+			id: "gst_no",
+			label: "If Available GST Number",
+			placeholder: "",
+			type: "text",
+			validationType: "string",
+			ElementParams: { variant: "outlined" },
+			value: "",
+			validations: [],
 		},
 	],
 ];

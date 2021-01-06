@@ -125,15 +125,16 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const vendorVid = (props) => {
+const VendorImg = (props) => {
 	const classes = useStyles();
 	const [img, setImg] = React.useState({});
 	const [remoteData, setRemoteData] = React.useState([]);
 	const [remoteError, setRemoteError] = React.useState("");
 	const [selectedImg, setSelectedImg] = React.useState("");
+	const [imgTitle, setImgTitle] = React.useState("");
 	const [open, setOpen] = React.useState(false);
 	const theme = useTheme();
-
+	let textInput = React.useRef(null);
 	React.useEffect(() => {
 		getAllImages();
 	}, []);
@@ -147,6 +148,7 @@ const vendorVid = (props) => {
 		return "";
 	}
 	function getAllImages() {
+		textInput.current.value = null;
 		vendorActions
 			.getMedia({ vendor_id: props.router.query.id, file_type: 1 })
 			.then(function (response) {
@@ -156,8 +158,8 @@ const vendorVid = (props) => {
 				}
 			})
 			.catch(function (error) {
-				if (error.response && error.response.data.input_error.image_file) {
-					setRemoteError(error.response.data.input_error.image_file);
+				if (error.response && error.response.data.input_error) {
+					setRemoteError(JSON.stringify(error.response.data.input_error));
 				}
 				console.error("errrrr ", error);
 			});
@@ -167,8 +169,9 @@ const vendorVid = (props) => {
 		let payload = new FormData();
 		payload.append("image_file", img.fileObj);
 		payload.append("vendor_id", props.router.query.id);
+		payload.append("title", imgTitle);
 		if (payload) {
-			vendorActions
+			freelancerActions
 				.submitMedia(payload)
 				.then(function (response) {
 					console.log("ressss", response);
@@ -209,7 +212,7 @@ const vendorVid = (props) => {
 										<Link
 											style={{ textDecoration: "none" }}
 											href={
-												routerLink.starter.vendorDetails +
+												routerLink.starter.freelancernew +
 												"?id=" +
 												props.router.query.id
 											}
@@ -235,7 +238,19 @@ const vendorVid = (props) => {
 									)}
 								</Grid>
 								<Grid container spacing={2} justify="center">
-									<Grid item>
+									<Grid container justify="center" alignItems="center">
+										<Grid item>
+											<TextField
+												type="text"
+												onChange={(e) => setImgTitle(e.target.value)}
+												variant="outlined"
+												fullWidth
+												label="Title - Price"
+												inputRef={textInput}
+											/>
+										</Grid>
+									</Grid>
+									<Grid container justify="center" item xs={12}>
 										<input
 											accept="image/*"
 											className={classes.input}
@@ -274,7 +289,7 @@ const vendorVid = (props) => {
 											</Button>
 										</label>
 									</Grid>
-									<Grid item>
+									<Grid container justify="center" item xs={12}>
 										<Button
 											onClick={submitImage}
 											disabled={img.src == null}
@@ -286,28 +301,33 @@ const vendorVid = (props) => {
 									</Grid>
 									<Grid item xs={12}>
 										{img.src && (
-											<table
-												style={{
-													borderCollapse: "collapse",
-													borderSpacing: 0,
-													width: "100%",
-												}}
-											>
-												<thead>
-													<tr>
-														<th>File Name</th>
-														<th>File Type</th>
-														<th>File Size</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														<td>{img.name}</td>
-														<td>{img.type}</td>
-														<td>{img.size ? img.size + "MB" : ""}</td>
-													</tr>
-												</tbody>
-											</table>
+											<div>
+												<table
+													style={{
+														borderCollapse: "collapse",
+														borderSpacing: 0,
+														width: "100%",
+													}}
+												>
+													<thead>
+														<tr>
+															<th>File Name</th>
+															<th>File Type</th>
+															<th>File Size</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td>{img.name}</td>
+															<td>{img.type}</td>
+															<td>{img.size ? img.size + "MB" : ""}</td>
+														</tr>
+													</tbody>
+												</table>
+												<p style={{ color: "red" }}>
+													Please do not use Contact No. / Address in any Photo
+												</p>
+											</div>
 										)}
 										<div></div>
 									</Grid>
@@ -352,6 +372,7 @@ const vendorVid = (props) => {
 											</Typography>
 										</span>
 									</ButtonBase>
+									<Typography variant="h5">{card.title}</Typography>
 								</Grid>
 							))}
 						</Grid>
@@ -399,7 +420,7 @@ const getCookieFromReq = (req, cookieKey) => {
 	return cookie.split("=")[1];
 };
 
-vendorVid.getInitialProps = ({ req, res }) => {
+VendorImg.getInitialProps = ({ req, res }) => {
 	const ISSERVER = typeof window === "undefined";
 	let token = null;
 
@@ -410,9 +431,8 @@ vendorVid.getInitialProps = ({ req, res }) => {
 	}
 
 	if (token == null) {
-		console.log("GOING TO REDIRECT");
 		redirectToLogin(res);
 	}
 	return {};
 };
-export default vendorVid;
+export default withRouter(VendorImg);

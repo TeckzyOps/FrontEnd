@@ -390,7 +390,7 @@ export const freelancerForm = [
 			label: "Paid Leads",
 			placeholder: "",
 			type: "select",
-			options: { data: [1, 2, 3, 4, 5, 6] },
+			options: { data: ["Yes", "No"] },
 
 			validationType: "string",
 			value: "",
