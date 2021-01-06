@@ -778,6 +778,10 @@ const freelancerform = (props) => {
 																</tr>
 															</tbody>
 														</table>
+														<p style={{ color: "red" }}>
+															All the documents uploaded will go under a review
+															process which takes maximum 72 hours.{" "}
+														</p>
 													</Box>
 												)}
 											</Grid>

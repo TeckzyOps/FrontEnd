@@ -83,7 +83,7 @@ export default function CustomCard({ ad, ...props }) {
 											color="inherit"
 											noWrap
 										>
-											Profession's Name : &nbsp;
+											Occupation's Name : &nbsp;
 										</Typography>
 										<Typography
 											variant="caption"
@@ -104,7 +104,7 @@ export default function CustomCard({ ad, ...props }) {
 											color="inherit"
 											noWrap
 										>
-											Profession's Since : &nbsp;
+											Occupation's Since : &nbsp;
 										</Typography>
 										<Typography
 											variant="caption"
@@ -125,7 +125,7 @@ export default function CustomCard({ ad, ...props }) {
 											color="inherit"
 											noWrap
 										>
-											Service Area : &nbsp;
+											Category : &nbsp;
 										</Typography>
 										<Typography
 											variant="caption"
@@ -133,7 +133,7 @@ export default function CustomCard({ ad, ...props }) {
 											gutterBottom
 											noWrap
 										>
-											{ad.service_area}
+											{ad.service_category}
 										</Typography>
 									</MuiThemeProvider>
 								</div>
@@ -145,7 +145,7 @@ export default function CustomCard({ ad, ...props }) {
 											color="inherit"
 											noWrap
 										>
-											Service Category : &nbsp;
+											Service : &nbsp;
 										</Typography>
 										<Typography
 											variant="caption"
@@ -153,7 +153,7 @@ export default function CustomCard({ ad, ...props }) {
 											gutterBottom
 											noWrap
 										>
-											{ad.service_category}
+											{ad.sub_service.join(", ")}
 										</Typography>
 									</MuiThemeProvider>
 								</div>
@@ -181,7 +181,7 @@ export default function CustomCard({ ad, ...props }) {
 									color="inherit"
 									noWrap
 								>
-									Sub Category : &nbsp;
+									Service Area : &nbsp;
 								</Typography>
 								<Typography
 									variant="caption"
@@ -189,11 +189,50 @@ export default function CustomCard({ ad, ...props }) {
 									gutterBottom
 									noWrap
 								>
-									{ad.sub_service.join(", ")}
+									{ad.service_area}
 								</Typography>
 							</MuiThemeProvider>
 						</div>
-
+						<div style={{ display: "flex" }}>
+							<MuiThemeProvider theme={theme}>
+								<Typography
+									style={{ fontWeight: 500 }}
+									variant="caption"
+									color="inherit"
+									noWrap
+								>
+									Contact Number : &nbsp;
+								</Typography>
+								<Typography
+									variant="caption"
+									color="inherit"
+									gutterBottom
+									noWrap
+								>
+									{ad.office_number}
+								</Typography>
+							</MuiThemeProvider>
+						</div>
+						<div style={{ display: "flex" }}>
+							<MuiThemeProvider theme={theme}>
+								<Typography
+									style={{ fontWeight: 500 }}
+									variant="caption"
+									color="inherit"
+									noWrap
+								>
+									Call/Visit Time : &nbsp;
+								</Typography>
+								<Typography
+									variant="caption"
+									color="inherit"
+									gutterBottom
+									noWrap
+								>
+									{ad.work_start_time + " - " + ad.work_end_time}
+								</Typography>
+							</MuiThemeProvider>
+						</div>
 						<div style={{ display: "flex" }}>
 							<MuiThemeProvider theme={theme}>
 								<Typography
@@ -234,56 +273,26 @@ export default function CustomCard({ ad, ...props }) {
 								</Typography>
 							</MuiThemeProvider>
 						</div>
-					</Grid>
-				</Grid>
-				<Grid container justify="center" alignItems="center">
-					<Grid item xs={4}>
-						<MuiThemeProvider theme={theme}>
-							<Typography
-								style={{ fontWeight: 500 }}
-								variant="caption"
-								display="block"
-								gutterBottom
-								noWrap
-							>
-								City/Town
-							</Typography>
-							<Typography variant="caption" display="block" gutterBottom noWrap>
-								{ad.city}
-							</Typography>
-						</MuiThemeProvider>
-					</Grid>
-					<Grid item xs={4}>
-						<MuiThemeProvider theme={theme}>
-							<Typography
-								style={{ fontWeight: 500 }}
-								variant="caption"
-								display="block"
-								gutterBottom
-								noWrap
-							>
-								District
-							</Typography>
-							<Typography variant="caption" display="block" gutterBottom noWrap>
-								{ad.district}
-							</Typography>
-						</MuiThemeProvider>
-					</Grid>
-					<Grid item xs={4}>
-						<MuiThemeProvider theme={theme}>
-							<Typography
-								style={{ fontWeight: 500 }}
-								variant="caption"
-								display="block"
-								gutterBottom
-								noWrap
-							>
-								State
-							</Typography>
-							<Typography variant="caption" display="block" gutterBottom noWrap>
-								{ad.state}
-							</Typography>
-						</MuiThemeProvider>
+						<div style={{ display: "flex" }}>
+							<MuiThemeProvider theme={theme}>
+								<Typography
+									style={{ fontWeight: 500 }}
+									variant="caption"
+									color="inherit"
+									noWrap
+								>
+									Present Address. : &nbsp;
+								</Typography>
+								<Typography
+									variant="caption"
+									color="inherit"
+									gutterBottom
+									noWrap
+								>
+									{ad.address}
+								</Typography>
+							</MuiThemeProvider>
+						</div>
 					</Grid>
 				</Grid>
 			</Paper>

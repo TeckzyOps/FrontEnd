@@ -159,7 +159,7 @@ const FreelancerImg = (props) => {
 			})
 			.catch(function (error) {
 				if (error.response && error.response.data.input_error.image_file) {
-					setRemoteError(error.response.data.input_error.image_file);
+					setRemoteError(JSON.stringify(error.response.data.input_error));
 				}
 				console.error("errrrr ", error);
 			});
@@ -238,7 +238,7 @@ const FreelancerImg = (props) => {
 									)}
 								</Grid>
 								<Grid container spacing={2} justify="center">
-								<Grid container justify="center" alignItems="center">
+									<Grid container justify="center" alignItems="center">
 										<Grid item>
 											<TextField
 												type="text"
@@ -250,7 +250,7 @@ const FreelancerImg = (props) => {
 											/>
 										</Grid>
 									</Grid>
-									<Grid item>
+									<Grid container justify="center" item xs={12}>
 										<input
 											accept="image/*"
 											className={classes.input}
@@ -289,7 +289,7 @@ const FreelancerImg = (props) => {
 											</Button>
 										</label>
 									</Grid>
-									<Grid item>
+									<Grid container justify="center" item xs={12}>
 										<Button
 											onClick={submitImage}
 											disabled={img.src == null}
@@ -301,30 +301,34 @@ const FreelancerImg = (props) => {
 									</Grid>
 									<Grid item xs={12}>
 										{img.src && (
-											<table
-												style={{
-													borderCollapse: "collapse",
-													borderSpacing: 0,
-													width: "100%",
-												}}
-											>
-												<thead>
-													<tr>
-														<th>File Name</th>
-														<th>File Type</th>
-														<th>File Size</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														<td>{img.name}</td>
-														<td>{img.type}</td>
-														<td>{img.size ? img.size + "MB" : ""}</td>
-													</tr>
-												</tbody>
-											</table>
+											<div>
+												<table
+													style={{
+														borderCollapse: "collapse",
+														borderSpacing: 0,
+														width: "100%",
+													}}
+												>
+													<thead>
+														<tr>
+															<th>File Name</th>
+															<th>File Type</th>
+															<th>File Size</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td>{img.name}</td>
+															<td>{img.type}</td>
+															<td>{img.size ? img.size + "MB" : ""}</td>
+														</tr>
+													</tbody>
+												</table>
+												<p style={{ color: "red" }}>
+													Please do not use Contact No. / Address in any Photo
+												</p>
+											</div>
 										)}
-										<div></div>
 									</Grid>
 								</Grid>
 							</div>

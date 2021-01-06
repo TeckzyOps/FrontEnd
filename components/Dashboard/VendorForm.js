@@ -370,12 +370,7 @@ const VendorForm = (props) => {
 						name={"agreement"}
 						indeterminate={false}
 						Label={{
-							label: (
-								<span>
-									I Accept Terms of use, privacy policy and send KYC request to
-									Indianwala
-								</span>
-							),
+							label: <span>Online/Offline KYC Request send to Indianwala</span>,
 						}}
 						onChange={prop.handleChange}
 					/>
@@ -616,6 +611,10 @@ const VendorForm = (props) => {
 																</tr>
 															</tbody>
 														</table>
+														<p style={{ color: "red" }}>
+															All the documents uploaded will go under a review
+															process which takes maximum 72 hours.{" "}
+														</p>
 													</Box>
 												)}
 											</Grid>
