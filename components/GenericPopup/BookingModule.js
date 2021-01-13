@@ -134,7 +134,7 @@ const BookingModule = ({ booking_id, ...props }) => {
 		let payload = {
 			date_of_booking: formatDate(date),
 			comment: comments,
-			booking_status: bookingStatus,
+			booking_status: 0,
 		};
 
 		if (Object.values(payload).length <= 0) {
@@ -250,94 +250,33 @@ const BookingModule = ({ booking_id, ...props }) => {
 											<Typography variant="h5">
 												Booking Date: <b>{new Date(date).toDateString()}</b>
 											</Typography>
-											{bookingStatus == 1 ? (
-												<div>
-													<TextField
-														type="text"
-														onChange={handleCommentChange}
-														variant="outlined"
-														fullWidth
-														multiline
-														rows={4}
-														label="Fill Availability Details"
-														InputProps={{
-															endAdornment: (
-																<InputAdornment position="end">
-																	<IconButton
-																		disabled={
-																			null == booking_id ||
-																			null == bookingStatus
-																		}
-																		aria-label="book date"
-																		onClick={bookDate}
-																		edge="end"
-																	>
-																		<SendIcon />
-																	</IconButton>
-																</InputAdornment>
-															),
-														}}
-													/>
-												</div>
-											) : (
-												<div>
-													<TextField
-														fullWidth
-														select
-														label="Choose a Reason"
-														onChange={handleCommentChange}
-														InputProps={{
-															endAdornment: (
-																<InputAdornment position="end">
-																	<IconButton
-																		disabled={
-																			null == booking_id ||
-																			null == bookingStatus ||
-																			null == comments
-																		}
-																		aria-label="book date"
-																		onClick={bookDate}
-																		edge="end"
-																	>
-																		<SendIcon />
-																	</IconButton>
-																</InputAdornment>
-															),
-														}}
-													>
-														{partly.map((option) => (
-															<MenuItem key={option} value={option}>
-																{option}
-															</MenuItem>
-														))}
-													</TextField>
-												</div>
-											)}
-
-											<hr />
-
-											<FormControl component="fieldset">
-												<FormLabel component="legend">Booking Status</FormLabel>
-												<RadioGroup
-													aria-label="bookingStatus"
-													name="bookingStatus"
-													value={bookingStatus}
-													onChange={handlebookingstatusChange}
-													row
-												>
-													<FormControlLabel
-														value="1"
-														control={<Radio />}
-														label="Partially"
-														checked={bookingStatus == 1}
-													/>
-													<FormControlLabel
-														value="0"
-														control={<Radio />}
-														label="Completely"
-													/>
-												</RadioGroup>
-											</FormControl>
+											<div>
+												<TextField
+													type="text"
+													onChange={handleCommentChange}
+													variant="outlined"
+													fullWidth
+													multiline
+													rows={4}
+													label="Fill Availability Details"
+													InputProps={{
+														endAdornment: (
+															<InputAdornment position="end">
+																<IconButton
+																	disabled={
+																		null == booking_id || null == bookingStatus
+																	}
+																	aria-label="book date"
+																	onClick={bookDate}
+																	edge="end"
+																>
+																	<SendIcon />
+																</IconButton>
+															</InputAdornment>
+														),
+													}}
+												/>
+											</div>
 										</div>
 									)}
 									{!bookingInit && (

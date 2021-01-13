@@ -143,6 +143,8 @@ const vendorVid = (props) => {
 				console.log("ressss", response);
 				if (Array.isArray(response.data.data)) {
 					setRemoteData(response.data.data);
+					setSelectedVideo(null);
+					setVid(null);
 				}
 			})
 			.catch(function (error) {
@@ -174,6 +176,8 @@ const vendorVid = (props) => {
 				.then(function (response) {
 					console.log("ressss", response);
 					getAllVideos();
+					setSelectedVideo(null);
+					setVid(null);
 				})
 				.catch(function (error) {
 					if (error.response && error.response.data.input_error.image_file) {
@@ -286,7 +290,7 @@ const vendorVid = (props) => {
 									<Grid item>
 										<Button
 											onClick={submitVieo}
-											disabled={vid.src == null}
+											disabled={vid == null || vid.src == null}
 											variant="outlined"
 											color="primary"
 										>
@@ -294,7 +298,7 @@ const vendorVid = (props) => {
 										</Button>
 									</Grid>
 									<Grid item xs={12}>
-										{vid.src && (
+										{vid != null && vid.src && (
 											<table
 												style={{
 													borderCollapse: "collapse",
