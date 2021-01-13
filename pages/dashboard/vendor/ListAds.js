@@ -50,6 +50,7 @@ import { vendorActions } from "../../../_actions/vendor.action";
 import broken_image from "~/static/images/broken_image.svg";
 import FilterCard from "./filterCard";
 import appTheme from "../../../theme/appTheme";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 const localStorageService = LocalStorageService.getService();
 let themeType = "light";
 if (typeof Storage !== "undefined") {
@@ -60,6 +61,7 @@ let theme = createMuiTheme({
 	direction: "ltr",
 });
 theme = responsiveFontSizes(theme);
+
 const useStyles = makeStyles((theme) => ({
 	root: { paddingTop: "11vh", flexGrow: 1 },
 	labelRoot: {
@@ -90,7 +92,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const VendorSearch = (props) => {
 	const classes = useStyles();
-
+	const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
+	const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 	const [activeStep, setActiveStep] = React.useState(0);
 	const [details, setDetails] = React.useState({});
 	const [images, setImages] = React.useState([]);
@@ -117,7 +120,10 @@ const VendorSearch = (props) => {
 						className={classes.closeButton}
 						onClick={onClose}
 					>
-						<CloseIcon />
+						<CloseIcon
+							fontSize="medium"
+							style={{ stroke: "black", strokeWidth: "2" }}
+						/>
 					</IconButton>
 				) : null}
 			</MuiDialogTitle>
@@ -175,14 +181,7 @@ const VendorSearch = (props) => {
 			if (payload["booking_date"]) {
 				obj["booking_date"] = payload["booking_date"];
 			} else {
-				Object.keys(payload).forEach((K) => {
-					let key = "filter[" + K + "]";
-					if (K != "booking_date") {
-						if (payload[K]) {
-							obj[key] = payload[K];
-						}
-					}
-				});
+				obj = payload;
 			}
 		}
 
@@ -304,20 +303,21 @@ const VendorSearch = (props) => {
 			/>
 			<div className={classes.root}>
 				<Grid justify="flex-end" alignItems="center" container>
-					<Grid item>
+					<Grid item xs={isMobile && 6}>
 						{!filter && ad.id == null && (
 							<Button
 								variant="contained"
 								color="primary"
 								onClick={handleFilterOpen}
+								fullWidth
 							>
 								Filter
 							</Button>
 						)}
 					</Grid>
-					<Grid item>
+					<Grid item xs={isMobile && 6}>
 						{!filter && ad.id == null && (
-							<Button variant="contained" color="primary">
+							<Button variant="contained" color="primary" fullWidth>
 								Wishlist
 							</Button>
 						)}
@@ -400,6 +400,7 @@ const VendorSearch = (props) => {
 					<DialogContent>
 						<Grid container justify="center" alignItems="center">
 							<FormContainer
+								submitLabel="Apply"
 								labelStyling={classes.labelRoot}
 								onSubmit={({ values, setSubmitting, setFieldError }) => {
 									setSubmitting(true);
@@ -551,11 +552,6 @@ const VendorSearch = (props) => {
 							</Grid>
 						</Grid>
 					</DialogContent>
-					<DialogActions>
-						<Button onClick={() => setAd({})} color="primary">
-							Close
-						</Button>
-					</DialogActions>
 				</Dialog>
 			</div>
 		</React.Fragment>

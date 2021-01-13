@@ -155,6 +155,8 @@ const FreelancerImg = (props) => {
 				console.log("ressss", response);
 				if (Array.isArray(response.data.data)) {
 					setRemoteData(response.data.data);
+					setSelectedImg(null);
+					setImg(null);
 				}
 			})
 			.catch(function (error) {
@@ -176,6 +178,8 @@ const FreelancerImg = (props) => {
 				.then(function (response) {
 					console.log("ressss", response);
 					getAllImages();
+					setSelectedImg(null);
+					setImg(null);
 				})
 				.catch(function (error) {
 					if (error.response && error.response.data.input_error.image_file) {
@@ -292,7 +296,7 @@ const FreelancerImg = (props) => {
 									<Grid container justify="center" item xs={12}>
 										<Button
 											onClick={submitImage}
-											disabled={img.src == null}
+											disabled={img == null || img.src == null}
 											variant="outlined"
 											color="primary"
 										>
@@ -300,7 +304,7 @@ const FreelancerImg = (props) => {
 										</Button>
 									</Grid>
 									<Grid item xs={12}>
-										{img.src && (
+										{img != null && img.src && (
 											<div>
 												<table
 													style={{

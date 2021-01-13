@@ -22,7 +22,15 @@ import {
 	MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import { TextField, Switch } from "formik-material-ui";
-import { Grid, Button, Dialog, Container, Box, Fab } from "@material-ui/core";
+import {
+	Grid,
+	Button,
+	Dialog,
+	Container,
+	Box,
+	Fab,
+	useMediaQuery,
+} from "@material-ui/core";
 import Head from "next/head";
 import LocalStorageService from "../../../_services/LocalStorageService";
 import DashboardWrapper from "../../../components/Dashboard/DashboardWrapper";
@@ -60,8 +68,9 @@ let theme = createMuiTheme({
 	direction: "ltr",
 });
 theme = responsiveFontSizes(theme);
+
 const useStyles = makeStyles((theme) => ({
-	root: { paddingTop: "11vh", flexGrow: 1 },
+	root: { paddingTop: "11vh", flexGrow: 1, margin: 5 },
 	labelRoot: {
 		fontSize: 18,
 		fontWeight: "bold",
@@ -70,13 +79,13 @@ const useStyles = makeStyles((theme) => ({
 	},
 	closeButton: {
 		position: "absolute",
-		right: theme.spacing(1),
+		right: theme.spacing(0.2),
 		top: theme.spacing(1),
 		color: theme.palette.grey[500],
 	},
 	titleRoot: {
 		margin: 0,
-		padding: theme.spacing(2),
+		padding: theme.spacing(1.5),
 	},
 	img: {
 		height: 200,
@@ -90,7 +99,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const MatrimonySearch = (props) => {
 	const classes = useStyles();
-
+	const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
+	const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 	const [activeStep, setActiveStep] = React.useState(0);
 	const [details, setDetails] = React.useState({});
 	const [images, setImages] = React.useState([]);
@@ -117,7 +127,10 @@ const MatrimonySearch = (props) => {
 						className={classes.closeButton}
 						onClick={onClose}
 					>
-						<CloseIcon />
+						<CloseIcon
+							fontSize="medium"
+							style={{ stroke: "black", strokeWidth: "2" }}
+						/>
 					</IconButton>
 				) : null}
 			</MuiDialogTitle>
@@ -175,14 +188,15 @@ const MatrimonySearch = (props) => {
 			if (payload["booking_date"]) {
 				obj["booking_date"] = payload["booking_date"];
 			} else {
-				Object.keys(payload).forEach((K) => {
-					let key = "filter[" + K + "]";
-					if (K != "booking_date") {
-						if (payload[K]) {
-							obj[key] = payload[K];
-						}
-					}
-				});
+				obj = payload;
+				// Object.keys(payload).forEach((K) => {
+				// 	let key = "filter[" + K + "]";
+				// 	if (K != "booking_date") {
+				// 		if (payload[K]) {
+				// 			obj[key] = payload[K];
+				// 		}
+				// 	}
+				// });
 			}
 		}
 
@@ -303,21 +317,22 @@ const MatrimonySearch = (props) => {
 				onToggleDir={props.onToggleDir}
 			/>
 			<div className={classes.root}>
-				<Grid justify="flex-end" alignItems="center" container spacing={1}>
-					<Grid item>
+				<Grid justify="flex-end" alignItems="center" container spacing={2}>
+					<Grid item xs={isMobile && 6}>
 						{!filter && ad.id == null && (
 							<Button
 								variant="contained"
 								color="primary"
 								onClick={handleFilterOpen}
+								fullWidth
 							>
 								Filter
 							</Button>
 						)}
 					</Grid>
-					<Grid item>
+					<Grid item xs={isMobile && 6}>
 						{!filter && ad.id == null && (
-							<Button variant="contained" color="primary">
+							<Button variant="contained" color="primary" fullWidth>
 								Wishlist
 							</Button>
 						)}
@@ -401,6 +416,7 @@ const MatrimonySearch = (props) => {
 						<Grid container justify="center" alignItems="center">
 							<FormContainer
 								labelStyling={classes.labelRoot}
+								submitLabel="Apply"
 								onSubmit={({ values, setSubmitting, setFieldError }) => {
 									setSubmitting(true);
 									let shouldSubmit = true;
@@ -554,11 +570,6 @@ const MatrimonySearch = (props) => {
 							</Grid>
 						</Grid>
 					</DialogContent>
-					<DialogActions>
-						<Button onClick={() => setAd({})} color="primary">
-							Close
-						</Button>
-					</DialogActions>
 				</Dialog>
 			</div>
 		</React.Fragment>

@@ -50,9 +50,7 @@ export const freelancerForm = [
 			id: "sub_service",
 			label: "Sub Service Category",
 			placeholder: "",
-			ElementParams: {
-				multiple: true,
-			},
+
 			type: "select",
 			validationType: "string",
 			options: { data: serviceCategory, dependsOn: "service_category" },

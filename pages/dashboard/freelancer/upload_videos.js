@@ -145,6 +145,8 @@ const FreelancerVid = (props) => {
 				console.log("ressss", response);
 				if (Array.isArray(response.data.data)) {
 					setRemoteData(response.data.data);
+					setSelectedVideo(null);
+					setVid(null);
 				}
 			})
 			.catch(function (error) {
@@ -176,6 +178,8 @@ const FreelancerVid = (props) => {
 				.then(function (response) {
 					console.log("ressss", response);
 					getAllVideos();
+					setSelectedVideo(null);
+					setVid(null);
 				})
 				.catch(function (error) {
 					if (error.response && error.response.data.input_error.image_file) {
@@ -243,7 +247,6 @@ const FreelancerVid = (props) => {
 												fullWidth
 												label="Video Title"
 												inputRef={textInput}
-												
 											/>
 										</Grid>
 									</Grid>
@@ -290,7 +293,7 @@ const FreelancerVid = (props) => {
 									<Grid item>
 										<Button
 											onClick={submitVieo}
-											disabled={vid.src == null}
+											disabled={vid == null || vid.src == null}
 											variant="outlined"
 											color="primary"
 										>
@@ -298,7 +301,7 @@ const FreelancerVid = (props) => {
 										</Button>
 									</Grid>
 									<Grid item xs={12}>
-										{vid.src && (
+										{vid != null && vid.src && (
 											<table
 												style={{
 													borderCollapse: "collapse",

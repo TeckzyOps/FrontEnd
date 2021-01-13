@@ -22,7 +22,6 @@ import {
 } from "~static/text/vendorData.js";
 import { states } from "~static/text/state";
 import { cities } from "~static/text/city";
-import { makeStyles } from "@material-ui/core/styles";
 
 export const vendorForm = [
 	[
@@ -50,9 +49,7 @@ export const vendorForm = [
 			id: "sub_service",
 			label: "Service",
 			placeholder: "",
-			ElementParams: {
-				multiple: true,
-			},
+
 			type: "select",
 			validationType: "string",
 			options: { data: serviceCategory, dependsOn: "service_category" },
@@ -164,6 +161,10 @@ export const vendorForm = [
 		value: "",
 		validations: [
 			{
+				type: "required",
+				params: ["Field is required"],
+			},
+			{
 				type: "max",
 				params: [100, "Maximum 100 words will be accepted!"],
 			},
@@ -195,7 +196,12 @@ export const vendorForm = [
 			validationType: "string",
 
 			value: "",
-			validations: [],
+			validations: [
+				{
+					type: "required",
+					params: ["Field is required"],
+				},
+			],
 		},
 	],
 	{
@@ -274,6 +280,12 @@ export const vendorForm = [
 		validationType: "string",
 		options: { data: ["Others"] },
 		value: "",
+		validations: [
+			{
+				type: "required",
+				params: ["Field is required"],
+			},
+		],
 	},
 	[
 		{
@@ -339,7 +351,12 @@ export const vendorForm = [
 		validationType: "string",
 
 		value: "",
-		validations: [],
+		validations: [
+			{
+				type: "required",
+				params: ["Field is required"],
+			},
+		],
 	},
 	[
 		// {
