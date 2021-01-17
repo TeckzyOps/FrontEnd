@@ -26,9 +26,9 @@ import { AuthProvider } from "../components/provider/Auth";
 import Cookies from "js-cookie";
 import LocalStorageService from "../_services/LocalStorageService";
 const localStorageService = LocalStorageService.getService();
-import routerLinkProtected from "~static/text/link";
 
 let themeType = "light";
+import routerLinkProtected from "~static/text/link";
 let link = routerLinkProtected.starter;
 if (typeof Storage !== "undefined") {
 	themeType = localStorage.getItem("luxiTheme") || "light";

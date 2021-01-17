@@ -153,7 +153,7 @@ export default function CustomCard({ ad, ...props }) {
 											gutterBottom
 											noWrap
 										>
-											{ad.sub_service.join(", ")}
+											{ad.sub_service}
 										</Typography>
 									</MuiThemeProvider>
 								</div>

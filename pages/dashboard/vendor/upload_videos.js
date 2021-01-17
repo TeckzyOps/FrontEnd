@@ -376,10 +376,15 @@ const vendorVid = (props) => {
 					fullScreen={fullScreen}
 					open={open}
 					onClose={() => setOpen(false)}
-					aria-labelledby={selectedVideo.title}
+					aria-labelledby={selectedVideo && selectedVideo.title}
 				>
-					<DialogTitle id={selectedVideo.title} onClose={() => setOpen(false)}>
-						<Typography variant="h6">{selectedVideo.title}</Typography>
+					<DialogTitle
+						id={selectedVideo && selectedVideo.title}
+						onClose={() => setOpen(false)}
+					>
+						<Typography variant="h6">
+							{selectedVideo && selectedVideo.title}
+						</Typography>
 						<IconButton
 							aria-label="close"
 							className={classes.closeButton}
@@ -391,7 +396,7 @@ const vendorVid = (props) => {
 					<DialogContent>
 						<video
 							width="100%"
-							src={selectedVideo.src}
+							src={selectedVideo && selectedVideo.src}
 							muted="muted"
 							loop="loop"
 							autoPlay={false}

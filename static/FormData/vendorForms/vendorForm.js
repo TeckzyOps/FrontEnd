@@ -411,7 +411,7 @@ export const vendorForm = [
 			label: "If Available GST Number",
 			placeholder: "",
 			type: "text",
-			validationType: "string",
+
 			ElementParams: { variant: "outlined" },
 			value: "",
 			validations: [],

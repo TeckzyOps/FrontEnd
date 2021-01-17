@@ -43,7 +43,7 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
 import Avatar from "@material-ui/core/Avatar";
-import { freelancerFilter } from "~static/FormData/freelancerForms.js";
+import { vendorFilter } from "~static/FormData/vendorForms/";
 import Header from "../../../components/Header";
 import Divider from "../../../components/CustomElements/Divider/";
 import { vendorActions } from "../../../_actions/vendor.action";
@@ -302,7 +302,7 @@ const VendorSearch = (props) => {
 				onToggleDir={props.onToggleDir}
 			/>
 			<div className={classes.root}>
-				<Grid justify="flex-end" alignItems="center" container>
+				<Grid justify="flex-end" alignItems="center" container spacing={2}>
 					<Grid item xs={isMobile && 6}>
 						{!filter && ad.id == null && (
 							<Button
@@ -331,7 +331,6 @@ const VendorSearch = (props) => {
 							direction="row"
 							justify="center"
 							alignItems="center"
-							spacing={2}
 						>
 							{adList &&
 								adList.map((ad, index) => (
@@ -442,7 +441,7 @@ const VendorSearch = (props) => {
 										setSubmitting(false);
 									}
 								}}
-								elements={freelancerFilter}
+								elements={vendorFilter}
 								defaultvals={payload}
 								helperEle={helperElement}
 							/>

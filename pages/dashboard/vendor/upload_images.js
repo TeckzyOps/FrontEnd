@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 import Router from "next/router";
+import App from 'next/app'
 import { makeStyles } from "@material-ui/core/styles";
 import {
 	Grid,
@@ -424,18 +425,20 @@ const getCookieFromReq = (req, cookieKey) => {
 	return cookie.split("=")[1];
 };
 
-VendorImg.getInitialProps = ({ req, res }) => {
+VendorImg.getInitialProps = (ctx) => {
+	const appProps = await App.getInitialProps(ctx)
+	console.log("Into Get Initial Props");
 	const ISSERVER = typeof window === "undefined";
 	let token = null;
 
 	if (!ISSERVER) {
 		token = localStorage.getItem("token");
 	} else {
-		token = getCookieFromReq(req, "token");
+		token = getCookieFromReq(ctx.req, "token");
 	}
 
 	if (token == null) {
-		redirectToLogin(res);
+		redirectToLogin(ctx.res);
 	}
 	return {};
 };
