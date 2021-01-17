@@ -7,6 +7,13 @@ import { userActions } from "../../_actions/user.actions";
 import Cookies from "js-cookie";
 import Router from "next/router";
 import routerLink from "~/static/text/link";
+const protectedLink = [
+	routerLink.starter.profile,
+	routerLink.starter.dashboard,
+	routerLink.starter.freelancernew,
+	routerLink.starter.freelancerVids,
+	routerLink.starter.freelancerImg,
+];
 import LocalStorageService from "../../_services/LocalStorageService";
 const localStorageService = LocalStorageService.getService();
 
@@ -16,6 +23,7 @@ export const AuthProvider = ({ children }) => {
 	const [details, setDetails] = useState(null);
 	const [token, setToken] = useState(null);
 	useEffect(() => {
+		console.log(children);
 		const token = Cookies.get("token");
 		const loginDet = Cookies.getJSON("loginDetails");
 		if (token) {
@@ -128,3 +136,39 @@ export function useIsAuthenticated() {
 	const context = useAuth();
 	return context.isAuthenticated;
 }
+
+const redirectToLogin = (res) => {
+	if (res) {
+		res.writeHead(302, { Location: "/login" });
+		res.end();
+		res.finished = true;
+	} else {
+		Router.push("/login");
+	}
+};
+const getCookieFromReq = (req, cookieKey) => {
+	const cookie = req.headers.cookie
+		.split(";")
+		.find((c) => c.trim().startsWith(`${cookieKey}=`));
+
+	if (!cookie) return undefined;
+	return cookie.split("=")[1];
+};
+
+AuthProvider.getInitialProps = ({ req, res }) => {
+	console.log("REQ :: ---------------------------------------", req);
+	const ISSERVER = typeof window === "undefined";
+	let token = null;
+
+	if (!ISSERVER) {
+		token = localStorage.getItem("token");
+	} else {
+		token = getCookieFromReq(req, "token");
+	}
+
+	if (token == null) {
+		console.log("GOING TO REDIRECT");
+		redirectToLogin(res);
+	}
+	return {};
+};

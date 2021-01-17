@@ -41,8 +41,8 @@ import {
 	Switch,
 } from "formik-material-ui";
 import FolderIcon from "@material-ui/icons/Folder";
-import { vendorForm } from "~static/FormData/vendorForm.js";
-import { freelancerProperietor } from "~static/FormData/freelancerForms.js";
+import { vendorForm } from "~static/FormData/vendorForms/";
+import { Properietor } from "~static/FormData/properietor.js";
 import * as Yup from "yup";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -399,7 +399,7 @@ const VendorForm = (props) => {
 							<Typography>Proprietor Detail (Do Not Edit)</Typography>
 						</AccordionSummary>
 						<FormContainer
-							elements={freelancerProperietor}
+							elements={Properietor}
 							defaultvals={properietor_details}
 						/>
 					</Accordion>
@@ -496,7 +496,14 @@ const VendorForm = (props) => {
 											justify="center"
 											alignItems="center"
 										>
-											<Grid item xs={12}>
+											<Grid
+												container
+												direction="row"
+												justify="center"
+												alignItems="center"
+												item
+												xs={12}
+											>
 												<Divider variant="middle" flexItem />
 												<Typography variant="h5">Catalog File :</Typography>
 
@@ -511,17 +518,16 @@ const VendorForm = (props) => {
 															{catalogFile.catalog_path.split("/").pop()}
 														</Link>
 													)}
-
-												<Button
-													variant="contained"
-													onClick={setshowCatalogForm(true)}
-													color="primary"
-												>
-													Change File
-												</Button>
 											</Grid>
 
-											<Grid item xs={12}>
+											<Grid
+												container
+												direction="row"
+												justify="center"
+												alignItems="center"
+												item
+												xs={12}
+											>
 												<Box margin={1}>
 													<Field
 														name="catalog_pdf_path"
@@ -568,6 +574,15 @@ const VendorForm = (props) => {
 														</div>
 													)}
 												</Box>
+											</Grid>
+
+											<Grid
+												container
+												justify="center"
+												alignItems="center"
+												item
+												xs={12}
+											>
 												{values.catalog_pdf_path && (
 													<Box>
 														<table

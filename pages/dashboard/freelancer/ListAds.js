@@ -51,7 +51,7 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
 import Avatar from "@material-ui/core/Avatar";
-import { freelancerFilter } from "~static/FormData/freelancerForms.js";
+import { freelancerFilter } from "~static/FormData/freelancerForms/";
 import Header from "../../../components/Header";
 import Divider from "../../../components/CustomElements/Divider/";
 import { freelancerActions } from "../../../_actions/freelancer.action";
@@ -70,7 +70,7 @@ let theme = createMuiTheme({
 theme = responsiveFontSizes(theme);
 
 const useStyles = makeStyles((theme) => ({
-	root: { paddingTop: "11vh", flexGrow: 1, margin: 5 },
+	root: { paddingTop: "11vh", flexGrow: 1 },
 	labelRoot: {
 		fontSize: 18,
 		fontWeight: "bold",
@@ -346,7 +346,6 @@ const MatrimonySearch = (props) => {
 							direction="row"
 							justify="center"
 							alignItems="center"
-							spacing={2}
 						>
 							{adList &&
 								adList.map((ad, index) => (

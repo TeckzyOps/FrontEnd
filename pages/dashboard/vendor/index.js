@@ -97,7 +97,7 @@ const index = (props) => {
 				onToggleDir={props.onToggleDir}
 			/>
 			<div className={classes.root}>
-				<Grid alignContent="center" container spacing={2}>
+				<Grid alignContent="center" container>
 					{adList &&
 						adList.map((ad, index) => (
 							<Grid key={index} item md={4} xs={12}>
