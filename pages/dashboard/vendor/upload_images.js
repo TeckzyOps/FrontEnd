@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
 import Router from "next/router";
-import App from 'next/app'
 import { makeStyles } from "@material-ui/core/styles";
 import {
 	Grid,
@@ -426,7 +425,6 @@ const getCookieFromReq = (req, cookieKey) => {
 };
 
 VendorImg.getInitialProps = (ctx) => {
-	const appProps = await App.getInitialProps(ctx)
 	console.log("Into Get Initial Props");
 	const ISSERVER = typeof window === "undefined";
 	let token = null;
