@@ -122,19 +122,19 @@ Account.getInitialProps = async ({ req, res }) => {
 	// if (logineres.data) {
 	// 	postsetLoginData(logineres.data.data);
 	// }
-	const ISSERVER = typeof window === "undefined";
-	let token = null;
+	// const ISSERVER = typeof window === "undefined";
+	// let token = null;
 
-	if (!ISSERVER) {
-		token = localStorage.getItem("token");
-	} else {
-		token = getCookieFromReq(req, "token");
-	}
+	// if (!ISSERVER) {
+	// 	token = localStorage.getItem("token");
+	// } else {
+	// 	token = getCookieFromReq(req, "token");
+	// }
 
-	if (token == null) {
-		console.log("GOING TO REDIRECT");
-		redirectToLogin(res);
-	}
+	// if (token == null) {
+	// 	console.log("GOING TO REDIRECT");
+	// 	redirectToLogin(res);
+	// }
 	return {};
 };
 

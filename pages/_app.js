@@ -33,18 +33,47 @@ let link = routerLinkProtected.starter;
 if (typeof Storage !== "undefined") {
 	themeType = localStorage.getItem("luxiTheme") || "light";
 }
+const redirectToLogin = (res) => {
+	if (res) {
+		res.writeHead(302, { Location: "/login" });
+		res.end();
+		res.finished = true;
+	} else {
+		Router.push("/login");
+	}
+};
+const getCookieFromReq = (req, cookieKey) => {
+	let heads = req.headers;
+	if (!heads.cookie) {
+		return;
+	}
+	if (heads.cookie.indexOf(";") < 0) {
+		return;
+	}
+	const cookie = heads.cookie
+		.split(";")
+		.find((c) => c.trim().startsWith(`${cookieKey}=`));
 
+	if (!cookie) return undefined;
+	return cookie.split("=")[1];
+};
+const protectedLink = [
+	link.profile,
+	link.dashboard,
+	link.freelancernew,
+	link.freelancerVids,
+	link.freelancerImg,
+	link.sellernew,
+	link.sellerVids,
+	link.sellerImg,
+	link.vendornew,
+	link.vendorVids,
+	link.vendorImg,
+];
 class MyApp extends App {
 	state = {
 		Netloading: false,
 		user: {},
-		protectedLink: [
-			link.profile,
-			link.dashboard,
-			link.freelancernew,
-			link.freelancerVids,
-			link.freelancerImg,
-		],
 		redirectLink: this.props.router.route,
 		token: "",
 		loggedIn: false,
@@ -57,6 +86,28 @@ class MyApp extends App {
 		},
 	};
 
+	static async getInitialProps({ Component, router, ctx }) {
+		const ISSERVER = typeof localStorage === "undefined";
+		let token = null;
+
+		if (!ISSERVER) {
+			token = localStorage.getItem("token");
+		} else {
+			token = getCookieFromReq(ctx.req, "token");
+		}
+
+		if (token == null && protectedLink.includes(router.route)) {
+			console.log("GOING TO REDIRECT :: ", router.route);
+			redirectToLogin(ctx.res);
+		}
+
+		let pageProps = {};
+		if (Component.getInitialProps) {
+			pageProps = await Component.getInitialProps(ctx);
+		}
+
+		return { pageProps };
+	}
 	componentDidMount() {
 		AxiosIns.interceptors.request.use(
 			(config) => {

@@ -1,42 +1,59 @@
 import * as Yup from "yup";
-import { serviceCategory } from "~static/text/vendorData.js";
+import { serviceCategory, OffersCoupon } from "~static/text/sellerData.js";
 import { states } from "~static/text/state";
 import { cities } from "~static/text/city";
-
-export const vendorFilter = [
+export const sellerFilter = [
 	[
 		{
 			id: "service_category",
 			label: "Category",
 			placeholder: "",
 			type: "select",
-
+			ElementParams: {
+				fullWidth: true,
+			},
 			validationType: "string",
 			options: { data: Object.keys(serviceCategory) },
 			value: "",
-			validations: [],
+			validations: [
+				{
+					type: "required",
+					params: ["Field is required"],
+				},
+			],
 		},
 		{
 			id: "sub_service",
-			label: "Service",
+			label: "Product",
 			placeholder: "",
 
 			type: "select",
 			validationType: "string",
 			options: { data: serviceCategory, dependsOn: "service_category" },
 			value: [],
-			validations: [],
-		},
-		{
-			id: "service_price",
-			label: "Budget Price",
-			placeholder: "",
-			type: "text",
-			validationType: "string",
-			value: "",
-			validations: [],
+			validations: [
+				{
+					type: "required",
+					params: ["Field is required"],
+				},
+			],
 		},
 	],
+	{
+		id: "product_coupon_status",
+		label: "Offers Coupon",
+		placeholder: "",
+		type: "select",
+		options: { data: OffersCoupon },
+		validationType: "string",
+		value: "",
+		validations: [
+			{
+				type: "required",
+				params: ["Field is required"],
+			},
+		],
+	},
 	[
 		{
 			id: "state",
@@ -47,7 +64,12 @@ export const vendorFilter = [
 			validationType: "string",
 			options: { data: Object.keys(states) },
 			value: "",
-			validations: [],
+			validations: [
+				{
+					type: "required",
+					params: ["Field is required"],
+				},
+			],
 		},
 		{
 			id: "district",
@@ -58,7 +80,12 @@ export const vendorFilter = [
 			validationType: "string",
 			options: { data: states, dependsOn: "state" },
 			value: "",
-			validations: [],
+			validations: [
+				{
+					type: "required",
+					params: ["Field is required"],
+				},
+			],
 		},
 		{
 			id: "city",
@@ -69,17 +96,12 @@ export const vendorFilter = [
 			validationType: "string",
 			options: { data: cities, dependsOn: "district" },
 			value: "",
-			validations: [],
+			validations: [
+				{
+					type: "required",
+					params: ["Field is required"],
+				},
+			],
 		},
 	],
-
-	{
-		id: "booking_date",
-		label: "Booking Date",
-		placeholder: "",
-		type: "date",
-		ElementParams: {
-			InputAdornmentProps: { position: "start" },
-		},
-	},
 ];

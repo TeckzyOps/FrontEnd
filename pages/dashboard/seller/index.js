@@ -22,11 +22,7 @@ import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import routerLink from "~/static/text/link";
 import Link from "@material-ui/core/Link";
-
-import api, {
-	addBearerToken,
-	removeBearerToken,
-} from "../../../utils/httpClient";
+import CustomCard from "./card";
 import { sellerActions } from "../../../_actions/seller.action";
 const localStorageService = LocalStorageService.getService();
 import {
@@ -95,7 +91,7 @@ const index = (props) => {
 	return (
 		<React.Fragment>
 			<Head>
-				<title>Dashboard &nbsp; - Login</title>
+				<title>Seller &nbsp; - Profiles</title>
 			</Head>
 
 			<Header
@@ -103,85 +99,15 @@ const index = (props) => {
 				onToggleDir={props.onToggleDir}
 			/>
 			<div className={classes.root}>
-				<Grid alignContent="center" container spacing={2}>
-					<Grid item md={3} xs={12}>
-						<Card
-							style={{ textAlign: "center", height: "100%" }}
-							className={classes.card}
-						>
-							<Typography variant="h6">Add More Profile</Typography>
-							<div className={classes.col}>
-								<Fab
-									href={routerLink.starter.sellernew}
-									color="primary"
-									aria-label="add"
-								>
-									<AddIcon />
-								</Fab>
-							</div>
-							<Typography variant="subtitle" component="h2">
-								New Seller Application
-							</Typography>
-						</Card>
-					</Grid>
-
+				<Grid alignContent="center" container>
 					{adList &&
 						adList.map((ad, index) => (
-							<Grid key={index} item md={3} xs={12}>
+							<Grid key={index} item md={4} xs={12}>
 								<Link
 									style={{ textDecoration: "none" }}
-									href={routerLink.starter.sellerDetails + "?id=" + ad.id}
+									href={routerLink.starter.sellernew + "?id=" + ad.id}
 								>
-									<Card className={classes.card}>
-										{/* <CardMedia
-											className={classes.media}
-											image={
-												"https://image.freepik.com/free-photo/river-foggy-mountains-landscape_1204-511.jpg"
-											}
-										/> */}
-										<CardContent className={classes.content}>
-											<MuiThemeProvider theme={theme}>
-												Tagline:
-												<Typography
-													className={"MuiTypography--heading"}
-													variant={"h5"}
-													gutterBottom
-												>
-													{ad.offer_tagline}
-												</Typography>
-												Business Name:
-												<Typography
-													className={"MuiTypography--heading"}
-													variant={"h6"}
-													gutterBottom
-												>
-													{ad.bussiness_name}
-												</Typography>
-												<Typography variant="subtitle1" color="textSecondary">
-													{ad.sub_service + " | " + ad.service_area}
-												</Typography>
-												Business Description:
-												<Typography
-													className={"MuiTypography--subheading"}
-													variant={"caption"}
-												>
-													{ad.bussineess_description}
-												</Typography>
-											</MuiThemeProvider>
-											<Divider className={classes.divider} light />
-										</CardContent>
-										<CardActions>
-											<Link
-												target="_blank"
-												href={"https://maps.google.com"}
-												rel="noopener"
-											>
-												<IconButton>
-													<ExploreIcon fontSize="large" />
-												</IconButton>
-											</Link>
-										</CardActions>
-									</Card>
+									<CustomCard ad={ad} {...props} />
 								</Link>
 							</Grid>
 						))}
@@ -190,38 +116,5 @@ const index = (props) => {
 		</React.Fragment>
 	);
 };
-const redirectToLogin = (res) => {
-	if (res) {
-		res.writeHead(302, { Location: "/login" });
-		res.end();
-		res.finished = true;
-	} else {
-		Router.push("/login");
-	}
-};
-const getCookieFromReq = (req, cookieKey) => {
-	const cookie = req.headers.cookie
-		.split(";")
-		.find((c) => c.trim().startsWith(`${cookieKey}=`));
 
-	if (!cookie) return undefined;
-	return cookie.split("=")[1];
-};
-
-index.getInitialProps = ({ req, res }) => {
-	const ISSERVER = typeof window === "undefined";
-	let token = null;
-
-	if (!ISSERVER) {
-		token = localStorage.getItem("token");
-	} else {
-		token = getCookieFromReq(req, "token");
-	}
-
-	if (token == null) {
-		console.log("GOING TO REDIRECT");
-		redirectToLogin(res);
-	}
-	return {};
-};
 export default index;
