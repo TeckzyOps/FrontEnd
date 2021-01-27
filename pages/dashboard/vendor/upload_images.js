@@ -406,38 +406,4 @@ const VendorImg = (props) => {
 	);
 };
 
-const redirectToLogin = (res) => {
-	if (res) {
-		res.writeHead(302, { Location: "/login" });
-		res.end();
-		res.finished = true;
-	} else {
-		Router.push("/login");
-	}
-};
-const getCookieFromReq = (req, cookieKey) => {
-	const cookie = req.headers.cookie
-		.split(";")
-		.find((c) => c.trim().startsWith(`${cookieKey}=`));
-
-	if (!cookie) return undefined;
-	return cookie.split("=")[1];
-};
-
-VendorImg.getInitialProps = (ctx) => {
-	console.log("Into Get Initial Props");
-	const ISSERVER = typeof window === "undefined";
-	let token = null;
-
-	if (!ISSERVER) {
-		token = localStorage.getItem("token");
-	} else {
-		token = getCookieFromReq(ctx.req, "token");
-	}
-
-	if (token == null) {
-		redirectToLogin(ctx.res);
-	}
-	return {};
-};
 export default withRouter(VendorImg);

@@ -48,12 +48,12 @@ const tiers = [
 	{
 		title: "Seller",
 		imgsrc: seller,
-		url: routerLink.starter.seller,
+		url: routerLink.starter.sellerSearch,
 	},
 	{
 		title: "Worker",
 		imgsrc: worker,
-		url: routerLink.starter.worker,
+		url: routerLink.starter.workerSearch,
 	},
 	{
 		title: "B2B Market",

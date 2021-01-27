@@ -20,6 +20,7 @@ const link = {
 		seller: "/dashboard/seller/",
 		sellernew: "/dashboard/seller/create",
 		sellerDetails: "/dashboard/seller/details",
+		sellerSearch: "/dashboard/seller/ListAds",
 		sellerVids: "/dashboard/seller/upload_videos",
 		sellerImg: "/dashboard/seller/upload_images",
 		vendor: "/dashboard/vendor/",

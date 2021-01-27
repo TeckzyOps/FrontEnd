@@ -34,46 +34,4 @@ const Freelancer = (props) => {
 		</Fragment>
 	);
 };
-const redirectToLogin = (res) => {
-	if (res) {
-		res.writeHead(302, { Location: "/login" });
-		res.end();
-		res.finished = true;
-	} else {
-		Router.push("/login");
-	}
-};
-const getCookieFromReq = (req, cookieKey) => {
-	let cookie = "";
-	if (req != null && req.headers != null && req.headers.cookie != null) {
-		cookie = req.headers.cookie
-			.split(";")
-			.find((c) => c.trim().startsWith(`${cookieKey}=`));
-	}
-
-	if (!cookie) return undefined;
-	return cookie.split("=")[1];
-};
-
-Freelancer.getInitialProps = ({ req, res }) => {
-	const ISSERVER = typeof window === "undefined";
-
-	let token = null;
-
-	if (!ISSERVER) {
-		token = localStorage.getItem("token");
-	} else {
-		const cookies = req.headers.cookie;
-		if (typeof cookies === "string") {
-			const cookiesJSON = jsHttpCookie.parse(cookies);
-			token = cookiesJSON.token;
-		}
-	}
-
-	if (token == null) {
-		console.log("GOING TO REDIRECT");
-		redirectToLogin(res);
-	}
-	return {};
-};
 export default Freelancer;

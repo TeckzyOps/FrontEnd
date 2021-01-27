@@ -9,15 +9,7 @@ import {
 	MuiThemeProvider,
 } from "@material-ui/core/styles";
 import { Formik, Field, Form, ErrorMessage } from "formik";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionActions from "@material-ui/core/AccordionActions";
-import ListItemText from "@material-ui/core/ListItemText";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Avatar from "@material-ui/core/Avatar";
 import { withTranslation } from "~/i18n";
@@ -27,11 +19,6 @@ import Alert from "./../../components/alert/alert";
 import BookingModule from "./../../components/GenericPopup/BookingModule";
 import FormContainer from "./../../components/Forms/FormContainer";
 import routerLink from "~/static/text/link";
-import TextareaAutosize from "@material-ui/core/TextareaAutosize";
-import MuiTextField from "@material-ui/core/TextField";
-
-import { states } from "~static/text/state";
-import { cities } from "~static/text/city";
 import {
 	fieldToTextField,
 	TextField,
@@ -141,7 +128,7 @@ const VendorForm = (props) => {
 		visbility: null,
 		catalog_path: null,
 	});
-	const [showCatalogForm, setshowCatalogForm] = useState(false);
+
 	const [profileUpdateSuccess, setProfileUpdateSuccess] = useState({
 		open: false,
 		title: "",
@@ -321,41 +308,6 @@ const VendorForm = (props) => {
 			/>
 		);
 	};
-	function validURL(str) {
-		if (!str) {
-			return false;
-		}
-		var pattern = new RegExp(
-			"^(https?:\\/\\/)?" + // protocol
-				"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-				"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-				"(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-				"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-				"(\\#[-a-z\\d_]*)?$",
-			"i"
-		); // fragment locator
-		return !!pattern.test(str);
-	}
-	function GetFilename(url) {
-		if (url) {
-			var m = url.toString().match(/.*\/(.+?)\./);
-			if (m && m.length > 1) {
-				return m[1];
-			}
-		}
-		return "";
-	}
-	function search(nameKey, myArray) {
-		if (!nameKey || !myArray) {
-			return false;
-		}
-		for (var i = 0; i < myArray.length; i++) {
-			if (myArray[i].document === nameKey) {
-				return true;
-			}
-		}
-		return false;
-	}
 
 	const helperElement = (prop) => {
 		let show = id;

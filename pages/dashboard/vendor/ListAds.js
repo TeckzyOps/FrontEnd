@@ -154,7 +154,6 @@ const VendorSearch = (props) => {
 		state: props.getNested(details, "profile", "data", "state")
 			? details.profile.data.state
 			: "",
-		freelancer_member_id: "",
 	});
 	function addDefaultSrc(ev) {
 		ev.target.src = broken_image;
@@ -169,7 +168,6 @@ const VendorSearch = (props) => {
 			service_price: "",
 			district: "",
 			state: "",
-			freelancer_member_id: "",
 		});
 	};
 	function applyFilter(payload, page) {
@@ -294,7 +292,7 @@ const VendorSearch = (props) => {
 	return (
 		<React.Fragment>
 			<Head>
-				<title>Freelancer - Search</title>
+				<title>Vendor - Search</title>
 			</Head>
 
 			<Header
@@ -408,30 +406,20 @@ const VendorSearch = (props) => {
 										values["booking_date"] = new Date(values["booking_date"])
 											.toISOString()
 											.split("T")[0];
-									}
-									if (values.freelancer_member_id) {
-										applyFilter(values);
 									} else {
-										if (values["booking_date"]) {
-											values["booking_date"] = new Date(values["booking_date"])
-												.toISOString()
-												.split("T")[0];
-										} else {
-											Object.keys(values).forEach((k) => {
-												if (k != "vendor_member_id" && k != "booking_date") {
-													if (!values[k]) {
-														setFieldError(k, "Field is required");
-														shouldSubmit = false;
-													}
+										Object.keys(values).forEach((k) => {
+											if (k != "booking_date") {
+												if (!values[k]) {
+													setFieldError(k, "Field is required");
+													shouldSubmit = false;
 												}
-											});
-										}
-
-										if (shouldSubmit) {
-											applyFilter(values);
-										}
+											}
+										});
 									}
 
+									if (shouldSubmit) {
+										applyFilter(values);
+									}
 									if (shouldSubmit) {
 										setPayload(values);
 										setTimeout(() => {
@@ -443,7 +431,6 @@ const VendorSearch = (props) => {
 								}}
 								elements={vendorFilter}
 								defaultvals={payload}
-								helperEle={helperElement}
 							/>
 						</Grid>
 					</DialogContent>
@@ -556,38 +543,5 @@ const VendorSearch = (props) => {
 		</React.Fragment>
 	);
 };
-const redirectToLogin = (res) => {
-	if (res) {
-		res.writeHead(302, { Location: "/login" });
-		res.end();
-		res.finished = true;
-	} else {
-		Router.push("/login");
-	}
-};
-const getCookieFromReq = (req, cookieKey) => {
-	const cookie = req.headers.cookie
-		.split(";")
-		.find((c) => c.trim().startsWith(`${cookieKey}=`));
 
-	if (!cookie) return undefined;
-	return cookie.split("=")[1];
-};
-
-VendorSearch.getInitialProps = ({ req, res }) => {
-	const ISSERVER = typeof window === "undefined";
-	let token = null;
-
-	if (!ISSERVER) {
-		token = localStorage.getItem("token");
-	} else {
-		token = getCookieFromReq(req, "token");
-	}
-
-	if (token == null) {
-		console.log("GOING TO REDIRECT");
-		redirectToLogin(res);
-	}
-	return {};
-};
 export default VendorSearch;
