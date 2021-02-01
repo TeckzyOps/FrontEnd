@@ -269,12 +269,19 @@ const FormContainer = React.forwardRef((props, refs) => {
 								name={item.id}
 								labelWidth={labelWidth}
 							>
-								{Array.isArray(opts) &&
-									opts.map((option, index) => (
-										<MenuItem key={index} value={option}>
-											{option}
-										</MenuItem>
-									))}
+								{Array.isArray(opts)
+									? opts.map((option, index) => (
+											<MenuItem key={index} value={option}>
+												{option}
+											</MenuItem>
+									  ))
+									: opts &&
+									  opts.constructor === {}.constructor &&
+									  Object.keys(opts).map((K, index) => (
+											<MenuItem key={index} value={JSON.stringify(opts[K])}>
+												{K}
+											</MenuItem>
+									  ))}
 							</Field>
 							{prop.touched[item.id] && (
 								<FormHelperText error>

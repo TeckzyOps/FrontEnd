@@ -23,7 +23,6 @@ export const AuthProvider = ({ children }) => {
 	const [details, setDetails] = useState(null);
 	const [token, setToken] = useState(null);
 	useEffect(() => {
-		console.log(children);
 		const token = Cookies.get("token");
 		const loginDet = Cookies.getJSON("loginDetails");
 		if (token) {

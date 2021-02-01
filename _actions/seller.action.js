@@ -8,6 +8,7 @@ export const sellerActions = {
 	getMedia,
 	bookDate,
 	getbookDate,
+	search,
 };
 
 function createSeller(payload) {
@@ -42,5 +43,10 @@ function submitMedia(payload) {
 
 function getMedia(payload) {
 	let apiEndpoint = "getSellerFile";
+	return Service.get(apiEndpoint, payload);
+}
+
+function search(payload) {
+	let apiEndpoint = "sellerFilter";
 	return Service.get(apiEndpoint, payload);
 }
