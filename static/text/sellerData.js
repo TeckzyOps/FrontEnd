@@ -92,11 +92,11 @@ export const serviceArea = [
 	"Near Own State",
 	"All State",
 ];
-export const OffersCoupon = [
-	"Available",
-	"Unavailable",
-	"{ (Does Not Matter) Only in Filter option}",
-];
+export const OffersCoupon = ["Available", "Unavailable"];
+export const OffersCouponFilter = {
+	Available: "Available",
+	"Does Not Matter": "",
+};
 
 export const closeDay = [
 	"Monday",

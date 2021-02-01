@@ -1,5 +1,8 @@
 import * as Yup from "yup";
-import { serviceCategory, OffersCoupon } from "~static/text/sellerData.js";
+import {
+	serviceCategory,
+	OffersCouponFilter,
+} from "~static/text/sellerData.js";
 import { states } from "~static/text/state";
 import { cities } from "~static/text/city";
 export const sellerFilter = [
@@ -44,7 +47,7 @@ export const sellerFilter = [
 		label: "Offers Coupon",
 		placeholder: "",
 		type: "select",
-		options: { data: OffersCoupon },
+		options: { data: OffersCouponFilter },
 		validationType: "string",
 		value: "",
 		validations: [

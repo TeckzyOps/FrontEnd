@@ -141,10 +141,10 @@ export const sellerForm = [
 			label: "Business’s Product",
 			placeholder: "",
 
-			type: "select",
+			type: "text",
 			validationType: "string",
 			value: "",
-			options: { data: ["Demo Product"] },
+
 			validations: [
 				{
 					type: "required",
@@ -312,9 +312,7 @@ export const sellerForm = [
 			placeholder: "",
 			type: "select",
 			validationType: "string",
-			ElementParams: {
-				multiple: true,
-			},
+
 			options: { data: closeDay },
 			value: [],
 			validations: [
