@@ -278,7 +278,7 @@ const FormContainer = React.forwardRef((props, refs) => {
 									: opts &&
 									  opts.constructor === {}.constructor &&
 									  Object.keys(opts).map((K, index) => (
-											<MenuItem key={index} value={JSON.stringify(opts[K])}>
+											<MenuItem key={index} value={opts[K]}>
 												{K}
 											</MenuItem>
 									  ))}

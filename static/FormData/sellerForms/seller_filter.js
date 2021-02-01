@@ -50,12 +50,7 @@ export const sellerFilter = [
 		options: { data: OffersCouponFilter },
 		validationType: "string",
 		value: "",
-		validations: [
-			{
-				type: "required",
-				params: ["Field is required"],
-			},
-		],
+		validations: [],
 	},
 	[
 		{

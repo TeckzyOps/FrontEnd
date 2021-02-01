@@ -95,7 +95,7 @@ export const serviceArea = [
 export const OffersCoupon = ["Available", "Unavailable"];
 export const OffersCouponFilter = {
 	Available: "Available",
-	"Does Not Matter": "",
+	"Does Not Matter": "0",
 };
 
 export const closeDay = [
