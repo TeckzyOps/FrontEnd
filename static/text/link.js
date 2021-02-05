@@ -37,6 +37,7 @@ const link = {
 		worker: "/dashboard/worker/",
 		workernew: "/dashboard/worker/create",
 		workerDetails: "/dashboard/worker/details",
+		workerSearch: "/dashboard/worker/ListAds",
 		workerVids: "/dashboard/worker/upload_videos",
 		workerImg: "/dashboard/worker/upload_images",
 	},

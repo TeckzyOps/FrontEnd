@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import Router from "next/router";
+import { makeStyles } from "@material-ui/core/styles";
 import {
 	Grid,
 	TextField,
@@ -125,15 +125,16 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const workerImg = (props) => {
+const WorkerImg = (props) => {
 	const classes = useStyles();
 	const [img, setImg] = React.useState({});
 	const [remoteData, setRemoteData] = React.useState([]);
 	const [remoteError, setRemoteError] = React.useState("");
 	const [selectedImg, setSelectedImg] = React.useState("");
+	const [imgTitle, setImgTitle] = React.useState("");
 	const [open, setOpen] = React.useState(false);
 	const theme = useTheme();
-
+	let textInput = React.useRef(null);
 	React.useEffect(() => {
 		getAllImages();
 	}, []);
@@ -147,17 +148,20 @@ const workerImg = (props) => {
 		return "";
 	}
 	function getAllImages() {
+		textInput.current.value = null;
 		workerActions
 			.getMedia({ worker_id: props.router.query.id, file_type: 1 })
 			.then(function (response) {
 				console.log("ressss", response);
 				if (Array.isArray(response.data.data)) {
 					setRemoteData(response.data.data);
+					setSelectedImg(null);
+					setImg(null);
 				}
 			})
 			.catch(function (error) {
 				if (error.response && error.response.data.input_error.image_file) {
-					setRemoteError(error.response.data.input_error.image_file);
+					setRemoteError(JSON.stringify(error.response.data.input_error));
 				}
 				console.error("errrrr ", error);
 			});
@@ -167,12 +171,15 @@ const workerImg = (props) => {
 		let payload = new FormData();
 		payload.append("image_file", img.fileObj);
 		payload.append("worker_id", props.router.query.id);
+		payload.append("title", imgTitle);
 		if (payload) {
 			workerActions
 				.submitMedia(payload)
 				.then(function (response) {
 					console.log("ressss", response);
 					getAllImages();
+					setSelectedImg(null);
+					setImg(null);
 				})
 				.catch(function (error) {
 					if (error.response && error.response.data.input_error.image_file) {
@@ -209,7 +216,7 @@ const workerImg = (props) => {
 										<Link
 											style={{ textDecoration: "none" }}
 											href={
-												routerLink.starter.workerDetails +
+												routerLink.starter.workernew +
 												"?id=" +
 												props.router.query.id
 											}
@@ -235,7 +242,19 @@ const workerImg = (props) => {
 									)}
 								</Grid>
 								<Grid container spacing={2} justify="center">
-									<Grid item>
+									<Grid container justify="center" alignItems="center">
+										<Grid item>
+											<TextField
+												type="text"
+												onChange={(e) => setImgTitle(e.target.value)}
+												variant="outlined"
+												fullWidth
+												label="Title - Price"
+												inputRef={textInput}
+											/>
+										</Grid>
+									</Grid>
+									<Grid container justify="center" item xs={12}>
 										<input
 											accept="image/*"
 											className={classes.input}
@@ -274,10 +293,10 @@ const workerImg = (props) => {
 											</Button>
 										</label>
 									</Grid>
-									<Grid item>
+									<Grid container justify="center" item xs={12}>
 										<Button
 											onClick={submitImage}
-											disabled={img.src == null}
+											disabled={img == null || img.src == null}
 											variant="outlined"
 											color="primary"
 										>
@@ -285,31 +304,35 @@ const workerImg = (props) => {
 										</Button>
 									</Grid>
 									<Grid item xs={12}>
-										{img.src && (
-											<table
-												style={{
-													borderCollapse: "collapse",
-													borderSpacing: 0,
-													width: "100%",
-												}}
-											>
-												<thead>
-													<tr>
-														<th>File Name</th>
-														<th>File Type</th>
-														<th>File Size</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														<td>{img.name}</td>
-														<td>{img.type}</td>
-														<td>{img.size ? img.size + "MB" : ""}</td>
-													</tr>
-												</tbody>
-											</table>
+										{img != null && img.src && (
+											<div>
+												<table
+													style={{
+														borderCollapse: "collapse",
+														borderSpacing: 0,
+														width: "100%",
+													}}
+												>
+													<thead>
+														<tr>
+															<th>File Name</th>
+															<th>File Type</th>
+															<th>File Size</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td>{img.name}</td>
+															<td>{img.type}</td>
+															<td>{img.size ? img.size + "MB" : ""}</td>
+														</tr>
+													</tbody>
+												</table>
+												<p style={{ color: "red" }}>
+													Please do not use Contact No. / Address in any Photo
+												</p>
+											</div>
 										)}
-										<div></div>
 									</Grid>
 								</Grid>
 							</div>
@@ -352,6 +375,7 @@ const workerImg = (props) => {
 											</Typography>
 										</span>
 									</ButtonBase>
+									<Typography variant="h5">{card.title}</Typography>
 								</Grid>
 							))}
 						</Grid>
@@ -381,38 +405,4 @@ const workerImg = (props) => {
 	);
 };
 
-const redirectToLogin = (res) => {
-	if (res) {
-		res.writeHead(302, { Location: "/login" });
-		res.end();
-		res.finished = true;
-	} else {
-		Router.push("/login");
-	}
-};
-const getCookieFromReq = (req, cookieKey) => {
-	const cookie = req.headers.cookie
-		.split(";")
-		.find((c) => c.trim().startsWith(`${cookieKey}=`));
-
-	if (!cookie) return undefined;
-	return cookie.split("=")[1];
-};
-
-workerImg.getInitialProps = ({ req, res }) => {
-	const ISSERVER = typeof window === "undefined";
-	let token = null;
-
-	if (!ISSERVER) {
-		token = localStorage.getItem("token");
-	} else {
-		token = getCookieFromReq(req, "token");
-	}
-
-	if (token == null) {
-		console.log("GOING TO REDIRECT");
-		redirectToLogin(res);
-	}
-	return {};
-};
-export default withRouter(workerImg);
+export default withRouter(WorkerImg);

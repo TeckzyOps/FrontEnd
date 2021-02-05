@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Router from "next/router";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import {
 	Grid,
 	TextField,
@@ -121,7 +121,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const workerVid = (props) => {
+const WorkerVid = (props) => {
 	const classes = useStyles();
 	const [vid, setVid] = React.useState({});
 	const [remoteData, setRemoteData] = React.useState([]);
@@ -129,6 +129,7 @@ const workerVid = (props) => {
 	const [vidTitle, setVidTitle] = React.useState("");
 	const [selectedVideo, setSelectedVideo] = React.useState({});
 	const [open, setOpen] = React.useState(false);
+	let textInput = React.useRef(null);
 	const theme = useTheme();
 	const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 	React.useEffect(() => {
@@ -137,12 +138,15 @@ const workerVid = (props) => {
 	}, []);
 
 	function getAllVideos() {
+		textInput.current.value = null;
 		workerActions
 			.getMedia({ worker_id: props.router.query.id, file_type: 2 })
 			.then(function (response) {
 				console.log("ressss", response);
 				if (Array.isArray(response.data.data)) {
 					setRemoteData(response.data.data);
+					setSelectedVideo(null);
+					setVid(null);
 				}
 			})
 			.catch(function (error) {
@@ -174,6 +178,8 @@ const workerVid = (props) => {
 				.then(function (response) {
 					console.log("ressss", response);
 					getAllVideos();
+					setSelectedVideo(null);
+					setVid(null);
 				})
 				.catch(function (error) {
 					if (error.response && error.response.data.input_error.image_file) {
@@ -206,7 +212,7 @@ const workerVid = (props) => {
 										<Link
 											style={{ textDecoration: "none" }}
 											href={
-												routerLink.starter.workerDetails +
+												routerLink.starter.workernew +
 												"?id=" +
 												props.router.query.id
 											}
@@ -240,6 +246,7 @@ const workerVid = (props) => {
 												variant="outlined"
 												fullWidth
 												label="Video Title"
+												inputRef={textInput}
 											/>
 										</Grid>
 									</Grid>
@@ -286,7 +293,7 @@ const workerVid = (props) => {
 									<Grid item>
 										<Button
 											onClick={submitVieo}
-											disabled={vid.src == null}
+											disabled={vid == null || vid.src == null}
 											variant="outlined"
 											color="primary"
 										>
@@ -294,7 +301,7 @@ const workerVid = (props) => {
 										</Button>
 									</Grid>
 									<Grid item xs={12}>
-										{vid.src && (
+										{vid != null && vid.src && (
 											<table
 												style={{
 													borderCollapse: "collapse",
@@ -329,7 +336,7 @@ const workerVid = (props) => {
 						{/* End hero unit */}
 						<Grid container spacing={2}>
 							{remoteData.map((card, index) => (
-								<Grid key={index} item md={6} xs={12}>
+								<Grid key={index} item xs={12} sm={6} md={4}>
 									<ButtonBase
 										onClick={() => playselected(card.file_path, card.title)}
 										focusRipple
@@ -372,10 +379,15 @@ const workerVid = (props) => {
 					fullScreen={fullScreen}
 					open={open}
 					onClose={() => setOpen(false)}
-					aria-labelledby={selectedVideo.title}
+					aria-labelledby={selectedVideo && selectedVideo.title}
 				>
-					<DialogTitle id={selectedVideo.title} onClose={() => setOpen(false)}>
-						<Typography variant="h6">{selectedVideo.title}</Typography>
+					<DialogTitle
+						id={selectedVideo && selectedVideo.title}
+						onClose={() => setOpen(false)}
+					>
+						<Typography variant="h6">
+							{selectedVideo && selectedVideo.title}
+						</Typography>
 						<IconButton
 							aria-label="close"
 							className={classes.closeButton}
@@ -387,7 +399,7 @@ const workerVid = (props) => {
 					<DialogContent>
 						<video
 							width="100%"
-							src={selectedVideo.src}
+							src={selectedVideo && selectedVideo.src}
 							muted="muted"
 							loop="loop"
 							autoPlay={false}
@@ -400,38 +412,4 @@ const workerVid = (props) => {
 	);
 };
 
-const redirectToLogin = (res) => {
-	if (res) {
-		res.writeHead(302, { Location: "/login" });
-		res.end();
-		res.finished = true;
-	} else {
-		Router.push("/login");
-	}
-};
-const getCookieFromReq = (req, cookieKey) => {
-	const cookie = req.headers.cookie
-		.split(";")
-		.find((c) => c.trim().startsWith(`${cookieKey}=`));
-
-	if (!cookie) return undefined;
-	return cookie.split("=")[1];
-};
-
-workerVid.getInitialProps = ({ req, res }) => {
-	const ISSERVER = typeof window === "undefined";
-	let token = null;
-
-	if (!ISSERVER) {
-		token = localStorage.getItem("token");
-	} else {
-		token = getCookieFromReq(req, "token");
-	}
-
-	if (token == null) {
-		console.log("GOING TO REDIRECT");
-		redirectToLogin(res);
-	}
-	return {};
-};
-export default withRouter(workerVid);
+export default withRouter(WorkerVid);
