@@ -1,0 +1,106 @@
+export const serviceCategory = {
+	"Job Category": [
+		"Common Job",
+		"People Care Job",
+		"Driver Job",
+		"Entertainment",
+		"Event Job",
+		"Furnish Job",
+		"Helper Job",
+		"Tailor Job",
+	],
+	"Common Job": [
+		"Accountant",
+		"Computer Operator",
+		"Electrician",
+		"Maid Laundryman",
+		"Management",
+		"Receptionist",
+		"Sales worker",
+		"Security",
+		"Sweeper",
+	],
+	"Driver Job": ["Heavy Vehicle Driver", "Light Vehicle Driver"],
+	Entertainer: [
+		"Dancer",
+		"Musician",
+		"Magician",
+		"Singer",
+		"Performer",
+		"Poet",
+	],
+	"Event Job": [
+		"DJ Operator",
+		"LED Wall Operator",
+		"Sound Operator",
+		"Still Photo Operator",
+		"Video Operator",
+		"Electrician",
+	],
+	"Furnish Job": [
+		"Painter",
+		"Plumber",
+		"Carpenter",
+		"Raj Mistri",
+		"Tile Mistri",
+		"POP Mistri",
+	],
+	"Helper Job": [
+		"Cook Helper",
+		"Event Helper",
+		"Factory Helper",
+		"Furnish Helper",
+		"Store Helper",
+		"House Helper",
+		"Travel Helper",
+	],
+	"Tailor Job": ["Gent Tailor", "Ladies Tailor"],
+};
+
+export const serviceArea = [
+	"Own Place",
+	"Own Town/City",
+	"Own District",
+	"Own State",
+	"Near Own state",
+	"All State",
+];
+
+export const closeDay = [
+	"Monday",
+	"Tuesday",
+	"Wednesday",
+	"Thursday",
+	"Friday",
+	"Saturday",
+	"Sunday",
+	"None",
+	"Saturday & Sunday",
+];
+
+export const workTime = [
+	"6:00 AM",
+	"7:00 AM",
+	"8:00 AM",
+	"9:00 AM",
+	"10:00 AM",
+	"11:00 AM",
+	"12:00 AM",
+	"1:00 PM",
+	"2:00 PM",
+	"3:00 PM",
+	"4:00 PM",
+	"5:00 PM",
+	"6:00 PM",
+	"7:00 PM",
+	"8:00 PM",
+	"9:00 PM",
+	"10:00 PM",
+	"11:00 PM",
+	"12:00 PM",
+];
+
+export const commissionRange = [
+	"Min 50 Points-500 Points",
+	"Min 100 Points-1000 Points",
+];

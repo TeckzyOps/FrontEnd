@@ -1,19 +1,31 @@
 import React, { useState } from "react";
 import clsx from "clsx";
 import PropTypes from "prop-types";
-import { lighten, makeStyles } from "@material-ui/core/styles";
+import {
+	lighten,
+	makeStyles,
+	createMuiTheme,
+	responsiveFontSizes,
+	MuiThemeProvider,
+} from "@material-ui/core/styles";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import AccordionActions from "@material-ui/core/AccordionActions";
 import ListItemText from "@material-ui/core/ListItemText";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Avatar from "@material-ui/core/Avatar";
 import { withTranslation } from "~/i18n";
 import { withRouter } from "react-router";
 import { useRouter } from "next/router";
 import Alert from "./../../components/alert/alert";
+import BookingModule from "./../../components/GenericPopup/BookingModule";
+import FormContainer from "./../../components/Forms/FormContainer";
 import routerLink from "~/static/text/link";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import MuiTextField from "@material-ui/core/TextField";
@@ -52,29 +64,41 @@ import {
 	Switch,
 } from "formik-material-ui";
 import FolderIcon from "@material-ui/icons/Folder";
+import { workerForm } from "~static/FormData/workerForms/";
+import { Properietor } from "~static/FormData/properietor.js";
 import * as Yup from "yup";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import {
-	Card,
-	CardHeader,
-	CardContent,
-	CardActions,
+	FormHelperText,
 	Divider,
 	Box,
 	Grid,
 	Link,
 	MenuItem,
 	Typography,
+	Accordion,
+	Container,
 	Chip,
+	useMediaQuery,
 	Paper,
 	Button,
 	InputAdornment,
 	IconButton,
 } from "@material-ui/core";
 import { workerActions } from "../../_actions/worker.action";
+import LocalStorageService from "../../_services/LocalStorageService";
+const localStorageService = LocalStorageService.getService();
+let theme = createMuiTheme();
+theme = responsiveFontSizes(theme);
 const useStyles = makeStyles((theme) => ({
 	root: {
 		flexGrow: 1,
-		margin: 0,
+		padding: theme.spacing(1),
 	},
 	demo: {
 		backgroundColor: theme.palette.background.paper,
@@ -82,47 +106,117 @@ const useStyles = makeStyles((theme) => ({
 	title: {
 		margin: theme.spacing(4, 0, 2),
 	},
+	headerBadge: {
+		width: 30,
+		height: 30,
+		marginRight: 10,
+		backgroundColor: theme.palette.primary.light,
+	},
+	labelRoot: {
+		fontSize: 18,
+		fontWeight: "bold",
+	},
 }));
 const workerform = (props) => {
 	const { className, ...rest } = props;
 	const classes = useStyles();
 
 	const { t } = props;
-
+	const [bookingPopup, setBookingPopup] = React.useState(false);
+	const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 	const [docData, setDocData] = useState([]);
+	const [details, setDetails] = React.useState({});
+	const [properietor_details, setProperietorDetails] = React.useState({});
 	const router = useRouter();
-	const [docSelected, setDocSelected] = useState(0);
+	const [kycData, setKycData] = useState({
+		id_proof_path: null,
+		id_proof_type: "",
+		id_proof_number: "",
+		fill_id_number: "",
+		kyc_otp: "",
+	});
 	const [workerData, setWorkerData] = useState({
-		license_file_path: null,
-		service_category: "",
-		sub_service: "",
-		alternate_number: "",
-		total_experience: "",
-		bussineess_description: "",
-		working_address: "",
-		present_working: "",
-		city: "",
-		state: "",
-		district: "",
-		service_area: "",
-		salary_per_day: "",
-		salary_per_month: "",
-		google_location: "",
-		work_prefer: "",
-		noc_file_path: "",
+		service_category: null,
+		sub_service: [],
+		service_area: null,
+		min_service_price: null,
+		max_service_price: null,
+		job_monthly_basis: [],
+		address: null,
+		state: null,
+		district: null,
+		city: null,
+		area: null,
+		experience: null,
+		work_start_time: null,
+		work_end_time: null,
+		close_day: [],
+		office_email: null,
+		office_number: null,
+
+		commission_range: [],
+		paid_leads: [],
 	});
 
-	const [profileUpdateSuccess, setProfileUpdateSuccess] = useState(false);
-	const id = props.router.query.id;
+	const [catalogFile, setCatalogFile] = useState({
+		visbility: null,
+		catalog_path: null,
+	});
+	const [showCatalogForm, setshowCatalogForm] = useState(false);
+	const [profileUpdateSuccess, setProfileUpdateSuccess] = useState({
+		open: false,
+		title: "",
+		text: "",
+		submitText: "",
+		submitURL: null,
+	});
+	const [id, setId] = useState(props.router.query.id);
+
 	React.useEffect(() => {
-		if (props.router.query.id) {
+		setDetails(localStorageService.getUserDetails("Details"));
+		let name = props.getNested(
+			localStorageService.getUserDetails("Details"),
+			"login",
+			"name"
+		);
+		let email = props.getNested(
+			localStorageService.getUserDetails("Details"),
+			"login",
+			"email"
+		);
+		let mobile = props.getNested(
+			localStorageService.getUserDetails("Details"),
+			"login",
+			"mobile"
+		);
+		let religion = props.getNested(
+			localStorageService.getUserDetails("Details"),
+			"profile",
+			"data",
+			"religion"
+		);
+		let gender = props.getNested(
+			localStorageService.getUserDetails("Details"),
+			"profile",
+			"data",
+			"gender"
+		);
+		setProperietorDetails({
+			name: name,
+			email: email,
+			mobile: mobile,
+			religion: religion,
+			gender: gender,
+		});
+		if (id) {
 			workerActions
-				.getWorker({ worker_id: props.router.query.id })
+				.getWorker({ worker_id: id })
 				.then(function (response) {
 					console.log("ressss", response);
 
 					if (response.data.data.id) {
 						setWorkerData(response.data.data);
+						setCatalogFile(response.data.data.catalog_pdf_path);
 					}
 				})
 				.catch(function (error) {
@@ -130,129 +224,129 @@ const workerform = (props) => {
 				});
 		}
 	}, []);
-	const fileDropdown = {
-		"NOC Document": "noc_file_path",
-		"License Document": "license_file_path",
-	};
-	function CustomTextField(props) {
-		const {
-			form: { setFieldValue },
-			field: { name },
-		} = props;
-		const onChange = React.useCallback(
-			(event) => {
-				const { value } = event.target;
-				setFieldValue(name, value ? value : "");
-				handleChange(event);
-			},
-			[setFieldValue, name]
-		);
-		return <MuiTextField {...fieldToTextField(props)} onChange={onChange} />;
-	}
 
-	const handleChange = (e) => {
-		switch (e.target.name) {
-			case "state":
-				setDistrict(state[e.target.value]);
-				break;
-			case "district":
-				profileActions;
-				setCity(cities[e.target.value]);
-				break;
-			// case "city":
-			// 	text = "How you like them apples?";
-			// 	break;
-		}
-	};
-	function deleteFile(doc, props) {
-		const docs = docData.filter((obj) => obj.document !== doc);
-		setDocData(docs);
-	}
-	const _handleSubmit = ({ vals, setSubmitting, resetForm, setFieldError }) => {
+	const _handleSubmit = ({
+		values,
+		setSubmitting,
+		resetForm,
+		setFieldError,
+	}) => {
 		let payload = new FormData();
 
-		for (var i in vals) {
-			if (Array.isArray(vals[i])) {
-				if (vals[i].length > 0) {
-					payload.append(i, JSON.stringify(vals[i]));
+		let proceed = false;
+		if (values.catalog_pdf_path) {
+			payload.append("catalog_pdf_path", values.catalog_pdf_path);
+			proceed = true;
+		} else {
+			delete values["catalog_pdf_path"];
+			let valKeyArr = Object.keys(values);
+			for (var i = 0; i < valKeyArr.length; i++) {
+				if (workerData[valKeyArr[i]] != values[valKeyArr[i]]) {
+					proceed = true;
+					break;
 				}
-			} else {
-				if (vals[i]) {
-					payload.append(i, vals[i]);
+			}
+			if (proceed) {
+				for (var i in values) {
+					if (i != "agreement") {
+						if (Array.isArray(values[i])) {
+							if (values[i].length > 0) {
+								payload.append(i, JSON.stringify(values[i]));
+							}
+						} else {
+							payload.append(i, values[i] + "");
+						}
+					}
 				}
 			}
 		}
-		// Object.keys(fileDropdown).forEach((dropdown) => {
-		// 	payload.append(dropdown, workerData[fileDropdown[dropdown]]);
-		// 	if (
-		// 		dropdown == "Advertisement" &&
-		// 		workerData[fileDropdown[dropdown]] != null
-		// 	) {
-		// 		want_advertisement = 1;
-		// 	}
-		// 	if (
-		// 		dropdown == "Shaadiwala Offer" &&
-		// 		workerData[fileDropdown[dropdown]] != null
-		// 	) {
-		// 		except_shaadiwala_offer = 1;
-		// 	}
-		// });
-
-		docData.forEach((data) => {
-			payload.set(fileDropdown[data.document], data.fileObject);
-			if (data.document == "Advertisement") {
-				want_advertisement = 1;
-			}
-			if (data.document == "Shaadiwala Offer") {
-				except_shaadiwala_offer = 1;
-			}
-		});
-
-		payload.append("want_advertisement", want_advertisement);
-		payload.append("except_shaadiwala_offer", except_shaadiwala_offer);
-		payload.delete("doc_type");
 		if (id) {
-			payload.append("freelancer_id", id);
+			payload.append("worker_id", id);
 		}
-		if (payload) {
-			workerActions
-				.createWorker(payload)
-				.then(function (response) {
-					setSubmitting(false);
-					console.log("ressss", response);
-					if (response.data.data.id) {
-						setProfileUpdateSuccess(() => true);
-						resetForm();
-					}
-				})
-				.catch(function (error) {
-					setSubmitting(false);
-					if (error.response && error.response.data.input_error) {
-						Object.keys(error.response.data.input_error).forEach((k) => {
-							setFieldError(k, error.response.data.input_error[k][0]);
-						});
-					}
-					console.error("errrrr ", error);
-				});
+		if (proceed) {
+			if (payload) {
+				workerActions
+					.createWorker(payload, id)
+					.then(function (response) {
+						setSubmitting(false);
+						console.log("ressss", response);
+						if (response.data.data.id) {
+							setId(id);
+							setProfileUpdateSuccess({
+								open: true,
+								title: "Operation Status",
+								text: "Operation Completed Successfully",
+								submitText: "Done",
+								submitURL:
+									routerLink.starter.workernew + "?id=" + response.data.data.id,
+							});
+							setCatalogFile(response.data.data.catalog_pdf_path);
+							resetForm();
+							// window.location.href = window.location.pathname+"?id=" + response.data.data.id
+						}
+					})
+					.catch(function (error) {
+						setSubmitting(false);
+						if (error.response && error.response.data.input_error) {
+							Object.keys(error.response.data.input_error).forEach((k) => {
+								setFieldError(k, error.response.data.input_error[k][0]);
+							});
+						}
+						console.error("errrrr ", error);
+					});
+			}
+		} else {
+			setProfileUpdateSuccess({
+				open: true,
+				title: "Operation Status",
+				text: "No Need to submit unchanged form",
+				submitText: "Ok",
+				submitURL: null,
+			});
+			setSubmitting(false);
 		}
 	};
+
+	const convertto24 = (time) => {
+		var hours = Number(time.match(/^(\d+)/)[1]);
+		var minutes = Number(time.match(/:(\d+)/)[1]);
+		var AMPM = time.match(/\s(.*)$/)[1];
+		if (AMPM == "PM" && hours < 12) hours = hours + 12;
+		if (AMPM == "AM" && hours == 12) hours = hours - 12;
+		var sHours = hours.toString();
+		var sMinutes = minutes.toString();
+		if (hours < 10) sHours = "0" + sHours;
+		if (minutes < 10) sMinutes = "0" + sMinutes;
+		return sHours + ":" + sMinutes;
+	};
+
+	function isLater(time1, time2) {
+		return convertto24(time1) > convertto24(time2);
+	}
 	const _renderModal = () => {
 		const onClick = () => {
 			setProfileUpdateSuccess(() => false);
-			router.push(routerLink.starter.workerVids + "?id=" + id);
+			if (profileUpdateSuccess.submitURL != null) {
+				// router.push(profileUpdateSuccess.submitURL);
+				window.location.href = profileUpdateSuccess.submitURL;
+				//
+			}
 		};
 
 		return (
 			<Alert
-				isOpen={profileUpdateSuccess}
+				isOpen={profileUpdateSuccess.open}
 				handleSubmit={onClick}
-				title="Process Status"
-				text="Operation Completed successfully"
-				submitButtonText="Done"
+				title={profileUpdateSuccess.title}
+				text={profileUpdateSuccess.text}
+				submitButtonText={profileUpdateSuccess.submitText}
 			/>
 		);
 	};
 	function validURL(str) {
+		if (!str) {
+			return false;
+		}
 		var pattern = new RegExp(
 			"^(https?:\\/\\/)?" + // protocol
 				"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
@@ -264,69 +358,15 @@ const workerform = (props) => {
 		); // fragment locator
 		return !!pattern.test(str);
 	}
-	const profileSchema = Yup.object().shape({
-		service_category: Yup.string().required("Required"),
-		sub_service: Yup.string().required("Required"),
-		alternate_number: "",
-		total_experience: "",
-		bussineess_description: "",
-		working_address: Yup.string().required("Required"),
-		present_working: Yup.string().required("Required"),
-		city: Yup.string().required("Required"),
-		state: Yup.string().required("Required"),
-		district: Yup.string().required("Required"),
-		service_area: Yup.string().required("Required"),
-		salary_per_day: Yup.string().required("Required"),
-		salary_per_month: Yup.string().required("Required"),
-		google_location: Yup.string(),
-		work_prefer: Yup.string().required("Required"),
-		noc_file_path: Yup.mixed()
-			.test("filevalid", "Remote File Error", (value) => {
-				if (null != value && !validURL(value)) {
-					return false;
-				}
-				return true;
-			})
-			.test("fileSize", "File Size is too large", (value) => {
-				if (null != value && value.size) {
-					return value.size <= 2000000;
-				}
-				return true;
-			})
-			.test(
-				"fileType",
-				"Unsupported File Format, Upload a PDF file",
-				(value) => {
-					if (null != value && value.type) {
-						return ["application/pdf"].includes(value.type);
-					}
-					return true;
-				}
-			),
-		license_file_path: Yup.mixed()
-			.test("filevalid", "Remote File Error", (value) => {
-				if (null != value && !validURL(value)) {
-					return false;
-				}
-				return true;
-			})
-			.test("fileSize", "File Size is too large", (value) => {
-				if (null != value && value.size) {
-					return value.size <= 2000000;
-				}
-				return true;
-			})
-			.test(
-				"fileType",
-				"Unsupported File Format, Upload a PDF file",
-				(value) => {
-					if (null != value && value.type) {
-						return ["application/pdf"].includes(value.type);
-					}
-					return true;
-				}
-			),
-	});
+	function GetFilename(url) {
+		if (url) {
+			var m = url.toString().match(/.*\/(.+?)\./);
+			if (m && m.length > 1) {
+				return m[1];
+			}
+		}
+		return "";
+	}
 
 	function getFileLink(fileObject) {
 		let reader = new FileReader();
@@ -375,94 +415,411 @@ const workerform = (props) => {
 			);
 		}
 	};
+
+	const helperElement = (prop) => {
+		let show = id;
+		return (
+			<Grid item xs={12}>
+				<Box margin={1}>
+					<Field
+						required
+						type={show ? "hidden" : "checkbox"}
+						component={show ? null : CheckboxWithLabel}
+						disabled={show}
+						name={"agreement"}
+						indeterminate={false}
+						Label={{
+							label: (
+								<span>
+									I Accept Terms of use, privacy policy and send KYC request to
+									Indianwala
+								</span>
+							),
+						}}
+						onChange={prop.handleChange}
+					/>
+
+					<FormHelperText error>
+						{prop.errors &&
+							prop.errors.hasOwnProperty("accept") &&
+							prop.errors["accept"]}
+					</FormHelperText>
+				</Box>
+			</Grid>
+		);
+	};
 	return (
-		<Card {...rest} className={clsx(classes.root, className)}>
-			<Grid container spacing={4}>
-				<Grid item lg={4} md={4} xl={4} xs={12}>
-					<Grid container spacing={2}>
-						<Grid item xs={12}>
-							<Link href={routerLink.starter.workerVids}>
-								<Button variant="contained" color="primary">
-									Upload Videos
-								</Button>
-							</Link>
-						</Grid>
+		<div {...rest} className={clsx(classes.root, className)}>
+			<Grid container spacing={1}>
+				<Grid item xs={12}>
+					<Accordion disabled={details == null}>
+						<AccordionSummary
+							expandIcon={<ExpandMoreIcon />}
+							aria-controls="panel1c-content"
+							id="panel1c-header"
+						>
+							<Avatar className={classes.headerBadge}>1</Avatar>
 
-						<Grid item xs={12}>
-							<Link href={routerLink.starter.workerImg}>
-								<Button variant="contained" color="primary">
-									Upload Images
-								</Button>
-							</Link>
-						</Grid>
-					</Grid>
-
-					<Grid item xs={12} md={6}>
-						<Typography variant="h6" className={classes.title}>
-							Uploaded Documents
-						</Typography>
-						<div className={classes.demo}>
-							<List dense={true}>
-								{Object.keys(fileDropdown).map((title, index) => {
-									if (workerData[fileDropdown[title]] != null) {
-										return (
-											<ListItem>
-												<ListItemAvatar>
-													<Avatar>
-														<FolderIcon />
-													</Avatar>
-												</ListItemAvatar>
-												<div
-													key={index}
-													target="_blank"
-													href={workerData[fileDropdown[title]]}
-												>
-													<ListItemText primary={title} />
-												</div>
-												<ListItemSecondaryAction>
-													<IconButton
-														edge="end"
-														aria-label="comments"
-														onClick={() =>
-															setWorkerData({
-																...workerData,
-																[fileDropdown[title]]: null,
-															})
-														}
-													>
-														<DeleteIcon />
-													</IconButton>
-												</ListItemSecondaryAction>
-											</ListItem>
-										);
-									}
-									return null;
-								})}
-							</List>
-						</div>
-					</Grid>
+							<Typography>Auto Fill Details of Skilled Work</Typography>
+						</AccordionSummary>
+						<FormContainer
+							elements={Properietor}
+							defaultvals={properietor_details}
+						/>
+					</Accordion>
 				</Grid>
-				{/* <AccountProfile
-							logindata={props.logindata}
-							userdata={props.userdata}
-						/> */}
+				<Grid item xs={12}>
+					<Accordion>
+						<AccordionSummary
+							expandIcon={<ExpandMoreIcon />}
+							aria-controls="panel1c-content"
+							id="panel1c-header"
+						>
+							<Avatar className={classes.headerBadge}>2</Avatar>
 
-				<Grid item lg={8} md={8} xl={8} xs={12}>
-					<div>
+							<Typography gutterBottom>
+								Tell Us About Your Skill Work
+							</Typography>
+						</AccordionSummary>
+						<FormContainer
+							btn={{ label: "Submit" }}
+							onSubmit={_handleSubmit}
+							elements={workerForm}
+							defaultvals={workerData}
+							helperEle={helperElement}
+						/>
+					</Accordion>
+				</Grid>
+				<Grid item xs={12}>
+					<Accordion disabled={props.router.query.id == null}>
+						<AccordionSummary
+							expandIcon={<ArrowForwardIcon />}
+							aria-controls="panel1c-content"
+							id="panel1c-header"
+						>
+							<Avatar className={classes.headerBadge}>3</Avatar>
+
+							<Typography>Update Portfolio Format</Typography>
+						</AccordionSummary>
+
 						<Formik
 							enableReinitialize
-							initialValues={workerData}
-							validationSchema={profileSchema}
-							onSubmit={(vals, { setSubmitting, resetForm, setFieldError }) =>
+							initialValues={{
+								catalog_pdf_path: null,
+							}}
+							validationSchema={Yup.object().shape({
+								catalog_pdf_path: Yup.mixed()
+									.test("fileSize", "File Size is too large", (value) => {
+										if (null != value && value.size) {
+											return value.size <= 2000000;
+										}
+										return true;
+									})
+									.test(
+										"fileType",
+										"Unsupported File Format, Upload a JPEG,JPG,PNG or PDF file",
+										(value) => {
+											if (null != value && value.type) {
+												return [
+													"image/png",
+													"image/jpg",
+													"image/jpeg",
+													"application/pdf",
+												].includes(value.type);
+											}
+											return true;
+										}
+									),
+							})}
+							onSubmit={(values, { setSubmitting, resetForm, setFieldError }) =>
 								_handleSubmit({
-									vals,
+									values,
 									setSubmitting,
 									resetForm,
 									setFieldError,
 								})
 							}
 						>
-							{(props) => {
+							{(formprops) => {
+								const {
+									values,
+									touched,
+									errors,
+									setFieldValue,
+									handleChange,
+									isSubmitting,
+									resetForm,
+								} = formprops;
+								console.log("ERROR", formprops);
+								// setshowCatalogForm(catalogFile.catalog_path == null);
+								return (
+									<Form>
+										<Grid container justify="center" alignItems="center">
+											<Grid
+												container
+												justify="center"
+												alignItems="center"
+												item
+												xs={12}
+											>
+												<Divider variant="middle" flexItem />
+												<Typography variant="h5">Catalog File :</Typography>
+
+												{null != catalogFile &&
+													null != catalogFile.catalog_path && (
+														<Link
+															href={catalogFile.catalog_path}
+															target="_blank"
+															rel="noreferrer"
+															variant="body2"
+														>
+															{catalogFile.catalog_path.split("/").pop()}
+														</Link>
+													)}
+											</Grid>
+
+											<Grid
+												container
+												justify="center"
+												alignItems="center"
+												item
+												xs={12}
+											>
+												<Box margin={1}>
+													<Field
+														name="catalog_pdf_path"
+														margin="normal"
+														label="Upload Catalog"
+														className={
+															"form-check-input " +
+															(errors["document"] && touched["document"]
+																? " is-invalid"
+																: "")
+														}
+													>
+														{({ field, form, meta }) => (
+															<div>
+																<input
+																	id={field.name}
+																	onClick="this.value = null"
+																	style={{ display: "none" }}
+																	name={field.name}
+																	type="file"
+																	onChange={(event) => {
+																		setFieldValue(
+																			field.name,
+																			event.currentTarget.files[0]
+																		);
+																	}}
+																/>
+																<label htmlFor={field.name}>
+																	<Button
+																		variant="contained"
+																		color="primary"
+																		component="span"
+																	>
+																		Choose Catalog File
+																	</Button>
+																</label>
+															</div>
+														)}
+													</Field>
+
+													{errors.hasOwnProperty("catalog_pdf_path") && (
+														<div style={{ color: "red" }} component="div">
+															{errors["catalog_pdf_path"]}
+														</div>
+													)}
+												</Box>
+											</Grid>
+
+											<Grid
+												container
+												justify="center"
+												alignItems="center"
+												item
+												xs={12}
+											>
+												{values.catalog_pdf_path && (
+													<Box margin={1}>
+														<table
+															style={{
+																borderCollapse: "collapse",
+																borderSpacing: 0,
+																width: "100%",
+																border: "1px solid #ddd",
+															}}
+														>
+															<thead>
+																<tr>
+																	<th>File Name</th>
+																	<th>File Type</th>
+																	<th>File Size</th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr>
+																	<td>
+																		{props.getNested(
+																			formprops,
+																			"values",
+																			"catalog_pdf_path"
+																		) && values.catalog_pdf_path.name}
+																	</td>
+																	<td>
+																		{props.getNested(
+																			formprops,
+																			"values",
+																			"catalog_pdf_path"
+																		) && values.catalog_pdf_path.type}
+																	</td>
+																	<td>
+																		{props.getNested(
+																			formprops,
+																			"values",
+																			"catalog_pdf_path"
+																		) && values.catalog_pdf_path.size + "MB"}
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+														<p style={{ color: "red" }}>
+															All the documents uploaded will go under a review
+															process which takes maximum 72 hours.{" "}
+														</p>
+													</Box>
+												)}
+											</Grid>
+
+											<Divider />
+
+											<Grid container justify="flex-end">
+												{!isSubmitting ? (
+													<Button onClick={resetForm} size="small">
+														Reset To Default
+													</Button>
+												) : (
+													t("common:cant_revert")
+												)}
+												<Button
+													disable={isSubmitting}
+													type="submit"
+													color="primary"
+													variant="outlined"
+												>
+													Save details
+												</Button>
+											</Grid>
+										</Grid>
+									</Form>
+								);
+							}}
+						</Formik>
+					</Accordion>
+				</Grid>
+
+				<Grid item xs={12}>
+					<Link
+						style={{ textDecoration: "none", color: "black" }}
+						href={routerLink.starter.workerImg + "?id=" + id}
+					>
+						<Accordion
+							expanded={false}
+							disabled={props.router.query.id == null}
+						>
+							<AccordionSummary
+								expandIcon={<ArrowForwardIcon />}
+								aria-controls="panel1c-content"
+								id="panel1c-header"
+							>
+								<Avatar className={classes.headerBadge}>4</Avatar>
+
+								<Typography>Update Photo Gallery</Typography>
+							</AccordionSummary>
+						</Accordion>
+					</Link>
+				</Grid>
+				<Grid item xs={12}>
+					<Link
+						style={{ textDecoration: "none", color: "black" }}
+						href={routerLink.starter.workerVids + "?id=" + id}
+					>
+						<Accordion
+							expanded={false}
+							disabled={props.router.query.id == null}
+						>
+							<AccordionSummary
+								expandIcon={<ArrowForwardIcon />}
+								aria-controls="panel1c-content"
+								id="panel1c-header"
+							>
+								<Avatar className={classes.headerBadge}>5</Avatar>
+
+								<Typography>Update Video Gallery</Typography>
+							</AccordionSummary>
+						</Accordion>
+					</Link>
+				</Grid>
+				<Grid item xs={12}>
+					<Accordion
+						onClick={() => setBookingPopup(true)}
+						expanded={false}
+						disabled={props.router.query.id == null}
+					>
+						<AccordionSummary
+							expandIcon={<ArrowForwardIcon />}
+							aria-controls="panel1c-content"
+							id="panel1c-header"
+						>
+							<Avatar className={classes.headerBadge}>6</Avatar>
+							<Typography>Booking Calendar</Typography>
+						</AccordionSummary>
+					</Accordion>
+				</Grid>
+				<Grid item xs={12}>
+					<Accordion expanded={false} disabled={true}>
+						<AccordionSummary
+							expandIcon={<ArrowForwardIcon />}
+							aria-controls="panel1c-content"
+							id="panel1c-header"
+						>
+							<Avatar className={classes.headerBadge}>7</Avatar>
+
+							<Typography>Update Advertise Status</Typography>
+						</AccordionSummary>
+					</Accordion>
+				</Grid>
+				<Grid item xs={12}>
+					<Accordion disabled={props.router.query.id == null}>
+						<AccordionSummary
+							expandIcon={<ExpandMoreIcon />}
+							aria-controls="panel1c-content"
+							id="panel1c-header"
+						>
+							<Avatar className={classes.headerBadge}>8</Avatar>
+
+							<Typography>Only Use in Profession KYC</Typography>
+						</AccordionSummary>
+
+						<Formik
+							enableReinitialize
+							initialValues={kycData}
+							validationSchema={Yup.object().shape({
+								id_proof_type: Yup.string().required("Required"),
+								id_proof_number: Yup.string().required("Required"),
+								fill_id_number: Yup.string().required("Required"),
+								kyc_otp: Yup.string().required("Required"),
+							})}
+							// onSubmit={(vals, { setSubmitting, resetForm, setFieldError }) =>
+							// 	_handleSubmit({
+							// 		vals,
+							// 		setSubmitting,
+							// 		resetForm,
+							// 		setFieldError,
+							// 	})
+							// }
+						>
+							{(formprops) => {
 								const {
 									values,
 									touched,
@@ -472,603 +829,264 @@ const workerform = (props) => {
 									handleChange,
 									isValid,
 									isSubmitting,
-								} = props;
+								} = formprops;
 
 								return (
 									<div>
-										<Grid container spacing={3}>
-											<Grid item xs={12}>
-												<Typography
-													color="primary"
-													variant="h3"
-													align="center"
-													gutterBottom
-												>
-													Worker Application Form
-												</Typography>
-											</Grid>
-										</Grid>
-
-										<Divider />
-
 										<Form autocomplete="off">
-											<br></br>
 											<Grid container spacing={3}>
-												<Grid item xs={12}>
-													<Typography align="center" variant="h6" gutterBottom>
-														Tell us about the service you provide!
+												<Grid container justify="center" xs={12}>
+													<Typography variant="h5" component="h5">
+														KYC Document of Member
 													</Typography>
 												</Grid>
-
-												<Grid item md={4} xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															component={TextField}
-															type="number"
-															name="alternate_number"
-															label="Alternate Contact No."
-															variant="standard"
-															helperText={
-																props.errors.hasOwnProperty("offer_tagline") &&
-																props.errors["offer_tagline"]
-															}
-															margin="dense"
-														/>
-													</Box>
-												</Grid>
-
-												<Grid item md={4} xs={12}>
+												<Grid item md={6} xs={12}>
 													<Box margin={1}>
 														<Field
 															fullWidth
 															type="text"
 															component={TextField}
-															name="total_experience"
-															label="Total Experince"
-															onChange={handleChange}
-															variant="standard"
-															helperText={
-																props.errors.hasOwnProperty("offer_tagline") &&
-																props.errors["offer_tagline"]
-															}
-															margin="dense"
-														/>
-													</Box>
-												</Grid>
-												<Grid item md={4} xs={12}>
-													<Box margin={1}>
-														<Field
-															required
-															onChange={handleChange}
-															fullWidth
-															component={TextField}
-															type="text"
-															name="present_working"
-															label="Are You Working Presently?"
+															name="id_proof_type"
+															label="Select Document"
 															select
-															variant="standard"
-															helperText={
-																props.errors.hasOwnProperty(
-																	"service_category"
-																) && props.errors["service_category"]
-															}
-															margin="normal"
-															InputLabelProps={{
-																shrink: true,
-															}}
-														>
-															{["No", "Yes"].map((option, index) => (
-																<MenuItem key={index} value={index}>
-																	{option}
-																</MenuItem>
-															))}
-														</Field>
-													</Box>
-												</Grid>
-												<Grid item xs={12}>
-													<Typography align="center" variant="h6" gutterBottom>
-														Tell us about your bussiness!
-													</Typography>
-												</Grid>
-												<Grid item md={4} xs={12}>
-													<Box margin={1}>
-														<Field
-															required
-															onChange={handleChange}
-															fullWidth
-															component={TextField}
-															type="text"
-															name="service_category"
-															label="Service Category"
-															select
-															variant="standard"
-															helperText={
-																props.errors.hasOwnProperty(
-																	"service_category"
-																) && props.errors["service_category"]
-															}
-															margin="normal"
-															InputLabelProps={{
-																shrink: true,
-															}}
-														>
-															{gender.map((option, index) => (
-																<MenuItem key={index} value={index + 1}>
-																	{option}
-																</MenuItem>
-															))}
-														</Field>
-													</Box>
-												</Grid>
-												<Grid item md={4} xs={12}>
-													<Box margin={1}>
-														<Field
-															required
-															onChange={handleChange}
-															fullWidth
-															component={TextField}
-															type="text"
-															name="sub_service"
-															label="Sub Service"
-															select
-															variant="standard"
-															helperText={
-																props.errors.hasOwnProperty("sub_service") &&
-																props.errors["sub_service"]
-															}
-															margin="normal"
-															InputLabelProps={{
-																shrink: true,
-															}}
-														>
-															{gender.map((option, index) => (
-																<MenuItem key={index} value={index + 1}>
-																	{option}
-																</MenuItem>
-															))}
-														</Field>
-													</Box>
-												</Grid>
-
-												<Grid item md={4} xs={12}>
-													<Box margin={1}>
-														<Field
-															required
-															onChange={handleChange}
-															fullWidth
-															component={TextField}
-															type="text"
-															name="service_area"
-															label="Service Area"
-															select
-															variant="standard"
-															helperText={
-																props.errors.hasOwnProperty("service_area") &&
-																props.errors["service_area"]
-															}
-															margin="normal"
-															InputLabelProps={{
-																shrink: true,
-															}}
-														>
-															{gender.map((option, index) => (
-																<MenuItem key={index} value={index + 1}>
-																	{option}
-																</MenuItem>
-															))}
-														</Field>
-													</Box>
-												</Grid>
-
-												<Grid item md={12} xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															multiline={true}
-															type="text"
-															component={TextField}
-															multiline
-															rows={4}
-															name="bussineess_description"
-															label="Business Description"
 															onChange={handleChange}
 															variant="outlined"
-															helperText={
-																props.errors.hasOwnProperty(
-																	"bussineess_description"
-																) && props.errors["bussineess_description"]
-															}
-															margin="dense"
-															inputprops={{
-																inputComponent: TextareaAutosize,
-																rows: 3,
-															}}
-														/>
-													</Box>
-												</Grid>
-
-												<Grid item md={12} xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															multiline={true}
-															type="text"
-															component={TextField}
-															name="work_address"
-															label="Work Address"
-															multiline
-															rows={4}
-															onChange={handleChange}
-															variant="standard"
-															helperText={
-																props.errors.hasOwnProperty("address") &&
-																props.errors["address"]
-															}
-															margin="dense"
-															inputprops={{
-																inputComponent: TextareaAutosize,
-																rows: 3,
-															}}
-														/>
-													</Box>
-												</Grid>
-
-												<Grid item md={6} xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															type="text"
-															component={TextField}
-															name="google_location"
-															label="Map Link"
-															onChange={handleChange}
-															variant="standard"
-															margin="normal"
-														/>
-													</Box>
-												</Grid>
-
-												<Grid item md={6} xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															type="number"
-															component={TextField}
-															name="salary_per_month"
-															label="Salary (Monthly)"
-															onChange={handleChange}
-															variant="standard"
-															margin="normal"
-														/>
-													</Box>
-												</Grid>
-												<Grid item md={6} xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															type="number"
-															component={TextField}
-															name="salary_per_day"
-															label="Salary (Daily)"
-															onChange={handleChange}
-															variant="standard"
-															margin="normal"
-														/>
-													</Box>
-												</Grid>
-
-												<Grid item md={4} xs={12}>
-													<Box margin={1}>
-														<Field
-															required
-															onChange={handleChange}
-															fullWidth
-															component={TextField}
-															type="text"
-															name="state"
-															label="State"
-															select
-															variant="standard"
-															helperText={
-																props.errors.hasOwnProperty("state") &&
-																props.errors["state"]
-															}
-															margin="normal"
 															InputLabelProps={{
-																shrink: true,
+																classes: {
+																	root: classes.labelRoot,
+																},
 															}}
+															helperText={
+																formprops.errors.hasOwnProperty(
+																	"id_proof_type"
+																) && formprops.errors["id_proof_type"]
+															}
+															margin="dense"
 														>
-															{Object.keys(state).map((option) => (
-																<MenuItem key={option} value={option}>
+															{[
+																"License",
+																"Certificate",
+																"PAN Card",
+																"Registration",
+																"Other",
+															].map((option, index) => (
+																<MenuItem key={index} value={option}>
 																	{option}
 																</MenuItem>
 															))}
 														</Field>
 													</Box>
 												</Grid>
-												<Grid item md={4} xs={12}>
-													<Box margin={1}>
-														<Field
-															required
-															fullWidth
-															component={TextField}
-															type="text"
-															name="district"
-															label="District"
-															select
-															variant="standard"
-															helperText={
-																props.errors.hasOwnProperty("district") &&
-																props.errors["district"]
-															}
-															margin="normal"
-															InputLabelProps={{
-																shrink: true,
-															}}
-														>
-															{props.values["state"] &&
-																state[props.values.state].map(
-																	(option, index) => (
-																		<MenuItem key={index} value={option}>
-																			{option}
-																		</MenuItem>
-																	)
-																)}
-														</Field>
-													</Box>
-												</Grid>
-												<Grid item md={4} xs={12}>
-													<Box margin={1}>
-														<Field
-															required
-															fullWidth
-															component={TextField}
-															type="text"
-															name="city"
-															label="City"
-															select
-															variant="standard"
-															helperText={
-																props.errors.hasOwnProperty("city") &&
-																props.errors["city"]
-															}
-															margin="normal"
-															InputLabelProps={{
-																shrink: true,
-															}}
-														>
-															{props.values["district"] &&
-																cities[props.values["district"]].map(
-																	(option, index) => (
-																		<MenuItem key={index} value={option}>
-																			{option}
-																		</MenuItem>
-																	)
-																)}
-														</Field>
-													</Box>
-												</Grid>
-
-												<Grid item md={4} xs={12}>
-													<Box margin={1}>
-														<Field
-															fullWidth
-															component={TextField}
-															type="text"
-															name="work_prefer"
-															label="Work Prefer"
-															variant="standard"
-															select
-															helperText={
-																props.errors.hasOwnProperty("locality") &&
-																props.errors["locality"]
-															}
-															margin="dense"
-														>
-															{["Doesn't Matter", "Only Religion"].map(
-																(option, index) => (
-																	<MenuItem key={index} value={index + 1}>
-																		{option}
-																	</MenuItem>
-																)
-															)}
-														</Field>
-													</Box>
-												</Grid>
-
-												<Grid item xs={12}>
-													<TableContainer component={Paper}>
-														<Grid
-															container
-															direction="row"
-															justify="flex-start"
-															alignItems="flex-end"
-														>
-															<Grid item xs={6}>
-																<Box margin={1}>
-																	<Field
-																		onChange={handleChange}
-																		fullWidth
-																		component={TextField}
-																		type="text"
-																		name="doc_type"
-																		label="Choose Document To Upload"
-																		select
-																		variant="standard"
-																		helperText={
-																			props.errors.hasOwnProperty("doc_type") &&
-																			props.errors["doc_type"]
-																		}
-																		margin="normal"
-																		InputLabelProps={{
-																			shrink: true,
-																		}}
-																	>
-																		{Object.keys(fileDropdown).map(
-																			(option, index) => (
-																				<MenuItem key={index} value={option}>
-																					{option}
-																				</MenuItem>
-																			)
-																		)}
-																	</Field>
-																</Box>
-															</Grid>
-															<Grid item xs={6}>
-																<Box margin={1}>
-																	<Field
-																		name="doc"
-																		margin="normal"
-																		label="Upload Document"
-																		className={
-																			"form-check-input " +
-																			(props.errors["document"] &&
-																			props.touched["document"]
-																				? " is-invalid"
-																				: "")
-																		}
-																	>
-																		{({ field, form, meta }) => (
-																			<div>
-																				<input
-																					id={field.name}
-																					onClick="this.value = null"
-																					style={{ display: "none" }}
-																					name={field.name}
-																					type="file"
-																					onChange={(event) =>
-																						fileOnChange(event, props, field)
-																					}
-																				/>
-																				<label htmlFor={field.name}>
-																					<Button
-																						disabled={
-																							form.values["doc_type"] == null ||
-																							search(
-																								props.values["doc_type"],
-																								docData
-																							)
-																						}
-																						variant="contained"
-																						color="primary"
-																						component="span"
-																					>
-																						Choose
-																					</Button>
-																				</label>
-																			</div>
-																		)}
-																	</Field>
-																</Box>
-															</Grid>
-														</Grid>
-														<Table
-															className={classes.table}
-															aria-label="simple table"
-														>
-															<TableHead>
-																<TableRow>
-																	<TableCell>Document</TableCell>
-																	<TableCell align="right">File Name</TableCell>
-																	<TableCell align="right">File Size</TableCell>
-																	<TableCell align="right">File Type</TableCell>
-																	<TableCell align="right"></TableCell>
-																</TableRow>
-															</TableHead>
-															<TableBody>
-																{docData.map((row) => (
-																	<TableRow key={row.name}>
-																		<TableCell component="th" scope="row">
-																			{row.document}
-																		</TableCell>
-																		<TableCell
-																			onClick={() =>
-																				getFileLink(row.fileObject)
-																			}
-																			align="right"
-																		>
-																			{row.name}
-																		</TableCell>
-																		<TableCell align="right">
-																			{row.size}MB
-																		</TableCell>
-																		<TableCell align="right">
-																			{row.type}
-																		</TableCell>
-																		<TableCell align="right">
-																			<IconButton
-																				onClick={() =>
-																					deleteFile(row.document, props)
-																				}
-																			>
-																				<DeleteIcon />
-																			</IconButton>
-																		</TableCell>
-																	</TableRow>
-																))}
-																{Object.keys(fileDropdown).map((obj) => {
-																	if (
-																		props.errors.hasOwnProperty(
-																			fileDropdown[obj]
-																		)
-																	) {
-																		return (
-																			<TableRow>
-																				<TableCell style={{ color: "red" }}>
-																					Error [{obj}]
-																				</TableCell>
-																				<TableCell
-																					style={{ color: "red" }}
-																					align="left"
-																				>
-																					{props.errors[fileDropdown[obj]]}
-																				</TableCell>
-																			</TableRow>
-																		);
-																	}
-																})}
-															</TableBody>
-														</Table>
-													</TableContainer>
-												</Grid>
-
-												<Grid item xs={12}>
-													<Divider />
-
-													<Grid container justify="right">
-														<Grid item xs={12}>
-															{!props.isSubmitting ? (
-																<Button onClick={props.resetForm} size="small">
-																	Reset To Default
-																</Button>
-															) : (
-																t("common:cant_revert")
-															)}
-															<Button
-																disable={props.isSubmitting}
-																type="submit"
-																color="primary"
+												<Grid
+													item
+													md={6}
+													container
+													alignItems="flex-end"
+													xs={12}
+												>
+													<Grid item md={8} xs={12}>
+														<Box margin={1}>
+															<Field
+																fullWidth
+																type="text"
+																component={TextField}
+																name="id_proof_number"
+																label="Last 4-Digit of KYC Document"
+																onChange={handleChange}
 																variant="outlined"
+																margin="dense"
+																InputLabelProps={{
+																	classes: {
+																		root: classes.labelRoot,
+																	},
+																}}
+															/>
+														</Box>
+													</Grid>
+													<Grid item md={4} xs={12}>
+														<Box margin={1}>
+															<Field
+																margin="dense"
+																name="id_proof_path"
+																label="Upload Document"
+																InputLabelProps={{
+																	classes: {
+																		root: classes.labelRoot,
+																	},
+																}}
+																className={
+																	"form-check-input " +
+																	(formprops.errors["id_proof_path"] &&
+																	formprops.touched["id_proof_path"]
+																		? " is-invalid"
+																		: "")
+																}
 															>
-																Save details
-															</Button>
-														</Grid>
+																{({ field, form, meta }) => (
+																	<div>
+																		<input
+																			id={field.name}
+																			style={{ display: "none" }}
+																			name={field.name}
+																			type="file"
+																			onChange={(event) => {
+																				formprops.setFieldValue(
+																					field.name,
+																					event.currentTarget.files[0]
+																				);
+																			}}
+																		/>
+																		<label htmlFor={field.name}>
+																			<Button
+																				variant="contained"
+																				color="primary"
+																				component="span"
+																			>
+																				Upload
+																			</Button>
+																			{field.value && field.value.name}
+																		</label>
+																	</div>
+																)}
+															</Field>
+															{formprops.errors.hasOwnProperty(
+																"id_proof_path"
+															) && (
+																<div style={{ color: "red" }} component="div">
+																	{formprops.errors["id_proof_path"]}
+																</div>
+															)}
+														</Box>
 													</Grid>
 												</Grid>
+												<Grid container justify="center" xs={12}>
+													<Typography variant="h5" component="h5">
+														KYC Verify by IWS Advisor
+													</Typography>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															type="text"
+															component={TextField}
+															name="fill_id_number"
+															label="Fill ID Number"
+															onChange={handleChange}
+															variant="outlined"
+															margin="dense"
+															InputLabelProps={{
+																classes: {
+																	root: classes.labelRoot,
+																},
+															}}
+														/>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														Send OTP on Registered Mobile No.
+														<Button variant="outlined" color="primary">
+															Send
+														</Button>
+													</Box>
+												</Grid>
+												<Grid item md={4} xs={12}>
+													<Box margin={1}>
+														<Field
+															fullWidth
+															type="text"
+															component={TextField}
+															name="kyc_otp"
+															label="Enter OTP"
+															onChange={handleChange}
+															variant="outlined"
+															margin="dense"
+															InputLabelProps={{
+																classes: {
+																	root: classes.labelRoot,
+																},
+															}}
+														/>
+													</Box>
+												</Grid>
+												<Divider />
+												<Grid item xs={12}>
+													<ul>
+														<li>
+															<Typography variant="body1" component="body1">
+																Note: You are in automatic agreement with this
+																privacy policy.
+															</Typography>
+														</li>
+														<li>
+															<Typography variant="body2" component="body2">
+																Get Extra Reward Point On KYC Recharge Offer
+															</Typography>
+														</li>
+													</ul>
+
+													<br></br>
+												</Grid>
+											</Grid>
+
+											<Divider />
+
+											<Grid container justify="flex-end">
+												{!formprops.isSubmitting ? (
+													<Button onClick={formprops.resetForm} size="small">
+														Reset To Default
+													</Button>
+												) : (
+													t("common:cant_revert")
+												)}
+												<Button
+													disable={formprops.isSubmitting}
+													type="submit"
+													color="primary"
+													variant="outlined"
+												>
+													Save details
+												</Button>
 											</Grid>
 										</Form>
 									</div>
 								);
 							}}
 						</Formik>
-					</div>
+					</Accordion>
 				</Grid>
 			</Grid>
 
 			{_renderModal()}
-		</Card>
+			<Dialog
+				fullWidth
+				fullScreen={fullScreen}
+				maxWidth={"md"}
+				open={bookingPopup}
+				onClose={() => setBookingPopup(false)}
+				aria-labelledby="max-width-dialog-title"
+			>
+				<DialogTitle id="max-width-dialog-title">Booking Calendar</DialogTitle>
+				<DialogContent>
+					<BookingModule
+						editMode={true}
+						apifor="worker"
+						booking_id={props.router.query.id}
+					/>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={() => setBookingPopup(false)} color="primary">
+						Close
+					</Button>
+				</DialogActions>
+			</Dialog>
+		</div>
 	);
+};
+
+workerform.propTypes = {
+	className: PropTypes.string,
 };
 
 export default withRouter(withTranslation(["common"])(workerform));
