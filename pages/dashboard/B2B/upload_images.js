@@ -19,7 +19,6 @@ import {
 } from "@material-ui/core";
 import Header from "../../../components/Header";
 import Head from "next/head";
-import withAuth from "../../../components/Hoc/withAuth";
 import LocalStorageService from "../../../_services/LocalStorageService";
 const localStorageService = LocalStorageService.getService();
 import Link from "@material-ui/core/Link";
@@ -36,7 +35,7 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 const useStyles = makeStyles((theme) => ({
-	root: { paddingTop: "11vh", padding: theme.spacing(4) },
+	root: { paddingTop: "11vh" },
 	icon: {
 		marginRight: theme.spacing(2),
 	},
@@ -125,16 +124,16 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const b2bVid = (props) => {
+const B2bImg = (props) => {
 	const classes = useStyles();
 	const [img, setImg] = React.useState({});
-	const { onToggleDark, onToggleDir } = props;
 	const [remoteData, setRemoteData] = React.useState([]);
 	const [remoteError, setRemoteError] = React.useState("");
 	const [selectedImg, setSelectedImg] = React.useState("");
+	const [imgTitle, setImgTitle] = React.useState("");
 	const [open, setOpen] = React.useState(false);
 	const theme = useTheme();
-
+	let textInput = React.useRef(null);
 	React.useEffect(() => {
 		getAllImages();
 	}, []);
@@ -148,17 +147,20 @@ const b2bVid = (props) => {
 		return "";
 	}
 	function getAllImages() {
+		textInput.current.value = null;
 		b2bActions
 			.getMedia({ b2b_id: props.router.query.id, file_type: 1 })
 			.then(function (response) {
 				console.log("ressss", response);
 				if (Array.isArray(response.data.data)) {
 					setRemoteData(response.data.data);
+					setSelectedImg(null);
+					setImg(null);
 				}
 			})
 			.catch(function (error) {
 				if (error.response && error.response.data.input_error.image_file) {
-					setRemoteError(error.response.data.input_error.image_file);
+					setRemoteError(JSON.stringify(error.response.data.input_error));
 				}
 				console.error("errrrr ", error);
 			});
@@ -168,12 +170,15 @@ const b2bVid = (props) => {
 		let payload = new FormData();
 		payload.append("image_file", img.fileObj);
 		payload.append("b2b_id", props.router.query.id);
+		payload.append("title", imgTitle);
 		if (payload) {
 			b2bActions
 				.submitMedia(payload)
 				.then(function (response) {
 					console.log("ressss", response);
 					getAllImages();
+					setSelectedImg(null);
+					setImg(null);
 				})
 				.catch(function (error) {
 					if (error.response && error.response.data.input_error.image_file) {
@@ -191,7 +196,7 @@ const b2bVid = (props) => {
 	return (
 		<Fragment>
 			<Head>
-				<title>B2B &nbsp; - Upload Images</title>
+				<title>B2b &nbsp; - Upload Images</title>
 			</Head>
 			<Header
 				onToggleDark={props.onToggleDark}
@@ -210,7 +215,7 @@ const b2bVid = (props) => {
 										<Link
 											style={{ textDecoration: "none" }}
 											href={
-												routerLink.starter.b2bDetails +
+												routerLink.starter.b2bnew +
 												"?id=" +
 												props.router.query.id
 											}
@@ -236,7 +241,19 @@ const b2bVid = (props) => {
 									)}
 								</Grid>
 								<Grid container spacing={2} justify="center">
-									<Grid item>
+									<Grid container justify="center" alignItems="center">
+										<Grid item>
+											<TextField
+												type="text"
+												onChange={(e) => setImgTitle(e.target.value)}
+												variant="outlined"
+												fullWidth
+												label="Title - Price"
+												inputRef={textInput}
+											/>
+										</Grid>
+									</Grid>
+									<Grid container justify="center" item xs={12}>
 										<input
 											accept="image/*"
 											className={classes.input}
@@ -275,10 +292,10 @@ const b2bVid = (props) => {
 											</Button>
 										</label>
 									</Grid>
-									<Grid item>
+									<Grid container justify="center" item xs={12}>
 										<Button
 											onClick={submitImage}
-											disabled={img.src == null}
+											disabled={img == null || img.src == null}
 											variant="outlined"
 											color="primary"
 										>
@@ -286,31 +303,35 @@ const b2bVid = (props) => {
 										</Button>
 									</Grid>
 									<Grid item xs={12}>
-										{img.src && (
-											<table
-												style={{
-													borderCollapse: "collapse",
-													borderSpacing: 0,
-													width: "100%",
-												}}
-											>
-												<thead>
-													<tr>
-														<th>File Name</th>
-														<th>File Type</th>
-														<th>File Size</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														<td>{img.name}</td>
-														<td>{img.type}</td>
-														<td>{img.size ? img.size + "MB" : ""}</td>
-													</tr>
-												</tbody>
-											</table>
+										{img != null && img.src && (
+											<div>
+												<table
+													style={{
+														borderCollapse: "collapse",
+														borderSpacing: 0,
+														width: "100%",
+													}}
+												>
+													<thead>
+														<tr>
+															<th>File Name</th>
+															<th>File Type</th>
+															<th>File Size</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td>{img.name}</td>
+															<td>{img.type}</td>
+															<td>{img.size ? img.size + "MB" : ""}</td>
+														</tr>
+													</tbody>
+												</table>
+												<p style={{ color: "red" }}>
+													Please do not use Contact No. / Address in any Photo
+												</p>
+											</div>
 										)}
-										<div></div>
 									</Grid>
 								</Grid>
 							</div>
@@ -353,6 +374,7 @@ const b2bVid = (props) => {
 											</Typography>
 										</span>
 									</ButtonBase>
+									<Typography variant="h5">{card.title}</Typography>
 								</Grid>
 							))}
 						</Grid>
@@ -382,39 +404,4 @@ const b2bVid = (props) => {
 	);
 };
 
-const redirectToLogin = (res) => {
-	if (res) {
-		res.writeHead(302, { Location: "/login" });
-		res.end();
-		res.finished = true;
-	} else {
-		Router.push("/login");
-	}
-};
-const getCookieFromReq = (req, cookieKey) => {
-	const cookie = req.headers.cookie
-		.split(";")
-		.find((c) => c.trim().startsWith(`${cookieKey}=`));
-
-	if (!cookie) return undefined;
-	return cookie.split("=")[1];
-};
-
-b2bVid.getInitialProps = ({ req, res }) => {
-	const ISSERVER = typeof window === "undefined";
-	let token = null;
-
-	if (!ISSERVER) {
-		token = localStorage.getItem("token");
-	} else {
-		token = getCookieFromReq(req, "token");
-	}
-
-	if (token == null) {
-		console.log("GOING TO REDIRECT");
-		redirectToLogin(res);
-	}
-	return {};
-};
-
-export default withRouter(b2bVid);
+export default withRouter(B2bImg);

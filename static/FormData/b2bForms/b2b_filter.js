@@ -1,17 +1,16 @@
 import * as Yup from "yup";
-import { serviceCategory } from "~static/text/workerData.js";
+import { serviceCategory } from "~static/text/vendorData.js";
 import { states } from "~static/text/state";
 import { cities } from "~static/text/city";
-export const workerFilter = [
+
+export const b2bFilter = [
 	[
 		{
 			id: "service_category",
-			label: "Job Category",
+			label: "Category",
 			placeholder: "",
 			type: "select",
-			ElementParams: {
-				fullWidth: true,
-			},
+
 			validationType: "string",
 			options: { data: Object.keys(serviceCategory) },
 			value: "",
@@ -19,7 +18,7 @@ export const workerFilter = [
 		},
 		{
 			id: "sub_service",
-			label: "Skill Work",
+			label: "Service",
 			placeholder: "",
 
 			type: "select",
@@ -28,19 +27,16 @@ export const workerFilter = [
 			value: [],
 			validations: [],
 		},
+		{
+			id: "service_price",
+			label: "Budget",
+			placeholder: "",
+			type: "text",
+			validationType: "string",
+			value: "",
+			validations: [],
+		},
 	],
-
-	{
-		id: "job_monthly_basis",
-		label: "Job Monthly Basis",
-		placeholder: "",
-		type: "select",
-		validationType: "string",
-		options: { data: ["Yes", "No"] },
-		value: "",
-		validations: [],
-	},
-
 	[
 		{
 			id: "state",
@@ -76,6 +72,7 @@ export const workerFilter = [
 			validations: [],
 		},
 	],
+
 	{
 		id: "booking_date",
 		label: "Booking Date",
