@@ -58,7 +58,7 @@ const tiers = [
 	{
 		title: "B2B Market",
 		imgsrc: b2b,
-		url: routerLink.starter.b2b,
+		url: routerLink.starter.b2bSearch,
 	},
 ];
 

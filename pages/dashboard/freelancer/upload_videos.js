@@ -25,7 +25,6 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
-import withAuth from "../../../components/Hoc/withAuth";
 import LocalStorageService from "../../../_services/LocalStorageService";
 const localStorageService = LocalStorageService.getService();
 import Link from "@material-ui/core/Link";

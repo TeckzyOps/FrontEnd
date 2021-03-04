@@ -125,13 +125,4 @@ const index = (props) => {
 	);
 };
 
-const redirectToLogin = (res) => {
-	if (res) {
-		res.writeHead(302, { Location: "/login" });
-		res.end();
-		res.finished = true;
-	} else {
-		Router.push("/login");
-	}
-};
 export default index;

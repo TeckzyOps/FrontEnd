@@ -25,7 +25,6 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
-import withAuth from "../../../components/Hoc/withAuth";
 import LocalStorageService from "../../../_services/LocalStorageService";
 const localStorageService = LocalStorageService.getService();
 import Link from "@material-ui/core/Link";
@@ -121,15 +120,15 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const b2bVid = (props) => {
+const B2bVid = (props) => {
 	const classes = useStyles();
 	const [vid, setVid] = React.useState({});
-	const { onToggleDark, onToggleDir } = props;
 	const [remoteData, setRemoteData] = React.useState([]);
 	const [remoteError, setRemoteError] = React.useState("");
 	const [vidTitle, setVidTitle] = React.useState("");
 	const [selectedVideo, setSelectedVideo] = React.useState({});
 	const [open, setOpen] = React.useState(false);
+	let textInput = React.useRef(null);
 	const theme = useTheme();
 	const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 	React.useEffect(() => {
@@ -138,12 +137,15 @@ const b2bVid = (props) => {
 	}, []);
 
 	function getAllVideos() {
+		textInput.current.value = null;
 		b2bActions
 			.getMedia({ b2b_id: props.router.query.id, file_type: 2 })
 			.then(function (response) {
 				console.log("ressss", response);
 				if (Array.isArray(response.data.data)) {
 					setRemoteData(response.data.data);
+					setSelectedVideo(null);
+					setVid(null);
 				}
 			})
 			.catch(function (error) {
@@ -175,6 +177,8 @@ const b2bVid = (props) => {
 				.then(function (response) {
 					console.log("ressss", response);
 					getAllVideos();
+					setSelectedVideo(null);
+					setVid(null);
 				})
 				.catch(function (error) {
 					if (error.response && error.response.data.input_error.image_file) {
@@ -188,7 +192,7 @@ const b2bVid = (props) => {
 	return (
 		<Fragment>
 			<Head>
-				<title>B2B &nbsp; - Upload Videos</title>
+				<title>B2b &nbsp; - Upload Videos</title>
 			</Head>
 			<Header
 				onToggleDark={props.onToggleDark}
@@ -207,7 +211,7 @@ const b2bVid = (props) => {
 										<Link
 											style={{ textDecoration: "none" }}
 											href={
-												routerLink.starter.b2bDetails +
+												routerLink.starter.b2bnew +
 												"?id=" +
 												props.router.query.id
 											}
@@ -241,6 +245,7 @@ const b2bVid = (props) => {
 												variant="outlined"
 												fullWidth
 												label="Video Title"
+												inputRef={textInput}
 											/>
 										</Grid>
 									</Grid>
@@ -287,7 +292,7 @@ const b2bVid = (props) => {
 									<Grid item>
 										<Button
 											onClick={submitVieo}
-											disabled={vid.src == null}
+											disabled={vid == null || vid.src == null}
 											variant="outlined"
 											color="primary"
 										>
@@ -295,7 +300,7 @@ const b2bVid = (props) => {
 										</Button>
 									</Grid>
 									<Grid item xs={12}>
-										{vid.src && (
+										{vid != null && vid.src && (
 											<table
 												style={{
 													borderCollapse: "collapse",
@@ -330,7 +335,7 @@ const b2bVid = (props) => {
 						{/* End hero unit */}
 						<Grid container spacing={2}>
 							{remoteData.map((card, index) => (
-								<Grid key={index} item md={6} xs={12}>
+								<Grid key={index} item xs={12} sm={6} md={4}>
 									<ButtonBase
 										onClick={() => playselected(card.file_path, card.title)}
 										focusRipple
@@ -373,10 +378,15 @@ const b2bVid = (props) => {
 					fullScreen={fullScreen}
 					open={open}
 					onClose={() => setOpen(false)}
-					aria-labelledby={selectedVideo.title}
+					aria-labelledby={selectedVideo && selectedVideo.title}
 				>
-					<DialogTitle id={selectedVideo.title} onClose={() => setOpen(false)}>
-						<Typography variant="h6">{selectedVideo.title}</Typography>
+					<DialogTitle
+						id={selectedVideo && selectedVideo.title}
+						onClose={() => setOpen(false)}
+					>
+						<Typography variant="h6">
+							{selectedVideo && selectedVideo.title}
+						</Typography>
 						<IconButton
 							aria-label="close"
 							className={classes.closeButton}
@@ -388,7 +398,7 @@ const b2bVid = (props) => {
 					<DialogContent>
 						<video
 							width="100%"
-							src={selectedVideo.src}
+							src={selectedVideo && selectedVideo.src}
 							muted="muted"
 							loop="loop"
 							autoPlay={false}
@@ -401,38 +411,4 @@ const b2bVid = (props) => {
 	);
 };
 
-const redirectToLogin = (res) => {
-	if (res) {
-		res.writeHead(302, { Location: "/login" });
-		res.end();
-		res.finished = true;
-	} else {
-		Router.push("/login");
-	}
-};
-const getCookieFromReq = (req, cookieKey) => {
-	const cookie = req.headers.cookie
-		.split(";")
-		.find((c) => c.trim().startsWith(`${cookieKey}=`));
-
-	if (!cookie) return undefined;
-	return cookie.split("=")[1];
-};
-
-b2bVid.getInitialProps = ({ req, res }) => {
-	const ISSERVER = typeof window === "undefined";
-	let token = null;
-
-	if (!ISSERVER) {
-		token = localStorage.getItem("token");
-	} else {
-		token = getCookieFromReq(req, "token");
-	}
-
-	if (token == null) {
-		console.log("GOING TO REDIRECT");
-		redirectToLogin(res);
-	}
-	return {};
-};
-export default withRouter(b2bVid);
+export default withRouter(B2bVid);

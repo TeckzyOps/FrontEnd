@@ -8,6 +8,7 @@ export const b2bActions = {
 	getMedia,
 	bookDate,
 	getbookDate,
+	search,
 };
 
 function createB2b(payload) {
@@ -42,5 +43,10 @@ function submitMedia(payload) {
 
 function getMedia(payload) {
 	let apiEndpoint = "getB2bFile";
+	return Service.get(apiEndpoint, payload);
+}
+
+function search(payload) {
+	let apiEndpoint = "b2bFilter";
 	return Service.get(apiEndpoint, payload);
 }

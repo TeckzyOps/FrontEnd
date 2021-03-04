@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import Router from "next/router";
-import routerLink from "~/static/text/link";
+import routerLink from "~static/text/link";
 import { profileActions } from "../../_actions/profile.action";
 import api, { addBearerToken, removeBearerToken } from "../../utils/httpClient";
 import LocalStorageService from "../../_services/LocalStorageService";

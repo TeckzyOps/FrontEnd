@@ -3,7 +3,7 @@ import { useIsAuthenticated } from "../provider/Auth";
 import Cookies from "js-cookie";
 import withConditionalRedirect from "./withConditionalRedirect";
 import Router from "next/router";
-import routerLink from "~/static/text/link";
+import routerLink from "~static/text/link";
 import { profileActions } from "../../_actions/profile.action";
 import api, { addBearerToken, removeBearerToken } from "../../utils/httpClient";
 import LocalStorageService from "../../_services/LocalStorageService";

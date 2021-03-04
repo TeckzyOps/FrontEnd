@@ -19,7 +19,6 @@ import {
 } from "@material-ui/core";
 import Header from "../../../components/Header";
 import Head from "next/head";
-import withAuth from "../../../components/Hoc/withAuth";
 import LocalStorageService from "../../../_services/LocalStorageService";
 const localStorageService = LocalStorageService.getService();
 import Link from "@material-ui/core/Link";
