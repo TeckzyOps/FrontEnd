@@ -240,6 +240,7 @@ class MyApp extends App {
 
 		return (
 			<Container>
+			<AuthProvider>
 				<StylesProvider jss={jss}>
 					<MuiThemeProvider theme={muiTheme}>
 						<CssBaseline />
@@ -286,6 +287,7 @@ class MyApp extends App {
 						</div>
 					</MuiThemeProvider>
 				</StylesProvider>
+</AuthProvider>
 			</Container>
 		);
 	}
