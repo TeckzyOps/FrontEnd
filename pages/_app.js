@@ -240,52 +240,54 @@ class MyApp extends App {
 
 		return (
 			<Container>
-				<StylesProvider jss={jss}>
-					<MuiThemeProvider theme={muiTheme}>
-						<CssBaseline />
-						<Backdrop
-							style={{ zIndex: 1600, color: "#fff", opacity: 0.5 }}
-							open={Netloading}
-						/>
-						{Netloading && (
-							<CircularProgress
-								left={50}
-								top={30}
-								style={{
-									position: "fixed",
-									left: "50%",
-									top: "50%",
-									zIndex: 1600,
-									textAlign: "center",
-								}}
-								size={50}
-								color="primary"
+				<AuthProvider>
+					<StylesProvider jss={jss}>
+						<MuiThemeProvider theme={muiTheme}>
+							<CssBaseline />
+							<Backdrop
+								style={{ zIndex: 1600, color: "#fff", opacity: 0.5 }}
+								open={Netloading}
 							/>
-						)}
-
-						<Loading
-							show={loading}
-							color={theme.palette.primary.main}
-							showSpinner={false}
-						/>
-						<Snackbar
-							style={{ zIndex: 1600 }}
-							isOpen={this.state.showSnackbar}
-							message={this.state.snackbarError}
-							close={() => this.setState({ showSnackbar: false })}
-						/>
-						<div id="main-wrap">
-							<PageTransition timeout={300} classNames="page-fade-transition">
-								<Component
-									onToggleDark={this.toggleDarkTheme}
-									onToggleDir={this.toggleDirection}
-									getNested={this.getNested}
-									key={router.route}
+							{Netloading && (
+								<CircularProgress
+									left={50}
+									top={30}
+									style={{
+										position: "fixed",
+										left: "50%",
+										top: "50%",
+										zIndex: 1600,
+										textAlign: "center",
+									}}
+									size={50}
+									color="primary"
 								/>
-							</PageTransition>
-						</div>
-					</MuiThemeProvider>
-				</StylesProvider>
+							)}
+
+							<Loading
+								show={loading}
+								color={theme.palette.primary.main}
+								showSpinner={false}
+							/>
+							<Snackbar
+								style={{ zIndex: 1600 }}
+								isOpen={this.state.showSnackbar}
+								message={this.state.snackbarError}
+								close={() => this.setState({ showSnackbar: false })}
+							/>
+							<div id="main-wrap">
+								<PageTransition timeout={300} classNames="page-fade-transition">
+									<Component
+										onToggleDark={this.toggleDarkTheme}
+										onToggleDir={this.toggleDirection}
+										getNested={this.getNested}
+										key={router.route}
+									/>
+								</PageTransition>
+							</div>
+						</MuiThemeProvider>
+					</StylesProvider>
+				</AuthProvider>
 			</Container>
 		);
 	}
