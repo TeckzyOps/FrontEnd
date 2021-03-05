@@ -112,37 +112,5 @@ Landing.propTypes = {
 	onToggleDark: PropTypes.func.isRequired,
 	onToggleDir: PropTypes.func.isRequired,
 };
-const redirectToDashboard = (res) => {
-	if (res) {
-		res.writeHead(302, { Location: routerLink.starter.dashboard });
-		res.end();
-		res.finished = true;
-	} else {
-		Router.push(routerLink.starter.dashboard);
-	}
-};
-const getCookieFromReq = (req, cookieKey) => {
-	const cookie = req.headers.cookie
-		.split(";")
-		.find((c) => c.trim().startsWith(`${cookieKey}=`));
 
-	if (!cookie) return undefined;
-	return cookie.split("=")[1];
-};
-
-Landing.getInitialProps = ({ req, res }) => {
-	const ISSERVER = typeof window === "undefined";
-	let token = null;
-
-	if (!ISSERVER) {
-		token = localStorage.getItem("token");
-	} else {
-		token = getCookieFromReq(req, "token");
-	}
-	console.log(token);
-	if (token) {
-		redirectToDashboard(res);
-	}
-	return { namespacesRequired: ["common"] };
-};
 export default Landing;
