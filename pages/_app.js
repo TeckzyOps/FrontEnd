@@ -288,6 +288,7 @@ class MyApp extends App {
 						</MuiThemeProvider>
 					</StylesProvider>
 				</AuthProvider>
+
 			</Container>
 		);
 	}
