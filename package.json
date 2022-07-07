@@ -42,7 +42,7 @@
     "js-cookies": "^1.0.4",
     "jss": "^10.0.0-alpha.21",
     "jss-rtl": "^0.2.3",
-    "moment": "^2.27.0",
+    "moment": "^2.29.4",
     "next": "9.0.2",
     "next-compose-plugins": "^2.2.0",
     "next-i18next": "^1.2.0",
